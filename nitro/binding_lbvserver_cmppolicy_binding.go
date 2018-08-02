@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type LbvserverCmppolicyBinding struct {
@@ -32,14 +33,17 @@ type add_lbvserver_cmppolicy_binding_payload struct {
 
 func lbvserver_cmppolicy_binding_key_to_id_args(key LbvserverCmppolicyBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "name:"+key.Name)
+	args = append(args, "policyname:"+key.Policyname)
+	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	result = result + ",name:" + key.Name
-	result = result + ",policyname:" + key.Policyname
-	result = result + ",bindpoint:" + key.Bindpoint
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddLbvserverCmppolicyBinding(binding LbvserverCmppolicyBinding) error {
 	payload := add_lbvserver_cmppolicy_binding_payload{
@@ -82,7 +86,8 @@ func (c *NitroClient) GetLbvserverCmppolicyBinding(key LbvserverCmppolicyBinding
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one lbvserver_cmppolicy_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("lbvserver_cmppolicy_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("lbvserver_cmppolicy_binding element not found")
 			return nil, nil
 		}
 

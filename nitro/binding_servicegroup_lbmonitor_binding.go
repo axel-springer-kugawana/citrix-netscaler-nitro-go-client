@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type ServicegroupLbmonitorBinding struct {
@@ -26,13 +27,16 @@ type add_servicegroup_lbmonitor_binding_payload struct {
 
 func servicegroup_lbmonitor_binding_key_to_id_args(key ServicegroupLbmonitorBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "servicegroupname:"+key.Servicegroupname)
+	args = append(args, "monitor_name:"+key.Monitor_name)
 
-	result = result + ",servicegroupname:" + key.Servicegroupname
-	result = result + ",monitor_name:" + key.Monitor_name
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddServicegroupLbmonitorBinding(binding ServicegroupLbmonitorBinding) error {
 	payload := add_servicegroup_lbmonitor_binding_payload{
@@ -75,7 +79,8 @@ func (c *NitroClient) GetServicegroupLbmonitorBinding(key ServicegroupLbmonitorB
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one servicegroup_lbmonitor_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("servicegroup_lbmonitor_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("servicegroup_lbmonitor_binding element not found")
 			return nil, nil
 		}
 

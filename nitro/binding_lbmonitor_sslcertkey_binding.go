@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type LbmonitorSslcertkeyBinding struct {
@@ -28,13 +29,16 @@ type add_lbmonitor_sslcertkey_binding_payload struct {
 
 func lbmonitor_sslcertkey_binding_key_to_id_args(key LbmonitorSslcertkeyBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "monitorname:"+key.Monitorname)
+	args = append(args, "certkeyname:"+key.Certkeyname)
 
-	result = result + ",monitorname:" + key.Monitorname
-	result = result + ",certkeyname:" + key.Certkeyname
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddLbmonitorSslcertkeyBinding(binding LbmonitorSslcertkeyBinding) error {
 	payload := add_lbmonitor_sslcertkey_binding_payload{
@@ -77,7 +81,8 @@ func (c *NitroClient) GetLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindi
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one lbmonitor_sslcertkey_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("lbmonitor_sslcertkey_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("lbmonitor_sslcertkey_binding element not found")
 			return nil, nil
 		}
 

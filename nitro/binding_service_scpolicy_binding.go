@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type ServiceScpolicyBinding struct {
@@ -25,13 +26,16 @@ type add_service_scpolicy_binding_payload struct {
 
 func service_scpolicy_binding_key_to_id_args(key ServiceScpolicyBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "name:"+key.Name)
+	args = append(args, "policyname:"+key.Policyname)
 
-	result = result + ",name:" + key.Name
-	result = result + ",policyname:" + key.Policyname
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddServiceScpolicyBinding(binding ServiceScpolicyBinding) error {
 	payload := add_service_scpolicy_binding_payload{
@@ -74,7 +78,8 @@ func (c *NitroClient) GetServiceScpolicyBinding(key ServiceScpolicyBindingKey) (
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one service_scpolicy_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("service_scpolicy_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("service_scpolicy_binding element not found")
 			return nil, nil
 		}
 

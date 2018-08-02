@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type AuthorizationpolicylabelAuthorizationpolicyBinding struct {
@@ -30,13 +31,16 @@ type add_authorizationpolicylabel_authorizationpolicy_binding_payload struct {
 
 func authorizationpolicylabel_authorizationpolicy_binding_key_to_id_args(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "labelname:"+key.Labelname)
+	args = append(args, "policyname:"+key.Policyname)
 
-	result = result + ",labelname:" + key.Labelname
-	result = result + ",policyname:" + key.Policyname
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddAuthorizationpolicylabelAuthorizationpolicyBinding(binding AuthorizationpolicylabelAuthorizationpolicyBinding) error {
 	payload := add_authorizationpolicylabel_authorizationpolicy_binding_payload{
@@ -79,7 +83,8 @@ func (c *NitroClient) GetAuthorizationpolicylabelAuthorizationpolicyBinding(key 
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one authorizationpolicylabel_authorizationpolicy_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("authorizationpolicylabel_authorizationpolicy_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("authorizationpolicylabel_authorizationpolicy_binding element not found")
 			return nil, nil
 		}
 

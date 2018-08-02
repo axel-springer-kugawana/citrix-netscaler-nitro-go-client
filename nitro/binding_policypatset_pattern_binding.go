@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type PolicypatsetPatternBinding struct {
@@ -27,13 +28,16 @@ type add_policypatset_pattern_binding_payload struct {
 
 func policypatset_pattern_binding_key_to_id_args(key PolicypatsetPatternBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "name:"+key.Name)
+	args = append(args, "string:"+key.String)
 
-	result = result + ",name:" + key.Name
-	result = result + ",string:" + key.String
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddPolicypatsetPatternBinding(binding PolicypatsetPatternBinding) error {
 	payload := add_policypatset_pattern_binding_payload{
@@ -76,7 +80,8 @@ func (c *NitroClient) GetPolicypatsetPatternBinding(key PolicypatsetPatternBindi
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one policypatset_pattern_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("policypatset_pattern_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("policypatset_pattern_binding element not found")
 			return nil, nil
 		}
 

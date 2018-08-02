@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type PolicydatasetValueBinding struct {
@@ -26,13 +27,16 @@ type add_policydataset_value_binding_payload struct {
 
 func policydataset_value_binding_key_to_id_args(key PolicydatasetValueBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "name:"+key.Name)
+	args = append(args, "value:"+key.Value)
 
-	result = result + ",name:" + key.Name
-	result = result + ",value:" + key.Value
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddPolicydatasetValueBinding(binding PolicydatasetValueBinding) error {
 	payload := add_policydataset_value_binding_payload{
@@ -75,7 +79,8 @@ func (c *NitroClient) GetPolicydatasetValueBinding(key PolicydatasetValueBinding
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one policydataset_value_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("policydataset_value_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("policydataset_value_binding element not found")
 			return nil, nil
 		}
 

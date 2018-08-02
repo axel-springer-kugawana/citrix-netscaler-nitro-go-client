@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type LbmetrictableMetricBinding struct {
@@ -26,13 +27,16 @@ type add_lbmetrictable_metric_binding_payload struct {
 
 func lbmetrictable_metric_binding_key_to_id_args(key LbmetrictableMetricBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "metrictable:"+key.Metrictable)
+	args = append(args, "metric:"+key.Metric)
 
-	result = result + ",metrictable:" + key.Metrictable
-	result = result + ",metric:" + key.Metric
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddLbmetrictableMetricBinding(binding LbmetrictableMetricBinding) error {
 	payload := add_lbmetrictable_metric_binding_payload{
@@ -75,7 +79,8 @@ func (c *NitroClient) GetLbmetrictableMetricBinding(key LbmetrictableMetricBindi
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one lbmetrictable_metric_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("lbmetrictable_metric_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("lbmetrictable_metric_binding element not found")
 			return nil, nil
 		}
 

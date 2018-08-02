@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type LbvserverServiceBinding struct {
@@ -26,13 +27,16 @@ type add_lbvserver_service_binding_payload struct {
 
 func lbvserver_service_binding_key_to_id_args(key LbvserverServiceBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "name:"+key.Name)
+	args = append(args, "servicename:"+key.Servicename)
 
-	result = result + ",name:" + key.Name
-	result = result + ",servicename:" + key.Servicename
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddLbvserverServiceBinding(binding LbvserverServiceBinding) error {
 	payload := add_lbvserver_service_binding_payload{
@@ -75,7 +79,8 @@ func (c *NitroClient) GetLbvserverServiceBinding(key LbvserverServiceBindingKey)
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one lbvserver_service_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("lbvserver_service_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("lbvserver_service_binding element not found")
 			return nil, nil
 		}
 

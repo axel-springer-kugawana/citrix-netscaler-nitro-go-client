@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type AppflowglobalAppflowpolicyBinding struct {
@@ -30,13 +31,16 @@ type add_appflowglobal_appflowpolicy_binding_payload struct {
 
 func appflowglobal_appflowpolicy_binding_key_to_id_args(key AppflowglobalAppflowpolicyBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "labelname:"+key.Labelname)
+	args = append(args, "policyname:"+key.Policyname)
 
-	result = result + ",labelname:" + key.Labelname
-	result = result + ",policyname:" + key.Policyname
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddAppflowglobalAppflowpolicyBinding(binding AppflowglobalAppflowpolicyBinding) error {
 	payload := add_appflowglobal_appflowpolicy_binding_payload{
@@ -79,7 +83,8 @@ func (c *NitroClient) GetAppflowglobalAppflowpolicyBinding(key AppflowglobalAppf
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one appflowglobal_appflowpolicy_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("appflowglobal_appflowpolicy_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("appflowglobal_appflowpolicy_binding element not found")
 			return nil, nil
 		}
 

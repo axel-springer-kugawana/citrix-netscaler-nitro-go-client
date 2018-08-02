@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type ServicegroupServicegroupmemberBinding struct {
@@ -28,14 +29,17 @@ type add_servicegroup_servicegroupmember_binding_payload struct {
 
 func servicegroup_servicegroupmember_binding_key_to_id_args(key ServicegroupServicegroupmemberBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "servicegroupname:"+key.Servicegroupname)
+	args = append(args, "servername:"+key.Servername)
+	args = append(args, "port:"+strconv.Itoa(key.Port))
 
-	result = result + ",servicegroupname:" + key.Servicegroupname
-	result = result + ",servername:" + key.Servername
-	result = result + ",port:" + strconv.Itoa(key.Port)
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddServicegroupServicegroupmemberBinding(binding ServicegroupServicegroupmemberBinding) error {
 	payload := add_servicegroup_servicegroupmember_binding_payload{
@@ -78,7 +82,8 @@ func (c *NitroClient) GetServicegroupServicegroupmemberBinding(key ServicegroupS
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one servicegroup_servicegroupmember_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("servicegroup_servicegroupmember_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("servicegroup_servicegroupmember_binding element not found")
 			return nil, nil
 		}
 

@@ -3,6 +3,7 @@ package nitro
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type PolicystringmapPatternBinding struct {
@@ -26,13 +27,16 @@ type add_policystringmap_pattern_binding_payload struct {
 
 func policystringmap_pattern_binding_key_to_id_args(key PolicystringmapPatternBindingKey) (string, string) {
 	var _ = strconv.Itoa
+	var args []string
 
-	result := ""
+	args = append(args, "name:"+key.Name)
+	args = append(args, "key:"+key.Key)
 
-	result = result + ",name:" + key.Name
-	result = result + ",key:" + key.Key
-	return "", result
+	return "", strings.Join(args, ",")
 }
+
+// TODO : Exists
+// TODO : Count
 
 func (c *NitroClient) AddPolicystringmapPatternBinding(binding PolicystringmapPatternBinding) error {
 	payload := add_policystringmap_pattern_binding_payload{
@@ -75,7 +79,8 @@ func (c *NitroClient) GetPolicystringmapPatternBinding(key PolicystringmapPatter
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one policystringmap_pattern_binding element found")
 		} else if len(results.Results) < 1 {
-			//                        return nil, fmt.Errorf("policystringmap_pattern_binding element not found")
+			// TODO
+			// return nil, fmt.Errorf("policystringmap_pattern_binding element not found")
 			return nil, nil
 		}
 

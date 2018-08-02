@@ -1,4 +1,4 @@
-package reader
+package nitro
 
 import (
 	"gopkg.in/yaml.v2"

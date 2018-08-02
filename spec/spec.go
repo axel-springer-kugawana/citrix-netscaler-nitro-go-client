@@ -1,4 +1,4 @@
-package reader
+package nitro
 
 import (
 	"io/ioutil"
@@ -64,6 +64,14 @@ func ReadSpec(folder string) (*Spec, error) {
 		}
 
 		bindings[bindingName] = binding
+	}
+
+	err = validateSpec(resources, bindings)
+
+	if err != nil {
+		log.Println("Failed to validate spec : ", err)
+
+		return nil, err
 	}
 
 	spec := Spec{

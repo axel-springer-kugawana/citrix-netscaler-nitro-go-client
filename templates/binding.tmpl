@@ -1,0 +1,71 @@
+package tnt
+
+import (
+        "strings"
+        "strconv"
+)
+
+type Binding{{$.Name|title}} struct {
+        {{range $field, $type := $.Schema.Fields -}}
+        {{if eq $type "double" -}}
+        {{$field|title}} {{$type|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{$type|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+}
+
+func make_key_{{$.Name}}({{range $field := $.Schema.Key}}_{{$field}} {{(index $.Schema.Fields $field)|go_type}},{{end}}) string {
+        var args []string
+        var _ = strconv.Itoa
+        
+        {{range $field := $.Schema.Key -}}
+        {{if eq (index $.Schema.Fields $field) "int" -}}
+        args = append(args, "{{$field}}:" + strconv.Itoa(_{{$field}}))
+        {{else -}}
+        args = append(args, "{{$field}}:" + _{{$field}})
+        {{end -}}
+        {{end -}}
+
+        return "args=" + strings.Join(args, ",")
+}
+
+func (c *NitroClient) Add{{$.Name|title}} (binding Binding{{$.Name|title}}) error {
+	return c.Post("{{$.Name}}", binding)
+}
+
+func (c *NitroClient) List{{$.Name|title}} () ([]Binding{{$.Name|title}}, error) {
+        var results struct {
+                {{$.Name|title}} []Binding{{$.Name|title}}
+        }
+        
+	err := c.Get("{{$.Name}}", "", &results)
+
+        if err != nil {
+                return nil, err
+        }
+
+        return results.{{$.Name|title}}, err
+}
+
+func (c *NitroClient) Get{{$.Name|title}} ({{range $field := $.Schema.Key}}_{{$field}} {{(index $.Schema.Fields $field)|go_type}},{{end}}) (*Binding{{$.Name|title}}, error) {
+        var results struct {
+                {{$.Name|title}} []Binding{{$.Name|title}}
+        }
+        
+	err := c.Get("{{$.Name}}", make_key_{{$.Name}}({{range $field := $.Schema.Key}}_{{$field}},{{end}}), &results)
+
+        if err != nil {
+                return nil, err
+        }
+
+        if len(results.{{$.Name|title}}) != 1 {
+                return nil, nil
+        }
+
+        return &results.{{$.Name|title}}[0], err
+}
+
+func (c *NitroClient) Delete{{$.Name|title}} ({{range $field := $.Schema.Key}}_{{$field}} {{(index $.Schema.Fields $field)|go_type}},{{end}}) error {
+	return c.Delete("{{$.Name}}", make_key_{{$.Name}}({{range $field := $.Schema.Key}}_{{$field}},{{end}}))
+}

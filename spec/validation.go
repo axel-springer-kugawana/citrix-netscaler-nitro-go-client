@@ -5,6 +5,36 @@ import (
 	"strings"
 )
 
+func validateFieldType(fieldType string, resources map[string]*Resource) bool {
+	ok := false
+
+	if strings.HasSuffix(fieldType, "[]") {
+		fieldType = strings.TrimSuffix(fieldType, "[]")
+	}
+
+	if fieldType == "ip" || fieldType == "ip_mask"  || fieldType == "int"  || fieldType == "string"  || fieldType == "bool"  || fieldType == "double" {
+		ok = true
+	} else if strings.HasPrefix(fieldType, "(") && strings.HasSuffix(fieldType, ")")  {
+		ok = true
+	} else if strings.Contains(fieldType, ".") {
+		parts := strings.Split(fieldType, ".")
+
+		if len(parts) == 2 {
+			target, found := resources[parts[0]]
+
+			if found && parts[1] != target.Key.Name && parts[1] != target.State  {
+				_, found = target.Fields[parts[1]]
+			}
+
+			if found {
+				ok = true
+			}
+		}
+	}
+
+	return ok
+}
+
 func validateResources(resources map[string]*Resource) error {
 	for key, resource := range resources {
 		if resource.Key == nil || resource.Key.Name == "" {
@@ -29,35 +59,11 @@ func validateResources(resources map[string]*Resource) error {
 			}
 		}
 
-		for field, value := range resource.Fields {
-			ok := false
-
-			if strings.HasSuffix(value, "[]") {
-				value = strings.TrimSuffix(value, "[]")
-			}
-
-			if value == "ip" || value == "ip_mask"  || value == "int"  || value == "string"  || value == "bool"  || value == "double" {
-				ok = true
-			} else if strings.HasPrefix(value, "(") && strings.HasSuffix(value, ")")  {
-				ok = true
-			} else if strings.Contains(value, ".") {
-				parts := strings.Split(value, ".")
-
-				if len(parts) == 2 {
-					target, found := resources[parts[0]]
-
-					if found && parts[1] != target.Key.Name && parts[1] != target.State  {
-						_, found = target.Fields[parts[1]]
-					}
-
-					if found {
-						ok = true
-					}
-				}
-			}
+		for field, fieldType := range resource.Fields {
+			ok := validateFieldType(fieldType, resources)
 
 			if !ok {
-				return fmt.Errorf("Invalid resource spec, invalid field type : %v.%v (%v)", key, field, value)
+				return fmt.Errorf("Invalid resource spec, invalid field type : %v.%v (%v)", key, field, fieldType)
 			}
 		}
 	}
@@ -66,6 +72,27 @@ func validateResources(resources map[string]*Resource) error {
 }
 
 func validateBindings(resources map[string]*Resource, bindings map[string]*Binding) error {
+	for key, binding := range bindings {
+		if binding.Key == nil {
+			return fmt.Errorf("Invalid binding spec, no key defined : %v", key)
+		}
+
+		for _, field := range binding.Key {
+			_, ok := binding.Fields[field]
+			if !ok {
+				return fmt.Errorf("Invalid binding spec, key field unknown : %v.%v", key, field)
+			}
+		}
+
+		for field, fieldType := range binding.Fields {
+			ok := validateFieldType(fieldType, resources)
+
+			if !ok {
+				return fmt.Errorf("Invalid binding spec, invalid field type : %v.%v (%v)", key, field, fieldType)
+			}
+		}
+	}
+
 	return nil
 }
 

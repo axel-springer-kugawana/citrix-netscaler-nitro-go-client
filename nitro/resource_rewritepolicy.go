@@ -1,6 +1,6 @@
 package nitro
 
-type RewritepolicyResource struct {
+type Rewritepolicy struct {
 	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
 	Comment     string `json:"comment,omitempty"`
@@ -36,9 +36,9 @@ func (c *NitroClient) DeleteRewritepolicy(key RewritepolicyKey) error {
 	return c.deleteResourceWithArgs("rewritepolicy", key.Name, rewritepolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*RewritepolicyResource, error) {
+func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*Rewritepolicy, error) {
 	var results struct {
-		Rewritepolicy []RewritepolicyResource
+		Rewritepolicy []Rewritepolicy
 	}
 
 	if err := c.getResourceWithArgs("rewritepolicy", key.Name, rewritepolicy_key_to_args(key), &results); err != nil || len(results.Rewritepolicy) != 1 {
@@ -48,9 +48,9 @@ func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*RewritepolicyReso
 	return &results.Rewritepolicy[0], nil
 }
 
-func (c *NitroClient) ListRewritepolicy() ([]RewritepolicyResource, error) {
+func (c *NitroClient) ListRewritepolicy() ([]Rewritepolicy, error) {
 	var results struct {
-		Rewritepolicy []RewritepolicyResource
+		Rewritepolicy []Rewritepolicy
 	}
 
 	if err := c.listResources("rewritepolicy", &results); err != nil {
@@ -60,7 +60,7 @@ func (c *NitroClient) ListRewritepolicy() ([]RewritepolicyResource, error) {
 	return results.Rewritepolicy, nil
 }
 
-func (c *NitroClient) AddRewritepolicy(resource RewritepolicyResource) error {
+func (c *NitroClient) AddRewritepolicy(resource Rewritepolicy) error {
 	return c.addResource("rewritepolicy", resource)
 }
 
@@ -72,7 +72,7 @@ func (c *NitroClient) UnsetRewritepolicy(name string, fields ...string) error {
 	return c.unsetResource("rewritepolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateRewritepolicy(resource RewritepolicyResource) error {
+func (c *NitroClient) UpdateRewritepolicy(resource Rewritepolicy) error {
 	update := rewritepolicy_update{
 		resource.Name,
 		resource.Rule,

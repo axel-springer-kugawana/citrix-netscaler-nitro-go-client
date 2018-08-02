@@ -1,6 +1,6 @@
 package nitro
 
-type SpilloveractionResource struct {
+type Spilloveraction struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
 }
@@ -27,9 +27,9 @@ func (c *NitroClient) DeleteSpilloveraction(key SpilloveractionKey) error {
 	return c.deleteResourceWithArgs("spilloveraction", key.Name, spilloveraction_key_to_args(key))
 }
 
-func (c *NitroClient) GetSpilloveraction(key SpilloveractionKey) (*SpilloveractionResource, error) {
+func (c *NitroClient) GetSpilloveraction(key SpilloveractionKey) (*Spilloveraction, error) {
 	var results struct {
-		Spilloveraction []SpilloveractionResource
+		Spilloveraction []Spilloveraction
 	}
 
 	if err := c.getResourceWithArgs("spilloveraction", key.Name, spilloveraction_key_to_args(key), &results); err != nil || len(results.Spilloveraction) != 1 {
@@ -39,9 +39,9 @@ func (c *NitroClient) GetSpilloveraction(key SpilloveractionKey) (*Spilloveracti
 	return &results.Spilloveraction[0], nil
 }
 
-func (c *NitroClient) ListSpilloveraction() ([]SpilloveractionResource, error) {
+func (c *NitroClient) ListSpilloveraction() ([]Spilloveraction, error) {
 	var results struct {
-		Spilloveraction []SpilloveractionResource
+		Spilloveraction []Spilloveraction
 	}
 
 	if err := c.listResources("spilloveraction", &results); err != nil {
@@ -51,7 +51,7 @@ func (c *NitroClient) ListSpilloveraction() ([]SpilloveractionResource, error) {
 	return results.Spilloveraction, nil
 }
 
-func (c *NitroClient) AddSpilloveraction(resource SpilloveractionResource) error {
+func (c *NitroClient) AddSpilloveraction(resource Spilloveraction) error {
 	return c.addResource("spilloveraction", resource)
 }
 

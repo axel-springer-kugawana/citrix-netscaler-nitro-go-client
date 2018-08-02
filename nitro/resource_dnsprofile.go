@@ -1,6 +1,6 @@
 package nitro
 
-type DnsprofileResource struct {
+type Dnsprofile struct {
 	Dnsprofilename         string `json:"dnsprofilename"`
 	Cacheecsresponses      string `json:"cacheecsresponses,omitempty"`
 	Cachenegativeresponses string `json:"cachenegativeresponses,omitempty"`
@@ -42,9 +42,9 @@ func (c *NitroClient) DeleteDnsprofile(key DnsprofileKey) error {
 	return c.deleteResourceWithArgs("dnsprofile", key.Dnsprofilename, dnsprofile_key_to_args(key))
 }
 
-func (c *NitroClient) GetDnsprofile(key DnsprofileKey) (*DnsprofileResource, error) {
+func (c *NitroClient) GetDnsprofile(key DnsprofileKey) (*Dnsprofile, error) {
 	var results struct {
-		Dnsprofile []DnsprofileResource
+		Dnsprofile []Dnsprofile
 	}
 
 	if err := c.getResourceWithArgs("dnsprofile", key.Dnsprofilename, dnsprofile_key_to_args(key), &results); err != nil || len(results.Dnsprofile) != 1 {
@@ -54,9 +54,9 @@ func (c *NitroClient) GetDnsprofile(key DnsprofileKey) (*DnsprofileResource, err
 	return &results.Dnsprofile[0], nil
 }
 
-func (c *NitroClient) ListDnsprofile() ([]DnsprofileResource, error) {
+func (c *NitroClient) ListDnsprofile() ([]Dnsprofile, error) {
 	var results struct {
-		Dnsprofile []DnsprofileResource
+		Dnsprofile []Dnsprofile
 	}
 
 	if err := c.listResources("dnsprofile", &results); err != nil {
@@ -66,7 +66,7 @@ func (c *NitroClient) ListDnsprofile() ([]DnsprofileResource, error) {
 	return results.Dnsprofile, nil
 }
 
-func (c *NitroClient) AddDnsprofile(resource DnsprofileResource) error {
+func (c *NitroClient) AddDnsprofile(resource Dnsprofile) error {
 	return c.addResource("dnsprofile", resource)
 }
 
@@ -78,7 +78,7 @@ func (c *NitroClient) UnsetDnsprofile(dnsprofilename string, fields ...string) e
 	return c.unsetResource("dnsprofile", "dnsprofilename", dnsprofilename, fields)
 }
 
-func (c *NitroClient) UpdateDnsprofile(resource DnsprofileResource) error {
+func (c *NitroClient) UpdateDnsprofile(resource Dnsprofile) error {
 	update := dnsprofile_update{
 		resource.Dnsprofilename,
 		resource.Dnsquerylogging,

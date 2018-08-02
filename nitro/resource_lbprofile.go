@@ -1,6 +1,6 @@
 package nitro
 
-type LbprofileResource struct {
+type Lbprofile struct {
 	Lbprofilename                 string `json:"lbprofilename"`
 	Cookiepassphrase              string `json:"cookiepassphrase,omitempty"`
 	Dbslb                         string `json:"dbslb,omitempty"`
@@ -38,9 +38,9 @@ func (c *NitroClient) DeleteLbprofile(key LbprofileKey) error {
 	return c.deleteResourceWithArgs("lbprofile", key.Lbprofilename, lbprofile_key_to_args(key))
 }
 
-func (c *NitroClient) GetLbprofile(key LbprofileKey) (*LbprofileResource, error) {
+func (c *NitroClient) GetLbprofile(key LbprofileKey) (*Lbprofile, error) {
 	var results struct {
-		Lbprofile []LbprofileResource
+		Lbprofile []Lbprofile
 	}
 
 	if err := c.getResourceWithArgs("lbprofile", key.Lbprofilename, lbprofile_key_to_args(key), &results); err != nil || len(results.Lbprofile) != 1 {
@@ -50,9 +50,9 @@ func (c *NitroClient) GetLbprofile(key LbprofileKey) (*LbprofileResource, error)
 	return &results.Lbprofile[0], nil
 }
 
-func (c *NitroClient) ListLbprofile() ([]LbprofileResource, error) {
+func (c *NitroClient) ListLbprofile() ([]Lbprofile, error) {
 	var results struct {
-		Lbprofile []LbprofileResource
+		Lbprofile []Lbprofile
 	}
 
 	if err := c.listResources("lbprofile", &results); err != nil {
@@ -62,7 +62,7 @@ func (c *NitroClient) ListLbprofile() ([]LbprofileResource, error) {
 	return results.Lbprofile, nil
 }
 
-func (c *NitroClient) AddLbprofile(resource LbprofileResource) error {
+func (c *NitroClient) AddLbprofile(resource Lbprofile) error {
 	return c.addResource("lbprofile", resource)
 }
 
@@ -74,7 +74,7 @@ func (c *NitroClient) UnsetLbprofile(lbprofilename string, fields ...string) err
 	return c.unsetResource("lbprofile", "lbprofilename", lbprofilename, fields)
 }
 
-func (c *NitroClient) UpdateLbprofile(resource LbprofileResource) error {
+func (c *NitroClient) UpdateLbprofile(resource Lbprofile) error {
 	update := lbprofile_update{
 		resource.Lbprofilename,
 		resource.Cookiepassphrase,

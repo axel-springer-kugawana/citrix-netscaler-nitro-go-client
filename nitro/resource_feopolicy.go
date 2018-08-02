@@ -1,6 +1,6 @@
 package nitro
 
-type FeopolicyResource struct {
+type Feopolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
 	Rule   string `json:"rule,omitempty"`
@@ -30,9 +30,9 @@ func (c *NitroClient) DeleteFeopolicy(key FeopolicyKey) error {
 	return c.deleteResourceWithArgs("feopolicy", key.Name, feopolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetFeopolicy(key FeopolicyKey) (*FeopolicyResource, error) {
+func (c *NitroClient) GetFeopolicy(key FeopolicyKey) (*Feopolicy, error) {
 	var results struct {
-		Feopolicy []FeopolicyResource
+		Feopolicy []Feopolicy
 	}
 
 	if err := c.getResourceWithArgs("feopolicy", key.Name, feopolicy_key_to_args(key), &results); err != nil || len(results.Feopolicy) != 1 {
@@ -42,9 +42,9 @@ func (c *NitroClient) GetFeopolicy(key FeopolicyKey) (*FeopolicyResource, error)
 	return &results.Feopolicy[0], nil
 }
 
-func (c *NitroClient) ListFeopolicy() ([]FeopolicyResource, error) {
+func (c *NitroClient) ListFeopolicy() ([]Feopolicy, error) {
 	var results struct {
-		Feopolicy []FeopolicyResource
+		Feopolicy []Feopolicy
 	}
 
 	if err := c.listResources("feopolicy", &results); err != nil {
@@ -54,7 +54,7 @@ func (c *NitroClient) ListFeopolicy() ([]FeopolicyResource, error) {
 	return results.Feopolicy, nil
 }
 
-func (c *NitroClient) AddFeopolicy(resource FeopolicyResource) error {
+func (c *NitroClient) AddFeopolicy(resource Feopolicy) error {
 	return c.addResource("feopolicy", resource)
 }
 
@@ -66,7 +66,7 @@ func (c *NitroClient) UnsetFeopolicy(name string, fields ...string) error {
 	return c.unsetResource("feopolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateFeopolicy(resource FeopolicyResource) error {
+func (c *NitroClient) UpdateFeopolicy(resource Feopolicy) error {
 	update := feopolicy_update{
 		resource.Name,
 		resource.Rule,

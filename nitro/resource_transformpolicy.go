@@ -1,6 +1,6 @@
 package nitro
 
-type TransformpolicyResource struct {
+type Transformpolicy struct {
 	Name        string `json:"name"`
 	Comment     string `json:"comment,omitempty"`
 	Logaction   string `json:"logaction,omitempty"`
@@ -34,9 +34,9 @@ func (c *NitroClient) DeleteTransformpolicy(key TransformpolicyKey) error {
 	return c.deleteResourceWithArgs("transformpolicy", key.Name, transformpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetTransformpolicy(key TransformpolicyKey) (*TransformpolicyResource, error) {
+func (c *NitroClient) GetTransformpolicy(key TransformpolicyKey) (*Transformpolicy, error) {
 	var results struct {
-		Transformpolicy []TransformpolicyResource
+		Transformpolicy []Transformpolicy
 	}
 
 	if err := c.getResourceWithArgs("transformpolicy", key.Name, transformpolicy_key_to_args(key), &results); err != nil || len(results.Transformpolicy) != 1 {
@@ -46,9 +46,9 @@ func (c *NitroClient) GetTransformpolicy(key TransformpolicyKey) (*Transformpoli
 	return &results.Transformpolicy[0], nil
 }
 
-func (c *NitroClient) ListTransformpolicy() ([]TransformpolicyResource, error) {
+func (c *NitroClient) ListTransformpolicy() ([]Transformpolicy, error) {
 	var results struct {
-		Transformpolicy []TransformpolicyResource
+		Transformpolicy []Transformpolicy
 	}
 
 	if err := c.listResources("transformpolicy", &results); err != nil {
@@ -58,7 +58,7 @@ func (c *NitroClient) ListTransformpolicy() ([]TransformpolicyResource, error) {
 	return results.Transformpolicy, nil
 }
 
-func (c *NitroClient) AddTransformpolicy(resource TransformpolicyResource) error {
+func (c *NitroClient) AddTransformpolicy(resource Transformpolicy) error {
 	return c.addResource("transformpolicy", resource)
 }
 
@@ -70,7 +70,7 @@ func (c *NitroClient) UnsetTransformpolicy(name string, fields ...string) error 
 	return c.unsetResource("transformpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateTransformpolicy(resource TransformpolicyResource) error {
+func (c *NitroClient) UpdateTransformpolicy(resource Transformpolicy) error {
 	update := transformpolicy_update{
 		resource.Name,
 		resource.Rule,

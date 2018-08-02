@@ -1,6 +1,6 @@
 package nitro
 
-type CspolicyResource struct {
+type Cspolicy struct {
 	Policyname string `json:"policyname"`
 	Action     string `json:"action,omitempty"`
 	Domain     string `json:"domain,omitempty"`
@@ -36,9 +36,9 @@ func (c *NitroClient) DeleteCspolicy(key CspolicyKey) error {
 	return c.deleteResourceWithArgs("cspolicy", key.Policyname, cspolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetCspolicy(key CspolicyKey) (*CspolicyResource, error) {
+func (c *NitroClient) GetCspolicy(key CspolicyKey) (*Cspolicy, error) {
 	var results struct {
-		Cspolicy []CspolicyResource
+		Cspolicy []Cspolicy
 	}
 
 	if err := c.getResourceWithArgs("cspolicy", key.Policyname, cspolicy_key_to_args(key), &results); err != nil || len(results.Cspolicy) != 1 {
@@ -48,9 +48,9 @@ func (c *NitroClient) GetCspolicy(key CspolicyKey) (*CspolicyResource, error) {
 	return &results.Cspolicy[0], nil
 }
 
-func (c *NitroClient) ListCspolicy() ([]CspolicyResource, error) {
+func (c *NitroClient) ListCspolicy() ([]Cspolicy, error) {
 	var results struct {
-		Cspolicy []CspolicyResource
+		Cspolicy []Cspolicy
 	}
 
 	if err := c.listResources("cspolicy", &results); err != nil {
@@ -60,7 +60,7 @@ func (c *NitroClient) ListCspolicy() ([]CspolicyResource, error) {
 	return results.Cspolicy, nil
 }
 
-func (c *NitroClient) AddCspolicy(resource CspolicyResource) error {
+func (c *NitroClient) AddCspolicy(resource Cspolicy) error {
 	return c.addResource("cspolicy", resource)
 }
 
@@ -72,7 +72,7 @@ func (c *NitroClient) UnsetCspolicy(policyname string, fields ...string) error {
 	return c.unsetResource("cspolicy", "policyname", policyname, fields)
 }
 
-func (c *NitroClient) UpdateCspolicy(resource CspolicyResource) error {
+func (c *NitroClient) UpdateCspolicy(resource Cspolicy) error {
 	update := cspolicy_update{
 		resource.Policyname,
 		resource.Url,

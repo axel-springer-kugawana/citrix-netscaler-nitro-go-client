@@ -1,6 +1,6 @@
 package nitro
 
-type DbdbprofileResource struct {
+type Dbdbprofile struct {
 	Name                   string `json:"name"`
 	Conmultiplex           string `json:"conmultiplex,omitempty"`
 	Enablecachingconmuxoff string `json:"enablecachingconmuxoff,omitempty"`
@@ -36,9 +36,9 @@ func (c *NitroClient) DeleteDbdbprofile(key DbdbprofileKey) error {
 	return c.deleteResourceWithArgs("dbdbprofile", key.Name, dbdbprofile_key_to_args(key))
 }
 
-func (c *NitroClient) GetDbdbprofile(key DbdbprofileKey) (*DbdbprofileResource, error) {
+func (c *NitroClient) GetDbdbprofile(key DbdbprofileKey) (*Dbdbprofile, error) {
 	var results struct {
-		Dbdbprofile []DbdbprofileResource
+		Dbdbprofile []Dbdbprofile
 	}
 
 	if err := c.getResourceWithArgs("dbdbprofile", key.Name, dbdbprofile_key_to_args(key), &results); err != nil || len(results.Dbdbprofile) != 1 {
@@ -48,9 +48,9 @@ func (c *NitroClient) GetDbdbprofile(key DbdbprofileKey) (*DbdbprofileResource, 
 	return &results.Dbdbprofile[0], nil
 }
 
-func (c *NitroClient) ListDbdbprofile() ([]DbdbprofileResource, error) {
+func (c *NitroClient) ListDbdbprofile() ([]Dbdbprofile, error) {
 	var results struct {
-		Dbdbprofile []DbdbprofileResource
+		Dbdbprofile []Dbdbprofile
 	}
 
 	if err := c.listResources("dbdbprofile", &results); err != nil {
@@ -60,7 +60,7 @@ func (c *NitroClient) ListDbdbprofile() ([]DbdbprofileResource, error) {
 	return results.Dbdbprofile, nil
 }
 
-func (c *NitroClient) AddDbdbprofile(resource DbdbprofileResource) error {
+func (c *NitroClient) AddDbdbprofile(resource Dbdbprofile) error {
 	return c.addResource("dbdbprofile", resource)
 }
 
@@ -72,7 +72,7 @@ func (c *NitroClient) UnsetDbdbprofile(name string, fields ...string) error {
 	return c.unsetResource("dbdbprofile", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateDbdbprofile(resource DbdbprofileResource) error {
+func (c *NitroClient) UpdateDbdbprofile(resource Dbdbprofile) error {
 	update := dbdbprofile_update{
 		resource.Name,
 		resource.Interpretquery,

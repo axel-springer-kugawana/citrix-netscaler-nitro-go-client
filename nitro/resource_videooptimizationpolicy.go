@@ -1,6 +1,6 @@
 package nitro
 
-type VideooptimizationpolicyResource struct {
+type Videooptimizationpolicy struct {
 	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
 	Comment     string `json:"comment,omitempty"`
@@ -36,9 +36,9 @@ func (c *NitroClient) DeleteVideooptimizationpolicy(key VideooptimizationpolicyK
 	return c.deleteResourceWithArgs("videooptimizationpolicy", key.Name, videooptimizationpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetVideooptimizationpolicy(key VideooptimizationpolicyKey) (*VideooptimizationpolicyResource, error) {
+func (c *NitroClient) GetVideooptimizationpolicy(key VideooptimizationpolicyKey) (*Videooptimizationpolicy, error) {
 	var results struct {
-		Videooptimizationpolicy []VideooptimizationpolicyResource
+		Videooptimizationpolicy []Videooptimizationpolicy
 	}
 
 	if err := c.getResourceWithArgs("videooptimizationpolicy", key.Name, videooptimizationpolicy_key_to_args(key), &results); err != nil || len(results.Videooptimizationpolicy) != 1 {
@@ -48,9 +48,9 @@ func (c *NitroClient) GetVideooptimizationpolicy(key VideooptimizationpolicyKey)
 	return &results.Videooptimizationpolicy[0], nil
 }
 
-func (c *NitroClient) ListVideooptimizationpolicy() ([]VideooptimizationpolicyResource, error) {
+func (c *NitroClient) ListVideooptimizationpolicy() ([]Videooptimizationpolicy, error) {
 	var results struct {
-		Videooptimizationpolicy []VideooptimizationpolicyResource
+		Videooptimizationpolicy []Videooptimizationpolicy
 	}
 
 	if err := c.listResources("videooptimizationpolicy", &results); err != nil {
@@ -60,7 +60,7 @@ func (c *NitroClient) ListVideooptimizationpolicy() ([]VideooptimizationpolicyRe
 	return results.Videooptimizationpolicy, nil
 }
 
-func (c *NitroClient) AddVideooptimizationpolicy(resource VideooptimizationpolicyResource) error {
+func (c *NitroClient) AddVideooptimizationpolicy(resource Videooptimizationpolicy) error {
 	return c.addResource("videooptimizationpolicy", resource)
 }
 
@@ -72,7 +72,7 @@ func (c *NitroClient) UnsetVideooptimizationpolicy(name string, fields ...string
 	return c.unsetResource("videooptimizationpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateVideooptimizationpolicy(resource VideooptimizationpolicyResource) error {
+func (c *NitroClient) UpdateVideooptimizationpolicy(resource Videooptimizationpolicy) error {
 	update := videooptimizationpolicy_update{
 		resource.Name,
 		resource.Rule,

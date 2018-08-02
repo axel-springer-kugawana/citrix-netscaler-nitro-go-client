@@ -1,6 +1,6 @@
 package nitro
 
-type PolicyexpressionResource struct {
+type Policyexpression struct {
 	Name                  string `json:"name"`
 	Clientsecuritymessage string `json:"clientsecuritymessage,omitempty"`
 	Comment               string `json:"comment,omitempty"`
@@ -34,9 +34,9 @@ func (c *NitroClient) DeletePolicyexpression(key PolicyexpressionKey) error {
 	return c.deleteResourceWithArgs("policyexpression", key.Name, policyexpression_key_to_args(key))
 }
 
-func (c *NitroClient) GetPolicyexpression(key PolicyexpressionKey) (*PolicyexpressionResource, error) {
+func (c *NitroClient) GetPolicyexpression(key PolicyexpressionKey) (*Policyexpression, error) {
 	var results struct {
-		Policyexpression []PolicyexpressionResource
+		Policyexpression []Policyexpression
 	}
 
 	if err := c.getResourceWithArgs("policyexpression", key.Name, policyexpression_key_to_args(key), &results); err != nil || len(results.Policyexpression) != 1 {
@@ -46,9 +46,9 @@ func (c *NitroClient) GetPolicyexpression(key PolicyexpressionKey) (*Policyexpre
 	return &results.Policyexpression[0], nil
 }
 
-func (c *NitroClient) ListPolicyexpression() ([]PolicyexpressionResource, error) {
+func (c *NitroClient) ListPolicyexpression() ([]Policyexpression, error) {
 	var results struct {
-		Policyexpression []PolicyexpressionResource
+		Policyexpression []Policyexpression
 	}
 
 	if err := c.listResources("policyexpression", &results); err != nil {
@@ -58,7 +58,7 @@ func (c *NitroClient) ListPolicyexpression() ([]PolicyexpressionResource, error)
 	return results.Policyexpression, nil
 }
 
-func (c *NitroClient) AddPolicyexpression(resource PolicyexpressionResource) error {
+func (c *NitroClient) AddPolicyexpression(resource Policyexpression) error {
 	return c.addResource("policyexpression", resource)
 }
 
@@ -70,7 +70,7 @@ func (c *NitroClient) UnsetPolicyexpression(name string, fields ...string) error
 	return c.unsetResource("policyexpression", "name", name, fields)
 }
 
-func (c *NitroClient) UpdatePolicyexpression(resource PolicyexpressionResource) error {
+func (c *NitroClient) UpdatePolicyexpression(resource Policyexpression) error {
 	update := policyexpression_update{
 		resource.Name,
 		resource.Value,

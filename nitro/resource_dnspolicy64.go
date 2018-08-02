@@ -1,6 +1,6 @@
 package nitro
 
-type Dnspolicy64Resource struct {
+type Dnspolicy64 struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
 	Rule   string `json:"rule,omitempty"`
@@ -30,9 +30,9 @@ func (c *NitroClient) DeleteDnspolicy64(key Dnspolicy64Key) error {
 	return c.deleteResourceWithArgs("dnspolicy64", key.Name, dnspolicy64_key_to_args(key))
 }
 
-func (c *NitroClient) GetDnspolicy64(key Dnspolicy64Key) (*Dnspolicy64Resource, error) {
+func (c *NitroClient) GetDnspolicy64(key Dnspolicy64Key) (*Dnspolicy64, error) {
 	var results struct {
-		Dnspolicy64 []Dnspolicy64Resource
+		Dnspolicy64 []Dnspolicy64
 	}
 
 	if err := c.getResourceWithArgs("dnspolicy64", key.Name, dnspolicy64_key_to_args(key), &results); err != nil || len(results.Dnspolicy64) != 1 {
@@ -42,9 +42,9 @@ func (c *NitroClient) GetDnspolicy64(key Dnspolicy64Key) (*Dnspolicy64Resource, 
 	return &results.Dnspolicy64[0], nil
 }
 
-func (c *NitroClient) ListDnspolicy64() ([]Dnspolicy64Resource, error) {
+func (c *NitroClient) ListDnspolicy64() ([]Dnspolicy64, error) {
 	var results struct {
-		Dnspolicy64 []Dnspolicy64Resource
+		Dnspolicy64 []Dnspolicy64
 	}
 
 	if err := c.listResources("dnspolicy64", &results); err != nil {
@@ -54,7 +54,7 @@ func (c *NitroClient) ListDnspolicy64() ([]Dnspolicy64Resource, error) {
 	return results.Dnspolicy64, nil
 }
 
-func (c *NitroClient) AddDnspolicy64(resource Dnspolicy64Resource) error {
+func (c *NitroClient) AddDnspolicy64(resource Dnspolicy64) error {
 	return c.addResource("dnspolicy64", resource)
 }
 
@@ -66,7 +66,7 @@ func (c *NitroClient) UnsetDnspolicy64(name string, fields ...string) error {
 	return c.unsetResource("dnspolicy64", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateDnspolicy64(resource Dnspolicy64Resource) error {
+func (c *NitroClient) UpdateDnspolicy64(resource Dnspolicy64) error {
 	update := dnspolicy64_update{
 		resource.Name,
 		resource.Rule,

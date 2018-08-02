@@ -1,6 +1,6 @@
 package nitro
 
-type AuthorizationpolicylabelResource struct {
+type Authorizationpolicylabel struct {
 	Labelname string `json:"labelname"`
 }
 
@@ -26,9 +26,9 @@ func (c *NitroClient) DeleteAuthorizationpolicylabel(key Authorizationpolicylabe
 	return c.deleteResourceWithArgs("authorizationpolicylabel", key.Labelname, authorizationpolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetAuthorizationpolicylabel(key AuthorizationpolicylabelKey) (*AuthorizationpolicylabelResource, error) {
+func (c *NitroClient) GetAuthorizationpolicylabel(key AuthorizationpolicylabelKey) (*Authorizationpolicylabel, error) {
 	var results struct {
-		Authorizationpolicylabel []AuthorizationpolicylabelResource
+		Authorizationpolicylabel []Authorizationpolicylabel
 	}
 
 	if err := c.getResourceWithArgs("authorizationpolicylabel", key.Labelname, authorizationpolicylabel_key_to_args(key), &results); err != nil || len(results.Authorizationpolicylabel) != 1 {
@@ -38,9 +38,9 @@ func (c *NitroClient) GetAuthorizationpolicylabel(key AuthorizationpolicylabelKe
 	return &results.Authorizationpolicylabel[0], nil
 }
 
-func (c *NitroClient) ListAuthorizationpolicylabel() ([]AuthorizationpolicylabelResource, error) {
+func (c *NitroClient) ListAuthorizationpolicylabel() ([]Authorizationpolicylabel, error) {
 	var results struct {
-		Authorizationpolicylabel []AuthorizationpolicylabelResource
+		Authorizationpolicylabel []Authorizationpolicylabel
 	}
 
 	if err := c.listResources("authorizationpolicylabel", &results); err != nil {
@@ -50,7 +50,7 @@ func (c *NitroClient) ListAuthorizationpolicylabel() ([]Authorizationpolicylabel
 	return results.Authorizationpolicylabel, nil
 }
 
-func (c *NitroClient) AddAuthorizationpolicylabel(resource AuthorizationpolicylabelResource) error {
+func (c *NitroClient) AddAuthorizationpolicylabel(resource Authorizationpolicylabel) error {
 	return c.addResource("authorizationpolicylabel", resource)
 }
 

@@ -1,6 +1,6 @@
 package nitro
 
-type CmpactionResource struct {
+type Cmpaction struct {
 	Name            string `json:"name"`
 	Addvaryheader   string `json:"addvaryheader,omitempty"`
 	Cmptype         string `json:"cmptype,omitempty"`
@@ -33,9 +33,9 @@ func (c *NitroClient) DeleteCmpaction(key CmpactionKey) error {
 	return c.deleteResourceWithArgs("cmpaction", key.Name, cmpaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetCmpaction(key CmpactionKey) (*CmpactionResource, error) {
+func (c *NitroClient) GetCmpaction(key CmpactionKey) (*Cmpaction, error) {
 	var results struct {
-		Cmpaction []CmpactionResource
+		Cmpaction []Cmpaction
 	}
 
 	if err := c.getResourceWithArgs("cmpaction", key.Name, cmpaction_key_to_args(key), &results); err != nil || len(results.Cmpaction) != 1 {
@@ -45,9 +45,9 @@ func (c *NitroClient) GetCmpaction(key CmpactionKey) (*CmpactionResource, error)
 	return &results.Cmpaction[0], nil
 }
 
-func (c *NitroClient) ListCmpaction() ([]CmpactionResource, error) {
+func (c *NitroClient) ListCmpaction() ([]Cmpaction, error) {
 	var results struct {
-		Cmpaction []CmpactionResource
+		Cmpaction []Cmpaction
 	}
 
 	if err := c.listResources("cmpaction", &results); err != nil {
@@ -57,7 +57,7 @@ func (c *NitroClient) ListCmpaction() ([]CmpactionResource, error) {
 	return results.Cmpaction, nil
 }
 
-func (c *NitroClient) AddCmpaction(resource CmpactionResource) error {
+func (c *NitroClient) AddCmpaction(resource Cmpaction) error {
 	return c.addResource("cmpaction", resource)
 }
 
@@ -69,7 +69,7 @@ func (c *NitroClient) UnsetCmpaction(name string, fields ...string) error {
 	return c.unsetResource("cmpaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateCmpaction(resource CmpactionResource) error {
+func (c *NitroClient) UpdateCmpaction(resource Cmpaction) error {
 	update := cmpaction_update{
 		resource.Name,
 		resource.Cmptype,

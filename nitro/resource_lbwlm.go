@@ -1,6 +1,6 @@
 package nitro
 
-type LbwlmResource struct {
+type Lbwlm struct {
 	Wlmname   string `json:"wlmname"`
 	Ipaddress string `json:"ipaddress,omitempty"`
 	Katimeout int    `json:"katimeout,string,omitempty"`
@@ -31,9 +31,9 @@ func (c *NitroClient) DeleteLbwlm(key LbwlmKey) error {
 	return c.deleteResourceWithArgs("lbwlm", key.Wlmname, lbwlm_key_to_args(key))
 }
 
-func (c *NitroClient) GetLbwlm(key LbwlmKey) (*LbwlmResource, error) {
+func (c *NitroClient) GetLbwlm(key LbwlmKey) (*Lbwlm, error) {
 	var results struct {
-		Lbwlm []LbwlmResource
+		Lbwlm []Lbwlm
 	}
 
 	if err := c.getResourceWithArgs("lbwlm", key.Wlmname, lbwlm_key_to_args(key), &results); err != nil || len(results.Lbwlm) != 1 {
@@ -43,9 +43,9 @@ func (c *NitroClient) GetLbwlm(key LbwlmKey) (*LbwlmResource, error) {
 	return &results.Lbwlm[0], nil
 }
 
-func (c *NitroClient) ListLbwlm() ([]LbwlmResource, error) {
+func (c *NitroClient) ListLbwlm() ([]Lbwlm, error) {
 	var results struct {
-		Lbwlm []LbwlmResource
+		Lbwlm []Lbwlm
 	}
 
 	if err := c.listResources("lbwlm", &results); err != nil {
@@ -55,7 +55,7 @@ func (c *NitroClient) ListLbwlm() ([]LbwlmResource, error) {
 	return results.Lbwlm, nil
 }
 
-func (c *NitroClient) AddLbwlm(resource LbwlmResource) error {
+func (c *NitroClient) AddLbwlm(resource Lbwlm) error {
 	return c.addResource("lbwlm", resource)
 }
 
@@ -67,7 +67,7 @@ func (c *NitroClient) UnsetLbwlm(wlmname string, fields ...string) error {
 	return c.unsetResource("lbwlm", "wlmname", wlmname, fields)
 }
 
-func (c *NitroClient) UpdateLbwlm(resource LbwlmResource) error {
+func (c *NitroClient) UpdateLbwlm(resource Lbwlm) error {
 	update := lbwlm_update{
 		resource.Wlmname,
 		resource.Katimeout,

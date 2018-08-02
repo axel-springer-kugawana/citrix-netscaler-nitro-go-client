@@ -1,6 +1,6 @@
 package nitro
 
-type RewriteactionResource struct {
+type Rewriteaction struct {
 	Name              string `json:"name"`
 	Bypasssafetycheck string `json:"bypasssafetycheck,omitempty"`
 	Comment           string `json:"comment,omitempty"`
@@ -41,9 +41,9 @@ func (c *NitroClient) DeleteRewriteaction(key RewriteactionKey) error {
 	return c.deleteResourceWithArgs("rewriteaction", key.Name, rewriteaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetRewriteaction(key RewriteactionKey) (*RewriteactionResource, error) {
+func (c *NitroClient) GetRewriteaction(key RewriteactionKey) (*Rewriteaction, error) {
 	var results struct {
-		Rewriteaction []RewriteactionResource
+		Rewriteaction []Rewriteaction
 	}
 
 	if err := c.getResourceWithArgs("rewriteaction", key.Name, rewriteaction_key_to_args(key), &results); err != nil || len(results.Rewriteaction) != 1 {
@@ -53,9 +53,9 @@ func (c *NitroClient) GetRewriteaction(key RewriteactionKey) (*RewriteactionReso
 	return &results.Rewriteaction[0], nil
 }
 
-func (c *NitroClient) ListRewriteaction() ([]RewriteactionResource, error) {
+func (c *NitroClient) ListRewriteaction() ([]Rewriteaction, error) {
 	var results struct {
-		Rewriteaction []RewriteactionResource
+		Rewriteaction []Rewriteaction
 	}
 
 	if err := c.listResources("rewriteaction", &results); err != nil {
@@ -65,7 +65,7 @@ func (c *NitroClient) ListRewriteaction() ([]RewriteactionResource, error) {
 	return results.Rewriteaction, nil
 }
 
-func (c *NitroClient) AddRewriteaction(resource RewriteactionResource) error {
+func (c *NitroClient) AddRewriteaction(resource Rewriteaction) error {
 	return c.addResource("rewriteaction", resource)
 }
 
@@ -77,7 +77,7 @@ func (c *NitroClient) UnsetRewriteaction(name string, fields ...string) error {
 	return c.unsetResource("rewriteaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateRewriteaction(resource RewriteactionResource) error {
+func (c *NitroClient) UpdateRewriteaction(resource Rewriteaction) error {
 	update := rewriteaction_update{
 		resource.Name,
 		resource.Target,

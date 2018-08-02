@@ -1,6 +1,6 @@
 package nitro
 
-type Dnsaction64Resource struct {
+type Dnsaction64 struct {
 	Actionname  string `json:"actionname"`
 	Excluderule string `json:"excluderule,omitempty"`
 	Mappedrule  string `json:"mappedrule,omitempty"`
@@ -32,9 +32,9 @@ func (c *NitroClient) DeleteDnsaction64(key Dnsaction64Key) error {
 	return c.deleteResourceWithArgs("dnsaction64", key.Actionname, dnsaction64_key_to_args(key))
 }
 
-func (c *NitroClient) GetDnsaction64(key Dnsaction64Key) (*Dnsaction64Resource, error) {
+func (c *NitroClient) GetDnsaction64(key Dnsaction64Key) (*Dnsaction64, error) {
 	var results struct {
-		Dnsaction64 []Dnsaction64Resource
+		Dnsaction64 []Dnsaction64
 	}
 
 	if err := c.getResourceWithArgs("dnsaction64", key.Actionname, dnsaction64_key_to_args(key), &results); err != nil || len(results.Dnsaction64) != 1 {
@@ -44,9 +44,9 @@ func (c *NitroClient) GetDnsaction64(key Dnsaction64Key) (*Dnsaction64Resource, 
 	return &results.Dnsaction64[0], nil
 }
 
-func (c *NitroClient) ListDnsaction64() ([]Dnsaction64Resource, error) {
+func (c *NitroClient) ListDnsaction64() ([]Dnsaction64, error) {
 	var results struct {
-		Dnsaction64 []Dnsaction64Resource
+		Dnsaction64 []Dnsaction64
 	}
 
 	if err := c.listResources("dnsaction64", &results); err != nil {
@@ -56,7 +56,7 @@ func (c *NitroClient) ListDnsaction64() ([]Dnsaction64Resource, error) {
 	return results.Dnsaction64, nil
 }
 
-func (c *NitroClient) AddDnsaction64(resource Dnsaction64Resource) error {
+func (c *NitroClient) AddDnsaction64(resource Dnsaction64) error {
 	return c.addResource("dnsaction64", resource)
 }
 
@@ -68,7 +68,7 @@ func (c *NitroClient) UnsetDnsaction64(actionname string, fields ...string) erro
 	return c.unsetResource("dnsaction64", "actionname", actionname, fields)
 }
 
-func (c *NitroClient) UpdateDnsaction64(resource Dnsaction64Resource) error {
+func (c *NitroClient) UpdateDnsaction64(resource Dnsaction64) error {
 	update := dnsaction64_update{
 		resource.Actionname,
 		resource.Prefix,

@@ -1,6 +1,6 @@
 package nitro
 
-type AppflowpolicylabelResource struct {
+type Appflowpolicylabel struct {
 	Labelname       string `json:"labelname"`
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
@@ -27,9 +27,9 @@ func (c *NitroClient) DeleteAppflowpolicylabel(key AppflowpolicylabelKey) error 
 	return c.deleteResourceWithArgs("appflowpolicylabel", key.Labelname, appflowpolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetAppflowpolicylabel(key AppflowpolicylabelKey) (*AppflowpolicylabelResource, error) {
+func (c *NitroClient) GetAppflowpolicylabel(key AppflowpolicylabelKey) (*Appflowpolicylabel, error) {
 	var results struct {
-		Appflowpolicylabel []AppflowpolicylabelResource
+		Appflowpolicylabel []Appflowpolicylabel
 	}
 
 	if err := c.getResourceWithArgs("appflowpolicylabel", key.Labelname, appflowpolicylabel_key_to_args(key), &results); err != nil || len(results.Appflowpolicylabel) != 1 {
@@ -39,9 +39,9 @@ func (c *NitroClient) GetAppflowpolicylabel(key AppflowpolicylabelKey) (*Appflow
 	return &results.Appflowpolicylabel[0], nil
 }
 
-func (c *NitroClient) ListAppflowpolicylabel() ([]AppflowpolicylabelResource, error) {
+func (c *NitroClient) ListAppflowpolicylabel() ([]Appflowpolicylabel, error) {
 	var results struct {
-		Appflowpolicylabel []AppflowpolicylabelResource
+		Appflowpolicylabel []Appflowpolicylabel
 	}
 
 	if err := c.listResources("appflowpolicylabel", &results); err != nil {
@@ -51,7 +51,7 @@ func (c *NitroClient) ListAppflowpolicylabel() ([]AppflowpolicylabelResource, er
 	return results.Appflowpolicylabel, nil
 }
 
-func (c *NitroClient) AddAppflowpolicylabel(resource AppflowpolicylabelResource) error {
+func (c *NitroClient) AddAppflowpolicylabel(resource Appflowpolicylabel) error {
 	return c.addResource("appflowpolicylabel", resource)
 }
 

@@ -1,6 +1,6 @@
 package nitro
 
-type DospolicyResource struct {
+type Dospolicy struct {
 	Name          string `json:"name"`
 	Cltdetectrate int    `json:"cltdetectrate,string,omitempty"`
 	Qdepth        int    `json:"qdepth,string,omitempty"`
@@ -30,9 +30,9 @@ func (c *NitroClient) DeleteDospolicy(key DospolicyKey) error {
 	return c.deleteResourceWithArgs("dospolicy", key.Name, dospolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetDospolicy(key DospolicyKey) (*DospolicyResource, error) {
+func (c *NitroClient) GetDospolicy(key DospolicyKey) (*Dospolicy, error) {
 	var results struct {
-		Dospolicy []DospolicyResource
+		Dospolicy []Dospolicy
 	}
 
 	if err := c.getResourceWithArgs("dospolicy", key.Name, dospolicy_key_to_args(key), &results); err != nil || len(results.Dospolicy) != 1 {
@@ -42,9 +42,9 @@ func (c *NitroClient) GetDospolicy(key DospolicyKey) (*DospolicyResource, error)
 	return &results.Dospolicy[0], nil
 }
 
-func (c *NitroClient) ListDospolicy() ([]DospolicyResource, error) {
+func (c *NitroClient) ListDospolicy() ([]Dospolicy, error) {
 	var results struct {
-		Dospolicy []DospolicyResource
+		Dospolicy []Dospolicy
 	}
 
 	if err := c.listResources("dospolicy", &results); err != nil {
@@ -54,7 +54,7 @@ func (c *NitroClient) ListDospolicy() ([]DospolicyResource, error) {
 	return results.Dospolicy, nil
 }
 
-func (c *NitroClient) AddDospolicy(resource DospolicyResource) error {
+func (c *NitroClient) AddDospolicy(resource Dospolicy) error {
 	return c.addResource("dospolicy", resource)
 }
 
@@ -66,7 +66,7 @@ func (c *NitroClient) UnsetDospolicy(name string, fields ...string) error {
 	return c.unsetResource("dospolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateDospolicy(resource DospolicyResource) error {
+func (c *NitroClient) UpdateDospolicy(resource Dospolicy) error {
 	update := dospolicy_update{
 		resource.Name,
 		resource.Qdepth,

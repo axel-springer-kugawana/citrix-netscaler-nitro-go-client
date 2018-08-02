@@ -1,6 +1,6 @@
 package nitro
 
-type CspolicylabelResource struct {
+type Cspolicylabel struct {
 	Labelname         string `json:"labelname"`
 	Cspolicylabeltype string `json:"cspolicylabeltype,omitempty"`
 }
@@ -27,9 +27,9 @@ func (c *NitroClient) DeleteCspolicylabel(key CspolicylabelKey) error {
 	return c.deleteResourceWithArgs("cspolicylabel", key.Labelname, cspolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetCspolicylabel(key CspolicylabelKey) (*CspolicylabelResource, error) {
+func (c *NitroClient) GetCspolicylabel(key CspolicylabelKey) (*Cspolicylabel, error) {
 	var results struct {
-		Cspolicylabel []CspolicylabelResource
+		Cspolicylabel []Cspolicylabel
 	}
 
 	if err := c.getResourceWithArgs("cspolicylabel", key.Labelname, cspolicylabel_key_to_args(key), &results); err != nil || len(results.Cspolicylabel) != 1 {
@@ -39,9 +39,9 @@ func (c *NitroClient) GetCspolicylabel(key CspolicylabelKey) (*CspolicylabelReso
 	return &results.Cspolicylabel[0], nil
 }
 
-func (c *NitroClient) ListCspolicylabel() ([]CspolicylabelResource, error) {
+func (c *NitroClient) ListCspolicylabel() ([]Cspolicylabel, error) {
 	var results struct {
-		Cspolicylabel []CspolicylabelResource
+		Cspolicylabel []Cspolicylabel
 	}
 
 	if err := c.listResources("cspolicylabel", &results); err != nil {
@@ -51,7 +51,7 @@ func (c *NitroClient) ListCspolicylabel() ([]CspolicylabelResource, error) {
 	return results.Cspolicylabel, nil
 }
 
-func (c *NitroClient) AddCspolicylabel(resource CspolicylabelResource) error {
+func (c *NitroClient) AddCspolicylabel(resource Cspolicylabel) error {
 	return c.addResource("cspolicylabel", resource)
 }
 

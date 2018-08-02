@@ -1,6 +1,6 @@
 package nitro
 
-type PolicystringmapResource struct {
+type Policystringmap struct {
 	Name    string `json:"name"`
 	Comment string `json:"comment,omitempty"`
 }
@@ -28,9 +28,9 @@ func (c *NitroClient) DeletePolicystringmap(key PolicystringmapKey) error {
 	return c.deleteResourceWithArgs("policystringmap", key.Name, policystringmap_key_to_args(key))
 }
 
-func (c *NitroClient) GetPolicystringmap(key PolicystringmapKey) (*PolicystringmapResource, error) {
+func (c *NitroClient) GetPolicystringmap(key PolicystringmapKey) (*Policystringmap, error) {
 	var results struct {
-		Policystringmap []PolicystringmapResource
+		Policystringmap []Policystringmap
 	}
 
 	if err := c.getResourceWithArgs("policystringmap", key.Name, policystringmap_key_to_args(key), &results); err != nil || len(results.Policystringmap) != 1 {
@@ -40,9 +40,9 @@ func (c *NitroClient) GetPolicystringmap(key PolicystringmapKey) (*Policystringm
 	return &results.Policystringmap[0], nil
 }
 
-func (c *NitroClient) ListPolicystringmap() ([]PolicystringmapResource, error) {
+func (c *NitroClient) ListPolicystringmap() ([]Policystringmap, error) {
 	var results struct {
-		Policystringmap []PolicystringmapResource
+		Policystringmap []Policystringmap
 	}
 
 	if err := c.listResources("policystringmap", &results); err != nil {
@@ -52,7 +52,7 @@ func (c *NitroClient) ListPolicystringmap() ([]PolicystringmapResource, error) {
 	return results.Policystringmap, nil
 }
 
-func (c *NitroClient) AddPolicystringmap(resource PolicystringmapResource) error {
+func (c *NitroClient) AddPolicystringmap(resource Policystringmap) error {
 	return c.addResource("policystringmap", resource)
 }
 
@@ -64,7 +64,7 @@ func (c *NitroClient) UnsetPolicystringmap(name string, fields ...string) error 
 	return c.unsetResource("policystringmap", "name", name, fields)
 }
 
-func (c *NitroClient) UpdatePolicystringmap(resource PolicystringmapResource) error {
+func (c *NitroClient) UpdatePolicystringmap(resource Policystringmap) error {
 	update := policystringmap_update{
 		resource.Name,
 		resource.Comment,

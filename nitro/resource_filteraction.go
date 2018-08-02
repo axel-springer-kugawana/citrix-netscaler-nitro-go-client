@@ -1,6 +1,6 @@
 package nitro
 
-type FilteractionResource struct {
+type Filteraction struct {
 	Name        string `json:"name"`
 	Page        string `json:"page,omitempty"`
 	Qual        string `json:"qual,omitempty"`
@@ -35,9 +35,9 @@ func (c *NitroClient) DeleteFilteraction(key FilteractionKey) error {
 	return c.deleteResourceWithArgs("filteraction", key.Name, filteraction_key_to_args(key))
 }
 
-func (c *NitroClient) GetFilteraction(key FilteractionKey) (*FilteractionResource, error) {
+func (c *NitroClient) GetFilteraction(key FilteractionKey) (*Filteraction, error) {
 	var results struct {
-		Filteraction []FilteractionResource
+		Filteraction []Filteraction
 	}
 
 	if err := c.getResourceWithArgs("filteraction", key.Name, filteraction_key_to_args(key), &results); err != nil || len(results.Filteraction) != 1 {
@@ -47,9 +47,9 @@ func (c *NitroClient) GetFilteraction(key FilteractionKey) (*FilteractionResourc
 	return &results.Filteraction[0], nil
 }
 
-func (c *NitroClient) ListFilteraction() ([]FilteractionResource, error) {
+func (c *NitroClient) ListFilteraction() ([]Filteraction, error) {
 	var results struct {
-		Filteraction []FilteractionResource
+		Filteraction []Filteraction
 	}
 
 	if err := c.listResources("filteraction", &results); err != nil {
@@ -59,7 +59,7 @@ func (c *NitroClient) ListFilteraction() ([]FilteractionResource, error) {
 	return results.Filteraction, nil
 }
 
-func (c *NitroClient) AddFilteraction(resource FilteractionResource) error {
+func (c *NitroClient) AddFilteraction(resource Filteraction) error {
 	return c.addResource("filteraction", resource)
 }
 
@@ -71,7 +71,7 @@ func (c *NitroClient) UnsetFilteraction(name string, fields ...string) error {
 	return c.unsetResource("filteraction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateFilteraction(resource FilteractionResource) error {
+func (c *NitroClient) UpdateFilteraction(resource Filteraction) error {
 	update := filteraction_update{
 		resource.Name,
 		resource.Servicename,

@@ -1,6 +1,6 @@
 package nitro
 
-type AppqoepolicyResource struct {
+type Appqoepolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
 	Rule   string `json:"rule,omitempty"`
@@ -30,9 +30,9 @@ func (c *NitroClient) DeleteAppqoepolicy(key AppqoepolicyKey) error {
 	return c.deleteResourceWithArgs("appqoepolicy", key.Name, appqoepolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetAppqoepolicy(key AppqoepolicyKey) (*AppqoepolicyResource, error) {
+func (c *NitroClient) GetAppqoepolicy(key AppqoepolicyKey) (*Appqoepolicy, error) {
 	var results struct {
-		Appqoepolicy []AppqoepolicyResource
+		Appqoepolicy []Appqoepolicy
 	}
 
 	if err := c.getResourceWithArgs("appqoepolicy", key.Name, appqoepolicy_key_to_args(key), &results); err != nil || len(results.Appqoepolicy) != 1 {
@@ -42,9 +42,9 @@ func (c *NitroClient) GetAppqoepolicy(key AppqoepolicyKey) (*AppqoepolicyResourc
 	return &results.Appqoepolicy[0], nil
 }
 
-func (c *NitroClient) ListAppqoepolicy() ([]AppqoepolicyResource, error) {
+func (c *NitroClient) ListAppqoepolicy() ([]Appqoepolicy, error) {
 	var results struct {
-		Appqoepolicy []AppqoepolicyResource
+		Appqoepolicy []Appqoepolicy
 	}
 
 	if err := c.listResources("appqoepolicy", &results); err != nil {
@@ -54,7 +54,7 @@ func (c *NitroClient) ListAppqoepolicy() ([]AppqoepolicyResource, error) {
 	return results.Appqoepolicy, nil
 }
 
-func (c *NitroClient) AddAppqoepolicy(resource AppqoepolicyResource) error {
+func (c *NitroClient) AddAppqoepolicy(resource Appqoepolicy) error {
 	return c.addResource("appqoepolicy", resource)
 }
 
@@ -66,7 +66,7 @@ func (c *NitroClient) UnsetAppqoepolicy(name string, fields ...string) error {
 	return c.unsetResource("appqoepolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAppqoepolicy(resource AppqoepolicyResource) error {
+func (c *NitroClient) UpdateAppqoepolicy(resource Appqoepolicy) error {
 	update := appqoepolicy_update{
 		resource.Name,
 		resource.Rule,

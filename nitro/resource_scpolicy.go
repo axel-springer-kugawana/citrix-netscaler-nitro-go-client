@@ -1,6 +1,6 @@
 package nitro
 
-type ScpolicyResource struct {
+type Scpolicy struct {
 	Name              string `json:"name"`
 	Action            string `json:"action,omitempty"`
 	Altcontentpath    string `json:"altcontentpath,omitempty"`
@@ -40,9 +40,9 @@ func (c *NitroClient) DeleteScpolicy(key ScpolicyKey) error {
 	return c.deleteResourceWithArgs("scpolicy", key.Name, scpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetScpolicy(key ScpolicyKey) (*ScpolicyResource, error) {
+func (c *NitroClient) GetScpolicy(key ScpolicyKey) (*Scpolicy, error) {
 	var results struct {
-		Scpolicy []ScpolicyResource
+		Scpolicy []Scpolicy
 	}
 
 	if err := c.getResourceWithArgs("scpolicy", key.Name, scpolicy_key_to_args(key), &results); err != nil || len(results.Scpolicy) != 1 {
@@ -52,9 +52,9 @@ func (c *NitroClient) GetScpolicy(key ScpolicyKey) (*ScpolicyResource, error) {
 	return &results.Scpolicy[0], nil
 }
 
-func (c *NitroClient) ListScpolicy() ([]ScpolicyResource, error) {
+func (c *NitroClient) ListScpolicy() ([]Scpolicy, error) {
 	var results struct {
-		Scpolicy []ScpolicyResource
+		Scpolicy []Scpolicy
 	}
 
 	if err := c.listResources("scpolicy", &results); err != nil {
@@ -64,7 +64,7 @@ func (c *NitroClient) ListScpolicy() ([]ScpolicyResource, error) {
 	return results.Scpolicy, nil
 }
 
-func (c *NitroClient) AddScpolicy(resource ScpolicyResource) error {
+func (c *NitroClient) AddScpolicy(resource Scpolicy) error {
 	return c.addResource("scpolicy", resource)
 }
 
@@ -76,7 +76,7 @@ func (c *NitroClient) UnsetScpolicy(name string, fields ...string) error {
 	return c.unsetResource("scpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateScpolicy(resource ScpolicyResource) error {
+func (c *NitroClient) UpdateScpolicy(resource Scpolicy) error {
 	update := scpolicy_update{
 		resource.Name,
 		resource.Url,

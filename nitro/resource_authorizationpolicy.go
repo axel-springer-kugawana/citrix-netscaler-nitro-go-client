@@ -1,6 +1,6 @@
 package nitro
 
-type AuthorizationpolicyResource struct {
+type Authorizationpolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
 	Rule   string `json:"rule,omitempty"`
@@ -30,9 +30,9 @@ func (c *NitroClient) DeleteAuthorizationpolicy(key AuthorizationpolicyKey) erro
 	return c.deleteResourceWithArgs("authorizationpolicy", key.Name, authorizationpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*AuthorizationpolicyResource, error) {
+func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*Authorizationpolicy, error) {
 	var results struct {
-		Authorizationpolicy []AuthorizationpolicyResource
+		Authorizationpolicy []Authorizationpolicy
 	}
 
 	if err := c.getResourceWithArgs("authorizationpolicy", key.Name, authorizationpolicy_key_to_args(key), &results); err != nil || len(results.Authorizationpolicy) != 1 {
@@ -42,9 +42,9 @@ func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*Autho
 	return &results.Authorizationpolicy[0], nil
 }
 
-func (c *NitroClient) ListAuthorizationpolicy() ([]AuthorizationpolicyResource, error) {
+func (c *NitroClient) ListAuthorizationpolicy() ([]Authorizationpolicy, error) {
 	var results struct {
-		Authorizationpolicy []AuthorizationpolicyResource
+		Authorizationpolicy []Authorizationpolicy
 	}
 
 	if err := c.listResources("authorizationpolicy", &results); err != nil {
@@ -54,7 +54,7 @@ func (c *NitroClient) ListAuthorizationpolicy() ([]AuthorizationpolicyResource, 
 	return results.Authorizationpolicy, nil
 }
 
-func (c *NitroClient) AddAuthorizationpolicy(resource AuthorizationpolicyResource) error {
+func (c *NitroClient) AddAuthorizationpolicy(resource Authorizationpolicy) error {
 	return c.addResource("authorizationpolicy", resource)
 }
 
@@ -66,7 +66,7 @@ func (c *NitroClient) UnsetAuthorizationpolicy(name string, fields ...string) er
 	return c.unsetResource("authorizationpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAuthorizationpolicy(resource AuthorizationpolicyResource) error {
+func (c *NitroClient) UpdateAuthorizationpolicy(resource Authorizationpolicy) error {
 	update := authorizationpolicy_update{
 		resource.Name,
 		resource.Rule,

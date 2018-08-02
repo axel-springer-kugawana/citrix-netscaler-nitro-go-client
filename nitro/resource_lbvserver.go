@@ -1,6 +1,6 @@
 package nitro
 
-type LbvserverResource struct {
+type Lbvserver struct {
 	Name                               string `json:"name"`
 	State                              string `json:"state,omitempty"`
 	Appflowlog                         string `json:"appflowlog,omitempty"`
@@ -203,9 +203,9 @@ func (c *NitroClient) DeleteLbvserver(key LbvserverKey) error {
 	return c.deleteResourceWithArgs("lbvserver", key.Name, lbvserver_key_to_args(key))
 }
 
-func (c *NitroClient) GetLbvserver(key LbvserverKey) (*LbvserverResource, error) {
+func (c *NitroClient) GetLbvserver(key LbvserverKey) (*Lbvserver, error) {
 	var results struct {
-		Lbvserver []LbvserverResource
+		Lbvserver []Lbvserver
 	}
 
 	if err := c.getResourceWithArgs("lbvserver", key.Name, lbvserver_key_to_args(key), &results); err != nil || len(results.Lbvserver) != 1 {
@@ -215,9 +215,9 @@ func (c *NitroClient) GetLbvserver(key LbvserverKey) (*LbvserverResource, error)
 	return &results.Lbvserver[0], nil
 }
 
-func (c *NitroClient) ListLbvserver() ([]LbvserverResource, error) {
+func (c *NitroClient) ListLbvserver() ([]Lbvserver, error) {
 	var results struct {
-		Lbvserver []LbvserverResource
+		Lbvserver []Lbvserver
 	}
 
 	if err := c.listResources("lbvserver", &results); err != nil {
@@ -227,7 +227,7 @@ func (c *NitroClient) ListLbvserver() ([]LbvserverResource, error) {
 	return results.Lbvserver, nil
 }
 
-func (c *NitroClient) AddLbvserver(resource LbvserverResource) error {
+func (c *NitroClient) AddLbvserver(resource Lbvserver) error {
 	return c.addResource("lbvserver", resource)
 }
 
@@ -239,7 +239,7 @@ func (c *NitroClient) UnsetLbvserver(name string, fields ...string) error {
 	return c.unsetResource("lbvserver", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateLbvserver(resource LbvserverResource) error {
+func (c *NitroClient) UpdateLbvserver(resource Lbvserver) error {
 	update := lbvserver_update{
 		resource.Name,
 		resource.Ipv46,

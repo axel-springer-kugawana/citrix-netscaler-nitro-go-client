@@ -1,6 +1,6 @@
 package nitro
 
-type VideooptimizationpolicylabelResource struct {
+type Videooptimizationpolicylabel struct {
 	Labelname       string `json:"labelname"`
 	Comment         string `json:"comment,omitempty"`
 	Policylabeltype string `json:"policylabeltype,omitempty"`
@@ -28,9 +28,9 @@ func (c *NitroClient) DeleteVideooptimizationpolicylabel(key Videooptimizationpo
 	return c.deleteResourceWithArgs("videooptimizationpolicylabel", key.Labelname, videooptimizationpolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetVideooptimizationpolicylabel(key VideooptimizationpolicylabelKey) (*VideooptimizationpolicylabelResource, error) {
+func (c *NitroClient) GetVideooptimizationpolicylabel(key VideooptimizationpolicylabelKey) (*Videooptimizationpolicylabel, error) {
 	var results struct {
-		Videooptimizationpolicylabel []VideooptimizationpolicylabelResource
+		Videooptimizationpolicylabel []Videooptimizationpolicylabel
 	}
 
 	if err := c.getResourceWithArgs("videooptimizationpolicylabel", key.Labelname, videooptimizationpolicylabel_key_to_args(key), &results); err != nil || len(results.Videooptimizationpolicylabel) != 1 {
@@ -40,9 +40,9 @@ func (c *NitroClient) GetVideooptimizationpolicylabel(key Videooptimizationpolic
 	return &results.Videooptimizationpolicylabel[0], nil
 }
 
-func (c *NitroClient) ListVideooptimizationpolicylabel() ([]VideooptimizationpolicylabelResource, error) {
+func (c *NitroClient) ListVideooptimizationpolicylabel() ([]Videooptimizationpolicylabel, error) {
 	var results struct {
-		Videooptimizationpolicylabel []VideooptimizationpolicylabelResource
+		Videooptimizationpolicylabel []Videooptimizationpolicylabel
 	}
 
 	if err := c.listResources("videooptimizationpolicylabel", &results); err != nil {
@@ -52,7 +52,7 @@ func (c *NitroClient) ListVideooptimizationpolicylabel() ([]Videooptimizationpol
 	return results.Videooptimizationpolicylabel, nil
 }
 
-func (c *NitroClient) AddVideooptimizationpolicylabel(resource VideooptimizationpolicylabelResource) error {
+func (c *NitroClient) AddVideooptimizationpolicylabel(resource Videooptimizationpolicylabel) error {
 	return c.addResource("videooptimizationpolicylabel", resource)
 }
 

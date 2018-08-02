@@ -1,6 +1,6 @@
 package nitro
 
-type ServerResource struct {
+type Server struct {
 	Name               string `json:"name"`
 	State              string `json:"state,omitempty"`
 	Comment            string `json:"comment,omitempty"`
@@ -40,9 +40,9 @@ func (c *NitroClient) DeleteServer(key ServerKey) error {
 	return c.deleteResourceWithArgs("server", key.Name, server_key_to_args(key))
 }
 
-func (c *NitroClient) GetServer(key ServerKey) (*ServerResource, error) {
+func (c *NitroClient) GetServer(key ServerKey) (*Server, error) {
 	var results struct {
-		Server []ServerResource
+		Server []Server
 	}
 
 	if err := c.getResourceWithArgs("server", key.Name, server_key_to_args(key), &results); err != nil || len(results.Server) != 1 {
@@ -52,9 +52,9 @@ func (c *NitroClient) GetServer(key ServerKey) (*ServerResource, error) {
 	return &results.Server[0], nil
 }
 
-func (c *NitroClient) ListServer() ([]ServerResource, error) {
+func (c *NitroClient) ListServer() ([]Server, error) {
 	var results struct {
-		Server []ServerResource
+		Server []Server
 	}
 
 	if err := c.listResources("server", &results); err != nil {
@@ -64,7 +64,7 @@ func (c *NitroClient) ListServer() ([]ServerResource, error) {
 	return results.Server, nil
 }
 
-func (c *NitroClient) AddServer(resource ServerResource) error {
+func (c *NitroClient) AddServer(resource Server) error {
 	return c.addResource("server", resource)
 }
 
@@ -76,7 +76,7 @@ func (c *NitroClient) UnsetServer(name string, fields ...string) error {
 	return c.unsetResource("server", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateServer(resource ServerResource) error {
+func (c *NitroClient) UpdateServer(resource Server) error {
 	update := server_update{
 		resource.Name,
 		resource.Comment,

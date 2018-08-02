@@ -1,6 +1,6 @@
 package nitro
 
-type PolicypatsetResource struct {
+type Policypatset struct {
 	Name      string `json:"name"`
 	Comment   string `json:"comment,omitempty"`
 	Indextype string `json:"indextype,omitempty"`
@@ -28,9 +28,9 @@ func (c *NitroClient) DeletePolicypatset(key PolicypatsetKey) error {
 	return c.deleteResourceWithArgs("policypatset", key.Name, policypatset_key_to_args(key))
 }
 
-func (c *NitroClient) GetPolicypatset(key PolicypatsetKey) (*PolicypatsetResource, error) {
+func (c *NitroClient) GetPolicypatset(key PolicypatsetKey) (*Policypatset, error) {
 	var results struct {
-		Policypatset []PolicypatsetResource
+		Policypatset []Policypatset
 	}
 
 	if err := c.getResourceWithArgs("policypatset", key.Name, policypatset_key_to_args(key), &results); err != nil || len(results.Policypatset) != 1 {
@@ -40,9 +40,9 @@ func (c *NitroClient) GetPolicypatset(key PolicypatsetKey) (*PolicypatsetResourc
 	return &results.Policypatset[0], nil
 }
 
-func (c *NitroClient) ListPolicypatset() ([]PolicypatsetResource, error) {
+func (c *NitroClient) ListPolicypatset() ([]Policypatset, error) {
 	var results struct {
-		Policypatset []PolicypatsetResource
+		Policypatset []Policypatset
 	}
 
 	if err := c.listResources("policypatset", &results); err != nil {
@@ -52,7 +52,7 @@ func (c *NitroClient) ListPolicypatset() ([]PolicypatsetResource, error) {
 	return results.Policypatset, nil
 }
 
-func (c *NitroClient) AddPolicypatset(resource PolicypatsetResource) error {
+func (c *NitroClient) AddPolicypatset(resource Policypatset) error {
 	return c.addResource("policypatset", resource)
 }
 

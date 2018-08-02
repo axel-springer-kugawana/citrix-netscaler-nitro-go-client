@@ -1,6 +1,6 @@
 package nitro
 
-type NetprofileResource struct {
+type Netprofile struct {
 	Name             string `json:"name"`
 	Overridelsn      string `json:"overridelsn,omitempty"`
 	Srcip            string `json:"srcip,omitempty"`
@@ -33,9 +33,9 @@ func (c *NitroClient) DeleteNetprofile(key NetprofileKey) error {
 	return c.deleteResourceWithArgs("netprofile", key.Name, netprofile_key_to_args(key))
 }
 
-func (c *NitroClient) GetNetprofile(key NetprofileKey) (*NetprofileResource, error) {
+func (c *NitroClient) GetNetprofile(key NetprofileKey) (*Netprofile, error) {
 	var results struct {
-		Netprofile []NetprofileResource
+		Netprofile []Netprofile
 	}
 
 	if err := c.getResourceWithArgs("netprofile", key.Name, netprofile_key_to_args(key), &results); err != nil || len(results.Netprofile) != 1 {
@@ -45,9 +45,9 @@ func (c *NitroClient) GetNetprofile(key NetprofileKey) (*NetprofileResource, err
 	return &results.Netprofile[0], nil
 }
 
-func (c *NitroClient) ListNetprofile() ([]NetprofileResource, error) {
+func (c *NitroClient) ListNetprofile() ([]Netprofile, error) {
 	var results struct {
-		Netprofile []NetprofileResource
+		Netprofile []Netprofile
 	}
 
 	if err := c.listResources("netprofile", &results); err != nil {
@@ -57,7 +57,7 @@ func (c *NitroClient) ListNetprofile() ([]NetprofileResource, error) {
 	return results.Netprofile, nil
 }
 
-func (c *NitroClient) AddNetprofile(resource NetprofileResource) error {
+func (c *NitroClient) AddNetprofile(resource Netprofile) error {
 	return c.addResource("netprofile", resource)
 }
 
@@ -69,7 +69,7 @@ func (c *NitroClient) UnsetNetprofile(name string, fields ...string) error {
 	return c.unsetResource("netprofile", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateNetprofile(resource NetprofileResource) error {
+func (c *NitroClient) UpdateNetprofile(resource Netprofile) error {
 	update := netprofile_update{
 		resource.Name,
 		resource.Srcip,

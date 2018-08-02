@@ -1,6 +1,6 @@
 package nitro
 
-type CapolicyResource struct {
+type Capolicy struct {
 	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
 	Comment     string `json:"comment,omitempty"`
@@ -36,9 +36,9 @@ func (c *NitroClient) DeleteCapolicy(key CapolicyKey) error {
 	return c.deleteResourceWithArgs("capolicy", key.Name, capolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetCapolicy(key CapolicyKey) (*CapolicyResource, error) {
+func (c *NitroClient) GetCapolicy(key CapolicyKey) (*Capolicy, error) {
 	var results struct {
-		Capolicy []CapolicyResource
+		Capolicy []Capolicy
 	}
 
 	if err := c.getResourceWithArgs("capolicy", key.Name, capolicy_key_to_args(key), &results); err != nil || len(results.Capolicy) != 1 {
@@ -48,9 +48,9 @@ func (c *NitroClient) GetCapolicy(key CapolicyKey) (*CapolicyResource, error) {
 	return &results.Capolicy[0], nil
 }
 
-func (c *NitroClient) ListCapolicy() ([]CapolicyResource, error) {
+func (c *NitroClient) ListCapolicy() ([]Capolicy, error) {
 	var results struct {
-		Capolicy []CapolicyResource
+		Capolicy []Capolicy
 	}
 
 	if err := c.listResources("capolicy", &results); err != nil {
@@ -60,7 +60,7 @@ func (c *NitroClient) ListCapolicy() ([]CapolicyResource, error) {
 	return results.Capolicy, nil
 }
 
-func (c *NitroClient) AddCapolicy(resource CapolicyResource) error {
+func (c *NitroClient) AddCapolicy(resource Capolicy) error {
 	return c.addResource("capolicy", resource)
 }
 
@@ -72,7 +72,7 @@ func (c *NitroClient) UnsetCapolicy(name string, fields ...string) error {
 	return c.unsetResource("capolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateCapolicy(resource CapolicyResource) error {
+func (c *NitroClient) UpdateCapolicy(resource Capolicy) error {
 	update := capolicy_update{
 		resource.Name,
 		resource.Rule,

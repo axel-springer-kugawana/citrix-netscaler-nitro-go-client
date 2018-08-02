@@ -1,6 +1,6 @@
 package nitro
 
-type AppflowpolicyResource struct {
+type Appflowpolicy struct {
 	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
 	Comment     string `json:"comment,omitempty"`
@@ -34,9 +34,9 @@ func (c *NitroClient) DeleteAppflowpolicy(key AppflowpolicyKey) error {
 	return c.deleteResourceWithArgs("appflowpolicy", key.Name, appflowpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetAppflowpolicy(key AppflowpolicyKey) (*AppflowpolicyResource, error) {
+func (c *NitroClient) GetAppflowpolicy(key AppflowpolicyKey) (*Appflowpolicy, error) {
 	var results struct {
-		Appflowpolicy []AppflowpolicyResource
+		Appflowpolicy []Appflowpolicy
 	}
 
 	if err := c.getResourceWithArgs("appflowpolicy", key.Name, appflowpolicy_key_to_args(key), &results); err != nil || len(results.Appflowpolicy) != 1 {
@@ -46,9 +46,9 @@ func (c *NitroClient) GetAppflowpolicy(key AppflowpolicyKey) (*AppflowpolicyReso
 	return &results.Appflowpolicy[0], nil
 }
 
-func (c *NitroClient) ListAppflowpolicy() ([]AppflowpolicyResource, error) {
+func (c *NitroClient) ListAppflowpolicy() ([]Appflowpolicy, error) {
 	var results struct {
-		Appflowpolicy []AppflowpolicyResource
+		Appflowpolicy []Appflowpolicy
 	}
 
 	if err := c.listResources("appflowpolicy", &results); err != nil {
@@ -58,7 +58,7 @@ func (c *NitroClient) ListAppflowpolicy() ([]AppflowpolicyResource, error) {
 	return results.Appflowpolicy, nil
 }
 
-func (c *NitroClient) AddAppflowpolicy(resource AppflowpolicyResource) error {
+func (c *NitroClient) AddAppflowpolicy(resource Appflowpolicy) error {
 	return c.addResource("appflowpolicy", resource)
 }
 
@@ -70,7 +70,7 @@ func (c *NitroClient) UnsetAppflowpolicy(name string, fields ...string) error {
 	return c.unsetResource("appflowpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAppflowpolicy(resource AppflowpolicyResource) error {
+func (c *NitroClient) UpdateAppflowpolicy(resource Appflowpolicy) error {
 	update := appflowpolicy_update{
 		resource.Name,
 		resource.Rule,

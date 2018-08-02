@@ -1,6 +1,6 @@
 package nitro
 
-type TmsessionactionResource struct {
+type Tmsessionaction struct {
 	Name                       string `json:"name"`
 	Defaultauthorizationaction string `json:"defaultauthorizationaction,omitempty"`
 	Homepage                   string `json:"homepage,omitempty"`
@@ -46,9 +46,9 @@ func (c *NitroClient) DeleteTmsessionaction(key TmsessionactionKey) error {
 	return c.deleteResourceWithArgs("tmsessionaction", key.Name, tmsessionaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetTmsessionaction(key TmsessionactionKey) (*TmsessionactionResource, error) {
+func (c *NitroClient) GetTmsessionaction(key TmsessionactionKey) (*Tmsessionaction, error) {
 	var results struct {
-		Tmsessionaction []TmsessionactionResource
+		Tmsessionaction []Tmsessionaction
 	}
 
 	if err := c.getResourceWithArgs("tmsessionaction", key.Name, tmsessionaction_key_to_args(key), &results); err != nil || len(results.Tmsessionaction) != 1 {
@@ -58,9 +58,9 @@ func (c *NitroClient) GetTmsessionaction(key TmsessionactionKey) (*Tmsessionacti
 	return &results.Tmsessionaction[0], nil
 }
 
-func (c *NitroClient) ListTmsessionaction() ([]TmsessionactionResource, error) {
+func (c *NitroClient) ListTmsessionaction() ([]Tmsessionaction, error) {
 	var results struct {
-		Tmsessionaction []TmsessionactionResource
+		Tmsessionaction []Tmsessionaction
 	}
 
 	if err := c.listResources("tmsessionaction", &results); err != nil {
@@ -70,7 +70,7 @@ func (c *NitroClient) ListTmsessionaction() ([]TmsessionactionResource, error) {
 	return results.Tmsessionaction, nil
 }
 
-func (c *NitroClient) AddTmsessionaction(resource TmsessionactionResource) error {
+func (c *NitroClient) AddTmsessionaction(resource Tmsessionaction) error {
 	return c.addResource("tmsessionaction", resource)
 }
 
@@ -82,7 +82,7 @@ func (c *NitroClient) UnsetTmsessionaction(name string, fields ...string) error 
 	return c.unsetResource("tmsessionaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateTmsessionaction(resource TmsessionactionResource) error {
+func (c *NitroClient) UpdateTmsessionaction(resource Tmsessionaction) error {
 	update := tmsessionaction_update{
 		resource.Name,
 		resource.Sesstimeout,

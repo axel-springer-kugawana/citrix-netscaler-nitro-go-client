@@ -1,6 +1,6 @@
 package nitro
 
-type FeoactionResource struct {
+type Feoaction struct {
 	Name                   string   `json:"name"`
 	Cachemaxage            int      `json:"cachemaxage,string,omitempty"`
 	Clientsidemeasurements bool     `json:"clientsidemeasurements,omitempty"`
@@ -70,9 +70,9 @@ func (c *NitroClient) DeleteFeoaction(key FeoactionKey) error {
 	return c.deleteResourceWithArgs("feoaction", key.Name, feoaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetFeoaction(key FeoactionKey) (*FeoactionResource, error) {
+func (c *NitroClient) GetFeoaction(key FeoactionKey) (*Feoaction, error) {
 	var results struct {
-		Feoaction []FeoactionResource
+		Feoaction []Feoaction
 	}
 
 	if err := c.getResourceWithArgs("feoaction", key.Name, feoaction_key_to_args(key), &results); err != nil || len(results.Feoaction) != 1 {
@@ -82,9 +82,9 @@ func (c *NitroClient) GetFeoaction(key FeoactionKey) (*FeoactionResource, error)
 	return &results.Feoaction[0], nil
 }
 
-func (c *NitroClient) ListFeoaction() ([]FeoactionResource, error) {
+func (c *NitroClient) ListFeoaction() ([]Feoaction, error) {
 	var results struct {
-		Feoaction []FeoactionResource
+		Feoaction []Feoaction
 	}
 
 	if err := c.listResources("feoaction", &results); err != nil {
@@ -94,7 +94,7 @@ func (c *NitroClient) ListFeoaction() ([]FeoactionResource, error) {
 	return results.Feoaction, nil
 }
 
-func (c *NitroClient) AddFeoaction(resource FeoactionResource) error {
+func (c *NitroClient) AddFeoaction(resource Feoaction) error {
 	return c.addResource("feoaction", resource)
 }
 
@@ -106,7 +106,7 @@ func (c *NitroClient) UnsetFeoaction(name string, fields ...string) error {
 	return c.unsetResource("feoaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateFeoaction(resource FeoactionResource) error {
+func (c *NitroClient) UpdateFeoaction(resource Feoaction) error {
 	update := feoaction_update{
 		resource.Name,
 		resource.Pageextendcache,

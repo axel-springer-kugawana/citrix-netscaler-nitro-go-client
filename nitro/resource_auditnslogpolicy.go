@@ -1,6 +1,6 @@
 package nitro
 
-type AuditnslogpolicyResource struct {
+type Auditnslogpolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
 	Rule   string `json:"rule,omitempty"`
@@ -30,9 +30,9 @@ func (c *NitroClient) DeleteAuditnslogpolicy(key AuditnslogpolicyKey) error {
 	return c.deleteResourceWithArgs("auditnslogpolicy", key.Name, auditnslogpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetAuditnslogpolicy(key AuditnslogpolicyKey) (*AuditnslogpolicyResource, error) {
+func (c *NitroClient) GetAuditnslogpolicy(key AuditnslogpolicyKey) (*Auditnslogpolicy, error) {
 	var results struct {
-		Auditnslogpolicy []AuditnslogpolicyResource
+		Auditnslogpolicy []Auditnslogpolicy
 	}
 
 	if err := c.getResourceWithArgs("auditnslogpolicy", key.Name, auditnslogpolicy_key_to_args(key), &results); err != nil || len(results.Auditnslogpolicy) != 1 {
@@ -42,9 +42,9 @@ func (c *NitroClient) GetAuditnslogpolicy(key AuditnslogpolicyKey) (*Auditnslogp
 	return &results.Auditnslogpolicy[0], nil
 }
 
-func (c *NitroClient) ListAuditnslogpolicy() ([]AuditnslogpolicyResource, error) {
+func (c *NitroClient) ListAuditnslogpolicy() ([]Auditnslogpolicy, error) {
 	var results struct {
-		Auditnslogpolicy []AuditnslogpolicyResource
+		Auditnslogpolicy []Auditnslogpolicy
 	}
 
 	if err := c.listResources("auditnslogpolicy", &results); err != nil {
@@ -54,7 +54,7 @@ func (c *NitroClient) ListAuditnslogpolicy() ([]AuditnslogpolicyResource, error)
 	return results.Auditnslogpolicy, nil
 }
 
-func (c *NitroClient) AddAuditnslogpolicy(resource AuditnslogpolicyResource) error {
+func (c *NitroClient) AddAuditnslogpolicy(resource Auditnslogpolicy) error {
 	return c.addResource("auditnslogpolicy", resource)
 }
 
@@ -66,7 +66,7 @@ func (c *NitroClient) UnsetAuditnslogpolicy(name string, fields ...string) error
 	return c.unsetResource("auditnslogpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAuditnslogpolicy(resource AuditnslogpolicyResource) error {
+func (c *NitroClient) UpdateAuditnslogpolicy(resource Auditnslogpolicy) error {
 	update := auditnslogpolicy_update{
 		resource.Name,
 		resource.Rule,

@@ -1,6 +1,6 @@
 package nitro
 
-type TmtrafficactionResource struct {
+type Tmtrafficaction struct {
 	Name             string `json:"name"`
 	Apptimeout       int    `json:"apptimeout,string,omitempty"`
 	Forcedtimeout    string `json:"forcedtimeout,omitempty"`
@@ -48,9 +48,9 @@ func (c *NitroClient) DeleteTmtrafficaction(key TmtrafficactionKey) error {
 	return c.deleteResourceWithArgs("tmtrafficaction", key.Name, tmtrafficaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetTmtrafficaction(key TmtrafficactionKey) (*TmtrafficactionResource, error) {
+func (c *NitroClient) GetTmtrafficaction(key TmtrafficactionKey) (*Tmtrafficaction, error) {
 	var results struct {
-		Tmtrafficaction []TmtrafficactionResource
+		Tmtrafficaction []Tmtrafficaction
 	}
 
 	if err := c.getResourceWithArgs("tmtrafficaction", key.Name, tmtrafficaction_key_to_args(key), &results); err != nil || len(results.Tmtrafficaction) != 1 {
@@ -60,9 +60,9 @@ func (c *NitroClient) GetTmtrafficaction(key TmtrafficactionKey) (*Tmtrafficacti
 	return &results.Tmtrafficaction[0], nil
 }
 
-func (c *NitroClient) ListTmtrafficaction() ([]TmtrafficactionResource, error) {
+func (c *NitroClient) ListTmtrafficaction() ([]Tmtrafficaction, error) {
 	var results struct {
-		Tmtrafficaction []TmtrafficactionResource
+		Tmtrafficaction []Tmtrafficaction
 	}
 
 	if err := c.listResources("tmtrafficaction", &results); err != nil {
@@ -72,7 +72,7 @@ func (c *NitroClient) ListTmtrafficaction() ([]TmtrafficactionResource, error) {
 	return results.Tmtrafficaction, nil
 }
 
-func (c *NitroClient) AddTmtrafficaction(resource TmtrafficactionResource) error {
+func (c *NitroClient) AddTmtrafficaction(resource Tmtrafficaction) error {
 	return c.addResource("tmtrafficaction", resource)
 }
 
@@ -84,7 +84,7 @@ func (c *NitroClient) UnsetTmtrafficaction(name string, fields ...string) error 
 	return c.unsetResource("tmtrafficaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateTmtrafficaction(resource TmtrafficactionResource) error {
+func (c *NitroClient) UpdateTmtrafficaction(resource Tmtrafficaction) error {
 	update := tmtrafficaction_update{
 		resource.Name,
 		resource.Apptimeout,

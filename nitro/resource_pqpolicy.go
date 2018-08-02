@@ -1,6 +1,6 @@
 package nitro
 
-type PqpolicyResource struct {
+type Pqpolicy struct {
 	Policyname string `json:"policyname"`
 	Polqdepth  int    `json:"polqdepth,string,omitempty"`
 	Priority   int    `json:"priority,string,omitempty"`
@@ -34,9 +34,9 @@ func (c *NitroClient) DeletePqpolicy(key PqpolicyKey) error {
 	return c.deleteResourceWithArgs("pqpolicy", key.Policyname, pqpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetPqpolicy(key PqpolicyKey) (*PqpolicyResource, error) {
+func (c *NitroClient) GetPqpolicy(key PqpolicyKey) (*Pqpolicy, error) {
 	var results struct {
-		Pqpolicy []PqpolicyResource
+		Pqpolicy []Pqpolicy
 	}
 
 	if err := c.getResourceWithArgs("pqpolicy", key.Policyname, pqpolicy_key_to_args(key), &results); err != nil || len(results.Pqpolicy) != 1 {
@@ -46,9 +46,9 @@ func (c *NitroClient) GetPqpolicy(key PqpolicyKey) (*PqpolicyResource, error) {
 	return &results.Pqpolicy[0], nil
 }
 
-func (c *NitroClient) ListPqpolicy() ([]PqpolicyResource, error) {
+func (c *NitroClient) ListPqpolicy() ([]Pqpolicy, error) {
 	var results struct {
-		Pqpolicy []PqpolicyResource
+		Pqpolicy []Pqpolicy
 	}
 
 	if err := c.listResources("pqpolicy", &results); err != nil {
@@ -58,7 +58,7 @@ func (c *NitroClient) ListPqpolicy() ([]PqpolicyResource, error) {
 	return results.Pqpolicy, nil
 }
 
-func (c *NitroClient) AddPqpolicy(resource PqpolicyResource) error {
+func (c *NitroClient) AddPqpolicy(resource Pqpolicy) error {
 	return c.addResource("pqpolicy", resource)
 }
 
@@ -70,7 +70,7 @@ func (c *NitroClient) UnsetPqpolicy(policyname string, fields ...string) error {
 	return c.unsetResource("pqpolicy", "policyname", policyname, fields)
 }
 
-func (c *NitroClient) UpdatePqpolicy(resource PqpolicyResource) error {
+func (c *NitroClient) UpdatePqpolicy(resource Pqpolicy) error {
 	update := pqpolicy_update{
 		resource.Policyname,
 		resource.Weight,

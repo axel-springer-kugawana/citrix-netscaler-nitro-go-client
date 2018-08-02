@@ -17,6 +17,16 @@ func is_enum(t string) bool {
 	return strings.HasPrefix(t, "(") && strings.HasSuffix(t, ")")
 }
 
+func name(t string) string {
+	parts := strings.Split(t, "_")
+
+	for i, part := range parts {
+		parts[i] = strings.Title(part)
+	}
+
+	return strings.Join(parts, "")
+}
+
 func go_base_type(t string) string {
 	t = strings.TrimSuffix(t, "[]")
 
@@ -64,6 +74,7 @@ func main() {
 		funcMap := template.FuncMap{
 			"title":   strings.Title,
 			"go_type": go_type,
+			"name":    name,
 		}
 
 		templates := template.Must(template.New("").Funcs(funcMap).ParseFiles("templates/resource.tmpl", "templates/binding.tmpl"))
@@ -90,8 +101,26 @@ func main() {
 			}
 		}
 
-		for key, _ := range spec.Bindings {
-			log.Print("Binding : " + key)
+		for key, value := range spec.Bindings {
+			context := struct {
+				Name   string
+				Schema *nitro.Binding
+			}{
+				key,
+				value,
+			}
+
+			writer, err := os.Create(filepath.Join("nitro", "binding_"+key+".go"))
+
+			if err != nil {
+				log.Println("Failed to create file : ", err)
+			}
+
+			err = templates.ExecuteTemplate(writer, "binding.tmpl", context)
+
+			if err != nil {
+				log.Println("Failed to execute template : ", err)
+			}
 		}
 	}
 }

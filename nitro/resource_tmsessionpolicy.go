@@ -1,6 +1,6 @@
 package nitro
 
-type TmsessionpolicyResource struct {
+type Tmsessionpolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
 	Rule   string `json:"rule,omitempty"`
@@ -30,9 +30,9 @@ func (c *NitroClient) DeleteTmsessionpolicy(key TmsessionpolicyKey) error {
 	return c.deleteResourceWithArgs("tmsessionpolicy", key.Name, tmsessionpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetTmsessionpolicy(key TmsessionpolicyKey) (*TmsessionpolicyResource, error) {
+func (c *NitroClient) GetTmsessionpolicy(key TmsessionpolicyKey) (*Tmsessionpolicy, error) {
 	var results struct {
-		Tmsessionpolicy []TmsessionpolicyResource
+		Tmsessionpolicy []Tmsessionpolicy
 	}
 
 	if err := c.getResourceWithArgs("tmsessionpolicy", key.Name, tmsessionpolicy_key_to_args(key), &results); err != nil || len(results.Tmsessionpolicy) != 1 {
@@ -42,9 +42,9 @@ func (c *NitroClient) GetTmsessionpolicy(key TmsessionpolicyKey) (*Tmsessionpoli
 	return &results.Tmsessionpolicy[0], nil
 }
 
-func (c *NitroClient) ListTmsessionpolicy() ([]TmsessionpolicyResource, error) {
+func (c *NitroClient) ListTmsessionpolicy() ([]Tmsessionpolicy, error) {
 	var results struct {
-		Tmsessionpolicy []TmsessionpolicyResource
+		Tmsessionpolicy []Tmsessionpolicy
 	}
 
 	if err := c.listResources("tmsessionpolicy", &results); err != nil {
@@ -54,7 +54,7 @@ func (c *NitroClient) ListTmsessionpolicy() ([]TmsessionpolicyResource, error) {
 	return results.Tmsessionpolicy, nil
 }
 
-func (c *NitroClient) AddTmsessionpolicy(resource TmsessionpolicyResource) error {
+func (c *NitroClient) AddTmsessionpolicy(resource Tmsessionpolicy) error {
 	return c.addResource("tmsessionpolicy", resource)
 }
 
@@ -66,7 +66,7 @@ func (c *NitroClient) UnsetTmsessionpolicy(name string, fields ...string) error 
 	return c.unsetResource("tmsessionpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateTmsessionpolicy(resource TmsessionpolicyResource) error {
+func (c *NitroClient) UpdateTmsessionpolicy(resource Tmsessionpolicy) error {
 	update := tmsessionpolicy_update{
 		resource.Name,
 		resource.Rule,

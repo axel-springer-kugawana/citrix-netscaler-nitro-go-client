@@ -1,6 +1,6 @@
 package nitro
 
-type LbmonitorResource struct {
+type Lbmonitor struct {
 	Monitorname                    string `json:"monitorname"`
 	State                          string `json:"state,omitempty"`
 	Action                         string `json:"action,omitempty"`
@@ -209,9 +209,9 @@ func (c *NitroClient) DeleteLbmonitor(key LbmonitorKey) error {
 	return c.deleteResourceWithArgs("lbmonitor", key.Monitorname, lbmonitor_key_to_args(key))
 }
 
-func (c *NitroClient) GetLbmonitor(key LbmonitorKey) (*LbmonitorResource, error) {
+func (c *NitroClient) GetLbmonitor(key LbmonitorKey) (*Lbmonitor, error) {
 	var results struct {
-		Lbmonitor []LbmonitorResource
+		Lbmonitor []Lbmonitor
 	}
 
 	if err := c.getResourceWithArgs("lbmonitor", key.Monitorname, lbmonitor_key_to_args(key), &results); err != nil || len(results.Lbmonitor) != 1 {
@@ -221,9 +221,9 @@ func (c *NitroClient) GetLbmonitor(key LbmonitorKey) (*LbmonitorResource, error)
 	return &results.Lbmonitor[0], nil
 }
 
-func (c *NitroClient) ListLbmonitor() ([]LbmonitorResource, error) {
+func (c *NitroClient) ListLbmonitor() ([]Lbmonitor, error) {
 	var results struct {
-		Lbmonitor []LbmonitorResource
+		Lbmonitor []Lbmonitor
 	}
 
 	if err := c.listResources("lbmonitor", &results); err != nil {
@@ -233,7 +233,7 @@ func (c *NitroClient) ListLbmonitor() ([]LbmonitorResource, error) {
 	return results.Lbmonitor, nil
 }
 
-func (c *NitroClient) AddLbmonitor(resource LbmonitorResource) error {
+func (c *NitroClient) AddLbmonitor(resource Lbmonitor) error {
 	return c.addResource("lbmonitor", resource)
 }
 
@@ -245,7 +245,7 @@ func (c *NitroClient) UnsetLbmonitor(monitorname string, fields ...string) error
 	return c.unsetResource("lbmonitor", "monitorname", monitorname, fields)
 }
 
-func (c *NitroClient) UpdateLbmonitor(resource LbmonitorResource) error {
+func (c *NitroClient) UpdateLbmonitor(resource Lbmonitor) error {
 	update := lbmonitor_update{
 		resource.Monitorname,
 		resource.Type,

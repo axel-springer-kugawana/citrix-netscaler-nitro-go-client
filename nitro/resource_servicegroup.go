@@ -1,6 +1,6 @@
 package nitro
 
-type ServicegroupResource struct {
+type Servicegroup struct {
 	Servicegroupname   string `json:"servicegroupname"`
 	Appflowlog         string `json:"appflowlog,omitempty"`
 	Autoscale          string `json:"autoscale,omitempty"`
@@ -86,9 +86,9 @@ func (c *NitroClient) DeleteServicegroup(key ServicegroupKey) error {
 	return c.deleteResourceWithArgs("servicegroup", key.Servicegroupname, servicegroup_key_to_args(key))
 }
 
-func (c *NitroClient) GetServicegroup(key ServicegroupKey) (*ServicegroupResource, error) {
+func (c *NitroClient) GetServicegroup(key ServicegroupKey) (*Servicegroup, error) {
 	var results struct {
-		Servicegroup []ServicegroupResource
+		Servicegroup []Servicegroup
 	}
 
 	if err := c.getResourceWithArgs("servicegroup", key.Servicegroupname, servicegroup_key_to_args(key), &results); err != nil || len(results.Servicegroup) != 1 {
@@ -98,9 +98,9 @@ func (c *NitroClient) GetServicegroup(key ServicegroupKey) (*ServicegroupResourc
 	return &results.Servicegroup[0], nil
 }
 
-func (c *NitroClient) ListServicegroup() ([]ServicegroupResource, error) {
+func (c *NitroClient) ListServicegroup() ([]Servicegroup, error) {
 	var results struct {
-		Servicegroup []ServicegroupResource
+		Servicegroup []Servicegroup
 	}
 
 	if err := c.listResources("servicegroup", &results); err != nil {
@@ -110,7 +110,7 @@ func (c *NitroClient) ListServicegroup() ([]ServicegroupResource, error) {
 	return results.Servicegroup, nil
 }
 
-func (c *NitroClient) AddServicegroup(resource ServicegroupResource) error {
+func (c *NitroClient) AddServicegroup(resource Servicegroup) error {
 	return c.addResource("servicegroup", resource)
 }
 
@@ -122,7 +122,7 @@ func (c *NitroClient) UnsetServicegroup(servicegroupname string, fields ...strin
 	return c.unsetResource("servicegroup", "servicegroupname", servicegroupname, fields)
 }
 
-func (c *NitroClient) UpdateServicegroup(resource ServicegroupResource) error {
+func (c *NitroClient) UpdateServicegroup(resource Servicegroup) error {
 	update := servicegroup_update{
 		resource.Servicegroupname,
 		resource.Maxclient,

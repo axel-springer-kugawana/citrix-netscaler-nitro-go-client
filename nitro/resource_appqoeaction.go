@@ -1,6 +1,6 @@
 package nitro
 
-type AppqoeactionResource struct {
+type Appqoeaction struct {
 	Name              string `json:"name"`
 	Altcontentpath    string `json:"altcontentpath,omitempty"`
 	Altcontentsvcname string `json:"altcontentsvcname,omitempty"`
@@ -48,9 +48,9 @@ func (c *NitroClient) DeleteAppqoeaction(key AppqoeactionKey) error {
 	return c.deleteResourceWithArgs("appqoeaction", key.Name, appqoeaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetAppqoeaction(key AppqoeactionKey) (*AppqoeactionResource, error) {
+func (c *NitroClient) GetAppqoeaction(key AppqoeactionKey) (*Appqoeaction, error) {
 	var results struct {
-		Appqoeaction []AppqoeactionResource
+		Appqoeaction []Appqoeaction
 	}
 
 	if err := c.getResourceWithArgs("appqoeaction", key.Name, appqoeaction_key_to_args(key), &results); err != nil || len(results.Appqoeaction) != 1 {
@@ -60,9 +60,9 @@ func (c *NitroClient) GetAppqoeaction(key AppqoeactionKey) (*AppqoeactionResourc
 	return &results.Appqoeaction[0], nil
 }
 
-func (c *NitroClient) ListAppqoeaction() ([]AppqoeactionResource, error) {
+func (c *NitroClient) ListAppqoeaction() ([]Appqoeaction, error) {
 	var results struct {
-		Appqoeaction []AppqoeactionResource
+		Appqoeaction []Appqoeaction
 	}
 
 	if err := c.listResources("appqoeaction", &results); err != nil {
@@ -72,7 +72,7 @@ func (c *NitroClient) ListAppqoeaction() ([]AppqoeactionResource, error) {
 	return results.Appqoeaction, nil
 }
 
-func (c *NitroClient) AddAppqoeaction(resource AppqoeactionResource) error {
+func (c *NitroClient) AddAppqoeaction(resource Appqoeaction) error {
 	return c.addResource("appqoeaction", resource)
 }
 
@@ -84,7 +84,7 @@ func (c *NitroClient) UnsetAppqoeaction(name string, fields ...string) error {
 	return c.unsetResource("appqoeaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAppqoeaction(resource AppqoeactionResource) error {
+func (c *NitroClient) UpdateAppqoeaction(resource Appqoeaction) error {
 	update := appqoeaction_update{
 		resource.Name,
 		resource.Priority,

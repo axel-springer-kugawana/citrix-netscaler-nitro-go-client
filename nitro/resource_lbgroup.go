@@ -1,6 +1,6 @@
 package nitro
 
-type LbgroupResource struct {
+type Lbgroup struct {
 	Name                     string `json:"name"`
 	Backuppersistencetimeout int    `json:"backuppersistencetimeout,string,omitempty"`
 	Cookiedomain             string `json:"cookiedomain,omitempty"`
@@ -46,9 +46,9 @@ func (c *NitroClient) DeleteLbgroup(key LbgroupKey) error {
 	return c.deleteResourceWithArgs("lbgroup", key.Name, lbgroup_key_to_args(key))
 }
 
-func (c *NitroClient) GetLbgroup(key LbgroupKey) (*LbgroupResource, error) {
+func (c *NitroClient) GetLbgroup(key LbgroupKey) (*Lbgroup, error) {
 	var results struct {
-		Lbgroup []LbgroupResource
+		Lbgroup []Lbgroup
 	}
 
 	if err := c.getResourceWithArgs("lbgroup", key.Name, lbgroup_key_to_args(key), &results); err != nil || len(results.Lbgroup) != 1 {
@@ -58,9 +58,9 @@ func (c *NitroClient) GetLbgroup(key LbgroupKey) (*LbgroupResource, error) {
 	return &results.Lbgroup[0], nil
 }
 
-func (c *NitroClient) ListLbgroup() ([]LbgroupResource, error) {
+func (c *NitroClient) ListLbgroup() ([]Lbgroup, error) {
 	var results struct {
-		Lbgroup []LbgroupResource
+		Lbgroup []Lbgroup
 	}
 
 	if err := c.listResources("lbgroup", &results); err != nil {
@@ -70,7 +70,7 @@ func (c *NitroClient) ListLbgroup() ([]LbgroupResource, error) {
 	return results.Lbgroup, nil
 }
 
-func (c *NitroClient) AddLbgroup(resource LbgroupResource) error {
+func (c *NitroClient) AddLbgroup(resource Lbgroup) error {
 	return c.addResource("lbgroup", resource)
 }
 
@@ -82,7 +82,7 @@ func (c *NitroClient) UnsetLbgroup(name string, fields ...string) error {
 	return c.unsetResource("lbgroup", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateLbgroup(resource LbgroupResource) error {
+func (c *NitroClient) UpdateLbgroup(resource Lbgroup) error {
 	update := lbgroup_update{
 		resource.Name,
 		resource.Persistencetype,

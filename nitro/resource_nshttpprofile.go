@@ -1,6 +1,6 @@
 package nitro
 
-type NshttpprofileResource struct {
+type Nshttpprofile struct {
 	Name                      string `json:"name"`
 	Adpttimeout               string `json:"adpttimeout,omitempty"`
 	Altsvc                    string `json:"altsvc,omitempty"`
@@ -90,9 +90,9 @@ func (c *NitroClient) DeleteNshttpprofile(key NshttpprofileKey) error {
 	return c.deleteResourceWithArgs("nshttpprofile", key.Name, nshttpprofile_key_to_args(key))
 }
 
-func (c *NitroClient) GetNshttpprofile(key NshttpprofileKey) (*NshttpprofileResource, error) {
+func (c *NitroClient) GetNshttpprofile(key NshttpprofileKey) (*Nshttpprofile, error) {
 	var results struct {
-		Nshttpprofile []NshttpprofileResource
+		Nshttpprofile []Nshttpprofile
 	}
 
 	if err := c.getResourceWithArgs("nshttpprofile", key.Name, nshttpprofile_key_to_args(key), &results); err != nil || len(results.Nshttpprofile) != 1 {
@@ -102,9 +102,9 @@ func (c *NitroClient) GetNshttpprofile(key NshttpprofileKey) (*NshttpprofileReso
 	return &results.Nshttpprofile[0], nil
 }
 
-func (c *NitroClient) ListNshttpprofile() ([]NshttpprofileResource, error) {
+func (c *NitroClient) ListNshttpprofile() ([]Nshttpprofile, error) {
 	var results struct {
-		Nshttpprofile []NshttpprofileResource
+		Nshttpprofile []Nshttpprofile
 	}
 
 	if err := c.listResources("nshttpprofile", &results); err != nil {
@@ -114,7 +114,7 @@ func (c *NitroClient) ListNshttpprofile() ([]NshttpprofileResource, error) {
 	return results.Nshttpprofile, nil
 }
 
-func (c *NitroClient) AddNshttpprofile(resource NshttpprofileResource) error {
+func (c *NitroClient) AddNshttpprofile(resource Nshttpprofile) error {
 	return c.addResource("nshttpprofile", resource)
 }
 
@@ -126,7 +126,7 @@ func (c *NitroClient) UnsetNshttpprofile(name string, fields ...string) error {
 	return c.unsetResource("nshttpprofile", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateNshttpprofile(resource NshttpprofileResource) error {
+func (c *NitroClient) UpdateNshttpprofile(resource Nshttpprofile) error {
 	update := nshttpprofile_update{
 		resource.Name,
 		resource.Dropinvalreqs,

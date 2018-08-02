@@ -1,6 +1,6 @@
 package nitro
 
-type ResponderpolicyResource struct {
+type Responderpolicy struct {
 	Name          string `json:"name"`
 	Action        string `json:"action,omitempty"`
 	Appflowaction string `json:"appflowaction,omitempty"`
@@ -38,9 +38,9 @@ func (c *NitroClient) DeleteResponderpolicy(key ResponderpolicyKey) error {
 	return c.deleteResourceWithArgs("responderpolicy", key.Name, responderpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetResponderpolicy(key ResponderpolicyKey) (*ResponderpolicyResource, error) {
+func (c *NitroClient) GetResponderpolicy(key ResponderpolicyKey) (*Responderpolicy, error) {
 	var results struct {
-		Responderpolicy []ResponderpolicyResource
+		Responderpolicy []Responderpolicy
 	}
 
 	if err := c.getResourceWithArgs("responderpolicy", key.Name, responderpolicy_key_to_args(key), &results); err != nil || len(results.Responderpolicy) != 1 {
@@ -50,9 +50,9 @@ func (c *NitroClient) GetResponderpolicy(key ResponderpolicyKey) (*Responderpoli
 	return &results.Responderpolicy[0], nil
 }
 
-func (c *NitroClient) ListResponderpolicy() ([]ResponderpolicyResource, error) {
+func (c *NitroClient) ListResponderpolicy() ([]Responderpolicy, error) {
 	var results struct {
-		Responderpolicy []ResponderpolicyResource
+		Responderpolicy []Responderpolicy
 	}
 
 	if err := c.listResources("responderpolicy", &results); err != nil {
@@ -62,7 +62,7 @@ func (c *NitroClient) ListResponderpolicy() ([]ResponderpolicyResource, error) {
 	return results.Responderpolicy, nil
 }
 
-func (c *NitroClient) AddResponderpolicy(resource ResponderpolicyResource) error {
+func (c *NitroClient) AddResponderpolicy(resource Responderpolicy) error {
 	return c.addResource("responderpolicy", resource)
 }
 
@@ -74,7 +74,7 @@ func (c *NitroClient) UnsetResponderpolicy(name string, fields ...string) error 
 	return c.unsetResource("responderpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateResponderpolicy(resource ResponderpolicyResource) error {
+func (c *NitroClient) UpdateResponderpolicy(resource Responderpolicy) error {
 	update := responderpolicy_update{
 		resource.Name,
 		resource.Rule,

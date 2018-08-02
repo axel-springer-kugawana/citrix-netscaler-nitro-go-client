@@ -1,6 +1,6 @@
 package nitro
 
-type ServiceResource struct {
+type Service struct {
 	Name               string `json:"name"`
 	Accessdown         string `json:"accessdown,omitempty"`
 	Appflowlog         string `json:"appflowlog,omitempty"`
@@ -99,9 +99,9 @@ func (c *NitroClient) DeleteService(key ServiceKey) error {
 	return c.deleteResourceWithArgs("service", key.Name, service_key_to_args(key))
 }
 
-func (c *NitroClient) GetService(key ServiceKey) (*ServiceResource, error) {
+func (c *NitroClient) GetService(key ServiceKey) (*Service, error) {
 	var results struct {
-		Service []ServiceResource
+		Service []Service
 	}
 
 	if err := c.getResourceWithArgs("service", key.Name, service_key_to_args(key), &results); err != nil || len(results.Service) != 1 {
@@ -111,9 +111,9 @@ func (c *NitroClient) GetService(key ServiceKey) (*ServiceResource, error) {
 	return &results.Service[0], nil
 }
 
-func (c *NitroClient) ListService() ([]ServiceResource, error) {
+func (c *NitroClient) ListService() ([]Service, error) {
 	var results struct {
-		Service []ServiceResource
+		Service []Service
 	}
 
 	if err := c.listResources("service", &results); err != nil {
@@ -123,7 +123,7 @@ func (c *NitroClient) ListService() ([]ServiceResource, error) {
 	return results.Service, nil
 }
 
-func (c *NitroClient) AddService(resource ServiceResource) error {
+func (c *NitroClient) AddService(resource Service) error {
 	return c.addResource("service", resource)
 }
 
@@ -135,7 +135,7 @@ func (c *NitroClient) UnsetService(name string, fields ...string) error {
 	return c.unsetResource("service", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateService(resource ServiceResource) error {
+func (c *NitroClient) UpdateService(resource Service) error {
 	update := service_update{
 		resource.Name,
 		resource.Maxclient,

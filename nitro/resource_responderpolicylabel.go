@@ -1,6 +1,6 @@
 package nitro
 
-type ResponderpolicylabelResource struct {
+type Responderpolicylabel struct {
 	Labelname       string `json:"labelname"`
 	Comment         string `json:"comment,omitempty"`
 	Policylabeltype string `json:"policylabeltype,omitempty"`
@@ -28,9 +28,9 @@ func (c *NitroClient) DeleteResponderpolicylabel(key ResponderpolicylabelKey) er
 	return c.deleteResourceWithArgs("responderpolicylabel", key.Labelname, responderpolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetResponderpolicylabel(key ResponderpolicylabelKey) (*ResponderpolicylabelResource, error) {
+func (c *NitroClient) GetResponderpolicylabel(key ResponderpolicylabelKey) (*Responderpolicylabel, error) {
 	var results struct {
-		Responderpolicylabel []ResponderpolicylabelResource
+		Responderpolicylabel []Responderpolicylabel
 	}
 
 	if err := c.getResourceWithArgs("responderpolicylabel", key.Labelname, responderpolicylabel_key_to_args(key), &results); err != nil || len(results.Responderpolicylabel) != 1 {
@@ -40,9 +40,9 @@ func (c *NitroClient) GetResponderpolicylabel(key ResponderpolicylabelKey) (*Res
 	return &results.Responderpolicylabel[0], nil
 }
 
-func (c *NitroClient) ListResponderpolicylabel() ([]ResponderpolicylabelResource, error) {
+func (c *NitroClient) ListResponderpolicylabel() ([]Responderpolicylabel, error) {
 	var results struct {
-		Responderpolicylabel []ResponderpolicylabelResource
+		Responderpolicylabel []Responderpolicylabel
 	}
 
 	if err := c.listResources("responderpolicylabel", &results); err != nil {
@@ -52,7 +52,7 @@ func (c *NitroClient) ListResponderpolicylabel() ([]ResponderpolicylabelResource
 	return results.Responderpolicylabel, nil
 }
 
-func (c *NitroClient) AddResponderpolicylabel(resource ResponderpolicylabelResource) error {
+func (c *NitroClient) AddResponderpolicylabel(resource Responderpolicylabel) error {
 	return c.addResource("responderpolicylabel", resource)
 }
 

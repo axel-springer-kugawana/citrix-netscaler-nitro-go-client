@@ -1,6 +1,6 @@
 package nitro
 
-type NstcpprofileResource struct {
+type Nstcpprofile struct {
 	Name                        string `json:"name"`
 	Ackaggregation              string `json:"ackaggregation,omitempty"`
 	Ackonpush                   string `json:"ackonpush,omitempty"`
@@ -124,9 +124,9 @@ func (c *NitroClient) DeleteNstcpprofile(key NstcpprofileKey) error {
 	return c.deleteResourceWithArgs("nstcpprofile", key.Name, nstcpprofile_key_to_args(key))
 }
 
-func (c *NitroClient) GetNstcpprofile(key NstcpprofileKey) (*NstcpprofileResource, error) {
+func (c *NitroClient) GetNstcpprofile(key NstcpprofileKey) (*Nstcpprofile, error) {
 	var results struct {
-		Nstcpprofile []NstcpprofileResource
+		Nstcpprofile []Nstcpprofile
 	}
 
 	if err := c.getResourceWithArgs("nstcpprofile", key.Name, nstcpprofile_key_to_args(key), &results); err != nil || len(results.Nstcpprofile) != 1 {
@@ -136,9 +136,9 @@ func (c *NitroClient) GetNstcpprofile(key NstcpprofileKey) (*NstcpprofileResourc
 	return &results.Nstcpprofile[0], nil
 }
 
-func (c *NitroClient) ListNstcpprofile() ([]NstcpprofileResource, error) {
+func (c *NitroClient) ListNstcpprofile() ([]Nstcpprofile, error) {
 	var results struct {
-		Nstcpprofile []NstcpprofileResource
+		Nstcpprofile []Nstcpprofile
 	}
 
 	if err := c.listResources("nstcpprofile", &results); err != nil {
@@ -148,7 +148,7 @@ func (c *NitroClient) ListNstcpprofile() ([]NstcpprofileResource, error) {
 	return results.Nstcpprofile, nil
 }
 
-func (c *NitroClient) AddNstcpprofile(resource NstcpprofileResource) error {
+func (c *NitroClient) AddNstcpprofile(resource Nstcpprofile) error {
 	return c.addResource("nstcpprofile", resource)
 }
 
@@ -160,7 +160,7 @@ func (c *NitroClient) UnsetNstcpprofile(name string, fields ...string) error {
 	return c.unsetResource("nstcpprofile", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateNstcpprofile(resource NstcpprofileResource) error {
+func (c *NitroClient) UpdateNstcpprofile(resource Nstcpprofile) error {
 	update := nstcpprofile_update{
 		resource.Name,
 		resource.Ws,

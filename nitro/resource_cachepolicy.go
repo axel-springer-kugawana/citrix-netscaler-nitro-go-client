@@ -1,6 +1,6 @@
 package nitro
 
-type CachepolicyResource struct {
+type Cachepolicy struct {
 	Policyname   string   `json:"policyname"`
 	Action       string   `json:"action,omitempty"`
 	Invalgroups  []string `json:"invalgroups,omitempty"`
@@ -38,9 +38,9 @@ func (c *NitroClient) DeleteCachepolicy(key CachepolicyKey) error {
 	return c.deleteResourceWithArgs("cachepolicy", key.Policyname, cachepolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetCachepolicy(key CachepolicyKey) (*CachepolicyResource, error) {
+func (c *NitroClient) GetCachepolicy(key CachepolicyKey) (*Cachepolicy, error) {
 	var results struct {
-		Cachepolicy []CachepolicyResource
+		Cachepolicy []Cachepolicy
 	}
 
 	if err := c.getResourceWithArgs("cachepolicy", key.Policyname, cachepolicy_key_to_args(key), &results); err != nil || len(results.Cachepolicy) != 1 {
@@ -50,9 +50,9 @@ func (c *NitroClient) GetCachepolicy(key CachepolicyKey) (*CachepolicyResource, 
 	return &results.Cachepolicy[0], nil
 }
 
-func (c *NitroClient) ListCachepolicy() ([]CachepolicyResource, error) {
+func (c *NitroClient) ListCachepolicy() ([]Cachepolicy, error) {
 	var results struct {
-		Cachepolicy []CachepolicyResource
+		Cachepolicy []Cachepolicy
 	}
 
 	if err := c.listResources("cachepolicy", &results); err != nil {
@@ -62,7 +62,7 @@ func (c *NitroClient) ListCachepolicy() ([]CachepolicyResource, error) {
 	return results.Cachepolicy, nil
 }
 
-func (c *NitroClient) AddCachepolicy(resource CachepolicyResource) error {
+func (c *NitroClient) AddCachepolicy(resource Cachepolicy) error {
 	return c.addResource("cachepolicy", resource)
 }
 
@@ -74,7 +74,7 @@ func (c *NitroClient) UnsetCachepolicy(policyname string, fields ...string) erro
 	return c.unsetResource("cachepolicy", "policyname", policyname, fields)
 }
 
-func (c *NitroClient) UpdateCachepolicy(resource CachepolicyResource) error {
+func (c *NitroClient) UpdateCachepolicy(resource Cachepolicy) error {
 	update := cachepolicy_update{
 		resource.Policyname,
 		resource.Rule,

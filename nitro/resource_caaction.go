@@ -1,6 +1,6 @@
 package nitro
 
-type CaactionResource struct {
+type Caaction struct {
 	Name         string `json:"name"`
 	Accumressize int    `json:"accumressize,string,omitempty"`
 	Comment      string `json:"comment,omitempty"`
@@ -34,9 +34,9 @@ func (c *NitroClient) DeleteCaaction(key CaactionKey) error {
 	return c.deleteResourceWithArgs("caaction", key.Name, caaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetCaaction(key CaactionKey) (*CaactionResource, error) {
+func (c *NitroClient) GetCaaction(key CaactionKey) (*Caaction, error) {
 	var results struct {
-		Caaction []CaactionResource
+		Caaction []Caaction
 	}
 
 	if err := c.getResourceWithArgs("caaction", key.Name, caaction_key_to_args(key), &results); err != nil || len(results.Caaction) != 1 {
@@ -46,9 +46,9 @@ func (c *NitroClient) GetCaaction(key CaactionKey) (*CaactionResource, error) {
 	return &results.Caaction[0], nil
 }
 
-func (c *NitroClient) ListCaaction() ([]CaactionResource, error) {
+func (c *NitroClient) ListCaaction() ([]Caaction, error) {
 	var results struct {
-		Caaction []CaactionResource
+		Caaction []Caaction
 	}
 
 	if err := c.listResources("caaction", &results); err != nil {
@@ -58,7 +58,7 @@ func (c *NitroClient) ListCaaction() ([]CaactionResource, error) {
 	return results.Caaction, nil
 }
 
-func (c *NitroClient) AddCaaction(resource CaactionResource) error {
+func (c *NitroClient) AddCaaction(resource Caaction) error {
 	return c.addResource("caaction", resource)
 }
 
@@ -70,7 +70,7 @@ func (c *NitroClient) UnsetCaaction(name string, fields ...string) error {
 	return c.unsetResource("caaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateCaaction(resource CaactionResource) error {
+func (c *NitroClient) UpdateCaaction(resource Caaction) error {
 	update := caaction_update{
 		resource.Name,
 		resource.Accumressize,

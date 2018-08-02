@@ -1,6 +1,6 @@
 package nitro
 
-type LbmetrictableResource struct {
+type Lbmetrictable struct {
 	Metrictable string `json:"metrictable"`
 }
 
@@ -26,9 +26,9 @@ func (c *NitroClient) DeleteLbmetrictable(key LbmetrictableKey) error {
 	return c.deleteResourceWithArgs("lbmetrictable", key.Metrictable, lbmetrictable_key_to_args(key))
 }
 
-func (c *NitroClient) GetLbmetrictable(key LbmetrictableKey) (*LbmetrictableResource, error) {
+func (c *NitroClient) GetLbmetrictable(key LbmetrictableKey) (*Lbmetrictable, error) {
 	var results struct {
-		Lbmetrictable []LbmetrictableResource
+		Lbmetrictable []Lbmetrictable
 	}
 
 	if err := c.getResourceWithArgs("lbmetrictable", key.Metrictable, lbmetrictable_key_to_args(key), &results); err != nil || len(results.Lbmetrictable) != 1 {
@@ -38,9 +38,9 @@ func (c *NitroClient) GetLbmetrictable(key LbmetrictableKey) (*LbmetrictableReso
 	return &results.Lbmetrictable[0], nil
 }
 
-func (c *NitroClient) ListLbmetrictable() ([]LbmetrictableResource, error) {
+func (c *NitroClient) ListLbmetrictable() ([]Lbmetrictable, error) {
 	var results struct {
-		Lbmetrictable []LbmetrictableResource
+		Lbmetrictable []Lbmetrictable
 	}
 
 	if err := c.listResources("lbmetrictable", &results); err != nil {
@@ -50,7 +50,7 @@ func (c *NitroClient) ListLbmetrictable() ([]LbmetrictableResource, error) {
 	return results.Lbmetrictable, nil
 }
 
-func (c *NitroClient) AddLbmetrictable(resource LbmetrictableResource) error {
+func (c *NitroClient) AddLbmetrictable(resource Lbmetrictable) error {
 	return c.addResource("lbmetrictable", resource)
 }
 

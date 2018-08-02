@@ -1,6 +1,6 @@
 package nitro
 
-type FilterpolicyResource struct {
+type Filterpolicy struct {
 	Name      string `json:"name"`
 	Reqaction string `json:"reqaction,omitempty"`
 	Resaction string `json:"resaction,omitempty"`
@@ -32,9 +32,9 @@ func (c *NitroClient) DeleteFilterpolicy(key FilterpolicyKey) error {
 	return c.deleteResourceWithArgs("filterpolicy", key.Name, filterpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetFilterpolicy(key FilterpolicyKey) (*FilterpolicyResource, error) {
+func (c *NitroClient) GetFilterpolicy(key FilterpolicyKey) (*Filterpolicy, error) {
 	var results struct {
-		Filterpolicy []FilterpolicyResource
+		Filterpolicy []Filterpolicy
 	}
 
 	if err := c.getResourceWithArgs("filterpolicy", key.Name, filterpolicy_key_to_args(key), &results); err != nil || len(results.Filterpolicy) != 1 {
@@ -44,9 +44,9 @@ func (c *NitroClient) GetFilterpolicy(key FilterpolicyKey) (*FilterpolicyResourc
 	return &results.Filterpolicy[0], nil
 }
 
-func (c *NitroClient) ListFilterpolicy() ([]FilterpolicyResource, error) {
+func (c *NitroClient) ListFilterpolicy() ([]Filterpolicy, error) {
 	var results struct {
-		Filterpolicy []FilterpolicyResource
+		Filterpolicy []Filterpolicy
 	}
 
 	if err := c.listResources("filterpolicy", &results); err != nil {
@@ -56,7 +56,7 @@ func (c *NitroClient) ListFilterpolicy() ([]FilterpolicyResource, error) {
 	return results.Filterpolicy, nil
 }
 
-func (c *NitroClient) AddFilterpolicy(resource FilterpolicyResource) error {
+func (c *NitroClient) AddFilterpolicy(resource Filterpolicy) error {
 	return c.addResource("filterpolicy", resource)
 }
 
@@ -68,7 +68,7 @@ func (c *NitroClient) UnsetFilterpolicy(name string, fields ...string) error {
 	return c.unsetResource("filterpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateFilterpolicy(resource FilterpolicyResource) error {
+func (c *NitroClient) UpdateFilterpolicy(resource Filterpolicy) error {
 	update := filterpolicy_update{
 		resource.Name,
 		resource.Rule,

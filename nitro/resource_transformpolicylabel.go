@@ -1,6 +1,6 @@
 package nitro
 
-type TransformpolicylabelResource struct {
+type Transformpolicylabel struct {
 	Labelname       string `json:"labelname"`
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
@@ -27,9 +27,9 @@ func (c *NitroClient) DeleteTransformpolicylabel(key TransformpolicylabelKey) er
 	return c.deleteResourceWithArgs("transformpolicylabel", key.Labelname, transformpolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetTransformpolicylabel(key TransformpolicylabelKey) (*TransformpolicylabelResource, error) {
+func (c *NitroClient) GetTransformpolicylabel(key TransformpolicylabelKey) (*Transformpolicylabel, error) {
 	var results struct {
-		Transformpolicylabel []TransformpolicylabelResource
+		Transformpolicylabel []Transformpolicylabel
 	}
 
 	if err := c.getResourceWithArgs("transformpolicylabel", key.Labelname, transformpolicylabel_key_to_args(key), &results); err != nil || len(results.Transformpolicylabel) != 1 {
@@ -39,9 +39,9 @@ func (c *NitroClient) GetTransformpolicylabel(key TransformpolicylabelKey) (*Tra
 	return &results.Transformpolicylabel[0], nil
 }
 
-func (c *NitroClient) ListTransformpolicylabel() ([]TransformpolicylabelResource, error) {
+func (c *NitroClient) ListTransformpolicylabel() ([]Transformpolicylabel, error) {
 	var results struct {
-		Transformpolicylabel []TransformpolicylabelResource
+		Transformpolicylabel []Transformpolicylabel
 	}
 
 	if err := c.listResources("transformpolicylabel", &results); err != nil {
@@ -51,7 +51,7 @@ func (c *NitroClient) ListTransformpolicylabel() ([]TransformpolicylabelResource
 	return results.Transformpolicylabel, nil
 }
 
-func (c *NitroClient) AddTransformpolicylabel(resource TransformpolicylabelResource) error {
+func (c *NitroClient) AddTransformpolicylabel(resource Transformpolicylabel) error {
 	return c.addResource("transformpolicylabel", resource)
 }
 

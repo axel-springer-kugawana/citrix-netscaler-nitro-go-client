@@ -1,6 +1,6 @@
 package nitro
 
-type AppflowactionResource struct {
+type Appflowaction struct {
 	Name                   string   `json:"name"`
 	Clientsidemeasurements string   `json:"clientsidemeasurements,omitempty"`
 	Collectors             []string `json:"collectors,omitempty"`
@@ -44,9 +44,9 @@ func (c *NitroClient) DeleteAppflowaction(key AppflowactionKey) error {
 	return c.deleteResourceWithArgs("appflowaction", key.Name, appflowaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetAppflowaction(key AppflowactionKey) (*AppflowactionResource, error) {
+func (c *NitroClient) GetAppflowaction(key AppflowactionKey) (*Appflowaction, error) {
 	var results struct {
-		Appflowaction []AppflowactionResource
+		Appflowaction []Appflowaction
 	}
 
 	if err := c.getResourceWithArgs("appflowaction", key.Name, appflowaction_key_to_args(key), &results); err != nil || len(results.Appflowaction) != 1 {
@@ -56,9 +56,9 @@ func (c *NitroClient) GetAppflowaction(key AppflowactionKey) (*AppflowactionReso
 	return &results.Appflowaction[0], nil
 }
 
-func (c *NitroClient) ListAppflowaction() ([]AppflowactionResource, error) {
+func (c *NitroClient) ListAppflowaction() ([]Appflowaction, error) {
 	var results struct {
-		Appflowaction []AppflowactionResource
+		Appflowaction []Appflowaction
 	}
 
 	if err := c.listResources("appflowaction", &results); err != nil {
@@ -68,7 +68,7 @@ func (c *NitroClient) ListAppflowaction() ([]AppflowactionResource, error) {
 	return results.Appflowaction, nil
 }
 
-func (c *NitroClient) AddAppflowaction(resource AppflowactionResource) error {
+func (c *NitroClient) AddAppflowaction(resource Appflowaction) error {
 	return c.addResource("appflowaction", resource)
 }
 
@@ -80,7 +80,7 @@ func (c *NitroClient) UnsetAppflowaction(name string, fields ...string) error {
 	return c.unsetResource("appflowaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAppflowaction(resource AppflowactionResource) error {
+func (c *NitroClient) UpdateAppflowaction(resource Appflowaction) error {
 	update := appflowaction_update{
 		resource.Name,
 		resource.Collectors,

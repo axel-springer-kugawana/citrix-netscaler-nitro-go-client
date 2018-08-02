@@ -1,6 +1,6 @@
 package nitro
 
-type TransformprofileResource struct {
+type Transformprofile struct {
 	Name                      string `json:"name"`
 	Comment                   string `json:"comment,omitempty"`
 	Onlytransformabsurlinbody string `json:"onlytransformabsurlinbody,omitempty"`
@@ -32,9 +32,9 @@ func (c *NitroClient) DeleteTransformprofile(key TransformprofileKey) error {
 	return c.deleteResourceWithArgs("transformprofile", key.Name, transformprofile_key_to_args(key))
 }
 
-func (c *NitroClient) GetTransformprofile(key TransformprofileKey) (*TransformprofileResource, error) {
+func (c *NitroClient) GetTransformprofile(key TransformprofileKey) (*Transformprofile, error) {
 	var results struct {
-		Transformprofile []TransformprofileResource
+		Transformprofile []Transformprofile
 	}
 
 	if err := c.getResourceWithArgs("transformprofile", key.Name, transformprofile_key_to_args(key), &results); err != nil || len(results.Transformprofile) != 1 {
@@ -44,9 +44,9 @@ func (c *NitroClient) GetTransformprofile(key TransformprofileKey) (*Transformpr
 	return &results.Transformprofile[0], nil
 }
 
-func (c *NitroClient) ListTransformprofile() ([]TransformprofileResource, error) {
+func (c *NitroClient) ListTransformprofile() ([]Transformprofile, error) {
 	var results struct {
-		Transformprofile []TransformprofileResource
+		Transformprofile []Transformprofile
 	}
 
 	if err := c.listResources("transformprofile", &results); err != nil {
@@ -56,7 +56,7 @@ func (c *NitroClient) ListTransformprofile() ([]TransformprofileResource, error)
 	return results.Transformprofile, nil
 }
 
-func (c *NitroClient) AddTransformprofile(resource TransformprofileResource) error {
+func (c *NitroClient) AddTransformprofile(resource Transformprofile) error {
 	return c.addResource("transformprofile", resource)
 }
 
@@ -68,7 +68,7 @@ func (c *NitroClient) UnsetTransformprofile(name string, fields ...string) error
 	return c.unsetResource("transformprofile", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateTransformprofile(resource TransformprofileResource) error {
+func (c *NitroClient) UpdateTransformprofile(resource Transformprofile) error {
 	update := transformprofile_update{
 		resource.Name,
 		resource.Type,

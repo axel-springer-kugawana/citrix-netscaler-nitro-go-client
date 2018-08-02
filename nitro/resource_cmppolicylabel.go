@@ -1,6 +1,6 @@
 package nitro
 
-type CmppolicylabelResource struct {
+type Cmppolicylabel struct {
 	Labelname string `json:"labelname"`
 	Type      string `json:"type,omitempty"`
 }
@@ -27,9 +27,9 @@ func (c *NitroClient) DeleteCmppolicylabel(key CmppolicylabelKey) error {
 	return c.deleteResourceWithArgs("cmppolicylabel", key.Labelname, cmppolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetCmppolicylabel(key CmppolicylabelKey) (*CmppolicylabelResource, error) {
+func (c *NitroClient) GetCmppolicylabel(key CmppolicylabelKey) (*Cmppolicylabel, error) {
 	var results struct {
-		Cmppolicylabel []CmppolicylabelResource
+		Cmppolicylabel []Cmppolicylabel
 	}
 
 	if err := c.getResourceWithArgs("cmppolicylabel", key.Labelname, cmppolicylabel_key_to_args(key), &results); err != nil || len(results.Cmppolicylabel) != 1 {
@@ -39,9 +39,9 @@ func (c *NitroClient) GetCmppolicylabel(key CmppolicylabelKey) (*CmppolicylabelR
 	return &results.Cmppolicylabel[0], nil
 }
 
-func (c *NitroClient) ListCmppolicylabel() ([]CmppolicylabelResource, error) {
+func (c *NitroClient) ListCmppolicylabel() ([]Cmppolicylabel, error) {
 	var results struct {
-		Cmppolicylabel []CmppolicylabelResource
+		Cmppolicylabel []Cmppolicylabel
 	}
 
 	if err := c.listResources("cmppolicylabel", &results); err != nil {
@@ -51,7 +51,7 @@ func (c *NitroClient) ListCmppolicylabel() ([]CmppolicylabelResource, error) {
 	return results.Cmppolicylabel, nil
 }
 
-func (c *NitroClient) AddCmppolicylabel(resource CmppolicylabelResource) error {
+func (c *NitroClient) AddCmppolicylabel(resource Cmppolicylabel) error {
 	return c.addResource("cmppolicylabel", resource)
 }
 

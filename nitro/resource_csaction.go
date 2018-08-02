@@ -1,6 +1,6 @@
 package nitro
 
-type CsactionResource struct {
+type Csaction struct {
 	Name              string `json:"name"`
 	Comment           string `json:"comment,omitempty"`
 	Targetlbvserver   string `json:"targetlbvserver,omitempty"`
@@ -34,9 +34,9 @@ func (c *NitroClient) DeleteCsaction(key CsactionKey) error {
 	return c.deleteResourceWithArgs("csaction", key.Name, csaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetCsaction(key CsactionKey) (*CsactionResource, error) {
+func (c *NitroClient) GetCsaction(key CsactionKey) (*Csaction, error) {
 	var results struct {
-		Csaction []CsactionResource
+		Csaction []Csaction
 	}
 
 	if err := c.getResourceWithArgs("csaction", key.Name, csaction_key_to_args(key), &results); err != nil || len(results.Csaction) != 1 {
@@ -46,9 +46,9 @@ func (c *NitroClient) GetCsaction(key CsactionKey) (*CsactionResource, error) {
 	return &results.Csaction[0], nil
 }
 
-func (c *NitroClient) ListCsaction() ([]CsactionResource, error) {
+func (c *NitroClient) ListCsaction() ([]Csaction, error) {
 	var results struct {
-		Csaction []CsactionResource
+		Csaction []Csaction
 	}
 
 	if err := c.listResources("csaction", &results); err != nil {
@@ -58,7 +58,7 @@ func (c *NitroClient) ListCsaction() ([]CsactionResource, error) {
 	return results.Csaction, nil
 }
 
-func (c *NitroClient) AddCsaction(resource CsactionResource) error {
+func (c *NitroClient) AddCsaction(resource Csaction) error {
 	return c.addResource("csaction", resource)
 }
 
@@ -70,7 +70,7 @@ func (c *NitroClient) UnsetCsaction(name string, fields ...string) error {
 	return c.unsetResource("csaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateCsaction(resource CsactionResource) error {
+func (c *NitroClient) UpdateCsaction(resource Csaction) error {
 	update := csaction_update{
 		resource.Name,
 		resource.Targetlbvserver,

@@ -1,6 +1,6 @@
 package nitro
 
-type AppfwpolicyResource struct {
+type Appfwpolicy struct {
 	Name        string `json:"name"`
 	Comment     string `json:"comment,omitempty"`
 	Logaction   string `json:"logaction,omitempty"`
@@ -34,9 +34,9 @@ func (c *NitroClient) DeleteAppfwpolicy(key AppfwpolicyKey) error {
 	return c.deleteResourceWithArgs("appfwpolicy", key.Name, appfwpolicy_key_to_args(key))
 }
 
-func (c *NitroClient) GetAppfwpolicy(key AppfwpolicyKey) (*AppfwpolicyResource, error) {
+func (c *NitroClient) GetAppfwpolicy(key AppfwpolicyKey) (*Appfwpolicy, error) {
 	var results struct {
-		Appfwpolicy []AppfwpolicyResource
+		Appfwpolicy []Appfwpolicy
 	}
 
 	if err := c.getResourceWithArgs("appfwpolicy", key.Name, appfwpolicy_key_to_args(key), &results); err != nil || len(results.Appfwpolicy) != 1 {
@@ -46,9 +46,9 @@ func (c *NitroClient) GetAppfwpolicy(key AppfwpolicyKey) (*AppfwpolicyResource, 
 	return &results.Appfwpolicy[0], nil
 }
 
-func (c *NitroClient) ListAppfwpolicy() ([]AppfwpolicyResource, error) {
+func (c *NitroClient) ListAppfwpolicy() ([]Appfwpolicy, error) {
 	var results struct {
-		Appfwpolicy []AppfwpolicyResource
+		Appfwpolicy []Appfwpolicy
 	}
 
 	if err := c.listResources("appfwpolicy", &results); err != nil {
@@ -58,7 +58,7 @@ func (c *NitroClient) ListAppfwpolicy() ([]AppfwpolicyResource, error) {
 	return results.Appfwpolicy, nil
 }
 
-func (c *NitroClient) AddAppfwpolicy(resource AppfwpolicyResource) error {
+func (c *NitroClient) AddAppfwpolicy(resource Appfwpolicy) error {
 	return c.addResource("appfwpolicy", resource)
 }
 
@@ -70,7 +70,7 @@ func (c *NitroClient) UnsetAppfwpolicy(name string, fields ...string) error {
 	return c.unsetResource("appfwpolicy", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAppfwpolicy(resource AppfwpolicyResource) error {
+func (c *NitroClient) UpdateAppfwpolicy(resource Appfwpolicy) error {
 	update := appfwpolicy_update{
 		resource.Name,
 		resource.Rule,

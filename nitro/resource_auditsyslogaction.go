@@ -1,6 +1,6 @@
 package nitro
 
-type AuditsyslogactionResource struct {
+type Auditsyslogaction struct {
 	Name                 string   `json:"name"`
 	Acl                  string   `json:"acl,omitempty"`
 	Alg                  string   `json:"alg,omitempty"`
@@ -69,9 +69,9 @@ func (c *NitroClient) DeleteAuditsyslogaction(key AuditsyslogactionKey) error {
 	return c.deleteResourceWithArgs("auditsyslogaction", key.Name, auditsyslogaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetAuditsyslogaction(key AuditsyslogactionKey) (*AuditsyslogactionResource, error) {
+func (c *NitroClient) GetAuditsyslogaction(key AuditsyslogactionKey) (*Auditsyslogaction, error) {
 	var results struct {
-		Auditsyslogaction []AuditsyslogactionResource
+		Auditsyslogaction []Auditsyslogaction
 	}
 
 	if err := c.getResourceWithArgs("auditsyslogaction", key.Name, auditsyslogaction_key_to_args(key), &results); err != nil || len(results.Auditsyslogaction) != 1 {
@@ -81,9 +81,9 @@ func (c *NitroClient) GetAuditsyslogaction(key AuditsyslogactionKey) (*Auditsysl
 	return &results.Auditsyslogaction[0], nil
 }
 
-func (c *NitroClient) ListAuditsyslogaction() ([]AuditsyslogactionResource, error) {
+func (c *NitroClient) ListAuditsyslogaction() ([]Auditsyslogaction, error) {
 	var results struct {
-		Auditsyslogaction []AuditsyslogactionResource
+		Auditsyslogaction []Auditsyslogaction
 	}
 
 	if err := c.listResources("auditsyslogaction", &results); err != nil {
@@ -93,7 +93,7 @@ func (c *NitroClient) ListAuditsyslogaction() ([]AuditsyslogactionResource, erro
 	return results.Auditsyslogaction, nil
 }
 
-func (c *NitroClient) AddAuditsyslogaction(resource AuditsyslogactionResource) error {
+func (c *NitroClient) AddAuditsyslogaction(resource Auditsyslogaction) error {
 	return c.addResource("auditsyslogaction", resource)
 }
 
@@ -105,7 +105,7 @@ func (c *NitroClient) UnsetAuditsyslogaction(name string, fields ...string) erro
 	return c.unsetResource("auditsyslogaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateAuditsyslogaction(resource AuditsyslogactionResource) error {
+func (c *NitroClient) UpdateAuditsyslogaction(resource Auditsyslogaction) error {
 	update := auditsyslogaction_update{
 		resource.Name,
 		resource.Serverip,

@@ -1,6 +1,6 @@
 package nitro
 
-type VideooptimizationactionResource struct {
+type Videooptimizationaction struct {
 	Name    string `json:"name"`
 	Comment string `json:"comment,omitempty"`
 	Rate    int    `json:"rate,omitempty"`
@@ -32,9 +32,9 @@ func (c *NitroClient) DeleteVideooptimizationaction(key VideooptimizationactionK
 	return c.deleteResourceWithArgs("videooptimizationaction", key.Name, videooptimizationaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetVideooptimizationaction(key VideooptimizationactionKey) (*VideooptimizationactionResource, error) {
+func (c *NitroClient) GetVideooptimizationaction(key VideooptimizationactionKey) (*Videooptimizationaction, error) {
 	var results struct {
-		Videooptimizationaction []VideooptimizationactionResource
+		Videooptimizationaction []Videooptimizationaction
 	}
 
 	if err := c.getResourceWithArgs("videooptimizationaction", key.Name, videooptimizationaction_key_to_args(key), &results); err != nil || len(results.Videooptimizationaction) != 1 {
@@ -44,9 +44,9 @@ func (c *NitroClient) GetVideooptimizationaction(key VideooptimizationactionKey)
 	return &results.Videooptimizationaction[0], nil
 }
 
-func (c *NitroClient) ListVideooptimizationaction() ([]VideooptimizationactionResource, error) {
+func (c *NitroClient) ListVideooptimizationaction() ([]Videooptimizationaction, error) {
 	var results struct {
-		Videooptimizationaction []VideooptimizationactionResource
+		Videooptimizationaction []Videooptimizationaction
 	}
 
 	if err := c.listResources("videooptimizationaction", &results); err != nil {
@@ -56,7 +56,7 @@ func (c *NitroClient) ListVideooptimizationaction() ([]VideooptimizationactionRe
 	return results.Videooptimizationaction, nil
 }
 
-func (c *NitroClient) AddVideooptimizationaction(resource VideooptimizationactionResource) error {
+func (c *NitroClient) AddVideooptimizationaction(resource Videooptimizationaction) error {
 	return c.addResource("videooptimizationaction", resource)
 }
 
@@ -68,7 +68,7 @@ func (c *NitroClient) UnsetVideooptimizationaction(name string, fields ...string
 	return c.unsetResource("videooptimizationaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateVideooptimizationaction(resource VideooptimizationactionResource) error {
+func (c *NitroClient) UpdateVideooptimizationaction(resource Videooptimizationaction) error {
 	update := videooptimizationaction_update{
 		resource.Name,
 		resource.Type,

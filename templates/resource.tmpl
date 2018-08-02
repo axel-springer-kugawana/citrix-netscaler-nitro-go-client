@@ -1,6 +1,6 @@
 package nitro
 
-type {{$.Name|title}}Resource struct {
+type {{$.Name|name}} struct {
         {{$.Schema.Key.Name|title}} string `json:"{{$.Schema.Key.Name}}"`
         {{if $.Schema.State -}}
         {{$.Schema.State|title}} string `json:"{{$.Schema.State}},omitempty"`
@@ -14,7 +14,7 @@ type {{$.Name|title}}Resource struct {
         {{end -}}
 }
 
-type {{$.Name|title}}Key struct {
+type {{$.Name|name}}Key struct {
         {{$.Schema.Key.Name|title}} string
         {{range $field := $.Schema.Key.Fields -}}
         {{$field|title}} {{(index $.Schema.Fields $field)|go_type}}
@@ -38,7 +38,7 @@ type {{$.Name}}_payload struct {
         {{$.Name}} interface{}
 }
 
-func {{$.Name}}_key_to_args (key {{$.Name|title}}Key) (string) {
+func {{$.Name}}_key_to_args (key {{$.Name|name}}Key) (string) {
         result := ""
 
         {{range $field := $.Schema.Key.Fields -}}
@@ -48,13 +48,13 @@ func {{$.Name}}_key_to_args (key {{$.Name|title}}Key) (string) {
         return result
 }
 
-func (c *NitroClient) Delete{{$.Name|title}} (key {{$.Name|title}}Key) error {
+func (c *NitroClient) Delete{{$.Name|name}} (key {{$.Name|name}}Key) error {
 	return c.deleteResourceWithArgs("{{$.Name}}", key.{{$.Schema.Key.Name|title}}, {{$.Name}}_key_to_args(key))
 }
 
-func (c *NitroClient) Get{{$.Name|title}} (key {{$.Name|title}}Key) (*{{$.Name|title}}Resource, error) {
+func (c *NitroClient) Get{{$.Name|name}} (key {{$.Name|name}}Key) (*{{$.Name|name}}, error) {
         var results struct {
-                {{$.Name|title}} []{{$.Name|title}}Resource
+                {{$.Name|title}} []{{$.Name|name}}
         }
         
 	if err := c.getResourceWithArgs("{{$.Name}}", key.{{$.Schema.Key.Name|title}}, {{$.Name}}_key_to_args(key), &results); err != nil || len(results.{{$.Name|title}}) != 1 {
@@ -64,9 +64,9 @@ func (c *NitroClient) Get{{$.Name|title}} (key {{$.Name|title}}Key) (*{{$.Name|t
         return &results.{{$.Name|title}}[0], nil
 }
 
-func (c *NitroClient) List{{$.Name|title}} () ([]{{$.Name|title}}Resource, error) {
+func (c *NitroClient) List{{$.Name|name}} () ([]{{$.Name|name}}, error) {
         var results struct {
-                {{$.Name|title}} []{{$.Name|title}}Resource
+                {{$.Name|title}} []{{$.Name|name}}
         }
         
 	if err := c.listResources("{{$.Name}}", &results); err != nil {
@@ -76,20 +76,20 @@ func (c *NitroClient) List{{$.Name|title}} () ([]{{$.Name|title}}Resource, error
         return results.{{$.Name|title}}, nil
 }
 
-func (c *NitroClient) Add{{$.Name|title}} (resource {{$.Name|title}}Resource) error {
+func (c *NitroClient) Add{{$.Name|name}} (resource {{$.Name|name}}) error {
 	return c.addResource("{{$.Name}}", resource)
 }
 
-func (c *NitroClient) Rename{{$.Name|title}} ({{$.Schema.Key.Name}} string, newName string) error {
+func (c *NitroClient) Rename{{$.Name|name}} ({{$.Schema.Key.Name}} string, newName string) error {
 	return c.renameResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}}, newName)
 }
 
 {{if $.Schema.Update -}}
-func (c *NitroClient) Unset{{$.Name|title}} ({{$.Schema.Key.Name}} string, fields ...string) error {
+func (c *NitroClient) Unset{{$.Name|name}} ({{$.Schema.Key.Name}} string, fields ...string) error {
         return c.unsetResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}}, fields)
 }
 
-func (c *NitroClient) Update{{$.Name|title}} (resource {{$.Name|title}}Resource) error {
+func (c *NitroClient) Update{{$.Name|name}} (resource {{$.Name|name}}) error {
         update := {{$.Name}}_update {
                 {{if $.Schema.Key.Name -}}
                 resource.{{$.Schema.Key.Name|title}},
@@ -104,11 +104,11 @@ func (c *NitroClient) Update{{$.Name|title}} (resource {{$.Name|title}}Resource)
 {{end -}}
 
 {{if $.Schema.State -}}
-func (c *NitroClient) Enable{{$.Name|title}} ({{$.Schema.Key.Name}} string) error {
+func (c *NitroClient) Enable{{$.Name|name}} ({{$.Schema.Key.Name}} string) error {
         return c.enableResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}})
 }
 
-func (c *NitroClient) Disable{{$.Name|title}} ({{$.Schema.Key.Name}} string) error {
+func (c *NitroClient) Disable{{$.Name|name}} ({{$.Schema.Key.Name}} string) error {
         return c.disableResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}})
 }
 {{end -}}

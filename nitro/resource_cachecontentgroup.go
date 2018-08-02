@@ -1,6 +1,6 @@
 package nitro
 
-type CachecontentgroupResource struct {
+type Cachecontentgroup struct {
 	Name                   string   `json:"name"`
 	Absexpiry              []string `json:"absexpiry,omitempty"`
 	Absexpirygmt           []string `json:"absexpirygmt,omitempty"`
@@ -101,9 +101,9 @@ func (c *NitroClient) DeleteCachecontentgroup(key CachecontentgroupKey) error {
 	return c.deleteResourceWithArgs("cachecontentgroup", key.Name, cachecontentgroup_key_to_args(key))
 }
 
-func (c *NitroClient) GetCachecontentgroup(key CachecontentgroupKey) (*CachecontentgroupResource, error) {
+func (c *NitroClient) GetCachecontentgroup(key CachecontentgroupKey) (*Cachecontentgroup, error) {
 	var results struct {
-		Cachecontentgroup []CachecontentgroupResource
+		Cachecontentgroup []Cachecontentgroup
 	}
 
 	if err := c.getResourceWithArgs("cachecontentgroup", key.Name, cachecontentgroup_key_to_args(key), &results); err != nil || len(results.Cachecontentgroup) != 1 {
@@ -113,9 +113,9 @@ func (c *NitroClient) GetCachecontentgroup(key CachecontentgroupKey) (*Cachecont
 	return &results.Cachecontentgroup[0], nil
 }
 
-func (c *NitroClient) ListCachecontentgroup() ([]CachecontentgroupResource, error) {
+func (c *NitroClient) ListCachecontentgroup() ([]Cachecontentgroup, error) {
 	var results struct {
-		Cachecontentgroup []CachecontentgroupResource
+		Cachecontentgroup []Cachecontentgroup
 	}
 
 	if err := c.listResources("cachecontentgroup", &results); err != nil {
@@ -125,7 +125,7 @@ func (c *NitroClient) ListCachecontentgroup() ([]CachecontentgroupResource, erro
 	return results.Cachecontentgroup, nil
 }
 
-func (c *NitroClient) AddCachecontentgroup(resource CachecontentgroupResource) error {
+func (c *NitroClient) AddCachecontentgroup(resource Cachecontentgroup) error {
 	return c.addResource("cachecontentgroup", resource)
 }
 
@@ -137,7 +137,7 @@ func (c *NitroClient) UnsetCachecontentgroup(name string, fields ...string) erro
 	return c.unsetResource("cachecontentgroup", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateCachecontentgroup(resource CachecontentgroupResource) error {
+func (c *NitroClient) UpdateCachecontentgroup(resource Cachecontentgroup) error {
 	update := cachecontentgroup_update{
 		resource.Name,
 		resource.Weakposrelexpiry,

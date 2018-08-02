@@ -1,6 +1,6 @@
 package nitro
 
-type RewritepolicylabelResource struct {
+type Rewritepolicylabel struct {
 	Labelname string `json:"labelname"`
 	Comment   string `json:"comment,omitempty"`
 	Transform string `json:"transform,omitempty"`
@@ -28,9 +28,9 @@ func (c *NitroClient) DeleteRewritepolicylabel(key RewritepolicylabelKey) error 
 	return c.deleteResourceWithArgs("rewritepolicylabel", key.Labelname, rewritepolicylabel_key_to_args(key))
 }
 
-func (c *NitroClient) GetRewritepolicylabel(key RewritepolicylabelKey) (*RewritepolicylabelResource, error) {
+func (c *NitroClient) GetRewritepolicylabel(key RewritepolicylabelKey) (*Rewritepolicylabel, error) {
 	var results struct {
-		Rewritepolicylabel []RewritepolicylabelResource
+		Rewritepolicylabel []Rewritepolicylabel
 	}
 
 	if err := c.getResourceWithArgs("rewritepolicylabel", key.Labelname, rewritepolicylabel_key_to_args(key), &results); err != nil || len(results.Rewritepolicylabel) != 1 {
@@ -40,9 +40,9 @@ func (c *NitroClient) GetRewritepolicylabel(key RewritepolicylabelKey) (*Rewrite
 	return &results.Rewritepolicylabel[0], nil
 }
 
-func (c *NitroClient) ListRewritepolicylabel() ([]RewritepolicylabelResource, error) {
+func (c *NitroClient) ListRewritepolicylabel() ([]Rewritepolicylabel, error) {
 	var results struct {
-		Rewritepolicylabel []RewritepolicylabelResource
+		Rewritepolicylabel []Rewritepolicylabel
 	}
 
 	if err := c.listResources("rewritepolicylabel", &results); err != nil {
@@ -52,7 +52,7 @@ func (c *NitroClient) ListRewritepolicylabel() ([]RewritepolicylabelResource, er
 	return results.Rewritepolicylabel, nil
 }
 
-func (c *NitroClient) AddRewritepolicylabel(resource RewritepolicylabelResource) error {
+func (c *NitroClient) AddRewritepolicylabel(resource Rewritepolicylabel) error {
 	return c.addResource("rewritepolicylabel", resource)
 }
 

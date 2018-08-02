@@ -1,6 +1,6 @@
 package nitro
 
-type ResponderactionResource struct {
+type Responderaction struct {
 	Name               string `json:"name"`
 	Bypasssafetycheck  string `json:"bypasssafetycheck,omitempty"`
 	Comment            string `json:"comment,omitempty"`
@@ -39,9 +39,9 @@ func (c *NitroClient) DeleteResponderaction(key ResponderactionKey) error {
 	return c.deleteResourceWithArgs("responderaction", key.Name, responderaction_key_to_args(key))
 }
 
-func (c *NitroClient) GetResponderaction(key ResponderactionKey) (*ResponderactionResource, error) {
+func (c *NitroClient) GetResponderaction(key ResponderactionKey) (*Responderaction, error) {
 	var results struct {
-		Responderaction []ResponderactionResource
+		Responderaction []Responderaction
 	}
 
 	if err := c.getResourceWithArgs("responderaction", key.Name, responderaction_key_to_args(key), &results); err != nil || len(results.Responderaction) != 1 {
@@ -51,9 +51,9 @@ func (c *NitroClient) GetResponderaction(key ResponderactionKey) (*Responderacti
 	return &results.Responderaction[0], nil
 }
 
-func (c *NitroClient) ListResponderaction() ([]ResponderactionResource, error) {
+func (c *NitroClient) ListResponderaction() ([]Responderaction, error) {
 	var results struct {
-		Responderaction []ResponderactionResource
+		Responderaction []Responderaction
 	}
 
 	if err := c.listResources("responderaction", &results); err != nil {
@@ -63,7 +63,7 @@ func (c *NitroClient) ListResponderaction() ([]ResponderactionResource, error) {
 	return results.Responderaction, nil
 }
 
-func (c *NitroClient) AddResponderaction(resource ResponderactionResource) error {
+func (c *NitroClient) AddResponderaction(resource Responderaction) error {
 	return c.addResource("responderaction", resource)
 }
 
@@ -75,7 +75,7 @@ func (c *NitroClient) UnsetResponderaction(name string, fields ...string) error 
 	return c.unsetResource("responderaction", "name", name, fields)
 }
 
-func (c *NitroClient) UpdateResponderaction(resource ResponderactionResource) error {
+func (c *NitroClient) UpdateResponderaction(resource Responderaction) error {
 	update := responderaction_update{
 		resource.Name,
 		resource.Target,

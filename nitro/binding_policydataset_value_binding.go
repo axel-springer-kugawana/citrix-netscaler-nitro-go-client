@@ -1,5 +1,10 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+)
+
 type PolicydatasetValueBinding struct {
 	Index int    `json:"index,string,omitempty"`
 	Name  string `json:"name,omitempty"`
@@ -11,18 +16,75 @@ type PolicydatasetValueBindingKey struct {
 	Value string
 }
 
-func (c *NitroClient) AddPolicydatasetValueBinding(binding PolicydatasetValueBinding) error {
-	return nil
+type get_policydataset_value_binding struct {
+	Results []PolicydatasetValueBinding `json:"policydataset_value_binding"`
 }
 
-func (c *NitroClient) ListPolicydatasetValueBinding() ([]PolicydatasetValueBinding, error) {
-	return nil, nil
+type add_policydataset_value_binding_payload struct {
+	policydataset_value_binding PolicydatasetValueBinding
+}
+
+func policydataset_value_binding_key_to_id_args(key PolicydatasetValueBindingKey) (string, string) {
+	var _ = strconv.Itoa
+
+	result := ""
+
+	result = result + ",name:" + key.Name
+	result = result + ",value:" + key.Value
+	return "", result
+}
+
+func (c *NitroClient) AddPolicydatasetValueBinding(binding PolicydatasetValueBinding) error {
+	payload := add_policydataset_value_binding_payload{
+		binding,
+	}
+
+	return c.put("policydataset_value_binding", "", "", "", payload)
+}
+
+func (c *NitroClient) ListPolicydatasetValueBinding(key PolicydatasetValueBindingKey) ([]PolicydatasetValueBinding, error) {
+	var results get_policydataset_value_binding
+
+	id, args := policydataset_value_binding_key_to_id_args(key)
+
+	if err := c.get("policydataset_value_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) BulkListPolicydatasetValueBinding() ([]PolicydatasetValueBinding, error) {
+	var results get_policydataset_value_binding
+
+	if err := c.get("policydataset_value_binding", "", "", "", &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
 }
 
 func (c *NitroClient) GetPolicydatasetValueBinding(key PolicydatasetValueBindingKey) (*PolicydatasetValueBinding, error) {
-	return nil, nil
+	var results get_policydataset_value_binding
+
+	id, args := policydataset_value_binding_key_to_id_args(key)
+
+	if err := c.get("policydataset_value_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one policydataset_value_binding element found")
+		} else if len(results.Results) < 1 {
+			//                        return nil, fmt.Errorf("policydataset_value_binding element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
 }
 
 func (c *NitroClient) DeletePolicydatasetValueBinding(key PolicydatasetValueBindingKey) error {
-	return nil
+	id, args := policydataset_value_binding_key_to_id_args(key)
+
+	return c.delete("policydataset_value_binding", id, "", args)
 }

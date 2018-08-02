@@ -1,5 +1,10 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+)
+
 type LbvserverCachepolicyBinding struct {
 	Bindpoint              string `json:"bindpoint,omitempty"`
 	Gotopriorityexpression string `json:"gotopriorityexpression,omitempty"`
@@ -17,18 +22,76 @@ type LbvserverCachepolicyBindingKey struct {
 	Bindpoint  string
 }
 
-func (c *NitroClient) AddLbvserverCachepolicyBinding(binding LbvserverCachepolicyBinding) error {
-	return nil
+type get_lbvserver_cachepolicy_binding struct {
+	Results []LbvserverCachepolicyBinding `json:"lbvserver_cachepolicy_binding"`
 }
 
-func (c *NitroClient) ListLbvserverCachepolicyBinding() ([]LbvserverCachepolicyBinding, error) {
-	return nil, nil
+type add_lbvserver_cachepolicy_binding_payload struct {
+	lbvserver_cachepolicy_binding LbvserverCachepolicyBinding
+}
+
+func lbvserver_cachepolicy_binding_key_to_id_args(key LbvserverCachepolicyBindingKey) (string, string) {
+	var _ = strconv.Itoa
+
+	result := ""
+
+	result = result + ",name:" + key.Name
+	result = result + ",policyname:" + key.Policyname
+	result = result + ",bindpoint:" + key.Bindpoint
+	return "", result
+}
+
+func (c *NitroClient) AddLbvserverCachepolicyBinding(binding LbvserverCachepolicyBinding) error {
+	payload := add_lbvserver_cachepolicy_binding_payload{
+		binding,
+	}
+
+	return c.put("lbvserver_cachepolicy_binding", "", "", "", payload)
+}
+
+func (c *NitroClient) ListLbvserverCachepolicyBinding(key LbvserverCachepolicyBindingKey) ([]LbvserverCachepolicyBinding, error) {
+	var results get_lbvserver_cachepolicy_binding
+
+	id, args := lbvserver_cachepolicy_binding_key_to_id_args(key)
+
+	if err := c.get("lbvserver_cachepolicy_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverCachepolicyBinding() ([]LbvserverCachepolicyBinding, error) {
+	var results get_lbvserver_cachepolicy_binding
+
+	if err := c.get("lbvserver_cachepolicy_binding", "", "", "", &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
 }
 
 func (c *NitroClient) GetLbvserverCachepolicyBinding(key LbvserverCachepolicyBindingKey) (*LbvserverCachepolicyBinding, error) {
-	return nil, nil
+	var results get_lbvserver_cachepolicy_binding
+
+	id, args := lbvserver_cachepolicy_binding_key_to_id_args(key)
+
+	if err := c.get("lbvserver_cachepolicy_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one lbvserver_cachepolicy_binding element found")
+		} else if len(results.Results) < 1 {
+			//                        return nil, fmt.Errorf("lbvserver_cachepolicy_binding element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
 }
 
 func (c *NitroClient) DeleteLbvserverCachepolicyBinding(key LbvserverCachepolicyBindingKey) error {
-	return nil
+	id, args := lbvserver_cachepolicy_binding_key_to_id_args(key)
+
+	return c.delete("lbvserver_cachepolicy_binding", id, "", args)
 }

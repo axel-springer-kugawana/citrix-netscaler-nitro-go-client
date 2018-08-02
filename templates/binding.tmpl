@@ -1,5 +1,10 @@
 package nitro
 
+import (
+        "fmt"
+        "strconv"
+)
+
 type {{$.Name|name}} struct {
         {{range $field, $type := $.Schema.Fields -}}
         {{if eq $type "double" -}}
@@ -16,18 +21,81 @@ type {{$.Name|name}}Key struct {
         {{end -}}
 }
 
-func (c *NitroClient) Add{{$.Name|name}} (binding {{$.Name|name}}) error {
-        return nil
+type get_{{$.Name}} struct {
+        Results []{{$.Name|name}} `json:"{{$.Name}}"`
 }
 
-func (c *NitroClient) List{{$.Name|name}} () ([]{{$.Name|name}}, error) {
-        return nil, nil
+type add_{{$.Name}}_payload struct {
+        {{$.Name}} {{$.Name|name}}
+}
+
+func {{$.Name}}_key_to_id_args (key {{$.Name|name}}Key) (string, string) {
+        var _ = strconv.Itoa
+
+        result := ""
+
+        {{range $field := $.Schema.Key -}}
+        {{if eq (index $.Schema.Fields $field) "int" -}}
+        result = result + ",{{$field}}:" + strconv.Itoa(key.{{$field|title}})
+        {{else -}}
+        result = result + ",{{$field}}:" + key.{{$field|title}}
+        {{end -}}
+        {{end -}}
+
+        return "", result
+}
+
+func (c *NitroClient) Add{{$.Name|name}} (binding {{$.Name|name}}) error {
+        payload := add_{{$.Name}}_payload {
+                binding,
+        }
+
+        return c.put("{{$.Name}}", "", "", "", payload)
+}
+
+func (c *NitroClient) List{{$.Name|name}} (key {{$.Name|name}}Key) ([]{{$.Name|name}}, error) {
+        var results get_{{$.Name}}
+
+        id, args := {{$.Name}}_key_to_id_args(key)
+        
+	if err := c.get("{{$.Name}}", id, "", args, &results); err != nil {
+                return nil, err
+        } else {
+                return results.Results, err
+        }
+}
+
+func (c *NitroClient) BulkList{{$.Name|name}} () ([]{{$.Name|name}}, error) {
+        var results get_{{$.Name}}
+        
+	if err := c.get("{{$.Name}}", "", "", "", &results); err != nil {
+                return nil, err
+        } else {
+                return results.Results, err
+        }
 }
 
 func (c *NitroClient) Get{{$.Name|name}} (key {{$.Name|name}}Key) (*{{$.Name|name}}, error) {
-        return nil, nil
+        var results get_{{$.Name}}
+        
+        id, args := {{$.Name}}_key_to_id_args(key)
+
+	if err := c.get("{{$.Name}}", id, "", args, &results); err != nil {
+                return nil, err
+        } else {
+                if len(results.Results) > 1 {
+                        return nil, fmt.Errorf("More than one {{$.Name}} element found")
+                } else if len(results.Results) < 1 {
+//                        return nil, fmt.Errorf("{{$.Name}} element not found")
+                        return nil, nil
+                }
+
+                return &results.Results[0], nil
+        }
 }
 
 func (c *NitroClient) Delete{{$.Name|name}} (key {{$.Name|name}}Key) error {
-        return nil
+        id, args := {{$.Name}}_key_to_id_args(key)
+
+        return c.delete("{{$.Name}}", id, "", args)
 }

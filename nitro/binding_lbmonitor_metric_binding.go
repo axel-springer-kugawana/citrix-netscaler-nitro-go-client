@@ -1,5 +1,10 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+)
+
 type LbmonitorMetricBinding struct {
 	Metric          string `json:"metric,omitempty"`
 	Metricthreshold int    `json:"metricthreshold,string,omitempty"`
@@ -12,18 +17,75 @@ type LbmonitorMetricBindingKey struct {
 	Metric      string
 }
 
-func (c *NitroClient) AddLbmonitorMetricBinding(binding LbmonitorMetricBinding) error {
-	return nil
+type get_lbmonitor_metric_binding struct {
+	Results []LbmonitorMetricBinding `json:"lbmonitor_metric_binding"`
 }
 
-func (c *NitroClient) ListLbmonitorMetricBinding() ([]LbmonitorMetricBinding, error) {
-	return nil, nil
+type add_lbmonitor_metric_binding_payload struct {
+	lbmonitor_metric_binding LbmonitorMetricBinding
+}
+
+func lbmonitor_metric_binding_key_to_id_args(key LbmonitorMetricBindingKey) (string, string) {
+	var _ = strconv.Itoa
+
+	result := ""
+
+	result = result + ",monitorname:" + key.Monitorname
+	result = result + ",metric:" + key.Metric
+	return "", result
+}
+
+func (c *NitroClient) AddLbmonitorMetricBinding(binding LbmonitorMetricBinding) error {
+	payload := add_lbmonitor_metric_binding_payload{
+		binding,
+	}
+
+	return c.put("lbmonitor_metric_binding", "", "", "", payload)
+}
+
+func (c *NitroClient) ListLbmonitorMetricBinding(key LbmonitorMetricBindingKey) ([]LbmonitorMetricBinding, error) {
+	var results get_lbmonitor_metric_binding
+
+	id, args := lbmonitor_metric_binding_key_to_id_args(key)
+
+	if err := c.get("lbmonitor_metric_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) BulkListLbmonitorMetricBinding() ([]LbmonitorMetricBinding, error) {
+	var results get_lbmonitor_metric_binding
+
+	if err := c.get("lbmonitor_metric_binding", "", "", "", &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
 }
 
 func (c *NitroClient) GetLbmonitorMetricBinding(key LbmonitorMetricBindingKey) (*LbmonitorMetricBinding, error) {
-	return nil, nil
+	var results get_lbmonitor_metric_binding
+
+	id, args := lbmonitor_metric_binding_key_to_id_args(key)
+
+	if err := c.get("lbmonitor_metric_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one lbmonitor_metric_binding element found")
+		} else if len(results.Results) < 1 {
+			//                        return nil, fmt.Errorf("lbmonitor_metric_binding element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
 }
 
 func (c *NitroClient) DeleteLbmonitorMetricBinding(key LbmonitorMetricBindingKey) error {
-	return nil
+	id, args := lbmonitor_metric_binding_key_to_id_args(key)
+
+	return c.delete("lbmonitor_metric_binding", id, "", args)
 }

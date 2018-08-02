@@ -1,5 +1,10 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+)
+
 type PolicypatsetPatternBinding struct {
 	Charset string `json:"charset,omitempty"`
 	Index   int    `json:"index,string,omitempty"`
@@ -12,18 +17,75 @@ type PolicypatsetPatternBindingKey struct {
 	String string
 }
 
-func (c *NitroClient) AddPolicypatsetPatternBinding(binding PolicypatsetPatternBinding) error {
-	return nil
+type get_policypatset_pattern_binding struct {
+	Results []PolicypatsetPatternBinding `json:"policypatset_pattern_binding"`
 }
 
-func (c *NitroClient) ListPolicypatsetPatternBinding() ([]PolicypatsetPatternBinding, error) {
-	return nil, nil
+type add_policypatset_pattern_binding_payload struct {
+	policypatset_pattern_binding PolicypatsetPatternBinding
+}
+
+func policypatset_pattern_binding_key_to_id_args(key PolicypatsetPatternBindingKey) (string, string) {
+	var _ = strconv.Itoa
+
+	result := ""
+
+	result = result + ",name:" + key.Name
+	result = result + ",string:" + key.String
+	return "", result
+}
+
+func (c *NitroClient) AddPolicypatsetPatternBinding(binding PolicypatsetPatternBinding) error {
+	payload := add_policypatset_pattern_binding_payload{
+		binding,
+	}
+
+	return c.put("policypatset_pattern_binding", "", "", "", payload)
+}
+
+func (c *NitroClient) ListPolicypatsetPatternBinding(key PolicypatsetPatternBindingKey) ([]PolicypatsetPatternBinding, error) {
+	var results get_policypatset_pattern_binding
+
+	id, args := policypatset_pattern_binding_key_to_id_args(key)
+
+	if err := c.get("policypatset_pattern_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) BulkListPolicypatsetPatternBinding() ([]PolicypatsetPatternBinding, error) {
+	var results get_policypatset_pattern_binding
+
+	if err := c.get("policypatset_pattern_binding", "", "", "", &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
 }
 
 func (c *NitroClient) GetPolicypatsetPatternBinding(key PolicypatsetPatternBindingKey) (*PolicypatsetPatternBinding, error) {
-	return nil, nil
+	var results get_policypatset_pattern_binding
+
+	id, args := policypatset_pattern_binding_key_to_id_args(key)
+
+	if err := c.get("policypatset_pattern_binding", id, "", args, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one policypatset_pattern_binding element found")
+		} else if len(results.Results) < 1 {
+			//                        return nil, fmt.Errorf("policypatset_pattern_binding element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
 }
 
 func (c *NitroClient) DeletePolicypatsetPatternBinding(key PolicypatsetPatternBindingKey) error {
-	return nil
+	id, args := policypatset_pattern_binding_key_to_id_args(key)
+
+	return c.delete("policypatset_pattern_binding", id, "", args)
 }

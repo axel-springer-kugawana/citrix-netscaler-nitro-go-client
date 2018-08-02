@@ -2,10 +2,12 @@ package nitro
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func responseHandler(resp *http.Response) ([]byte, error) {
@@ -67,4 +69,68 @@ func (c *NitroClient) doHTTPRequest(method string, url string, bytes *bytes.Buff
 	ret, err := responseHandler(resp)
 
 	return ret, err
+}
+
+func make_url(resourceType string, resourceId string, action string, args string) string {
+	var qs []string
+
+	url := "/nitro/v1/config/" + resourceType
+
+	if len(resourceId) > 0 {
+		url = url + "/" + resourceId
+	}
+
+	if len(args) > 0 {
+		qs = append(qs, "args="+args)
+	}
+
+	if len(action) > 0 {
+		qs = append(qs, "action="+args)
+	}
+
+	if len(qs) > 0 {
+		url = url + "?" + strings.Join(qs, "&")
+	}
+
+	return url
+}
+
+func (c *NitroClient) get(resourceType string, resourceId string, action string, args string, payload interface{}) error {
+	url := make_url(resourceType, resourceId, action, args)
+
+	_, err := c.doHTTPRequest("GET", url, bytes.NewBuffer([]byte{}))
+
+	return err
+}
+
+func (c *NitroClient) put(resourceType string, resourceId string, action string, args string, payload interface{}) error {
+	url := make_url(resourceType, resourceId, action, args)
+
+	if body, err := json.Marshal(payload); err != nil {
+		return err
+	} else {
+		_, err := c.doHTTPRequest("PUT", url, bytes.NewBuffer(body))
+
+		return err
+	}
+}
+
+func (c *NitroClient) post(resourceType string, resourceId string, action string, args string, payload interface{}) error {
+	url := make_url(resourceType, resourceId, action, args)
+
+	if body, err := json.Marshal(payload); err != nil {
+		return err
+	} else {
+		_, err := c.doHTTPRequest("POST", url, bytes.NewBuffer(body))
+
+		return err
+	}
+}
+
+func (c *NitroClient) delete(resourceType string, resourceId string, action string, args string) error {
+	url := make_url(resourceType, resourceId, action, args)
+
+	_, err := c.doHTTPRequest("DELETE", url, bytes.NewBuffer([]byte{}))
+
+	return err
 }

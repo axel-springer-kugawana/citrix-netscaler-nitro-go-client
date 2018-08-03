@@ -20,8 +20,11 @@ type Lbgroup struct {
 	V6persistmasklen         int    `json:"v6persistmasklen,string,omitempty"`
 }
 
-type LbgroupKey struct {
-	Name string `json:"name"`
+func lbgroup_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type LbgroupUnset struct {
@@ -81,19 +84,6 @@ type count_lbgroup_result struct {
 	Results []Count `json:"lbgroup"`
 }
 
-func lbgroup_key_to_id_args(key LbgroupKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddLbgroup(resource Lbgroup) error {
 	payload := add_lbgroup_payload{
 		resource,
@@ -131,7 +121,7 @@ func (c *NitroClient) CountLbgroup() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbgroup(key LbgroupKey) (bool, error) {
+func (c *NitroClient) ExistsLbgroup(key string) (bool, error) {
 	var results count_lbgroup_result
 
 	id, qs := lbgroup_key_to_id_args(key)
@@ -146,7 +136,7 @@ func (c *NitroClient) ExistsLbgroup(key LbgroupKey) (bool, error) {
 }
 
 func (c *NitroClient) ListLbgroup() ([]Lbgroup, error) {
-	var results get_lbgroup_result
+	results := get_lbgroup_result{}
 
 	if err := c.get("lbgroup", "", nil, &results); err != nil {
 		return nil, err
@@ -155,7 +145,7 @@ func (c *NitroClient) ListLbgroup() ([]Lbgroup, error) {
 	}
 }
 
-func (c *NitroClient) GetLbgroup(key LbgroupKey) (*Lbgroup, error) {
+func (c *NitroClient) GetLbgroup(key string) (*Lbgroup, error) {
 	var results get_lbgroup_result
 
 	id, qs := lbgroup_key_to_id_args(key)
@@ -175,7 +165,7 @@ func (c *NitroClient) GetLbgroup(key LbgroupKey) (*Lbgroup, error) {
 	}
 }
 
-func (c *NitroClient) DeleteLbgroup(key LbgroupKey) error {
+func (c *NitroClient) DeleteLbgroup(key string) error {
 	id, qs := lbgroup_key_to_id_args(key)
 
 	return c.delete("lbgroup", id, qs)

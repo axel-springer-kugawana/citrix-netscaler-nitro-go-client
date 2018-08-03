@@ -14,8 +14,11 @@ type Policyexpression struct {
 	Value                 string `json:"value,omitempty"`
 }
 
-type PolicyexpressionKey struct {
-	Name string `json:"name"`
+func policyexpression_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type PolicyexpressionUnset struct {
@@ -63,19 +66,6 @@ type count_policyexpression_result struct {
 	Results []Count `json:"policyexpression"`
 }
 
-func policyexpression_key_to_id_args(key PolicyexpressionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddPolicyexpression(resource Policyexpression) error {
 	payload := add_policyexpression_payload{
 		resource,
@@ -113,7 +103,7 @@ func (c *NitroClient) CountPolicyexpression() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPolicyexpression(key PolicyexpressionKey) (bool, error) {
+func (c *NitroClient) ExistsPolicyexpression(key string) (bool, error) {
 	var results count_policyexpression_result
 
 	id, qs := policyexpression_key_to_id_args(key)
@@ -128,7 +118,7 @@ func (c *NitroClient) ExistsPolicyexpression(key PolicyexpressionKey) (bool, err
 }
 
 func (c *NitroClient) ListPolicyexpression() ([]Policyexpression, error) {
-	var results get_policyexpression_result
+	results := get_policyexpression_result{}
 
 	if err := c.get("policyexpression", "", nil, &results); err != nil {
 		return nil, err
@@ -137,7 +127,7 @@ func (c *NitroClient) ListPolicyexpression() ([]Policyexpression, error) {
 	}
 }
 
-func (c *NitroClient) GetPolicyexpression(key PolicyexpressionKey) (*Policyexpression, error) {
+func (c *NitroClient) GetPolicyexpression(key string) (*Policyexpression, error) {
 	var results get_policyexpression_result
 
 	id, qs := policyexpression_key_to_id_args(key)
@@ -157,7 +147,7 @@ func (c *NitroClient) GetPolicyexpression(key PolicyexpressionKey) (*Policyexpre
 	}
 }
 
-func (c *NitroClient) DeletePolicyexpression(key PolicyexpressionKey) error {
+func (c *NitroClient) DeletePolicyexpression(key string) error {
 	id, qs := policyexpression_key_to_id_args(key)
 
 	return c.delete("policyexpression", id, qs)

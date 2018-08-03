@@ -32,8 +32,11 @@ type Feoaction struct {
 	Pageextendcache        bool     `json:"pageextendcache,omitempty"`
 }
 
-type FeoactionKey struct {
-	Name string `json:"name"`
+func feoaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type FeoactionUnset struct {
@@ -117,19 +120,6 @@ type count_feoaction_result struct {
 	Results []Count `json:"feoaction"`
 }
 
-func feoaction_key_to_id_args(key FeoactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddFeoaction(resource Feoaction) error {
 	payload := add_feoaction_payload{
 		resource,
@@ -167,7 +157,7 @@ func (c *NitroClient) CountFeoaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsFeoaction(key FeoactionKey) (bool, error) {
+func (c *NitroClient) ExistsFeoaction(key string) (bool, error) {
 	var results count_feoaction_result
 
 	id, qs := feoaction_key_to_id_args(key)
@@ -182,7 +172,7 @@ func (c *NitroClient) ExistsFeoaction(key FeoactionKey) (bool, error) {
 }
 
 func (c *NitroClient) ListFeoaction() ([]Feoaction, error) {
-	var results get_feoaction_result
+	results := get_feoaction_result{}
 
 	if err := c.get("feoaction", "", nil, &results); err != nil {
 		return nil, err
@@ -191,7 +181,7 @@ func (c *NitroClient) ListFeoaction() ([]Feoaction, error) {
 	}
 }
 
-func (c *NitroClient) GetFeoaction(key FeoactionKey) (*Feoaction, error) {
+func (c *NitroClient) GetFeoaction(key string) (*Feoaction, error) {
 	var results get_feoaction_result
 
 	id, qs := feoaction_key_to_id_args(key)
@@ -211,7 +201,7 @@ func (c *NitroClient) GetFeoaction(key FeoactionKey) (*Feoaction, error) {
 	}
 }
 
-func (c *NitroClient) DeleteFeoaction(key FeoactionKey) error {
+func (c *NitroClient) DeleteFeoaction(key string) error {
 	id, qs := feoaction_key_to_id_args(key)
 
 	return c.delete("feoaction", id, qs)

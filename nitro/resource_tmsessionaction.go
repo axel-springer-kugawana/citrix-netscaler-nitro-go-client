@@ -20,8 +20,11 @@ type Tmsessionaction struct {
 	Ssodomain                  string `json:"ssodomain,omitempty"`
 }
 
-type TmsessionactionKey struct {
-	Name string `json:"name"`
+func tmsessionaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type TmsessionactionUnset struct {
@@ -81,19 +84,6 @@ type count_tmsessionaction_result struct {
 	Results []Count `json:"tmsessionaction"`
 }
 
-func tmsessionaction_key_to_id_args(key TmsessionactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddTmsessionaction(resource Tmsessionaction) error {
 	payload := add_tmsessionaction_payload{
 		resource,
@@ -131,7 +121,7 @@ func (c *NitroClient) CountTmsessionaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTmsessionaction(key TmsessionactionKey) (bool, error) {
+func (c *NitroClient) ExistsTmsessionaction(key string) (bool, error) {
 	var results count_tmsessionaction_result
 
 	id, qs := tmsessionaction_key_to_id_args(key)
@@ -146,7 +136,7 @@ func (c *NitroClient) ExistsTmsessionaction(key TmsessionactionKey) (bool, error
 }
 
 func (c *NitroClient) ListTmsessionaction() ([]Tmsessionaction, error) {
-	var results get_tmsessionaction_result
+	results := get_tmsessionaction_result{}
 
 	if err := c.get("tmsessionaction", "", nil, &results); err != nil {
 		return nil, err
@@ -155,7 +145,7 @@ func (c *NitroClient) ListTmsessionaction() ([]Tmsessionaction, error) {
 	}
 }
 
-func (c *NitroClient) GetTmsessionaction(key TmsessionactionKey) (*Tmsessionaction, error) {
+func (c *NitroClient) GetTmsessionaction(key string) (*Tmsessionaction, error) {
 	var results get_tmsessionaction_result
 
 	id, qs := tmsessionaction_key_to_id_args(key)
@@ -175,7 +165,7 @@ func (c *NitroClient) GetTmsessionaction(key TmsessionactionKey) (*Tmsessionacti
 	}
 }
 
-func (c *NitroClient) DeleteTmsessionaction(key TmsessionactionKey) error {
+func (c *NitroClient) DeleteTmsessionaction(key string) error {
 	id, qs := tmsessionaction_key_to_id_args(key)
 
 	return c.delete("tmsessionaction", id, qs)

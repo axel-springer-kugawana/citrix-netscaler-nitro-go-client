@@ -20,6 +20,7 @@ type {{$.Name|name}} struct {
         {{end -}}
 }
 
+{{if $.Schema.Key.Fields -}}
 type {{$.Name|name}}Key struct {
         {{$.Schema.Key.Name|title}} string `json:"{{$.Schema.Key.Name}}"`
         {{range $field := $.Schema.Key.Fields -}}
@@ -31,6 +32,36 @@ type {{$.Name|name}}Key struct {
         {{end -}}
 }
 
+func {{$.Name}}_key_to_id_args (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key{{else}}string{{end}}) (string, map[string]string) {
+        var _ = strconv.Itoa
+        var args []string
+
+        {{range $field := $.Schema.Key.Fields -}}
+        {{if eq (index $.Schema.Fields $field) "int" -}}
+        args = append(args, "{{$field}}:" + strconv.Itoa(key.{{$field|title}}))
+        {{else -}}
+        args = append(args, "{{$field}}:" + key.{{$field|title}})
+        {{end -}}
+        {{end}}
+
+        qs := map[string]string{}
+
+        if len(args) > 0 {
+                qs["args"] = strings.Join(args, ",")
+        }
+
+        return key.{{$.Schema.Key.Name|title}}, qs
+}
+
+{{else -}}
+func {{$.Name}}_key_to_id_args (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key{{else}}string{{end}}) (string, map[string]string) {
+        var _ = strconv.Itoa
+        var _ = strings.Join
+
+        return key, nil
+}
+
+{{end -}}
 {{if $.Schema.Update -}}
 type {{$.Name|name}}Unset struct {
         {{$.Schema.Key.Name|title}} string `json:"{{$.Schema.Key.Name}}"`
@@ -81,8 +112,16 @@ type rename_{{$.Name}}_payload struct {
 }
 
 {{if $.Schema.State -}}
+type state_{{$.Name}} struct {
+        {{if $.Schema.Key.Fields -}}
+        Key {{$.Name|name}}Key `json:"{{$.Schema.Key.Name}}"`
+        {{else -}}
+        Key string `json:"{{$.Schema.Key.Name}}"`
+        {{end -}}
+}
+
 type state_{{$.Name}}_payload struct {
-        Key {{$.Name|name}}Key `json:"{{$.Name}}"`
+        Sate state_{{$.Name}} `json:"{{$.Name}}"`
 }
 
 {{end -}}
@@ -102,27 +141,6 @@ type get_{{$.Name}}_result struct {
 
 type count_{{$.Name}}_result struct {
         Results []Count `json:"{{$.Name}}"`
-}
-
-func {{$.Name}}_key_to_id_args (key {{$.Name|name}}Key) (string, map[string]string) {
-        var _ = strconv.Itoa
-        var args []string
-
-        {{range $field := $.Schema.Key.Fields -}}
-        {{if eq (index $.Schema.Fields $field) "int" -}}
-        args = append(args, "{{$field}}:" + strconv.Itoa(key.{{$field|title}}))
-        {{else -}}
-        args = append(args, "{{$field}}:" + key.{{$field|title}})
-        {{end -}}
-        {{end}}
-
-        qs := map[string]string{}
-
-        if len(args) > 0 {
-                qs["args"] = strings.Join(args, ",")
-        }
-
-        return key.{{$.Schema.Key.Name|title}}, qs
 }
 
 func (c *NitroClient) Add{{$.Name|name}} (resource {{$.Name|name}}) error {
@@ -162,7 +180,7 @@ func (c *NitroClient) Count{{$.Name|name}} () (int, error) {
         }
 }
 
-func (c *NitroClient) Exists{{$.Name|name}} (key {{$.Name|name}}Key) (bool, error) {
+func (c *NitroClient) Exists{{$.Name|name}} (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key{{else}}string{{end}}) (bool, error) {
         var results count_{{$.Name}}_result
         
         id, qs := {{$.Name}}_key_to_id_args(key)
@@ -177,7 +195,7 @@ func (c *NitroClient) Exists{{$.Name|name}} (key {{$.Name|name}}Key) (bool, erro
 }
 
 func (c *NitroClient) List{{$.Name|name}} () ([]{{$.Name|name}}, error) {
-        var results get_{{$.Name}}_result
+        results := get_{{$.Name}}_result{}
         
 	if err := c.get("{{$.Name}}", "", nil, &results); err != nil {
                 return nil, err
@@ -186,7 +204,7 @@ func (c *NitroClient) List{{$.Name|name}} () ([]{{$.Name|name}}, error) {
         }
 }
 
-func (c *NitroClient) Get{{$.Name|name}} (key {{$.Name|name}}Key) (*{{$.Name|name}}, error) {
+func (c *NitroClient) Get{{$.Name|name}} (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key{{else}}string{{end}}) (*{{$.Name|name}}, error) {
         var results get_{{$.Name}}_result
         
         id, qs := {{$.Name}}_key_to_id_args(key)
@@ -206,7 +224,7 @@ func (c *NitroClient) Get{{$.Name|name}} (key {{$.Name|name}}Key) (*{{$.Name|nam
         }
 }
 
-func (c *NitroClient) Delete{{$.Name|name}} (key {{$.Name|name}}Key) error {
+func (c *NitroClient) Delete{{$.Name|name}} (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key{{else}}string{{end}}) error {
         id, qs := {{$.Name}}_key_to_id_args(key)
 
         return c.delete("{{$.Name}}", id, qs)
@@ -244,9 +262,11 @@ func (c *NitroClient) Update{{$.Name|name}} (resource {{$.Name|name}}) error {
 
 {{end -}}
 {{if $.Schema.State -}}
-func (c *NitroClient) Enable{{$.Name|name}} (key {{$.Name|name}}Key) error {
+func (c *NitroClient) Enable{{$.Name|name}} (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key{{else}}string{{end}}) error {
         payload := state_{{$.Name}}_payload {
-                 key,
+                state_{{$.Name}} {
+                        key,
+                },
         }
 
         qs := map[string]string {
@@ -256,9 +276,11 @@ func (c *NitroClient) Enable{{$.Name|name}} (key {{$.Name|name}}Key) error {
         return c.post("{{$.Name}}", "", qs, payload)
 }
 
-func (c *NitroClient) Disable{{$.Name|name}} (key {{$.Name|name}}Key) error {
+func (c *NitroClient) Disable{{$.Name|name}} (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key{{else}}string{{end}}) error {
         payload := state_{{$.Name}}_payload {
-                 key,
+                state_{{$.Name}} {
+                        key,
+                },
         }
 
         qs := map[string]string {

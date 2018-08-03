@@ -12,8 +12,11 @@ type Dospolicy struct {
 	Qdepth        int    `json:"qdepth,string,omitempty"`
 }
 
-type DospolicyKey struct {
-	Name string `json:"name"`
+func dospolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type DospolicyUnset struct {
@@ -57,19 +60,6 @@ type count_dospolicy_result struct {
 	Results []Count `json:"dospolicy"`
 }
 
-func dospolicy_key_to_id_args(key DospolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddDospolicy(resource Dospolicy) error {
 	payload := add_dospolicy_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountDospolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDospolicy(key DospolicyKey) (bool, error) {
+func (c *NitroClient) ExistsDospolicy(key string) (bool, error) {
 	var results count_dospolicy_result
 
 	id, qs := dospolicy_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsDospolicy(key DospolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListDospolicy() ([]Dospolicy, error) {
-	var results get_dospolicy_result
+	results := get_dospolicy_result{}
 
 	if err := c.get("dospolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListDospolicy() ([]Dospolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetDospolicy(key DospolicyKey) (*Dospolicy, error) {
+func (c *NitroClient) GetDospolicy(key string) (*Dospolicy, error) {
 	var results get_dospolicy_result
 
 	id, qs := dospolicy_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetDospolicy(key DospolicyKey) (*Dospolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeleteDospolicy(key DospolicyKey) error {
+func (c *NitroClient) DeleteDospolicy(key string) error {
 	id, qs := dospolicy_key_to_id_args(key)
 
 	return c.delete("dospolicy", id, qs)

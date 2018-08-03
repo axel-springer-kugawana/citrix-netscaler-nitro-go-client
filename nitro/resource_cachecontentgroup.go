@@ -48,8 +48,11 @@ type Cachecontentgroup struct {
 	Weakposrelexpiry       int      `json:"weakposrelexpiry,string,omitempty"`
 }
 
-type CachecontentgroupKey struct {
-	Name string `json:"name"`
+func cachecontentgroup_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type CachecontentgroupUnset struct {
@@ -163,19 +166,6 @@ type count_cachecontentgroup_result struct {
 	Results []Count `json:"cachecontentgroup"`
 }
 
-func cachecontentgroup_key_to_id_args(key CachecontentgroupKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddCachecontentgroup(resource Cachecontentgroup) error {
 	payload := add_cachecontentgroup_payload{
 		resource,
@@ -213,7 +203,7 @@ func (c *NitroClient) CountCachecontentgroup() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCachecontentgroup(key CachecontentgroupKey) (bool, error) {
+func (c *NitroClient) ExistsCachecontentgroup(key string) (bool, error) {
 	var results count_cachecontentgroup_result
 
 	id, qs := cachecontentgroup_key_to_id_args(key)
@@ -228,7 +218,7 @@ func (c *NitroClient) ExistsCachecontentgroup(key CachecontentgroupKey) (bool, e
 }
 
 func (c *NitroClient) ListCachecontentgroup() ([]Cachecontentgroup, error) {
-	var results get_cachecontentgroup_result
+	results := get_cachecontentgroup_result{}
 
 	if err := c.get("cachecontentgroup", "", nil, &results); err != nil {
 		return nil, err
@@ -237,7 +227,7 @@ func (c *NitroClient) ListCachecontentgroup() ([]Cachecontentgroup, error) {
 	}
 }
 
-func (c *NitroClient) GetCachecontentgroup(key CachecontentgroupKey) (*Cachecontentgroup, error) {
+func (c *NitroClient) GetCachecontentgroup(key string) (*Cachecontentgroup, error) {
 	var results get_cachecontentgroup_result
 
 	id, qs := cachecontentgroup_key_to_id_args(key)
@@ -257,7 +247,7 @@ func (c *NitroClient) GetCachecontentgroup(key CachecontentgroupKey) (*Cachecont
 	}
 }
 
-func (c *NitroClient) DeleteCachecontentgroup(key CachecontentgroupKey) error {
+func (c *NitroClient) DeleteCachecontentgroup(key string) error {
 	id, qs := cachecontentgroup_key_to_id_args(key)
 
 	return c.delete("cachecontentgroup", id, qs)

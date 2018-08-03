@@ -12,8 +12,11 @@ type Authorizationpolicy struct {
 	Rule   string `json:"rule,omitempty"`
 }
 
-type AuthorizationpolicyKey struct {
-	Name string `json:"name"`
+func authorizationpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AuthorizationpolicyUnset struct {
@@ -57,19 +60,6 @@ type count_authorizationpolicy_result struct {
 	Results []Count `json:"authorizationpolicy"`
 }
 
-func authorizationpolicy_key_to_id_args(key AuthorizationpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAuthorizationpolicy(resource Authorizationpolicy) error {
 	payload := add_authorizationpolicy_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountAuthorizationpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAuthorizationpolicy(key AuthorizationpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsAuthorizationpolicy(key string) (bool, error) {
 	var results count_authorizationpolicy_result
 
 	id, qs := authorizationpolicy_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsAuthorizationpolicy(key AuthorizationpolicyKey) (boo
 }
 
 func (c *NitroClient) ListAuthorizationpolicy() ([]Authorizationpolicy, error) {
-	var results get_authorizationpolicy_result
+	results := get_authorizationpolicy_result{}
 
 	if err := c.get("authorizationpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListAuthorizationpolicy() ([]Authorizationpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*Authorizationpolicy, error) {
+func (c *NitroClient) GetAuthorizationpolicy(key string) (*Authorizationpolicy, error) {
 	var results get_authorizationpolicy_result
 
 	id, qs := authorizationpolicy_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*Autho
 	}
 }
 
-func (c *NitroClient) DeleteAuthorizationpolicy(key AuthorizationpolicyKey) error {
+func (c *NitroClient) DeleteAuthorizationpolicy(key string) error {
 	id, qs := authorizationpolicy_key_to_id_args(key)
 
 	return c.delete("authorizationpolicy", id, qs)

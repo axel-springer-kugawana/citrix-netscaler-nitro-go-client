@@ -12,8 +12,11 @@ type Responderpolicylabel struct {
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
 
-type ResponderpolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func responderpolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_responderpolicylabel struct {
@@ -35,19 +38,6 @@ type get_responderpolicylabel_result struct {
 
 type count_responderpolicylabel_result struct {
 	Results []Count `json:"responderpolicylabel"`
-}
-
-func responderpolicylabel_key_to_id_args(key ResponderpolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddResponderpolicylabel(resource Responderpolicylabel) error {
@@ -87,7 +77,7 @@ func (c *NitroClient) CountResponderpolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsResponderpolicylabel(key ResponderpolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsResponderpolicylabel(key string) (bool, error) {
 	var results count_responderpolicylabel_result
 
 	id, qs := responderpolicylabel_key_to_id_args(key)
@@ -102,7 +92,7 @@ func (c *NitroClient) ExistsResponderpolicylabel(key ResponderpolicylabelKey) (b
 }
 
 func (c *NitroClient) ListResponderpolicylabel() ([]Responderpolicylabel, error) {
-	var results get_responderpolicylabel_result
+	results := get_responderpolicylabel_result{}
 
 	if err := c.get("responderpolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -111,7 +101,7 @@ func (c *NitroClient) ListResponderpolicylabel() ([]Responderpolicylabel, error)
 	}
 }
 
-func (c *NitroClient) GetResponderpolicylabel(key ResponderpolicylabelKey) (*Responderpolicylabel, error) {
+func (c *NitroClient) GetResponderpolicylabel(key string) (*Responderpolicylabel, error) {
 	var results get_responderpolicylabel_result
 
 	id, qs := responderpolicylabel_key_to_id_args(key)
@@ -131,7 +121,7 @@ func (c *NitroClient) GetResponderpolicylabel(key ResponderpolicylabelKey) (*Res
 	}
 }
 
-func (c *NitroClient) DeleteResponderpolicylabel(key ResponderpolicylabelKey) error {
+func (c *NitroClient) DeleteResponderpolicylabel(key string) error {
 	id, qs := responderpolicylabel_key_to_id_args(key)
 
 	return c.delete("responderpolicylabel", id, qs)

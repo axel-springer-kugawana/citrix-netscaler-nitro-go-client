@@ -12,8 +12,11 @@ type Cmppolicy struct {
 	Rule      string `json:"rule,omitempty"`
 }
 
-type CmppolicyKey struct {
-	Name string `json:"name"`
+func cmppolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type CmppolicyUnset struct {
@@ -57,19 +60,6 @@ type count_cmppolicy_result struct {
 	Results []Count `json:"cmppolicy"`
 }
 
-func cmppolicy_key_to_id_args(key CmppolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddCmppolicy(resource Cmppolicy) error {
 	payload := add_cmppolicy_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountCmppolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCmppolicy(key CmppolicyKey) (bool, error) {
+func (c *NitroClient) ExistsCmppolicy(key string) (bool, error) {
 	var results count_cmppolicy_result
 
 	id, qs := cmppolicy_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsCmppolicy(key CmppolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListCmppolicy() ([]Cmppolicy, error) {
-	var results get_cmppolicy_result
+	results := get_cmppolicy_result{}
 
 	if err := c.get("cmppolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListCmppolicy() ([]Cmppolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetCmppolicy(key CmppolicyKey) (*Cmppolicy, error) {
+func (c *NitroClient) GetCmppolicy(key string) (*Cmppolicy, error) {
 	var results get_cmppolicy_result
 
 	id, qs := cmppolicy_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetCmppolicy(key CmppolicyKey) (*Cmppolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeleteCmppolicy(key CmppolicyKey) error {
+func (c *NitroClient) DeleteCmppolicy(key string) error {
 	id, qs := cmppolicy_key_to_id_args(key)
 
 	return c.delete("cmppolicy", id, qs)

@@ -12,8 +12,11 @@ type Appqoepolicy struct {
 	Rule   string `json:"rule,omitempty"`
 }
 
-type AppqoepolicyKey struct {
-	Name string `json:"name"`
+func appqoepolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AppqoepolicyUnset struct {
@@ -57,19 +60,6 @@ type count_appqoepolicy_result struct {
 	Results []Count `json:"appqoepolicy"`
 }
 
-func appqoepolicy_key_to_id_args(key AppqoepolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAppqoepolicy(resource Appqoepolicy) error {
 	payload := add_appqoepolicy_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountAppqoepolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppqoepolicy(key AppqoepolicyKey) (bool, error) {
+func (c *NitroClient) ExistsAppqoepolicy(key string) (bool, error) {
 	var results count_appqoepolicy_result
 
 	id, qs := appqoepolicy_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsAppqoepolicy(key AppqoepolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListAppqoepolicy() ([]Appqoepolicy, error) {
-	var results get_appqoepolicy_result
+	results := get_appqoepolicy_result{}
 
 	if err := c.get("appqoepolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListAppqoepolicy() ([]Appqoepolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetAppqoepolicy(key AppqoepolicyKey) (*Appqoepolicy, error) {
+func (c *NitroClient) GetAppqoepolicy(key string) (*Appqoepolicy, error) {
 	var results get_appqoepolicy_result
 
 	id, qs := appqoepolicy_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetAppqoepolicy(key AppqoepolicyKey) (*Appqoepolicy, error
 	}
 }
 
-func (c *NitroClient) DeleteAppqoepolicy(key AppqoepolicyKey) error {
+func (c *NitroClient) DeleteAppqoepolicy(key string) error {
 	id, qs := appqoepolicy_key_to_id_args(key)
 
 	return c.delete("appqoepolicy", id, qs)

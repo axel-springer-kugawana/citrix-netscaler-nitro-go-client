@@ -15,8 +15,11 @@ type Pqpolicy struct {
 	Weight     int    `json:"weight,string,omitempty"`
 }
 
-type PqpolicyKey struct {
-	Policyname string `json:"policyname"`
+func pqpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type PqpolicyUnset struct {
@@ -62,19 +65,6 @@ type count_pqpolicy_result struct {
 	Results []Count `json:"pqpolicy"`
 }
 
-func pqpolicy_key_to_id_args(key PqpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Policyname, qs
-}
-
 func (c *NitroClient) AddPqpolicy(resource Pqpolicy) error {
 	payload := add_pqpolicy_payload{
 		resource,
@@ -112,7 +102,7 @@ func (c *NitroClient) CountPqpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPqpolicy(key PqpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsPqpolicy(key string) (bool, error) {
 	var results count_pqpolicy_result
 
 	id, qs := pqpolicy_key_to_id_args(key)
@@ -127,7 +117,7 @@ func (c *NitroClient) ExistsPqpolicy(key PqpolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListPqpolicy() ([]Pqpolicy, error) {
-	var results get_pqpolicy_result
+	results := get_pqpolicy_result{}
 
 	if err := c.get("pqpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -136,7 +126,7 @@ func (c *NitroClient) ListPqpolicy() ([]Pqpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetPqpolicy(key PqpolicyKey) (*Pqpolicy, error) {
+func (c *NitroClient) GetPqpolicy(key string) (*Pqpolicy, error) {
 	var results get_pqpolicy_result
 
 	id, qs := pqpolicy_key_to_id_args(key)
@@ -156,7 +146,7 @@ func (c *NitroClient) GetPqpolicy(key PqpolicyKey) (*Pqpolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeletePqpolicy(key PqpolicyKey) error {
+func (c *NitroClient) DeletePqpolicy(key string) error {
 	id, qs := pqpolicy_key_to_id_args(key)
 
 	return c.delete("pqpolicy", id, qs)

@@ -18,8 +18,11 @@ type Dnsprofile struct {
 	Dropmultiqueryrequest  string `json:"dropmultiqueryrequest,omitempty"`
 }
 
-type DnsprofileKey struct {
-	Dnsprofilename string `json:"dnsprofilename"`
+func dnsprofile_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type DnsprofileUnset struct {
@@ -75,19 +78,6 @@ type count_dnsprofile_result struct {
 	Results []Count `json:"dnsprofile"`
 }
 
-func dnsprofile_key_to_id_args(key DnsprofileKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Dnsprofilename, qs
-}
-
 func (c *NitroClient) AddDnsprofile(resource Dnsprofile) error {
 	payload := add_dnsprofile_payload{
 		resource,
@@ -125,7 +115,7 @@ func (c *NitroClient) CountDnsprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDnsprofile(key DnsprofileKey) (bool, error) {
+func (c *NitroClient) ExistsDnsprofile(key string) (bool, error) {
 	var results count_dnsprofile_result
 
 	id, qs := dnsprofile_key_to_id_args(key)
@@ -140,7 +130,7 @@ func (c *NitroClient) ExistsDnsprofile(key DnsprofileKey) (bool, error) {
 }
 
 func (c *NitroClient) ListDnsprofile() ([]Dnsprofile, error) {
-	var results get_dnsprofile_result
+	results := get_dnsprofile_result{}
 
 	if err := c.get("dnsprofile", "", nil, &results); err != nil {
 		return nil, err
@@ -149,7 +139,7 @@ func (c *NitroClient) ListDnsprofile() ([]Dnsprofile, error) {
 	}
 }
 
-func (c *NitroClient) GetDnsprofile(key DnsprofileKey) (*Dnsprofile, error) {
+func (c *NitroClient) GetDnsprofile(key string) (*Dnsprofile, error) {
 	var results get_dnsprofile_result
 
 	id, qs := dnsprofile_key_to_id_args(key)
@@ -169,7 +159,7 @@ func (c *NitroClient) GetDnsprofile(key DnsprofileKey) (*Dnsprofile, error) {
 	}
 }
 
-func (c *NitroClient) DeleteDnsprofile(key DnsprofileKey) error {
+func (c *NitroClient) DeleteDnsprofile(key string) error {
 	id, qs := dnsprofile_key_to_id_args(key)
 
 	return c.delete("dnsprofile", id, qs)

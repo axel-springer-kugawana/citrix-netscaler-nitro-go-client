@@ -42,8 +42,11 @@ type Nshttpprofile struct {
 	Websocket                 string `json:"websocket,omitempty"`
 }
 
-type NshttpprofileKey struct {
-	Name string `json:"name"`
+func nshttpprofile_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type NshttpprofileUnset struct {
@@ -147,19 +150,6 @@ type count_nshttpprofile_result struct {
 	Results []Count `json:"nshttpprofile"`
 }
 
-func nshttpprofile_key_to_id_args(key NshttpprofileKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddNshttpprofile(resource Nshttpprofile) error {
 	payload := add_nshttpprofile_payload{
 		resource,
@@ -197,7 +187,7 @@ func (c *NitroClient) CountNshttpprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsNshttpprofile(key NshttpprofileKey) (bool, error) {
+func (c *NitroClient) ExistsNshttpprofile(key string) (bool, error) {
 	var results count_nshttpprofile_result
 
 	id, qs := nshttpprofile_key_to_id_args(key)
@@ -212,7 +202,7 @@ func (c *NitroClient) ExistsNshttpprofile(key NshttpprofileKey) (bool, error) {
 }
 
 func (c *NitroClient) ListNshttpprofile() ([]Nshttpprofile, error) {
-	var results get_nshttpprofile_result
+	results := get_nshttpprofile_result{}
 
 	if err := c.get("nshttpprofile", "", nil, &results); err != nil {
 		return nil, err
@@ -221,7 +211,7 @@ func (c *NitroClient) ListNshttpprofile() ([]Nshttpprofile, error) {
 	}
 }
 
-func (c *NitroClient) GetNshttpprofile(key NshttpprofileKey) (*Nshttpprofile, error) {
+func (c *NitroClient) GetNshttpprofile(key string) (*Nshttpprofile, error) {
 	var results get_nshttpprofile_result
 
 	id, qs := nshttpprofile_key_to_id_args(key)
@@ -241,7 +231,7 @@ func (c *NitroClient) GetNshttpprofile(key NshttpprofileKey) (*Nshttpprofile, er
 	}
 }
 
-func (c *NitroClient) DeleteNshttpprofile(key NshttpprofileKey) error {
+func (c *NitroClient) DeleteNshttpprofile(key string) error {
 	id, qs := nshttpprofile_key_to_id_args(key)
 
 	return c.delete("nshttpprofile", id, qs)

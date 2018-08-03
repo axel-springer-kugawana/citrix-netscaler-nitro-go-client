@@ -15,8 +15,11 @@ type Filteraction struct {
 	Value       string `json:"value,omitempty"`
 }
 
-type FilteractionKey struct {
-	Name string `json:"name"`
+func filteraction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type FilteractionUnset struct {
@@ -64,19 +67,6 @@ type count_filteraction_result struct {
 	Results []Count `json:"filteraction"`
 }
 
-func filteraction_key_to_id_args(key FilteractionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddFilteraction(resource Filteraction) error {
 	payload := add_filteraction_payload{
 		resource,
@@ -114,7 +104,7 @@ func (c *NitroClient) CountFilteraction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsFilteraction(key FilteractionKey) (bool, error) {
+func (c *NitroClient) ExistsFilteraction(key string) (bool, error) {
 	var results count_filteraction_result
 
 	id, qs := filteraction_key_to_id_args(key)
@@ -129,7 +119,7 @@ func (c *NitroClient) ExistsFilteraction(key FilteractionKey) (bool, error) {
 }
 
 func (c *NitroClient) ListFilteraction() ([]Filteraction, error) {
-	var results get_filteraction_result
+	results := get_filteraction_result{}
 
 	if err := c.get("filteraction", "", nil, &results); err != nil {
 		return nil, err
@@ -138,7 +128,7 @@ func (c *NitroClient) ListFilteraction() ([]Filteraction, error) {
 	}
 }
 
-func (c *NitroClient) GetFilteraction(key FilteractionKey) (*Filteraction, error) {
+func (c *NitroClient) GetFilteraction(key string) (*Filteraction, error) {
 	var results get_filteraction_result
 
 	id, qs := filteraction_key_to_id_args(key)
@@ -158,7 +148,7 @@ func (c *NitroClient) GetFilteraction(key FilteractionKey) (*Filteraction, error
 	}
 }
 
-func (c *NitroClient) DeleteFilteraction(key FilteractionKey) error {
+func (c *NitroClient) DeleteFilteraction(key string) error {
 	id, qs := filteraction_key_to_id_args(key)
 
 	return c.delete("filteraction", id, qs)

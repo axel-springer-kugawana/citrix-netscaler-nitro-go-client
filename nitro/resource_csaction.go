@@ -14,8 +14,11 @@ type Csaction struct {
 	Targetvserverexpr string `json:"targetvserverexpr,omitempty"`
 }
 
-type CsactionKey struct {
-	Name string `json:"name"`
+func csaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type CsactionUnset struct {
@@ -63,19 +66,6 @@ type count_csaction_result struct {
 	Results []Count `json:"csaction"`
 }
 
-func csaction_key_to_id_args(key CsactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddCsaction(resource Csaction) error {
 	payload := add_csaction_payload{
 		resource,
@@ -113,7 +103,7 @@ func (c *NitroClient) CountCsaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCsaction(key CsactionKey) (bool, error) {
+func (c *NitroClient) ExistsCsaction(key string) (bool, error) {
 	var results count_csaction_result
 
 	id, qs := csaction_key_to_id_args(key)
@@ -128,7 +118,7 @@ func (c *NitroClient) ExistsCsaction(key CsactionKey) (bool, error) {
 }
 
 func (c *NitroClient) ListCsaction() ([]Csaction, error) {
-	var results get_csaction_result
+	results := get_csaction_result{}
 
 	if err := c.get("csaction", "", nil, &results); err != nil {
 		return nil, err
@@ -137,7 +127,7 @@ func (c *NitroClient) ListCsaction() ([]Csaction, error) {
 	}
 }
 
-func (c *NitroClient) GetCsaction(key CsactionKey) (*Csaction, error) {
+func (c *NitroClient) GetCsaction(key string) (*Csaction, error) {
 	var results get_csaction_result
 
 	id, qs := csaction_key_to_id_args(key)
@@ -157,7 +147,7 @@ func (c *NitroClient) GetCsaction(key CsactionKey) (*Csaction, error) {
 	}
 }
 
-func (c *NitroClient) DeleteCsaction(key CsactionKey) error {
+func (c *NitroClient) DeleteCsaction(key string) error {
 	id, qs := csaction_key_to_id_args(key)
 
 	return c.delete("csaction", id, qs)

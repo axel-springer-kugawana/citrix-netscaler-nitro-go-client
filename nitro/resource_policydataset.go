@@ -13,8 +13,11 @@ type Policydataset struct {
 	Type      string `json:"type,omitempty"`
 }
 
-type PolicydatasetKey struct {
-	Name string `json:"name"`
+func policydataset_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_policydataset struct {
@@ -36,19 +39,6 @@ type get_policydataset_result struct {
 
 type count_policydataset_result struct {
 	Results []Count `json:"policydataset"`
-}
-
-func policydataset_key_to_id_args(key PolicydatasetKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
 }
 
 func (c *NitroClient) AddPolicydataset(resource Policydataset) error {
@@ -88,7 +78,7 @@ func (c *NitroClient) CountPolicydataset() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPolicydataset(key PolicydatasetKey) (bool, error) {
+func (c *NitroClient) ExistsPolicydataset(key string) (bool, error) {
 	var results count_policydataset_result
 
 	id, qs := policydataset_key_to_id_args(key)
@@ -103,7 +93,7 @@ func (c *NitroClient) ExistsPolicydataset(key PolicydatasetKey) (bool, error) {
 }
 
 func (c *NitroClient) ListPolicydataset() ([]Policydataset, error) {
-	var results get_policydataset_result
+	results := get_policydataset_result{}
 
 	if err := c.get("policydataset", "", nil, &results); err != nil {
 		return nil, err
@@ -112,7 +102,7 @@ func (c *NitroClient) ListPolicydataset() ([]Policydataset, error) {
 	}
 }
 
-func (c *NitroClient) GetPolicydataset(key PolicydatasetKey) (*Policydataset, error) {
+func (c *NitroClient) GetPolicydataset(key string) (*Policydataset, error) {
 	var results get_policydataset_result
 
 	id, qs := policydataset_key_to_id_args(key)
@@ -132,7 +122,7 @@ func (c *NitroClient) GetPolicydataset(key PolicydatasetKey) (*Policydataset, er
 	}
 }
 
-func (c *NitroClient) DeletePolicydataset(key PolicydatasetKey) error {
+func (c *NitroClient) DeletePolicydataset(key string) error {
 	id, qs := policydataset_key_to_id_args(key)
 
 	return c.delete("policydataset", id, qs)

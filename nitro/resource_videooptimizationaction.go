@@ -13,8 +13,11 @@ type Videooptimizationaction struct {
 	Type    string `json:"type,omitempty"`
 }
 
-type VideooptimizationactionKey struct {
-	Name string `json:"name"`
+func videooptimizationaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type VideooptimizationactionUnset struct {
@@ -60,19 +63,6 @@ type count_videooptimizationaction_result struct {
 	Results []Count `json:"videooptimizationaction"`
 }
 
-func videooptimizationaction_key_to_id_args(key VideooptimizationactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddVideooptimizationaction(resource Videooptimizationaction) error {
 	payload := add_videooptimizationaction_payload{
 		resource,
@@ -110,7 +100,7 @@ func (c *NitroClient) CountVideooptimizationaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsVideooptimizationaction(key VideooptimizationactionKey) (bool, error) {
+func (c *NitroClient) ExistsVideooptimizationaction(key string) (bool, error) {
 	var results count_videooptimizationaction_result
 
 	id, qs := videooptimizationaction_key_to_id_args(key)
@@ -125,7 +115,7 @@ func (c *NitroClient) ExistsVideooptimizationaction(key VideooptimizationactionK
 }
 
 func (c *NitroClient) ListVideooptimizationaction() ([]Videooptimizationaction, error) {
-	var results get_videooptimizationaction_result
+	results := get_videooptimizationaction_result{}
 
 	if err := c.get("videooptimizationaction", "", nil, &results); err != nil {
 		return nil, err
@@ -134,7 +124,7 @@ func (c *NitroClient) ListVideooptimizationaction() ([]Videooptimizationaction, 
 	}
 }
 
-func (c *NitroClient) GetVideooptimizationaction(key VideooptimizationactionKey) (*Videooptimizationaction, error) {
+func (c *NitroClient) GetVideooptimizationaction(key string) (*Videooptimizationaction, error) {
 	var results get_videooptimizationaction_result
 
 	id, qs := videooptimizationaction_key_to_id_args(key)
@@ -154,7 +144,7 @@ func (c *NitroClient) GetVideooptimizationaction(key VideooptimizationactionKey)
 	}
 }
 
-func (c *NitroClient) DeleteVideooptimizationaction(key VideooptimizationactionKey) error {
+func (c *NitroClient) DeleteVideooptimizationaction(key string) error {
 	id, qs := videooptimizationaction_key_to_id_args(key)
 
 	return c.delete("videooptimizationaction", id, qs)

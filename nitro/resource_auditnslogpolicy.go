@@ -12,8 +12,11 @@ type Auditnslogpolicy struct {
 	Rule   string `json:"rule,omitempty"`
 }
 
-type AuditnslogpolicyKey struct {
-	Name string `json:"name"`
+func auditnslogpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AuditnslogpolicyUnset struct {
@@ -57,19 +60,6 @@ type count_auditnslogpolicy_result struct {
 	Results []Count `json:"auditnslogpolicy"`
 }
 
-func auditnslogpolicy_key_to_id_args(key AuditnslogpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAuditnslogpolicy(resource Auditnslogpolicy) error {
 	payload := add_auditnslogpolicy_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountAuditnslogpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAuditnslogpolicy(key AuditnslogpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsAuditnslogpolicy(key string) (bool, error) {
 	var results count_auditnslogpolicy_result
 
 	id, qs := auditnslogpolicy_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsAuditnslogpolicy(key AuditnslogpolicyKey) (bool, err
 }
 
 func (c *NitroClient) ListAuditnslogpolicy() ([]Auditnslogpolicy, error) {
-	var results get_auditnslogpolicy_result
+	results := get_auditnslogpolicy_result{}
 
 	if err := c.get("auditnslogpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListAuditnslogpolicy() ([]Auditnslogpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetAuditnslogpolicy(key AuditnslogpolicyKey) (*Auditnslogpolicy, error) {
+func (c *NitroClient) GetAuditnslogpolicy(key string) (*Auditnslogpolicy, error) {
 	var results get_auditnslogpolicy_result
 
 	id, qs := auditnslogpolicy_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetAuditnslogpolicy(key AuditnslogpolicyKey) (*Auditnslogp
 	}
 }
 
-func (c *NitroClient) DeleteAuditnslogpolicy(key AuditnslogpolicyKey) error {
+func (c *NitroClient) DeleteAuditnslogpolicy(key string) error {
 	id, qs := auditnslogpolicy_key_to_id_args(key)
 
 	return c.delete("auditnslogpolicy", id, qs)

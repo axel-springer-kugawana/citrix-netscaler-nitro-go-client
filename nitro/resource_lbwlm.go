@@ -14,8 +14,11 @@ type Lbwlm struct {
 	Port      int    `json:"port,omitempty"`
 }
 
-type LbwlmKey struct {
-	Wlmname string `json:"wlmname"`
+func lbwlm_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type LbwlmUnset struct {
@@ -57,19 +60,6 @@ type count_lbwlm_result struct {
 	Results []Count `json:"lbwlm"`
 }
 
-func lbwlm_key_to_id_args(key LbwlmKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Wlmname, qs
-}
-
 func (c *NitroClient) AddLbwlm(resource Lbwlm) error {
 	payload := add_lbwlm_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountLbwlm() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbwlm(key LbwlmKey) (bool, error) {
+func (c *NitroClient) ExistsLbwlm(key string) (bool, error) {
 	var results count_lbwlm_result
 
 	id, qs := lbwlm_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsLbwlm(key LbwlmKey) (bool, error) {
 }
 
 func (c *NitroClient) ListLbwlm() ([]Lbwlm, error) {
-	var results get_lbwlm_result
+	results := get_lbwlm_result{}
 
 	if err := c.get("lbwlm", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListLbwlm() ([]Lbwlm, error) {
 	}
 }
 
-func (c *NitroClient) GetLbwlm(key LbwlmKey) (*Lbwlm, error) {
+func (c *NitroClient) GetLbwlm(key string) (*Lbwlm, error) {
 	var results get_lbwlm_result
 
 	id, qs := lbwlm_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetLbwlm(key LbwlmKey) (*Lbwlm, error) {
 	}
 }
 
-func (c *NitroClient) DeleteLbwlm(key LbwlmKey) error {
+func (c *NitroClient) DeleteLbwlm(key string) error {
 	id, qs := lbwlm_key_to_id_args(key)
 
 	return c.delete("lbwlm", id, qs)

@@ -22,8 +22,11 @@ type Appqoeaction struct {
 	Tcpprofile        string `json:"tcpprofile,omitempty"`
 }
 
-type AppqoeactionKey struct {
-	Name string `json:"name"`
+func appqoeaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AppqoeactionUnset struct {
@@ -83,19 +86,6 @@ type count_appqoeaction_result struct {
 	Results []Count `json:"appqoeaction"`
 }
 
-func appqoeaction_key_to_id_args(key AppqoeactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAppqoeaction(resource Appqoeaction) error {
 	payload := add_appqoeaction_payload{
 		resource,
@@ -133,7 +123,7 @@ func (c *NitroClient) CountAppqoeaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppqoeaction(key AppqoeactionKey) (bool, error) {
+func (c *NitroClient) ExistsAppqoeaction(key string) (bool, error) {
 	var results count_appqoeaction_result
 
 	id, qs := appqoeaction_key_to_id_args(key)
@@ -148,7 +138,7 @@ func (c *NitroClient) ExistsAppqoeaction(key AppqoeactionKey) (bool, error) {
 }
 
 func (c *NitroClient) ListAppqoeaction() ([]Appqoeaction, error) {
-	var results get_appqoeaction_result
+	results := get_appqoeaction_result{}
 
 	if err := c.get("appqoeaction", "", nil, &results); err != nil {
 		return nil, err
@@ -157,7 +147,7 @@ func (c *NitroClient) ListAppqoeaction() ([]Appqoeaction, error) {
 	}
 }
 
-func (c *NitroClient) GetAppqoeaction(key AppqoeactionKey) (*Appqoeaction, error) {
+func (c *NitroClient) GetAppqoeaction(key string) (*Appqoeaction, error) {
 	var results get_appqoeaction_result
 
 	id, qs := appqoeaction_key_to_id_args(key)
@@ -177,7 +167,7 @@ func (c *NitroClient) GetAppqoeaction(key AppqoeactionKey) (*Appqoeaction, error
 	}
 }
 
-func (c *NitroClient) DeleteAppqoeaction(key AppqoeactionKey) error {
+func (c *NitroClient) DeleteAppqoeaction(key string) error {
 	id, qs := appqoeaction_key_to_id_args(key)
 
 	return c.delete("appqoeaction", id, qs)

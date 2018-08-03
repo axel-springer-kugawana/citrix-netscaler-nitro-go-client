@@ -11,8 +11,11 @@ type Policystringmap struct {
 	Comment string `json:"comment,omitempty"`
 }
 
-type PolicystringmapKey struct {
-	Name string `json:"name"`
+func policystringmap_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type PolicystringmapUnset struct {
@@ -54,19 +57,6 @@ type count_policystringmap_result struct {
 	Results []Count `json:"policystringmap"`
 }
 
-func policystringmap_key_to_id_args(key PolicystringmapKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddPolicystringmap(resource Policystringmap) error {
 	payload := add_policystringmap_payload{
 		resource,
@@ -104,7 +94,7 @@ func (c *NitroClient) CountPolicystringmap() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPolicystringmap(key PolicystringmapKey) (bool, error) {
+func (c *NitroClient) ExistsPolicystringmap(key string) (bool, error) {
 	var results count_policystringmap_result
 
 	id, qs := policystringmap_key_to_id_args(key)
@@ -119,7 +109,7 @@ func (c *NitroClient) ExistsPolicystringmap(key PolicystringmapKey) (bool, error
 }
 
 func (c *NitroClient) ListPolicystringmap() ([]Policystringmap, error) {
-	var results get_policystringmap_result
+	results := get_policystringmap_result{}
 
 	if err := c.get("policystringmap", "", nil, &results); err != nil {
 		return nil, err
@@ -128,7 +118,7 @@ func (c *NitroClient) ListPolicystringmap() ([]Policystringmap, error) {
 	}
 }
 
-func (c *NitroClient) GetPolicystringmap(key PolicystringmapKey) (*Policystringmap, error) {
+func (c *NitroClient) GetPolicystringmap(key string) (*Policystringmap, error) {
 	var results get_policystringmap_result
 
 	id, qs := policystringmap_key_to_id_args(key)
@@ -148,7 +138,7 @@ func (c *NitroClient) GetPolicystringmap(key PolicystringmapKey) (*Policystringm
 	}
 }
 
-func (c *NitroClient) DeletePolicystringmap(key PolicystringmapKey) error {
+func (c *NitroClient) DeletePolicystringmap(key string) error {
 	id, qs := policystringmap_key_to_id_args(key)
 
 	return c.delete("policystringmap", id, qs)

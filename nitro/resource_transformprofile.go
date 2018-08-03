@@ -13,8 +13,11 @@ type Transformprofile struct {
 	Type                      string `json:"type,omitempty"`
 }
 
-type TransformprofileKey struct {
-	Name string `json:"name"`
+func transformprofile_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type TransformprofileUnset struct {
@@ -60,19 +63,6 @@ type count_transformprofile_result struct {
 	Results []Count `json:"transformprofile"`
 }
 
-func transformprofile_key_to_id_args(key TransformprofileKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddTransformprofile(resource Transformprofile) error {
 	payload := add_transformprofile_payload{
 		resource,
@@ -110,7 +100,7 @@ func (c *NitroClient) CountTransformprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTransformprofile(key TransformprofileKey) (bool, error) {
+func (c *NitroClient) ExistsTransformprofile(key string) (bool, error) {
 	var results count_transformprofile_result
 
 	id, qs := transformprofile_key_to_id_args(key)
@@ -125,7 +115,7 @@ func (c *NitroClient) ExistsTransformprofile(key TransformprofileKey) (bool, err
 }
 
 func (c *NitroClient) ListTransformprofile() ([]Transformprofile, error) {
-	var results get_transformprofile_result
+	results := get_transformprofile_result{}
 
 	if err := c.get("transformprofile", "", nil, &results); err != nil {
 		return nil, err
@@ -134,7 +124,7 @@ func (c *NitroClient) ListTransformprofile() ([]Transformprofile, error) {
 	}
 }
 
-func (c *NitroClient) GetTransformprofile(key TransformprofileKey) (*Transformprofile, error) {
+func (c *NitroClient) GetTransformprofile(key string) (*Transformprofile, error) {
 	var results get_transformprofile_result
 
 	id, qs := transformprofile_key_to_id_args(key)
@@ -154,7 +144,7 @@ func (c *NitroClient) GetTransformprofile(key TransformprofileKey) (*Transformpr
 	}
 }
 
-func (c *NitroClient) DeleteTransformprofile(key TransformprofileKey) error {
+func (c *NitroClient) DeleteTransformprofile(key string) error {
 	id, qs := transformprofile_key_to_id_args(key)
 
 	return c.delete("transformprofile", id, qs)

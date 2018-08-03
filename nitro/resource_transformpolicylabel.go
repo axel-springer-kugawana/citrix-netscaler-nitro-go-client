@@ -11,8 +11,11 @@ type Transformpolicylabel struct {
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
 
-type TransformpolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func transformpolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_transformpolicylabel struct {
@@ -34,19 +37,6 @@ type get_transformpolicylabel_result struct {
 
 type count_transformpolicylabel_result struct {
 	Results []Count `json:"transformpolicylabel"`
-}
-
-func transformpolicylabel_key_to_id_args(key TransformpolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddTransformpolicylabel(resource Transformpolicylabel) error {
@@ -86,7 +76,7 @@ func (c *NitroClient) CountTransformpolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTransformpolicylabel(key TransformpolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsTransformpolicylabel(key string) (bool, error) {
 	var results count_transformpolicylabel_result
 
 	id, qs := transformpolicylabel_key_to_id_args(key)
@@ -101,7 +91,7 @@ func (c *NitroClient) ExistsTransformpolicylabel(key TransformpolicylabelKey) (b
 }
 
 func (c *NitroClient) ListTransformpolicylabel() ([]Transformpolicylabel, error) {
-	var results get_transformpolicylabel_result
+	results := get_transformpolicylabel_result{}
 
 	if err := c.get("transformpolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -110,7 +100,7 @@ func (c *NitroClient) ListTransformpolicylabel() ([]Transformpolicylabel, error)
 	}
 }
 
-func (c *NitroClient) GetTransformpolicylabel(key TransformpolicylabelKey) (*Transformpolicylabel, error) {
+func (c *NitroClient) GetTransformpolicylabel(key string) (*Transformpolicylabel, error) {
 	var results get_transformpolicylabel_result
 
 	id, qs := transformpolicylabel_key_to_id_args(key)
@@ -130,7 +120,7 @@ func (c *NitroClient) GetTransformpolicylabel(key TransformpolicylabelKey) (*Tra
 	}
 }
 
-func (c *NitroClient) DeleteTransformpolicylabel(key TransformpolicylabelKey) error {
+func (c *NitroClient) DeleteTransformpolicylabel(key string) error {
 	id, qs := transformpolicylabel_key_to_id_args(key)
 
 	return c.delete("transformpolicylabel", id, qs)

@@ -14,8 +14,11 @@ type Appflowpolicy struct {
 	Undefaction string `json:"undefaction,omitempty"`
 }
 
-type AppflowpolicyKey struct {
-	Name string `json:"name"`
+func appflowpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AppflowpolicyUnset struct {
@@ -63,19 +66,6 @@ type count_appflowpolicy_result struct {
 	Results []Count `json:"appflowpolicy"`
 }
 
-func appflowpolicy_key_to_id_args(key AppflowpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAppflowpolicy(resource Appflowpolicy) error {
 	payload := add_appflowpolicy_payload{
 		resource,
@@ -113,7 +103,7 @@ func (c *NitroClient) CountAppflowpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppflowpolicy(key AppflowpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsAppflowpolicy(key string) (bool, error) {
 	var results count_appflowpolicy_result
 
 	id, qs := appflowpolicy_key_to_id_args(key)
@@ -128,7 +118,7 @@ func (c *NitroClient) ExistsAppflowpolicy(key AppflowpolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListAppflowpolicy() ([]Appflowpolicy, error) {
-	var results get_appflowpolicy_result
+	results := get_appflowpolicy_result{}
 
 	if err := c.get("appflowpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -137,7 +127,7 @@ func (c *NitroClient) ListAppflowpolicy() ([]Appflowpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetAppflowpolicy(key AppflowpolicyKey) (*Appflowpolicy, error) {
+func (c *NitroClient) GetAppflowpolicy(key string) (*Appflowpolicy, error) {
 	var results get_appflowpolicy_result
 
 	id, qs := appflowpolicy_key_to_id_args(key)
@@ -157,7 +147,7 @@ func (c *NitroClient) GetAppflowpolicy(key AppflowpolicyKey) (*Appflowpolicy, er
 	}
 }
 
-func (c *NitroClient) DeleteAppflowpolicy(key AppflowpolicyKey) error {
+func (c *NitroClient) DeleteAppflowpolicy(key string) error {
 	id, qs := appflowpolicy_key_to_id_args(key)
 
 	return c.delete("appflowpolicy", id, qs)

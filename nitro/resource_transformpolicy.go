@@ -14,8 +14,11 @@ type Transformpolicy struct {
 	Rule        string `json:"rule,omitempty"`
 }
 
-type TransformpolicyKey struct {
-	Name string `json:"name"`
+func transformpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type TransformpolicyUnset struct {
@@ -63,19 +66,6 @@ type count_transformpolicy_result struct {
 	Results []Count `json:"transformpolicy"`
 }
 
-func transformpolicy_key_to_id_args(key TransformpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddTransformpolicy(resource Transformpolicy) error {
 	payload := add_transformpolicy_payload{
 		resource,
@@ -113,7 +103,7 @@ func (c *NitroClient) CountTransformpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTransformpolicy(key TransformpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsTransformpolicy(key string) (bool, error) {
 	var results count_transformpolicy_result
 
 	id, qs := transformpolicy_key_to_id_args(key)
@@ -128,7 +118,7 @@ func (c *NitroClient) ExistsTransformpolicy(key TransformpolicyKey) (bool, error
 }
 
 func (c *NitroClient) ListTransformpolicy() ([]Transformpolicy, error) {
-	var results get_transformpolicy_result
+	results := get_transformpolicy_result{}
 
 	if err := c.get("transformpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -137,7 +127,7 @@ func (c *NitroClient) ListTransformpolicy() ([]Transformpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetTransformpolicy(key TransformpolicyKey) (*Transformpolicy, error) {
+func (c *NitroClient) GetTransformpolicy(key string) (*Transformpolicy, error) {
 	var results get_transformpolicy_result
 
 	id, qs := transformpolicy_key_to_id_args(key)
@@ -157,7 +147,7 @@ func (c *NitroClient) GetTransformpolicy(key TransformpolicyKey) (*Transformpoli
 	}
 }
 
-func (c *NitroClient) DeleteTransformpolicy(key TransformpolicyKey) error {
+func (c *NitroClient) DeleteTransformpolicy(key string) error {
 	id, qs := transformpolicy_key_to_id_args(key)
 
 	return c.delete("transformpolicy", id, qs)

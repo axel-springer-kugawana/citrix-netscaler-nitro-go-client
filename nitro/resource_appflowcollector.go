@@ -14,8 +14,11 @@ type Appflowcollector struct {
 	Transport  string `json:"transport,omitempty"`
 }
 
-type AppflowcollectorKey struct {
-	Name string `json:"name"`
+func appflowcollector_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AppflowcollectorUnset struct {
@@ -61,19 +64,6 @@ type count_appflowcollector_result struct {
 	Results []Count `json:"appflowcollector"`
 }
 
-func appflowcollector_key_to_id_args(key AppflowcollectorKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAppflowcollector(resource Appflowcollector) error {
 	payload := add_appflowcollector_payload{
 		resource,
@@ -111,7 +101,7 @@ func (c *NitroClient) CountAppflowcollector() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppflowcollector(key AppflowcollectorKey) (bool, error) {
+func (c *NitroClient) ExistsAppflowcollector(key string) (bool, error) {
 	var results count_appflowcollector_result
 
 	id, qs := appflowcollector_key_to_id_args(key)
@@ -126,7 +116,7 @@ func (c *NitroClient) ExistsAppflowcollector(key AppflowcollectorKey) (bool, err
 }
 
 func (c *NitroClient) ListAppflowcollector() ([]Appflowcollector, error) {
-	var results get_appflowcollector_result
+	results := get_appflowcollector_result{}
 
 	if err := c.get("appflowcollector", "", nil, &results); err != nil {
 		return nil, err
@@ -135,7 +125,7 @@ func (c *NitroClient) ListAppflowcollector() ([]Appflowcollector, error) {
 	}
 }
 
-func (c *NitroClient) GetAppflowcollector(key AppflowcollectorKey) (*Appflowcollector, error) {
+func (c *NitroClient) GetAppflowcollector(key string) (*Appflowcollector, error) {
 	var results get_appflowcollector_result
 
 	id, qs := appflowcollector_key_to_id_args(key)
@@ -155,7 +145,7 @@ func (c *NitroClient) GetAppflowcollector(key AppflowcollectorKey) (*Appflowcoll
 	}
 }
 
-func (c *NitroClient) DeleteAppflowcollector(key AppflowcollectorKey) error {
+func (c *NitroClient) DeleteAppflowcollector(key string) error {
 	id, qs := appflowcollector_key_to_id_args(key)
 
 	return c.delete("appflowcollector", id, qs)

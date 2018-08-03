@@ -14,8 +14,11 @@ type Appfwpolicy struct {
 	Rule        string `json:"rule,omitempty"`
 }
 
-type AppfwpolicyKey struct {
-	Name string `json:"name"`
+func appfwpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AppfwpolicyUnset struct {
@@ -63,19 +66,6 @@ type count_appfwpolicy_result struct {
 	Results []Count `json:"appfwpolicy"`
 }
 
-func appfwpolicy_key_to_id_args(key AppfwpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAppfwpolicy(resource Appfwpolicy) error {
 	payload := add_appfwpolicy_payload{
 		resource,
@@ -113,7 +103,7 @@ func (c *NitroClient) CountAppfwpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppfwpolicy(key AppfwpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsAppfwpolicy(key string) (bool, error) {
 	var results count_appfwpolicy_result
 
 	id, qs := appfwpolicy_key_to_id_args(key)
@@ -128,7 +118,7 @@ func (c *NitroClient) ExistsAppfwpolicy(key AppfwpolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListAppfwpolicy() ([]Appfwpolicy, error) {
-	var results get_appfwpolicy_result
+	results := get_appfwpolicy_result{}
 
 	if err := c.get("appfwpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -137,7 +127,7 @@ func (c *NitroClient) ListAppfwpolicy() ([]Appfwpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetAppfwpolicy(key AppfwpolicyKey) (*Appfwpolicy, error) {
+func (c *NitroClient) GetAppfwpolicy(key string) (*Appfwpolicy, error) {
 	var results get_appfwpolicy_result
 
 	id, qs := appfwpolicy_key_to_id_args(key)
@@ -157,7 +147,7 @@ func (c *NitroClient) GetAppfwpolicy(key AppfwpolicyKey) (*Appfwpolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeleteAppfwpolicy(key AppfwpolicyKey) error {
+func (c *NitroClient) DeleteAppfwpolicy(key string) error {
 	id, qs := appfwpolicy_key_to_id_args(key)
 
 	return c.delete("appfwpolicy", id, qs)

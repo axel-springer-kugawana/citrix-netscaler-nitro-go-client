@@ -21,8 +21,11 @@ type Tmtrafficaction struct {
 	Userexpression   string `json:"userexpression,omitempty"`
 }
 
-type TmtrafficactionKey struct {
-	Name string `json:"name"`
+func tmtrafficaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type TmtrafficactionUnset struct {
@@ -84,19 +87,6 @@ type count_tmtrafficaction_result struct {
 	Results []Count `json:"tmtrafficaction"`
 }
 
-func tmtrafficaction_key_to_id_args(key TmtrafficactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddTmtrafficaction(resource Tmtrafficaction) error {
 	payload := add_tmtrafficaction_payload{
 		resource,
@@ -134,7 +124,7 @@ func (c *NitroClient) CountTmtrafficaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTmtrafficaction(key TmtrafficactionKey) (bool, error) {
+func (c *NitroClient) ExistsTmtrafficaction(key string) (bool, error) {
 	var results count_tmtrafficaction_result
 
 	id, qs := tmtrafficaction_key_to_id_args(key)
@@ -149,7 +139,7 @@ func (c *NitroClient) ExistsTmtrafficaction(key TmtrafficactionKey) (bool, error
 }
 
 func (c *NitroClient) ListTmtrafficaction() ([]Tmtrafficaction, error) {
-	var results get_tmtrafficaction_result
+	results := get_tmtrafficaction_result{}
 
 	if err := c.get("tmtrafficaction", "", nil, &results); err != nil {
 		return nil, err
@@ -158,7 +148,7 @@ func (c *NitroClient) ListTmtrafficaction() ([]Tmtrafficaction, error) {
 	}
 }
 
-func (c *NitroClient) GetTmtrafficaction(key TmtrafficactionKey) (*Tmtrafficaction, error) {
+func (c *NitroClient) GetTmtrafficaction(key string) (*Tmtrafficaction, error) {
 	var results get_tmtrafficaction_result
 
 	id, qs := tmtrafficaction_key_to_id_args(key)
@@ -178,7 +168,7 @@ func (c *NitroClient) GetTmtrafficaction(key TmtrafficactionKey) (*Tmtrafficacti
 	}
 }
 
-func (c *NitroClient) DeleteTmtrafficaction(key TmtrafficactionKey) error {
+func (c *NitroClient) DeleteTmtrafficaction(key string) error {
 	id, qs := tmtrafficaction_key_to_id_args(key)
 
 	return c.delete("tmtrafficaction", id, qs)

@@ -101,8 +101,11 @@ type Lbvserver struct {
 	Vipheader                          string `json:"vipheader,omitempty"`
 }
 
-type LbvserverKey struct {
-	Name string `json:"name"`
+func lbvserver_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type LbvserverUnset struct {
@@ -298,8 +301,12 @@ type rename_lbvserver_payload struct {
 	Rename rename_lbvserver `json:"lbvserver"`
 }
 
+type state_lbvserver struct {
+	Key string `json:"name"`
+}
+
 type state_lbvserver_payload struct {
-	Key LbvserverKey `json:"lbvserver"`
+	Sate state_lbvserver `json:"lbvserver"`
 }
 
 type unset_lbvserver_payload struct {
@@ -316,19 +323,6 @@ type get_lbvserver_result struct {
 
 type count_lbvserver_result struct {
 	Results []Count `json:"lbvserver"`
-}
-
-func lbvserver_key_to_id_args(key LbvserverKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
 }
 
 func (c *NitroClient) AddLbvserver(resource Lbvserver) error {
@@ -368,7 +362,7 @@ func (c *NitroClient) CountLbvserver() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbvserver(key LbvserverKey) (bool, error) {
+func (c *NitroClient) ExistsLbvserver(key string) (bool, error) {
 	var results count_lbvserver_result
 
 	id, qs := lbvserver_key_to_id_args(key)
@@ -383,7 +377,7 @@ func (c *NitroClient) ExistsLbvserver(key LbvserverKey) (bool, error) {
 }
 
 func (c *NitroClient) ListLbvserver() ([]Lbvserver, error) {
-	var results get_lbvserver_result
+	results := get_lbvserver_result{}
 
 	if err := c.get("lbvserver", "", nil, &results); err != nil {
 		return nil, err
@@ -392,7 +386,7 @@ func (c *NitroClient) ListLbvserver() ([]Lbvserver, error) {
 	}
 }
 
-func (c *NitroClient) GetLbvserver(key LbvserverKey) (*Lbvserver, error) {
+func (c *NitroClient) GetLbvserver(key string) (*Lbvserver, error) {
 	var results get_lbvserver_result
 
 	id, qs := lbvserver_key_to_id_args(key)
@@ -412,7 +406,7 @@ func (c *NitroClient) GetLbvserver(key LbvserverKey) (*Lbvserver, error) {
 	}
 }
 
-func (c *NitroClient) DeleteLbvserver(key LbvserverKey) error {
+func (c *NitroClient) DeleteLbvserver(key string) error {
 	id, qs := lbvserver_key_to_id_args(key)
 
 	return c.delete("lbvserver", id, qs)
@@ -526,9 +520,11 @@ func (c *NitroClient) UpdateLbvserver(resource Lbvserver) error {
 	return c.put("lbvserver", "", nil, payload)
 }
 
-func (c *NitroClient) EnableLbvserver(key LbvserverKey) error {
+func (c *NitroClient) EnableLbvserver(key string) error {
 	payload := state_lbvserver_payload{
-		key,
+		state_lbvserver{
+			key,
+		},
 	}
 
 	qs := map[string]string{
@@ -538,9 +534,11 @@ func (c *NitroClient) EnableLbvserver(key LbvserverKey) error {
 	return c.post("lbvserver", "", qs, payload)
 }
 
-func (c *NitroClient) DisableLbvserver(key LbvserverKey) error {
+func (c *NitroClient) DisableLbvserver(key string) error {
 	payload := state_lbvserver_payload{
-		key,
+		state_lbvserver{
+			key,
+		},
 	}
 
 	qs := map[string]string{

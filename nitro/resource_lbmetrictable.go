@@ -10,8 +10,11 @@ type Lbmetrictable struct {
 	Metrictable string `json:"metrictable"`
 }
 
-type LbmetrictableKey struct {
-	Metrictable string `json:"metrictable"`
+func lbmetrictable_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_lbmetrictable struct {
@@ -33,19 +36,6 @@ type get_lbmetrictable_result struct {
 
 type count_lbmetrictable_result struct {
 	Results []Count `json:"lbmetrictable"`
-}
-
-func lbmetrictable_key_to_id_args(key LbmetrictableKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Metrictable, qs
 }
 
 func (c *NitroClient) AddLbmetrictable(resource Lbmetrictable) error {
@@ -85,7 +75,7 @@ func (c *NitroClient) CountLbmetrictable() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbmetrictable(key LbmetrictableKey) (bool, error) {
+func (c *NitroClient) ExistsLbmetrictable(key string) (bool, error) {
 	var results count_lbmetrictable_result
 
 	id, qs := lbmetrictable_key_to_id_args(key)
@@ -100,7 +90,7 @@ func (c *NitroClient) ExistsLbmetrictable(key LbmetrictableKey) (bool, error) {
 }
 
 func (c *NitroClient) ListLbmetrictable() ([]Lbmetrictable, error) {
-	var results get_lbmetrictable_result
+	results := get_lbmetrictable_result{}
 
 	if err := c.get("lbmetrictable", "", nil, &results); err != nil {
 		return nil, err
@@ -109,7 +99,7 @@ func (c *NitroClient) ListLbmetrictable() ([]Lbmetrictable, error) {
 	}
 }
 
-func (c *NitroClient) GetLbmetrictable(key LbmetrictableKey) (*Lbmetrictable, error) {
+func (c *NitroClient) GetLbmetrictable(key string) (*Lbmetrictable, error) {
 	var results get_lbmetrictable_result
 
 	id, qs := lbmetrictable_key_to_id_args(key)
@@ -129,7 +119,7 @@ func (c *NitroClient) GetLbmetrictable(key LbmetrictableKey) (*Lbmetrictable, er
 	}
 }
 
-func (c *NitroClient) DeleteLbmetrictable(key LbmetrictableKey) error {
+func (c *NitroClient) DeleteLbmetrictable(key string) error {
 	id, qs := lbmetrictable_key_to_id_args(key)
 
 	return c.delete("lbmetrictable", id, qs)

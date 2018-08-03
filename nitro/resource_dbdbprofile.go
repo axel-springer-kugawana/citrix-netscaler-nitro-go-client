@@ -15,8 +15,11 @@ type Dbdbprofile struct {
 	Stickiness             string `json:"stickiness,omitempty"`
 }
 
-type DbdbprofileKey struct {
-	Name string `json:"name"`
+func dbdbprofile_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type DbdbprofileUnset struct {
@@ -66,19 +69,6 @@ type count_dbdbprofile_result struct {
 	Results []Count `json:"dbdbprofile"`
 }
 
-func dbdbprofile_key_to_id_args(key DbdbprofileKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddDbdbprofile(resource Dbdbprofile) error {
 	payload := add_dbdbprofile_payload{
 		resource,
@@ -116,7 +106,7 @@ func (c *NitroClient) CountDbdbprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDbdbprofile(key DbdbprofileKey) (bool, error) {
+func (c *NitroClient) ExistsDbdbprofile(key string) (bool, error) {
 	var results count_dbdbprofile_result
 
 	id, qs := dbdbprofile_key_to_id_args(key)
@@ -131,7 +121,7 @@ func (c *NitroClient) ExistsDbdbprofile(key DbdbprofileKey) (bool, error) {
 }
 
 func (c *NitroClient) ListDbdbprofile() ([]Dbdbprofile, error) {
-	var results get_dbdbprofile_result
+	results := get_dbdbprofile_result{}
 
 	if err := c.get("dbdbprofile", "", nil, &results); err != nil {
 		return nil, err
@@ -140,7 +130,7 @@ func (c *NitroClient) ListDbdbprofile() ([]Dbdbprofile, error) {
 	}
 }
 
-func (c *NitroClient) GetDbdbprofile(key DbdbprofileKey) (*Dbdbprofile, error) {
+func (c *NitroClient) GetDbdbprofile(key string) (*Dbdbprofile, error) {
 	var results get_dbdbprofile_result
 
 	id, qs := dbdbprofile_key_to_id_args(key)
@@ -160,7 +150,7 @@ func (c *NitroClient) GetDbdbprofile(key DbdbprofileKey) (*Dbdbprofile, error) {
 	}
 }
 
-func (c *NitroClient) DeleteDbdbprofile(key DbdbprofileKey) error {
+func (c *NitroClient) DeleteDbdbprofile(key string) error {
 	id, qs := dbdbprofile_key_to_id_args(key)
 
 	return c.delete("dbdbprofile", id, qs)

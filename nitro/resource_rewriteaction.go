@@ -18,8 +18,11 @@ type Rewriteaction struct {
 	Type              string `json:"type,omitempty"`
 }
 
-type RewriteactionKey struct {
-	Name string `json:"name"`
+func rewriteaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type RewriteactionUnset struct {
@@ -73,19 +76,6 @@ type count_rewriteaction_result struct {
 	Results []Count `json:"rewriteaction"`
 }
 
-func rewriteaction_key_to_id_args(key RewriteactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddRewriteaction(resource Rewriteaction) error {
 	payload := add_rewriteaction_payload{
 		resource,
@@ -123,7 +113,7 @@ func (c *NitroClient) CountRewriteaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsRewriteaction(key RewriteactionKey) (bool, error) {
+func (c *NitroClient) ExistsRewriteaction(key string) (bool, error) {
 	var results count_rewriteaction_result
 
 	id, qs := rewriteaction_key_to_id_args(key)
@@ -138,7 +128,7 @@ func (c *NitroClient) ExistsRewriteaction(key RewriteactionKey) (bool, error) {
 }
 
 func (c *NitroClient) ListRewriteaction() ([]Rewriteaction, error) {
-	var results get_rewriteaction_result
+	results := get_rewriteaction_result{}
 
 	if err := c.get("rewriteaction", "", nil, &results); err != nil {
 		return nil, err
@@ -147,7 +137,7 @@ func (c *NitroClient) ListRewriteaction() ([]Rewriteaction, error) {
 	}
 }
 
-func (c *NitroClient) GetRewriteaction(key RewriteactionKey) (*Rewriteaction, error) {
+func (c *NitroClient) GetRewriteaction(key string) (*Rewriteaction, error) {
 	var results get_rewriteaction_result
 
 	id, qs := rewriteaction_key_to_id_args(key)
@@ -167,7 +157,7 @@ func (c *NitroClient) GetRewriteaction(key RewriteactionKey) (*Rewriteaction, er
 	}
 }
 
-func (c *NitroClient) DeleteRewriteaction(key RewriteactionKey) error {
+func (c *NitroClient) DeleteRewriteaction(key string) error {
 	id, qs := rewriteaction_key_to_id_args(key)
 
 	return c.delete("rewriteaction", id, qs)

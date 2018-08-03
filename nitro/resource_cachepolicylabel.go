@@ -11,8 +11,11 @@ type Cachepolicylabel struct {
 	Evaluates string `json:"evaluates,omitempty"`
 }
 
-type CachepolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func cachepolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_cachepolicylabel struct {
@@ -34,19 +37,6 @@ type get_cachepolicylabel_result struct {
 
 type count_cachepolicylabel_result struct {
 	Results []Count `json:"cachepolicylabel"`
-}
-
-func cachepolicylabel_key_to_id_args(key CachepolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddCachepolicylabel(resource Cachepolicylabel) error {
@@ -86,7 +76,7 @@ func (c *NitroClient) CountCachepolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCachepolicylabel(key CachepolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsCachepolicylabel(key string) (bool, error) {
 	var results count_cachepolicylabel_result
 
 	id, qs := cachepolicylabel_key_to_id_args(key)
@@ -101,7 +91,7 @@ func (c *NitroClient) ExistsCachepolicylabel(key CachepolicylabelKey) (bool, err
 }
 
 func (c *NitroClient) ListCachepolicylabel() ([]Cachepolicylabel, error) {
-	var results get_cachepolicylabel_result
+	results := get_cachepolicylabel_result{}
 
 	if err := c.get("cachepolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -110,7 +100,7 @@ func (c *NitroClient) ListCachepolicylabel() ([]Cachepolicylabel, error) {
 	}
 }
 
-func (c *NitroClient) GetCachepolicylabel(key CachepolicylabelKey) (*Cachepolicylabel, error) {
+func (c *NitroClient) GetCachepolicylabel(key string) (*Cachepolicylabel, error) {
 	var results get_cachepolicylabel_result
 
 	id, qs := cachepolicylabel_key_to_id_args(key)
@@ -130,7 +120,7 @@ func (c *NitroClient) GetCachepolicylabel(key CachepolicylabelKey) (*Cachepolicy
 	}
 }
 
-func (c *NitroClient) DeleteCachepolicylabel(key CachepolicylabelKey) error {
+func (c *NitroClient) DeleteCachepolicylabel(key string) error {
 	id, qs := cachepolicylabel_key_to_id_args(key)
 
 	return c.delete("cachepolicylabel", id, qs)

@@ -59,8 +59,11 @@ type Nstcpprofile struct {
 	Wsval                       int    `json:"wsval,string,omitempty"`
 }
 
-type NstcpprofileKey struct {
-	Name string `json:"name"`
+func nstcpprofile_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type NstcpprofileUnset struct {
@@ -198,19 +201,6 @@ type count_nstcpprofile_result struct {
 	Results []Count `json:"nstcpprofile"`
 }
 
-func nstcpprofile_key_to_id_args(key NstcpprofileKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddNstcpprofile(resource Nstcpprofile) error {
 	payload := add_nstcpprofile_payload{
 		resource,
@@ -248,7 +238,7 @@ func (c *NitroClient) CountNstcpprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsNstcpprofile(key NstcpprofileKey) (bool, error) {
+func (c *NitroClient) ExistsNstcpprofile(key string) (bool, error) {
 	var results count_nstcpprofile_result
 
 	id, qs := nstcpprofile_key_to_id_args(key)
@@ -263,7 +253,7 @@ func (c *NitroClient) ExistsNstcpprofile(key NstcpprofileKey) (bool, error) {
 }
 
 func (c *NitroClient) ListNstcpprofile() ([]Nstcpprofile, error) {
-	var results get_nstcpprofile_result
+	results := get_nstcpprofile_result{}
 
 	if err := c.get("nstcpprofile", "", nil, &results); err != nil {
 		return nil, err
@@ -272,7 +262,7 @@ func (c *NitroClient) ListNstcpprofile() ([]Nstcpprofile, error) {
 	}
 }
 
-func (c *NitroClient) GetNstcpprofile(key NstcpprofileKey) (*Nstcpprofile, error) {
+func (c *NitroClient) GetNstcpprofile(key string) (*Nstcpprofile, error) {
 	var results get_nstcpprofile_result
 
 	id, qs := nstcpprofile_key_to_id_args(key)
@@ -292,7 +282,7 @@ func (c *NitroClient) GetNstcpprofile(key NstcpprofileKey) (*Nstcpprofile, error
 	}
 }
 
-func (c *NitroClient) DeleteNstcpprofile(key NstcpprofileKey) error {
+func (c *NitroClient) DeleteNstcpprofile(key string) error {
 	id, qs := nstcpprofile_key_to_id_args(key)
 
 	return c.delete("nstcpprofile", id, qs)

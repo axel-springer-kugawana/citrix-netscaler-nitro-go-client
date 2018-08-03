@@ -50,8 +50,11 @@ type Service struct {
 	Usip               string `json:"usip,omitempty"`
 }
 
-type ServiceKey struct {
-	Name string `json:"name"`
+func service_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type ServiceUnset struct {
@@ -157,19 +160,6 @@ type count_service_result struct {
 	Results []Count `json:"service"`
 }
 
-func service_key_to_id_args(key ServiceKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddService(resource Service) error {
 	payload := add_service_payload{
 		resource,
@@ -207,7 +197,7 @@ func (c *NitroClient) CountService() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsService(key ServiceKey) (bool, error) {
+func (c *NitroClient) ExistsService(key string) (bool, error) {
 	var results count_service_result
 
 	id, qs := service_key_to_id_args(key)
@@ -222,7 +212,7 @@ func (c *NitroClient) ExistsService(key ServiceKey) (bool, error) {
 }
 
 func (c *NitroClient) ListService() ([]Service, error) {
-	var results get_service_result
+	results := get_service_result{}
 
 	if err := c.get("service", "", nil, &results); err != nil {
 		return nil, err
@@ -231,7 +221,7 @@ func (c *NitroClient) ListService() ([]Service, error) {
 	}
 }
 
-func (c *NitroClient) GetService(key ServiceKey) (*Service, error) {
+func (c *NitroClient) GetService(key string) (*Service, error) {
 	var results get_service_result
 
 	id, qs := service_key_to_id_args(key)
@@ -251,7 +241,7 @@ func (c *NitroClient) GetService(key ServiceKey) (*Service, error) {
 	}
 }
 
-func (c *NitroClient) DeleteService(key ServiceKey) error {
+func (c *NitroClient) DeleteService(key string) error {
 	id, qs := service_key_to_id_args(key)
 
 	return c.delete("service", id, qs)

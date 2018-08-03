@@ -12,8 +12,11 @@ type Feopolicy struct {
 	Rule   string `json:"rule,omitempty"`
 }
 
-type FeopolicyKey struct {
-	Name string `json:"name"`
+func feopolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type FeopolicyUnset struct {
@@ -57,19 +60,6 @@ type count_feopolicy_result struct {
 	Results []Count `json:"feopolicy"`
 }
 
-func feopolicy_key_to_id_args(key FeopolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddFeopolicy(resource Feopolicy) error {
 	payload := add_feopolicy_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountFeopolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsFeopolicy(key FeopolicyKey) (bool, error) {
+func (c *NitroClient) ExistsFeopolicy(key string) (bool, error) {
 	var results count_feopolicy_result
 
 	id, qs := feopolicy_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsFeopolicy(key FeopolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListFeopolicy() ([]Feopolicy, error) {
-	var results get_feopolicy_result
+	results := get_feopolicy_result{}
 
 	if err := c.get("feopolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListFeopolicy() ([]Feopolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetFeopolicy(key FeopolicyKey) (*Feopolicy, error) {
+func (c *NitroClient) GetFeopolicy(key string) (*Feopolicy, error) {
 	var results get_feopolicy_result
 
 	id, qs := feopolicy_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetFeopolicy(key FeopolicyKey) (*Feopolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeleteFeopolicy(key FeopolicyKey) error {
+func (c *NitroClient) DeleteFeopolicy(key string) error {
 	id, qs := feopolicy_key_to_id_args(key)
 
 	return c.delete("feopolicy", id, qs)

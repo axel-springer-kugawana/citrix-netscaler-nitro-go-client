@@ -16,8 +16,11 @@ type Lbprofile struct {
 	Usesecuredpersistencecookie   string `json:"usesecuredpersistencecookie,omitempty"`
 }
 
-type LbprofileKey struct {
-	Lbprofilename string `json:"lbprofilename"`
+func lbprofile_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type LbprofileUnset struct {
@@ -69,19 +72,6 @@ type count_lbprofile_result struct {
 	Results []Count `json:"lbprofile"`
 }
 
-func lbprofile_key_to_id_args(key LbprofileKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Lbprofilename, qs
-}
-
 func (c *NitroClient) AddLbprofile(resource Lbprofile) error {
 	payload := add_lbprofile_payload{
 		resource,
@@ -119,7 +109,7 @@ func (c *NitroClient) CountLbprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbprofile(key LbprofileKey) (bool, error) {
+func (c *NitroClient) ExistsLbprofile(key string) (bool, error) {
 	var results count_lbprofile_result
 
 	id, qs := lbprofile_key_to_id_args(key)
@@ -134,7 +124,7 @@ func (c *NitroClient) ExistsLbprofile(key LbprofileKey) (bool, error) {
 }
 
 func (c *NitroClient) ListLbprofile() ([]Lbprofile, error) {
-	var results get_lbprofile_result
+	results := get_lbprofile_result{}
 
 	if err := c.get("lbprofile", "", nil, &results); err != nil {
 		return nil, err
@@ -143,7 +133,7 @@ func (c *NitroClient) ListLbprofile() ([]Lbprofile, error) {
 	}
 }
 
-func (c *NitroClient) GetLbprofile(key LbprofileKey) (*Lbprofile, error) {
+func (c *NitroClient) GetLbprofile(key string) (*Lbprofile, error) {
 	var results get_lbprofile_result
 
 	id, qs := lbprofile_key_to_id_args(key)
@@ -163,7 +153,7 @@ func (c *NitroClient) GetLbprofile(key LbprofileKey) (*Lbprofile, error) {
 	}
 }
 
-func (c *NitroClient) DeleteLbprofile(key LbprofileKey) error {
+func (c *NitroClient) DeleteLbprofile(key string) error {
 	id, qs := lbprofile_key_to_id_args(key)
 
 	return c.delete("lbprofile", id, qs)

@@ -98,7 +98,13 @@ func make_url(resourceType string, resourceId string, qs map[string]string) stri
 func (c *NitroClient) get(resourceType string, resourceId string, qs map[string]string, payload interface{}) error {
 	url := make_url(resourceType, resourceId, qs)
 
-	_, err := c.doHTTPRequest("GET", url, bytes.NewBuffer([]byte{}))
+	data, err := c.doHTTPRequest("GET", url, bytes.NewBuffer([]byte{}))
+
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(data, &payload)
 
 	return err
 }

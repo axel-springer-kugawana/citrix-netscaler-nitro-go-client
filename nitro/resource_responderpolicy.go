@@ -16,8 +16,11 @@ type Responderpolicy struct {
 	Undefaction   string `json:"undefaction,omitempty"`
 }
 
-type ResponderpolicyKey struct {
-	Name string `json:"name"`
+func responderpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type ResponderpolicyUnset struct {
@@ -69,19 +72,6 @@ type count_responderpolicy_result struct {
 	Results []Count `json:"responderpolicy"`
 }
 
-func responderpolicy_key_to_id_args(key ResponderpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddResponderpolicy(resource Responderpolicy) error {
 	payload := add_responderpolicy_payload{
 		resource,
@@ -119,7 +109,7 @@ func (c *NitroClient) CountResponderpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsResponderpolicy(key ResponderpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsResponderpolicy(key string) (bool, error) {
 	var results count_responderpolicy_result
 
 	id, qs := responderpolicy_key_to_id_args(key)
@@ -134,7 +124,7 @@ func (c *NitroClient) ExistsResponderpolicy(key ResponderpolicyKey) (bool, error
 }
 
 func (c *NitroClient) ListResponderpolicy() ([]Responderpolicy, error) {
-	var results get_responderpolicy_result
+	results := get_responderpolicy_result{}
 
 	if err := c.get("responderpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -143,7 +133,7 @@ func (c *NitroClient) ListResponderpolicy() ([]Responderpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetResponderpolicy(key ResponderpolicyKey) (*Responderpolicy, error) {
+func (c *NitroClient) GetResponderpolicy(key string) (*Responderpolicy, error) {
 	var results get_responderpolicy_result
 
 	id, qs := responderpolicy_key_to_id_args(key)
@@ -163,7 +153,7 @@ func (c *NitroClient) GetResponderpolicy(key ResponderpolicyKey) (*Responderpoli
 	}
 }
 
-func (c *NitroClient) DeleteResponderpolicy(key ResponderpolicyKey) error {
+func (c *NitroClient) DeleteResponderpolicy(key string) error {
 	id, qs := responderpolicy_key_to_id_args(key)
 
 	return c.delete("responderpolicy", id, qs)

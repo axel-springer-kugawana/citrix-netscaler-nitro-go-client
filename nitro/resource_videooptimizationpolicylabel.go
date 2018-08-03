@@ -12,8 +12,11 @@ type Videooptimizationpolicylabel struct {
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
 
-type VideooptimizationpolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func videooptimizationpolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_videooptimizationpolicylabel struct {
@@ -35,19 +38,6 @@ type get_videooptimizationpolicylabel_result struct {
 
 type count_videooptimizationpolicylabel_result struct {
 	Results []Count `json:"videooptimizationpolicylabel"`
-}
-
-func videooptimizationpolicylabel_key_to_id_args(key VideooptimizationpolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddVideooptimizationpolicylabel(resource Videooptimizationpolicylabel) error {
@@ -87,7 +77,7 @@ func (c *NitroClient) CountVideooptimizationpolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsVideooptimizationpolicylabel(key VideooptimizationpolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsVideooptimizationpolicylabel(key string) (bool, error) {
 	var results count_videooptimizationpolicylabel_result
 
 	id, qs := videooptimizationpolicylabel_key_to_id_args(key)
@@ -102,7 +92,7 @@ func (c *NitroClient) ExistsVideooptimizationpolicylabel(key Videooptimizationpo
 }
 
 func (c *NitroClient) ListVideooptimizationpolicylabel() ([]Videooptimizationpolicylabel, error) {
-	var results get_videooptimizationpolicylabel_result
+	results := get_videooptimizationpolicylabel_result{}
 
 	if err := c.get("videooptimizationpolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -111,7 +101,7 @@ func (c *NitroClient) ListVideooptimizationpolicylabel() ([]Videooptimizationpol
 	}
 }
 
-func (c *NitroClient) GetVideooptimizationpolicylabel(key VideooptimizationpolicylabelKey) (*Videooptimizationpolicylabel, error) {
+func (c *NitroClient) GetVideooptimizationpolicylabel(key string) (*Videooptimizationpolicylabel, error) {
 	var results get_videooptimizationpolicylabel_result
 
 	id, qs := videooptimizationpolicylabel_key_to_id_args(key)
@@ -131,7 +121,7 @@ func (c *NitroClient) GetVideooptimizationpolicylabel(key Videooptimizationpolic
 	}
 }
 
-func (c *NitroClient) DeleteVideooptimizationpolicylabel(key VideooptimizationpolicylabelKey) error {
+func (c *NitroClient) DeleteVideooptimizationpolicylabel(key string) error {
 	id, qs := videooptimizationpolicylabel_key_to_id_args(key)
 
 	return c.delete("videooptimizationpolicylabel", id, qs)

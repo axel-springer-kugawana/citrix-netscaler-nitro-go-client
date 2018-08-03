@@ -13,8 +13,11 @@ type Dnsaction64 struct {
 	Prefix      string `json:"prefix,omitempty"`
 }
 
-type Dnsaction64Key struct {
-	Actionname string `json:"actionname"`
+func dnsaction64_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type Dnsaction64Unset struct {
@@ -60,19 +63,6 @@ type count_dnsaction64_result struct {
 	Results []Count `json:"dnsaction64"`
 }
 
-func dnsaction64_key_to_id_args(key Dnsaction64Key) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Actionname, qs
-}
-
 func (c *NitroClient) AddDnsaction64(resource Dnsaction64) error {
 	payload := add_dnsaction64_payload{
 		resource,
@@ -110,7 +100,7 @@ func (c *NitroClient) CountDnsaction64() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDnsaction64(key Dnsaction64Key) (bool, error) {
+func (c *NitroClient) ExistsDnsaction64(key string) (bool, error) {
 	var results count_dnsaction64_result
 
 	id, qs := dnsaction64_key_to_id_args(key)
@@ -125,7 +115,7 @@ func (c *NitroClient) ExistsDnsaction64(key Dnsaction64Key) (bool, error) {
 }
 
 func (c *NitroClient) ListDnsaction64() ([]Dnsaction64, error) {
-	var results get_dnsaction64_result
+	results := get_dnsaction64_result{}
 
 	if err := c.get("dnsaction64", "", nil, &results); err != nil {
 		return nil, err
@@ -134,7 +124,7 @@ func (c *NitroClient) ListDnsaction64() ([]Dnsaction64, error) {
 	}
 }
 
-func (c *NitroClient) GetDnsaction64(key Dnsaction64Key) (*Dnsaction64, error) {
+func (c *NitroClient) GetDnsaction64(key string) (*Dnsaction64, error) {
 	var results get_dnsaction64_result
 
 	id, qs := dnsaction64_key_to_id_args(key)
@@ -154,7 +144,7 @@ func (c *NitroClient) GetDnsaction64(key Dnsaction64Key) (*Dnsaction64, error) {
 	}
 }
 
-func (c *NitroClient) DeleteDnsaction64(key Dnsaction64Key) error {
+func (c *NitroClient) DeleteDnsaction64(key string) error {
 	id, qs := dnsaction64_key_to_id_args(key)
 
 	return c.delete("dnsaction64", id, qs)

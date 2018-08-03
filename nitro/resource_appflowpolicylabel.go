@@ -11,8 +11,11 @@ type Appflowpolicylabel struct {
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
 
-type AppflowpolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func appflowpolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_appflowpolicylabel struct {
@@ -34,19 +37,6 @@ type get_appflowpolicylabel_result struct {
 
 type count_appflowpolicylabel_result struct {
 	Results []Count `json:"appflowpolicylabel"`
-}
-
-func appflowpolicylabel_key_to_id_args(key AppflowpolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddAppflowpolicylabel(resource Appflowpolicylabel) error {
@@ -86,7 +76,7 @@ func (c *NitroClient) CountAppflowpolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppflowpolicylabel(key AppflowpolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsAppflowpolicylabel(key string) (bool, error) {
 	var results count_appflowpolicylabel_result
 
 	id, qs := appflowpolicylabel_key_to_id_args(key)
@@ -101,7 +91,7 @@ func (c *NitroClient) ExistsAppflowpolicylabel(key AppflowpolicylabelKey) (bool,
 }
 
 func (c *NitroClient) ListAppflowpolicylabel() ([]Appflowpolicylabel, error) {
-	var results get_appflowpolicylabel_result
+	results := get_appflowpolicylabel_result{}
 
 	if err := c.get("appflowpolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -110,7 +100,7 @@ func (c *NitroClient) ListAppflowpolicylabel() ([]Appflowpolicylabel, error) {
 	}
 }
 
-func (c *NitroClient) GetAppflowpolicylabel(key AppflowpolicylabelKey) (*Appflowpolicylabel, error) {
+func (c *NitroClient) GetAppflowpolicylabel(key string) (*Appflowpolicylabel, error) {
 	var results get_appflowpolicylabel_result
 
 	id, qs := appflowpolicylabel_key_to_id_args(key)
@@ -130,7 +120,7 @@ func (c *NitroClient) GetAppflowpolicylabel(key AppflowpolicylabelKey) (*Appflow
 	}
 }
 
-func (c *NitroClient) DeleteAppflowpolicylabel(key AppflowpolicylabelKey) error {
+func (c *NitroClient) DeleteAppflowpolicylabel(key string) error {
 	id, qs := appflowpolicylabel_key_to_id_args(key)
 
 	return c.delete("appflowpolicylabel", id, qs)

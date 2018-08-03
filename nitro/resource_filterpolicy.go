@@ -13,8 +13,11 @@ type Filterpolicy struct {
 	Rule      string `json:"rule,omitempty"`
 }
 
-type FilterpolicyKey struct {
-	Name string `json:"name"`
+func filterpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type FilterpolicyUnset struct {
@@ -60,19 +63,6 @@ type count_filterpolicy_result struct {
 	Results []Count `json:"filterpolicy"`
 }
 
-func filterpolicy_key_to_id_args(key FilterpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddFilterpolicy(resource Filterpolicy) error {
 	payload := add_filterpolicy_payload{
 		resource,
@@ -110,7 +100,7 @@ func (c *NitroClient) CountFilterpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsFilterpolicy(key FilterpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsFilterpolicy(key string) (bool, error) {
 	var results count_filterpolicy_result
 
 	id, qs := filterpolicy_key_to_id_args(key)
@@ -125,7 +115,7 @@ func (c *NitroClient) ExistsFilterpolicy(key FilterpolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListFilterpolicy() ([]Filterpolicy, error) {
-	var results get_filterpolicy_result
+	results := get_filterpolicy_result{}
 
 	if err := c.get("filterpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -134,7 +124,7 @@ func (c *NitroClient) ListFilterpolicy() ([]Filterpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetFilterpolicy(key FilterpolicyKey) (*Filterpolicy, error) {
+func (c *NitroClient) GetFilterpolicy(key string) (*Filterpolicy, error) {
 	var results get_filterpolicy_result
 
 	id, qs := filterpolicy_key_to_id_args(key)
@@ -154,7 +144,7 @@ func (c *NitroClient) GetFilterpolicy(key FilterpolicyKey) (*Filterpolicy, error
 	}
 }
 
-func (c *NitroClient) DeleteFilterpolicy(key FilterpolicyKey) error {
+func (c *NitroClient) DeleteFilterpolicy(key string) error {
 	id, qs := filterpolicy_key_to_id_args(key)
 
 	return c.delete("filterpolicy", id, qs)

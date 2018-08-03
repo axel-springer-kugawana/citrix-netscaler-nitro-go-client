@@ -16,8 +16,11 @@ type Cachepolicy struct {
 	Undefaction  string   `json:"undefaction,omitempty"`
 }
 
-type CachepolicyKey struct {
-	Policyname string `json:"policyname"`
+func cachepolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type CachepolicyUnset struct {
@@ -69,19 +72,6 @@ type count_cachepolicy_result struct {
 	Results []Count `json:"cachepolicy"`
 }
 
-func cachepolicy_key_to_id_args(key CachepolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Policyname, qs
-}
-
 func (c *NitroClient) AddCachepolicy(resource Cachepolicy) error {
 	payload := add_cachepolicy_payload{
 		resource,
@@ -119,7 +109,7 @@ func (c *NitroClient) CountCachepolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCachepolicy(key CachepolicyKey) (bool, error) {
+func (c *NitroClient) ExistsCachepolicy(key string) (bool, error) {
 	var results count_cachepolicy_result
 
 	id, qs := cachepolicy_key_to_id_args(key)
@@ -134,7 +124,7 @@ func (c *NitroClient) ExistsCachepolicy(key CachepolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListCachepolicy() ([]Cachepolicy, error) {
-	var results get_cachepolicy_result
+	results := get_cachepolicy_result{}
 
 	if err := c.get("cachepolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -143,7 +133,7 @@ func (c *NitroClient) ListCachepolicy() ([]Cachepolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetCachepolicy(key CachepolicyKey) (*Cachepolicy, error) {
+func (c *NitroClient) GetCachepolicy(key string) (*Cachepolicy, error) {
 	var results get_cachepolicy_result
 
 	id, qs := cachepolicy_key_to_id_args(key)
@@ -163,7 +153,7 @@ func (c *NitroClient) GetCachepolicy(key CachepolicyKey) (*Cachepolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeleteCachepolicy(key CachepolicyKey) error {
+func (c *NitroClient) DeleteCachepolicy(key string) error {
 	id, qs := cachepolicy_key_to_id_args(key)
 
 	return c.delete("cachepolicy", id, qs)

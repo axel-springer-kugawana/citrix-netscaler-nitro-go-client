@@ -17,8 +17,11 @@ type Responderaction struct {
 	Type               string `json:"type,omitempty"`
 }
 
-type ResponderactionKey struct {
-	Name string `json:"name"`
+func responderaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type ResponderactionUnset struct {
@@ -70,19 +73,6 @@ type count_responderaction_result struct {
 	Results []Count `json:"responderaction"`
 }
 
-func responderaction_key_to_id_args(key ResponderactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddResponderaction(resource Responderaction) error {
 	payload := add_responderaction_payload{
 		resource,
@@ -120,7 +110,7 @@ func (c *NitroClient) CountResponderaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsResponderaction(key ResponderactionKey) (bool, error) {
+func (c *NitroClient) ExistsResponderaction(key string) (bool, error) {
 	var results count_responderaction_result
 
 	id, qs := responderaction_key_to_id_args(key)
@@ -135,7 +125,7 @@ func (c *NitroClient) ExistsResponderaction(key ResponderactionKey) (bool, error
 }
 
 func (c *NitroClient) ListResponderaction() ([]Responderaction, error) {
-	var results get_responderaction_result
+	results := get_responderaction_result{}
 
 	if err := c.get("responderaction", "", nil, &results); err != nil {
 		return nil, err
@@ -144,7 +134,7 @@ func (c *NitroClient) ListResponderaction() ([]Responderaction, error) {
 	}
 }
 
-func (c *NitroClient) GetResponderaction(key ResponderactionKey) (*Responderaction, error) {
+func (c *NitroClient) GetResponderaction(key string) (*Responderaction, error) {
 	var results get_responderaction_result
 
 	id, qs := responderaction_key_to_id_args(key)
@@ -164,7 +154,7 @@ func (c *NitroClient) GetResponderaction(key ResponderactionKey) (*Responderacti
 	}
 }
 
-func (c *NitroClient) DeleteResponderaction(key ResponderactionKey) error {
+func (c *NitroClient) DeleteResponderaction(key string) error {
 	id, qs := responderaction_key_to_id_args(key)
 
 	return c.delete("responderaction", id, qs)

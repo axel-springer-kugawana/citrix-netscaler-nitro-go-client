@@ -11,8 +11,11 @@ type Spilloveraction struct {
 	Action string `json:"action,omitempty"`
 }
 
-type SpilloveractionKey struct {
-	Name string `json:"name"`
+func spilloveraction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_spilloveraction struct {
@@ -34,19 +37,6 @@ type get_spilloveraction_result struct {
 
 type count_spilloveraction_result struct {
 	Results []Count `json:"spilloveraction"`
-}
-
-func spilloveraction_key_to_id_args(key SpilloveractionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
 }
 
 func (c *NitroClient) AddSpilloveraction(resource Spilloveraction) error {
@@ -86,7 +76,7 @@ func (c *NitroClient) CountSpilloveraction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsSpilloveraction(key SpilloveractionKey) (bool, error) {
+func (c *NitroClient) ExistsSpilloveraction(key string) (bool, error) {
 	var results count_spilloveraction_result
 
 	id, qs := spilloveraction_key_to_id_args(key)
@@ -101,7 +91,7 @@ func (c *NitroClient) ExistsSpilloveraction(key SpilloveractionKey) (bool, error
 }
 
 func (c *NitroClient) ListSpilloveraction() ([]Spilloveraction, error) {
-	var results get_spilloveraction_result
+	results := get_spilloveraction_result{}
 
 	if err := c.get("spilloveraction", "", nil, &results); err != nil {
 		return nil, err
@@ -110,7 +100,7 @@ func (c *NitroClient) ListSpilloveraction() ([]Spilloveraction, error) {
 	}
 }
 
-func (c *NitroClient) GetSpilloveraction(key SpilloveractionKey) (*Spilloveraction, error) {
+func (c *NitroClient) GetSpilloveraction(key string) (*Spilloveraction, error) {
 	var results get_spilloveraction_result
 
 	id, qs := spilloveraction_key_to_id_args(key)
@@ -130,7 +120,7 @@ func (c *NitroClient) GetSpilloveraction(key SpilloveractionKey) (*Spilloveracti
 	}
 }
 
-func (c *NitroClient) DeleteSpilloveraction(key SpilloveractionKey) error {
+func (c *NitroClient) DeleteSpilloveraction(key string) error {
 	id, qs := spilloveraction_key_to_id_args(key)
 
 	return c.delete("spilloveraction", id, qs)

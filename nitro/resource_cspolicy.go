@@ -15,8 +15,11 @@ type Cspolicy struct {
 	Url        string `json:"url,omitempty"`
 }
 
-type CspolicyKey struct {
-	Policyname string `json:"policyname"`
+func cspolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type CspolicyUnset struct {
@@ -66,19 +69,6 @@ type count_cspolicy_result struct {
 	Results []Count `json:"cspolicy"`
 }
 
-func cspolicy_key_to_id_args(key CspolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Policyname, qs
-}
-
 func (c *NitroClient) AddCspolicy(resource Cspolicy) error {
 	payload := add_cspolicy_payload{
 		resource,
@@ -116,7 +106,7 @@ func (c *NitroClient) CountCspolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCspolicy(key CspolicyKey) (bool, error) {
+func (c *NitroClient) ExistsCspolicy(key string) (bool, error) {
 	var results count_cspolicy_result
 
 	id, qs := cspolicy_key_to_id_args(key)
@@ -131,7 +121,7 @@ func (c *NitroClient) ExistsCspolicy(key CspolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListCspolicy() ([]Cspolicy, error) {
-	var results get_cspolicy_result
+	results := get_cspolicy_result{}
 
 	if err := c.get("cspolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -140,7 +130,7 @@ func (c *NitroClient) ListCspolicy() ([]Cspolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetCspolicy(key CspolicyKey) (*Cspolicy, error) {
+func (c *NitroClient) GetCspolicy(key string) (*Cspolicy, error) {
 	var results get_cspolicy_result
 
 	id, qs := cspolicy_key_to_id_args(key)
@@ -160,7 +150,7 @@ func (c *NitroClient) GetCspolicy(key CspolicyKey) (*Cspolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeleteCspolicy(key CspolicyKey) error {
+func (c *NitroClient) DeleteCspolicy(key string) error {
 	id, qs := cspolicy_key_to_id_args(key)
 
 	return c.delete("cspolicy", id, qs)

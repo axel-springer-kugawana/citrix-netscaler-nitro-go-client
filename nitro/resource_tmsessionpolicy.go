@@ -12,8 +12,11 @@ type Tmsessionpolicy struct {
 	Rule   string `json:"rule,omitempty"`
 }
 
-type TmsessionpolicyKey struct {
-	Name string `json:"name"`
+func tmsessionpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type TmsessionpolicyUnset struct {
@@ -57,19 +60,6 @@ type count_tmsessionpolicy_result struct {
 	Results []Count `json:"tmsessionpolicy"`
 }
 
-func tmsessionpolicy_key_to_id_args(key TmsessionpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddTmsessionpolicy(resource Tmsessionpolicy) error {
 	payload := add_tmsessionpolicy_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountTmsessionpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTmsessionpolicy(key TmsessionpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsTmsessionpolicy(key string) (bool, error) {
 	var results count_tmsessionpolicy_result
 
 	id, qs := tmsessionpolicy_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsTmsessionpolicy(key TmsessionpolicyKey) (bool, error
 }
 
 func (c *NitroClient) ListTmsessionpolicy() ([]Tmsessionpolicy, error) {
-	var results get_tmsessionpolicy_result
+	results := get_tmsessionpolicy_result{}
 
 	if err := c.get("tmsessionpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListTmsessionpolicy() ([]Tmsessionpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetTmsessionpolicy(key TmsessionpolicyKey) (*Tmsessionpolicy, error) {
+func (c *NitroClient) GetTmsessionpolicy(key string) (*Tmsessionpolicy, error) {
 	var results get_tmsessionpolicy_result
 
 	id, qs := tmsessionpolicy_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetTmsessionpolicy(key TmsessionpolicyKey) (*Tmsessionpoli
 	}
 }
 
-func (c *NitroClient) DeleteTmsessionpolicy(key TmsessionpolicyKey) error {
+func (c *NitroClient) DeleteTmsessionpolicy(key string) error {
 	id, qs := tmsessionpolicy_key_to_id_args(key)
 
 	return c.delete("tmsessionpolicy", id, qs)

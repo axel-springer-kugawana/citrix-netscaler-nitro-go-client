@@ -20,8 +20,11 @@ type Appflowaction struct {
 	Webinsight             string   `json:"webinsight,omitempty"`
 }
 
-type AppflowactionKey struct {
-	Name string `json:"name"`
+func appflowaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AppflowactionUnset struct {
@@ -77,19 +80,6 @@ type count_appflowaction_result struct {
 	Results []Count `json:"appflowaction"`
 }
 
-func appflowaction_key_to_id_args(key AppflowactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAppflowaction(resource Appflowaction) error {
 	payload := add_appflowaction_payload{
 		resource,
@@ -127,7 +117,7 @@ func (c *NitroClient) CountAppflowaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppflowaction(key AppflowactionKey) (bool, error) {
+func (c *NitroClient) ExistsAppflowaction(key string) (bool, error) {
 	var results count_appflowaction_result
 
 	id, qs := appflowaction_key_to_id_args(key)
@@ -142,7 +132,7 @@ func (c *NitroClient) ExistsAppflowaction(key AppflowactionKey) (bool, error) {
 }
 
 func (c *NitroClient) ListAppflowaction() ([]Appflowaction, error) {
-	var results get_appflowaction_result
+	results := get_appflowaction_result{}
 
 	if err := c.get("appflowaction", "", nil, &results); err != nil {
 		return nil, err
@@ -151,7 +141,7 @@ func (c *NitroClient) ListAppflowaction() ([]Appflowaction, error) {
 	}
 }
 
-func (c *NitroClient) GetAppflowaction(key AppflowactionKey) (*Appflowaction, error) {
+func (c *NitroClient) GetAppflowaction(key string) (*Appflowaction, error) {
 	var results get_appflowaction_result
 
 	id, qs := appflowaction_key_to_id_args(key)
@@ -171,7 +161,7 @@ func (c *NitroClient) GetAppflowaction(key AppflowactionKey) (*Appflowaction, er
 	}
 }
 
-func (c *NitroClient) DeleteAppflowaction(key AppflowactionKey) error {
+func (c *NitroClient) DeleteAppflowaction(key string) error {
 	id, qs := appflowaction_key_to_id_args(key)
 
 	return c.delete("appflowaction", id, qs)

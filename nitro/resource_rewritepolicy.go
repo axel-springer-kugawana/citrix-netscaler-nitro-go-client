@@ -15,8 +15,11 @@ type Rewritepolicy struct {
 	Undefaction string `json:"undefaction,omitempty"`
 }
 
-type RewritepolicyKey struct {
-	Name string `json:"name"`
+func rewritepolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type RewritepolicyUnset struct {
@@ -66,19 +69,6 @@ type count_rewritepolicy_result struct {
 	Results []Count `json:"rewritepolicy"`
 }
 
-func rewritepolicy_key_to_id_args(key RewritepolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddRewritepolicy(resource Rewritepolicy) error {
 	payload := add_rewritepolicy_payload{
 		resource,
@@ -116,7 +106,7 @@ func (c *NitroClient) CountRewritepolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsRewritepolicy(key RewritepolicyKey) (bool, error) {
+func (c *NitroClient) ExistsRewritepolicy(key string) (bool, error) {
 	var results count_rewritepolicy_result
 
 	id, qs := rewritepolicy_key_to_id_args(key)
@@ -131,7 +121,7 @@ func (c *NitroClient) ExistsRewritepolicy(key RewritepolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListRewritepolicy() ([]Rewritepolicy, error) {
-	var results get_rewritepolicy_result
+	results := get_rewritepolicy_result{}
 
 	if err := c.get("rewritepolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -140,7 +130,7 @@ func (c *NitroClient) ListRewritepolicy() ([]Rewritepolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*Rewritepolicy, error) {
+func (c *NitroClient) GetRewritepolicy(key string) (*Rewritepolicy, error) {
 	var results get_rewritepolicy_result
 
 	id, qs := rewritepolicy_key_to_id_args(key)
@@ -160,7 +150,7 @@ func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*Rewritepolicy, er
 	}
 }
 
-func (c *NitroClient) DeleteRewritepolicy(key RewritepolicyKey) error {
+func (c *NitroClient) DeleteRewritepolicy(key string) error {
 	id, qs := rewritepolicy_key_to_id_args(key)
 
 	return c.delete("rewritepolicy", id, qs)

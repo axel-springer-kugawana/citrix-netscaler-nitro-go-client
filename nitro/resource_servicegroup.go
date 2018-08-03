@@ -43,8 +43,11 @@ type Servicegroup struct {
 	Usip               string `json:"usip,omitempty"`
 }
 
-type ServicegroupKey struct {
-	Servicegroupname string `json:"servicegroupname"`
+func servicegroup_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type ServicegroupUnset struct {
@@ -138,19 +141,6 @@ type count_servicegroup_result struct {
 	Results []Count `json:"servicegroup"`
 }
 
-func servicegroup_key_to_id_args(key ServicegroupKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Servicegroupname, qs
-}
-
 func (c *NitroClient) AddServicegroup(resource Servicegroup) error {
 	payload := add_servicegroup_payload{
 		resource,
@@ -188,7 +178,7 @@ func (c *NitroClient) CountServicegroup() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsServicegroup(key ServicegroupKey) (bool, error) {
+func (c *NitroClient) ExistsServicegroup(key string) (bool, error) {
 	var results count_servicegroup_result
 
 	id, qs := servicegroup_key_to_id_args(key)
@@ -203,7 +193,7 @@ func (c *NitroClient) ExistsServicegroup(key ServicegroupKey) (bool, error) {
 }
 
 func (c *NitroClient) ListServicegroup() ([]Servicegroup, error) {
-	var results get_servicegroup_result
+	results := get_servicegroup_result{}
 
 	if err := c.get("servicegroup", "", nil, &results); err != nil {
 		return nil, err
@@ -212,7 +202,7 @@ func (c *NitroClient) ListServicegroup() ([]Servicegroup, error) {
 	}
 }
 
-func (c *NitroClient) GetServicegroup(key ServicegroupKey) (*Servicegroup, error) {
+func (c *NitroClient) GetServicegroup(key string) (*Servicegroup, error) {
 	var results get_servicegroup_result
 
 	id, qs := servicegroup_key_to_id_args(key)
@@ -232,7 +222,7 @@ func (c *NitroClient) GetServicegroup(key ServicegroupKey) (*Servicegroup, error
 	}
 }
 
-func (c *NitroClient) DeleteServicegroup(key ServicegroupKey) error {
+func (c *NitroClient) DeleteServicegroup(key string) error {
 	id, qs := servicegroup_key_to_id_args(key)
 
 	return c.delete("servicegroup", id, qs)

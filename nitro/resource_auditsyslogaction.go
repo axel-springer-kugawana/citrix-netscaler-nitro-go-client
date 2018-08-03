@@ -32,8 +32,11 @@ type Auditsyslogaction struct {
 	Userdefinedauditlog  string   `json:"userdefinedauditlog,omitempty"`
 }
 
-type AuditsyslogactionKey struct {
-	Name string `json:"name"`
+func auditsyslogaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type AuditsyslogactionUnset struct {
@@ -115,19 +118,6 @@ type count_auditsyslogaction_result struct {
 	Results []Count `json:"auditsyslogaction"`
 }
 
-func auditsyslogaction_key_to_id_args(key AuditsyslogactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddAuditsyslogaction(resource Auditsyslogaction) error {
 	payload := add_auditsyslogaction_payload{
 		resource,
@@ -165,7 +155,7 @@ func (c *NitroClient) CountAuditsyslogaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAuditsyslogaction(key AuditsyslogactionKey) (bool, error) {
+func (c *NitroClient) ExistsAuditsyslogaction(key string) (bool, error) {
 	var results count_auditsyslogaction_result
 
 	id, qs := auditsyslogaction_key_to_id_args(key)
@@ -180,7 +170,7 @@ func (c *NitroClient) ExistsAuditsyslogaction(key AuditsyslogactionKey) (bool, e
 }
 
 func (c *NitroClient) ListAuditsyslogaction() ([]Auditsyslogaction, error) {
-	var results get_auditsyslogaction_result
+	results := get_auditsyslogaction_result{}
 
 	if err := c.get("auditsyslogaction", "", nil, &results); err != nil {
 		return nil, err
@@ -189,7 +179,7 @@ func (c *NitroClient) ListAuditsyslogaction() ([]Auditsyslogaction, error) {
 	}
 }
 
-func (c *NitroClient) GetAuditsyslogaction(key AuditsyslogactionKey) (*Auditsyslogaction, error) {
+func (c *NitroClient) GetAuditsyslogaction(key string) (*Auditsyslogaction, error) {
 	var results get_auditsyslogaction_result
 
 	id, qs := auditsyslogaction_key_to_id_args(key)
@@ -209,7 +199,7 @@ func (c *NitroClient) GetAuditsyslogaction(key AuditsyslogactionKey) (*Auditsysl
 	}
 }
 
-func (c *NitroClient) DeleteAuditsyslogaction(key AuditsyslogactionKey) error {
+func (c *NitroClient) DeleteAuditsyslogaction(key string) error {
 	id, qs := auditsyslogaction_key_to_id_args(key)
 
 	return c.delete("auditsyslogaction", id, qs)

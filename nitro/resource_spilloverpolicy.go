@@ -13,8 +13,11 @@ type Spilloverpolicy struct {
 	Rule    string `json:"rule,omitempty"`
 }
 
-type SpilloverpolicyKey struct {
-	Name string `json:"name"`
+func spilloverpolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type SpilloverpolicyUnset struct {
@@ -60,19 +63,6 @@ type count_spilloverpolicy_result struct {
 	Results []Count `json:"spilloverpolicy"`
 }
 
-func spilloverpolicy_key_to_id_args(key SpilloverpolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddSpilloverpolicy(resource Spilloverpolicy) error {
 	payload := add_spilloverpolicy_payload{
 		resource,
@@ -110,7 +100,7 @@ func (c *NitroClient) CountSpilloverpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsSpilloverpolicy(key SpilloverpolicyKey) (bool, error) {
+func (c *NitroClient) ExistsSpilloverpolicy(key string) (bool, error) {
 	var results count_spilloverpolicy_result
 
 	id, qs := spilloverpolicy_key_to_id_args(key)
@@ -125,7 +115,7 @@ func (c *NitroClient) ExistsSpilloverpolicy(key SpilloverpolicyKey) (bool, error
 }
 
 func (c *NitroClient) ListSpilloverpolicy() ([]Spilloverpolicy, error) {
-	var results get_spilloverpolicy_result
+	results := get_spilloverpolicy_result{}
 
 	if err := c.get("spilloverpolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -134,7 +124,7 @@ func (c *NitroClient) ListSpilloverpolicy() ([]Spilloverpolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetSpilloverpolicy(key SpilloverpolicyKey) (*Spilloverpolicy, error) {
+func (c *NitroClient) GetSpilloverpolicy(key string) (*Spilloverpolicy, error) {
 	var results get_spilloverpolicy_result
 
 	id, qs := spilloverpolicy_key_to_id_args(key)
@@ -154,7 +144,7 @@ func (c *NitroClient) GetSpilloverpolicy(key SpilloverpolicyKey) (*Spilloverpoli
 	}
 }
 
-func (c *NitroClient) DeleteSpilloverpolicy(key SpilloverpolicyKey) error {
+func (c *NitroClient) DeleteSpilloverpolicy(key string) error {
 	id, qs := spilloverpolicy_key_to_id_args(key)
 
 	return c.delete("spilloverpolicy", id, qs)

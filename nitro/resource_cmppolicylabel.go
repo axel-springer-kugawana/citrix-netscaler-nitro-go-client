@@ -11,8 +11,11 @@ type Cmppolicylabel struct {
 	Type      string `json:"type,omitempty"`
 }
 
-type CmppolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func cmppolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_cmppolicylabel struct {
@@ -34,19 +37,6 @@ type get_cmppolicylabel_result struct {
 
 type count_cmppolicylabel_result struct {
 	Results []Count `json:"cmppolicylabel"`
-}
-
-func cmppolicylabel_key_to_id_args(key CmppolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddCmppolicylabel(resource Cmppolicylabel) error {
@@ -86,7 +76,7 @@ func (c *NitroClient) CountCmppolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCmppolicylabel(key CmppolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsCmppolicylabel(key string) (bool, error) {
 	var results count_cmppolicylabel_result
 
 	id, qs := cmppolicylabel_key_to_id_args(key)
@@ -101,7 +91,7 @@ func (c *NitroClient) ExistsCmppolicylabel(key CmppolicylabelKey) (bool, error) 
 }
 
 func (c *NitroClient) ListCmppolicylabel() ([]Cmppolicylabel, error) {
-	var results get_cmppolicylabel_result
+	results := get_cmppolicylabel_result{}
 
 	if err := c.get("cmppolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -110,7 +100,7 @@ func (c *NitroClient) ListCmppolicylabel() ([]Cmppolicylabel, error) {
 	}
 }
 
-func (c *NitroClient) GetCmppolicylabel(key CmppolicylabelKey) (*Cmppolicylabel, error) {
+func (c *NitroClient) GetCmppolicylabel(key string) (*Cmppolicylabel, error) {
 	var results get_cmppolicylabel_result
 
 	id, qs := cmppolicylabel_key_to_id_args(key)
@@ -130,7 +120,7 @@ func (c *NitroClient) GetCmppolicylabel(key CmppolicylabelKey) (*Cmppolicylabel,
 	}
 }
 
-func (c *NitroClient) DeleteCmppolicylabel(key CmppolicylabelKey) error {
+func (c *NitroClient) DeleteCmppolicylabel(key string) error {
 	id, qs := cmppolicylabel_key_to_id_args(key)
 
 	return c.delete("cmppolicylabel", id, qs)

@@ -10,8 +10,11 @@ type Authorizationpolicylabel struct {
 	Labelname string `json:"labelname"`
 }
 
-type AuthorizationpolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func authorizationpolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_authorizationpolicylabel struct {
@@ -33,19 +36,6 @@ type get_authorizationpolicylabel_result struct {
 
 type count_authorizationpolicylabel_result struct {
 	Results []Count `json:"authorizationpolicylabel"`
-}
-
-func authorizationpolicylabel_key_to_id_args(key AuthorizationpolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddAuthorizationpolicylabel(resource Authorizationpolicylabel) error {
@@ -85,7 +75,7 @@ func (c *NitroClient) CountAuthorizationpolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAuthorizationpolicylabel(key AuthorizationpolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsAuthorizationpolicylabel(key string) (bool, error) {
 	var results count_authorizationpolicylabel_result
 
 	id, qs := authorizationpolicylabel_key_to_id_args(key)
@@ -100,7 +90,7 @@ func (c *NitroClient) ExistsAuthorizationpolicylabel(key Authorizationpolicylabe
 }
 
 func (c *NitroClient) ListAuthorizationpolicylabel() ([]Authorizationpolicylabel, error) {
-	var results get_authorizationpolicylabel_result
+	results := get_authorizationpolicylabel_result{}
 
 	if err := c.get("authorizationpolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -109,7 +99,7 @@ func (c *NitroClient) ListAuthorizationpolicylabel() ([]Authorizationpolicylabel
 	}
 }
 
-func (c *NitroClient) GetAuthorizationpolicylabel(key AuthorizationpolicylabelKey) (*Authorizationpolicylabel, error) {
+func (c *NitroClient) GetAuthorizationpolicylabel(key string) (*Authorizationpolicylabel, error) {
 	var results get_authorizationpolicylabel_result
 
 	id, qs := authorizationpolicylabel_key_to_id_args(key)
@@ -129,7 +119,7 @@ func (c *NitroClient) GetAuthorizationpolicylabel(key AuthorizationpolicylabelKe
 	}
 }
 
-func (c *NitroClient) DeleteAuthorizationpolicylabel(key AuthorizationpolicylabelKey) error {
+func (c *NitroClient) DeleteAuthorizationpolicylabel(key string) error {
 	id, qs := authorizationpolicylabel_key_to_id_args(key)
 
 	return c.delete("authorizationpolicylabel", id, qs)

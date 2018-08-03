@@ -15,8 +15,11 @@ type Capolicy struct {
 	Undefaction string `json:"undefaction,omitempty"`
 }
 
-type CapolicyKey struct {
-	Name string `json:"name"`
+func capolicy_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type CapolicyUnset struct {
@@ -66,19 +69,6 @@ type count_capolicy_result struct {
 	Results []Count `json:"capolicy"`
 }
 
-func capolicy_key_to_id_args(key CapolicyKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddCapolicy(resource Capolicy) error {
 	payload := add_capolicy_payload{
 		resource,
@@ -116,7 +106,7 @@ func (c *NitroClient) CountCapolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCapolicy(key CapolicyKey) (bool, error) {
+func (c *NitroClient) ExistsCapolicy(key string) (bool, error) {
 	var results count_capolicy_result
 
 	id, qs := capolicy_key_to_id_args(key)
@@ -131,7 +121,7 @@ func (c *NitroClient) ExistsCapolicy(key CapolicyKey) (bool, error) {
 }
 
 func (c *NitroClient) ListCapolicy() ([]Capolicy, error) {
-	var results get_capolicy_result
+	results := get_capolicy_result{}
 
 	if err := c.get("capolicy", "", nil, &results); err != nil {
 		return nil, err
@@ -140,7 +130,7 @@ func (c *NitroClient) ListCapolicy() ([]Capolicy, error) {
 	}
 }
 
-func (c *NitroClient) GetCapolicy(key CapolicyKey) (*Capolicy, error) {
+func (c *NitroClient) GetCapolicy(key string) (*Capolicy, error) {
 	var results get_capolicy_result
 
 	id, qs := capolicy_key_to_id_args(key)
@@ -160,7 +150,7 @@ func (c *NitroClient) GetCapolicy(key CapolicyKey) (*Capolicy, error) {
 	}
 }
 
-func (c *NitroClient) DeleteCapolicy(key CapolicyKey) error {
+func (c *NitroClient) DeleteCapolicy(key string) error {
 	id, qs := capolicy_key_to_id_args(key)
 
 	return c.delete("capolicy", id, qs)

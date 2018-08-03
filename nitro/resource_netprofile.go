@@ -14,8 +14,11 @@ type Netprofile struct {
 	Td               int    `json:"td,string,omitempty"`
 }
 
-type NetprofileKey struct {
-	Name string `json:"name"`
+func netprofile_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type NetprofileUnset struct {
@@ -61,19 +64,6 @@ type count_netprofile_result struct {
 	Results []Count `json:"netprofile"`
 }
 
-func netprofile_key_to_id_args(key NetprofileKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddNetprofile(resource Netprofile) error {
 	payload := add_netprofile_payload{
 		resource,
@@ -111,7 +101,7 @@ func (c *NitroClient) CountNetprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsNetprofile(key NetprofileKey) (bool, error) {
+func (c *NitroClient) ExistsNetprofile(key string) (bool, error) {
 	var results count_netprofile_result
 
 	id, qs := netprofile_key_to_id_args(key)
@@ -126,7 +116,7 @@ func (c *NitroClient) ExistsNetprofile(key NetprofileKey) (bool, error) {
 }
 
 func (c *NitroClient) ListNetprofile() ([]Netprofile, error) {
-	var results get_netprofile_result
+	results := get_netprofile_result{}
 
 	if err := c.get("netprofile", "", nil, &results); err != nil {
 		return nil, err
@@ -135,7 +125,7 @@ func (c *NitroClient) ListNetprofile() ([]Netprofile, error) {
 	}
 }
 
-func (c *NitroClient) GetNetprofile(key NetprofileKey) (*Netprofile, error) {
+func (c *NitroClient) GetNetprofile(key string) (*Netprofile, error) {
 	var results get_netprofile_result
 
 	id, qs := netprofile_key_to_id_args(key)
@@ -155,7 +145,7 @@ func (c *NitroClient) GetNetprofile(key NetprofileKey) (*Netprofile, error) {
 	}
 }
 
-func (c *NitroClient) DeleteNetprofile(key NetprofileKey) error {
+func (c *NitroClient) DeleteNetprofile(key string) error {
 	id, qs := netprofile_key_to_id_args(key)
 
 	return c.delete("netprofile", id, qs)

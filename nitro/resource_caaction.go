@@ -14,8 +14,11 @@ type Caaction struct {
 	Type         string `json:"type,omitempty"`
 }
 
-type CaactionKey struct {
-	Name string `json:"name"`
+func caaction_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type CaactionUnset struct {
@@ -63,19 +66,6 @@ type count_caaction_result struct {
 	Results []Count `json:"caaction"`
 }
 
-func caaction_key_to_id_args(key CaactionKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddCaaction(resource Caaction) error {
 	payload := add_caaction_payload{
 		resource,
@@ -113,7 +103,7 @@ func (c *NitroClient) CountCaaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCaaction(key CaactionKey) (bool, error) {
+func (c *NitroClient) ExistsCaaction(key string) (bool, error) {
 	var results count_caaction_result
 
 	id, qs := caaction_key_to_id_args(key)
@@ -128,7 +118,7 @@ func (c *NitroClient) ExistsCaaction(key CaactionKey) (bool, error) {
 }
 
 func (c *NitroClient) ListCaaction() ([]Caaction, error) {
-	var results get_caaction_result
+	results := get_caaction_result{}
 
 	if err := c.get("caaction", "", nil, &results); err != nil {
 		return nil, err
@@ -137,7 +127,7 @@ func (c *NitroClient) ListCaaction() ([]Caaction, error) {
 	}
 }
 
-func (c *NitroClient) GetCaaction(key CaactionKey) (*Caaction, error) {
+func (c *NitroClient) GetCaaction(key string) (*Caaction, error) {
 	var results get_caaction_result
 
 	id, qs := caaction_key_to_id_args(key)
@@ -157,7 +147,7 @@ func (c *NitroClient) GetCaaction(key CaactionKey) (*Caaction, error) {
 	}
 }
 
-func (c *NitroClient) DeleteCaaction(key CaactionKey) error {
+func (c *NitroClient) DeleteCaaction(key string) error {
 	id, qs := caaction_key_to_id_args(key)
 
 	return c.delete("caaction", id, qs)

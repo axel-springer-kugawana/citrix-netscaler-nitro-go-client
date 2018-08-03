@@ -106,6 +106,21 @@ type LbmonitorKey struct {
 	Type        string `json:"type,omitempty"`
 }
 
+func lbmonitor_key_to_id_args(key LbmonitorKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	args = append(args, "type:"+key.Type)
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return key.Monitorname, qs
+}
+
 type LbmonitorUnset struct {
 	Monitorname string `json:"monitorname"`
 	// TODO
@@ -311,8 +326,12 @@ type rename_lbmonitor_payload struct {
 	Rename rename_lbmonitor `json:"lbmonitor"`
 }
 
+type state_lbmonitor struct {
+	Key LbmonitorKey `json:"monitorname"`
+}
+
 type state_lbmonitor_payload struct {
-	Key LbmonitorKey `json:"lbmonitor"`
+	Sate state_lbmonitor `json:"lbmonitor"`
 }
 
 type unset_lbmonitor_payload struct {
@@ -329,21 +348,6 @@ type get_lbmonitor_result struct {
 
 type count_lbmonitor_result struct {
 	Results []Count `json:"lbmonitor"`
-}
-
-func lbmonitor_key_to_id_args(key LbmonitorKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	args = append(args, "type:"+key.Type)
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Monitorname, qs
 }
 
 func (c *NitroClient) AddLbmonitor(resource Lbmonitor) error {
@@ -398,7 +402,7 @@ func (c *NitroClient) ExistsLbmonitor(key LbmonitorKey) (bool, error) {
 }
 
 func (c *NitroClient) ListLbmonitor() ([]Lbmonitor, error) {
-	var results get_lbmonitor_result
+	results := get_lbmonitor_result{}
 
 	if err := c.get("lbmonitor", "", nil, &results); err != nil {
 		return nil, err
@@ -549,7 +553,9 @@ func (c *NitroClient) UpdateLbmonitor(resource Lbmonitor) error {
 
 func (c *NitroClient) EnableLbmonitor(key LbmonitorKey) error {
 	payload := state_lbmonitor_payload{
-		key,
+		state_lbmonitor{
+			key,
+		},
 	}
 
 	qs := map[string]string{
@@ -561,7 +567,9 @@ func (c *NitroClient) EnableLbmonitor(key LbmonitorKey) error {
 
 func (c *NitroClient) DisableLbmonitor(key LbmonitorKey) error {
 	payload := state_lbmonitor_payload{
-		key,
+		state_lbmonitor{
+			key,
+		},
 	}
 
 	qs := map[string]string{

@@ -11,8 +11,11 @@ type Cspolicylabel struct {
 	Cspolicylabeltype string `json:"cspolicylabeltype,omitempty"`
 }
 
-type CspolicylabelKey struct {
-	Labelname string `json:"labelname"`
+func cspolicylabel_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_cspolicylabel struct {
@@ -34,19 +37,6 @@ type get_cspolicylabel_result struct {
 
 type count_cspolicylabel_result struct {
 	Results []Count `json:"cspolicylabel"`
-}
-
-func cspolicylabel_key_to_id_args(key CspolicylabelKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddCspolicylabel(resource Cspolicylabel) error {
@@ -86,7 +76,7 @@ func (c *NitroClient) CountCspolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCspolicylabel(key CspolicylabelKey) (bool, error) {
+func (c *NitroClient) ExistsCspolicylabel(key string) (bool, error) {
 	var results count_cspolicylabel_result
 
 	id, qs := cspolicylabel_key_to_id_args(key)
@@ -101,7 +91,7 @@ func (c *NitroClient) ExistsCspolicylabel(key CspolicylabelKey) (bool, error) {
 }
 
 func (c *NitroClient) ListCspolicylabel() ([]Cspolicylabel, error) {
-	var results get_cspolicylabel_result
+	results := get_cspolicylabel_result{}
 
 	if err := c.get("cspolicylabel", "", nil, &results); err != nil {
 		return nil, err
@@ -110,7 +100,7 @@ func (c *NitroClient) ListCspolicylabel() ([]Cspolicylabel, error) {
 	}
 }
 
-func (c *NitroClient) GetCspolicylabel(key CspolicylabelKey) (*Cspolicylabel, error) {
+func (c *NitroClient) GetCspolicylabel(key string) (*Cspolicylabel, error) {
 	var results get_cspolicylabel_result
 
 	id, qs := cspolicylabel_key_to_id_args(key)
@@ -130,7 +120,7 @@ func (c *NitroClient) GetCspolicylabel(key CspolicylabelKey) (*Cspolicylabel, er
 	}
 }
 
-func (c *NitroClient) DeleteCspolicylabel(key CspolicylabelKey) error {
+func (c *NitroClient) DeleteCspolicylabel(key string) error {
 	id, qs := cspolicylabel_key_to_id_args(key)
 
 	return c.delete("cspolicylabel", id, qs)

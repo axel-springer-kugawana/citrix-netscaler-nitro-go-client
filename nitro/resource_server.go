@@ -19,8 +19,11 @@ type Server struct {
 	Translationmask    string `json:"translationmask,omitempty"`
 }
 
-type ServerKey struct {
-	Name string `json:"name"`
+func server_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type ServerUnset struct {
@@ -54,8 +57,12 @@ type rename_server_payload struct {
 	Rename rename_server `json:"server"`
 }
 
+type state_server struct {
+	Key string `json:"name"`
+}
+
 type state_server_payload struct {
-	Key ServerKey `json:"server"`
+	Sate state_server `json:"server"`
 }
 
 type unset_server_payload struct {
@@ -72,19 +79,6 @@ type get_server_result struct {
 
 type count_server_result struct {
 	Results []Count `json:"server"`
-}
-
-func server_key_to_id_args(key ServerKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
 }
 
 func (c *NitroClient) AddServer(resource Server) error {
@@ -124,7 +118,7 @@ func (c *NitroClient) CountServer() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsServer(key ServerKey) (bool, error) {
+func (c *NitroClient) ExistsServer(key string) (bool, error) {
 	var results count_server_result
 
 	id, qs := server_key_to_id_args(key)
@@ -139,7 +133,7 @@ func (c *NitroClient) ExistsServer(key ServerKey) (bool, error) {
 }
 
 func (c *NitroClient) ListServer() ([]Server, error) {
-	var results get_server_result
+	results := get_server_result{}
 
 	if err := c.get("server", "", nil, &results); err != nil {
 		return nil, err
@@ -148,7 +142,7 @@ func (c *NitroClient) ListServer() ([]Server, error) {
 	}
 }
 
-func (c *NitroClient) GetServer(key ServerKey) (*Server, error) {
+func (c *NitroClient) GetServer(key string) (*Server, error) {
 	var results get_server_result
 
 	id, qs := server_key_to_id_args(key)
@@ -168,7 +162,7 @@ func (c *NitroClient) GetServer(key ServerKey) (*Server, error) {
 	}
 }
 
-func (c *NitroClient) DeleteServer(key ServerKey) error {
+func (c *NitroClient) DeleteServer(key string) error {
 	id, qs := server_key_to_id_args(key)
 
 	return c.delete("server", id, qs)
@@ -201,9 +195,11 @@ func (c *NitroClient) UpdateServer(resource Server) error {
 	return c.put("server", "", nil, payload)
 }
 
-func (c *NitroClient) EnableServer(key ServerKey) error {
+func (c *NitroClient) EnableServer(key string) error {
 	payload := state_server_payload{
-		key,
+		state_server{
+			key,
+		},
 	}
 
 	qs := map[string]string{
@@ -213,9 +209,11 @@ func (c *NitroClient) EnableServer(key ServerKey) error {
 	return c.post("server", "", qs, payload)
 }
 
-func (c *NitroClient) DisableServer(key ServerKey) error {
+func (c *NitroClient) DisableServer(key string) error {
 	payload := state_server_payload{
-		key,
+		state_server{
+			key,
+		},
 	}
 
 	qs := map[string]string{

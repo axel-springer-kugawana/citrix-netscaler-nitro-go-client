@@ -12,8 +12,11 @@ type Dnspolicy64 struct {
 	Rule   string `json:"rule,omitempty"`
 }
 
-type Dnspolicy64Key struct {
-	Name string `json:"name"`
+func dnspolicy64_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type Dnspolicy64Unset struct {
@@ -57,19 +60,6 @@ type count_dnspolicy64_result struct {
 	Results []Count `json:"dnspolicy64"`
 }
 
-func dnspolicy64_key_to_id_args(key Dnspolicy64Key) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
-}
-
 func (c *NitroClient) AddDnspolicy64(resource Dnspolicy64) error {
 	payload := add_dnspolicy64_payload{
 		resource,
@@ -107,7 +97,7 @@ func (c *NitroClient) CountDnspolicy64() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDnspolicy64(key Dnspolicy64Key) (bool, error) {
+func (c *NitroClient) ExistsDnspolicy64(key string) (bool, error) {
 	var results count_dnspolicy64_result
 
 	id, qs := dnspolicy64_key_to_id_args(key)
@@ -122,7 +112,7 @@ func (c *NitroClient) ExistsDnspolicy64(key Dnspolicy64Key) (bool, error) {
 }
 
 func (c *NitroClient) ListDnspolicy64() ([]Dnspolicy64, error) {
-	var results get_dnspolicy64_result
+	results := get_dnspolicy64_result{}
 
 	if err := c.get("dnspolicy64", "", nil, &results); err != nil {
 		return nil, err
@@ -131,7 +121,7 @@ func (c *NitroClient) ListDnspolicy64() ([]Dnspolicy64, error) {
 	}
 }
 
-func (c *NitroClient) GetDnspolicy64(key Dnspolicy64Key) (*Dnspolicy64, error) {
+func (c *NitroClient) GetDnspolicy64(key string) (*Dnspolicy64, error) {
 	var results get_dnspolicy64_result
 
 	id, qs := dnspolicy64_key_to_id_args(key)
@@ -151,7 +141,7 @@ func (c *NitroClient) GetDnspolicy64(key Dnspolicy64Key) (*Dnspolicy64, error) {
 	}
 }
 
-func (c *NitroClient) DeleteDnspolicy64(key Dnspolicy64Key) error {
+func (c *NitroClient) DeleteDnspolicy64(key string) error {
 	id, qs := dnspolicy64_key_to_id_args(key)
 
 	return c.delete("dnspolicy64", id, qs)

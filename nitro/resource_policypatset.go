@@ -12,8 +12,11 @@ type Policypatset struct {
 	Indextype string `json:"indextype,omitempty"`
 }
 
-type PolicypatsetKey struct {
-	Name string `json:"name"`
+func policypatset_key_to_id_args(key string) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var _ = strings.Join
+
+	return key, nil
 }
 
 type rename_policypatset struct {
@@ -35,19 +38,6 @@ type get_policypatset_result struct {
 
 type count_policypatset_result struct {
 	Results []Count `json:"policypatset"`
-}
-
-func policypatset_key_to_id_args(key PolicypatsetKey) (string, map[string]string) {
-	var _ = strconv.Itoa
-	var args []string
-
-	qs := map[string]string{}
-
-	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
-	}
-
-	return key.Name, qs
 }
 
 func (c *NitroClient) AddPolicypatset(resource Policypatset) error {
@@ -87,7 +77,7 @@ func (c *NitroClient) CountPolicypatset() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPolicypatset(key PolicypatsetKey) (bool, error) {
+func (c *NitroClient) ExistsPolicypatset(key string) (bool, error) {
 	var results count_policypatset_result
 
 	id, qs := policypatset_key_to_id_args(key)
@@ -102,7 +92,7 @@ func (c *NitroClient) ExistsPolicypatset(key PolicypatsetKey) (bool, error) {
 }
 
 func (c *NitroClient) ListPolicypatset() ([]Policypatset, error) {
-	var results get_policypatset_result
+	results := get_policypatset_result{}
 
 	if err := c.get("policypatset", "", nil, &results); err != nil {
 		return nil, err
@@ -111,7 +101,7 @@ func (c *NitroClient) ListPolicypatset() ([]Policypatset, error) {
 	}
 }
 
-func (c *NitroClient) GetPolicypatset(key PolicypatsetKey) (*Policypatset, error) {
+func (c *NitroClient) GetPolicypatset(key string) (*Policypatset, error) {
 	var results get_policypatset_result
 
 	id, qs := policypatset_key_to_id_args(key)
@@ -131,7 +121,7 @@ func (c *NitroClient) GetPolicypatset(key PolicypatsetKey) (*Policypatset, error
 	}
 }
 
-func (c *NitroClient) DeletePolicypatset(key PolicypatsetKey) error {
+func (c *NitroClient) DeletePolicypatset(key string) error {
 	id, qs := policypatset_key_to_id_args(key)
 
 	return c.delete("policypatset", id, qs)

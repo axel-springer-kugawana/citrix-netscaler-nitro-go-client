@@ -23,15 +23,19 @@ type LbvserverAuthorizationpolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_authorizationpolicy_binding struct {
+type add_lbvserver_authorizationpolicy_binding_payload struct {
+	Resources LbvserverAuthorizationpolicyBinding `json:"lbvserver_authorizationpolicy_binding"`
+}
+
+type get_lbvserver_authorizationpolicy_binding_result struct {
 	Results []LbvserverAuthorizationpolicyBinding `json:"lbvserver_authorizationpolicy_binding"`
 }
 
-type add_lbvserver_authorizationpolicy_binding_payload struct {
-	lbvserver_authorizationpolicy_binding LbvserverAuthorizationpolicyBinding
+type count_lbvserver_authorizationpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_authorizationpolicy_binding"`
 }
 
-func lbvserver_authorizationpolicy_binding_key_to_id_args(key LbvserverAuthorizationpolicyBindingKey) (string, string) {
+func lbvserver_authorizationpolicy_binding_key_to_id_args(key LbvserverAuthorizationpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_authorizationpolicy_binding_key_to_id_args(key LbvserverAuthoriza
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverAuthorizationpolicyBinding(binding LbvserverAuthorizationpolicyBinding) error {
 	payload := add_lbvserver_authorizationpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_authorizationpolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_authorizationpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverAuthorizationpolicyBinding(key LbvserverAuthorizationpolicyBindingKey) ([]LbvserverAuthorizationpolicyBinding, error) {
-	var results get_lbvserver_authorizationpolicy_binding
+func (c *NitroClient) BulkCountLbvserverAuthorizationpolicyBinding() (int, error) {
+	var results count_lbvserver_authorizationpolicy_binding_result
 
-	id, args := lbvserver_authorizationpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_authorizationpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_authorizationpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverAuthorizationpolicyBinding(id string) (int, error) {
+	var results count_lbvserver_authorizationpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_authorizationpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverAuthorizationpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverAuthorizationpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverAuthorizationpolicyBinding() ([]LbvserverAuthorizationpolicyBinding, error) {
+	var results get_lbvserver_authorizationpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_authorizationpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverAuthorizationpolicyBinding() ([]LbvserverAuthorizationpolicyBinding, error) {
-	var results get_lbvserver_authorizationpolicy_binding
+func (c *NitroClient) ListLbvserverAuthorizationpolicyBinding(id string) ([]LbvserverAuthorizationpolicyBinding, error) {
+	var results get_lbvserver_authorizationpolicy_binding_result
 
-	if err := c.get("lbvserver_authorizationpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_authorizationpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverAuthorizationpolicyBinding() ([]Lbvserver
 }
 
 func (c *NitroClient) GetLbvserverAuthorizationpolicyBinding(key LbvserverAuthorizationpolicyBindingKey) (*LbvserverAuthorizationpolicyBinding, error) {
-	var results get_lbvserver_authorizationpolicy_binding
+	var results get_lbvserver_authorizationpolicy_binding_result
 
-	id, args := lbvserver_authorizationpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_authorizationpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_authorizationpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_authorizationpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverAuthorizationpolicyBinding(key LbvserverAuthor
 }
 
 func (c *NitroClient) DeleteLbvserverAuthorizationpolicyBinding(key LbvserverAuthorizationpolicyBindingKey) error {
-	id, args := lbvserver_authorizationpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_authorizationpolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_authorizationpolicy_binding", id, "", args)
+	return c.delete("lbvserver_authorizationpolicy_binding", id, qs)
 }

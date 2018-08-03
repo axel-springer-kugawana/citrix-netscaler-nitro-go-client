@@ -23,15 +23,19 @@ type LbvserverAuditsyslogpolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_auditsyslogpolicy_binding struct {
+type add_lbvserver_auditsyslogpolicy_binding_payload struct {
+	Resources LbvserverAuditsyslogpolicyBinding `json:"lbvserver_auditsyslogpolicy_binding"`
+}
+
+type get_lbvserver_auditsyslogpolicy_binding_result struct {
 	Results []LbvserverAuditsyslogpolicyBinding `json:"lbvserver_auditsyslogpolicy_binding"`
 }
 
-type add_lbvserver_auditsyslogpolicy_binding_payload struct {
-	lbvserver_auditsyslogpolicy_binding LbvserverAuditsyslogpolicyBinding
+type count_lbvserver_auditsyslogpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_auditsyslogpolicy_binding"`
 }
 
-func lbvserver_auditsyslogpolicy_binding_key_to_id_args(key LbvserverAuditsyslogpolicyBindingKey) (string, string) {
+func lbvserver_auditsyslogpolicy_binding_key_to_id_args(key LbvserverAuditsyslogpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_auditsyslogpolicy_binding_key_to_id_args(key LbvserverAuditsyslog
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverAuditsyslogpolicyBinding(binding LbvserverAuditsyslogpolicyBinding) error {
 	payload := add_lbvserver_auditsyslogpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_auditsyslogpolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_auditsyslogpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverAuditsyslogpolicyBinding(key LbvserverAuditsyslogpolicyBindingKey) ([]LbvserverAuditsyslogpolicyBinding, error) {
-	var results get_lbvserver_auditsyslogpolicy_binding
+func (c *NitroClient) BulkCountLbvserverAuditsyslogpolicyBinding() (int, error) {
+	var results count_lbvserver_auditsyslogpolicy_binding_result
 
-	id, args := lbvserver_auditsyslogpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_auditsyslogpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_auditsyslogpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverAuditsyslogpolicyBinding(id string) (int, error) {
+	var results count_lbvserver_auditsyslogpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_auditsyslogpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverAuditsyslogpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverAuditsyslogpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverAuditsyslogpolicyBinding() ([]LbvserverAuditsyslogpolicyBinding, error) {
+	var results get_lbvserver_auditsyslogpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_auditsyslogpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverAuditsyslogpolicyBinding() ([]LbvserverAuditsyslogpolicyBinding, error) {
-	var results get_lbvserver_auditsyslogpolicy_binding
+func (c *NitroClient) ListLbvserverAuditsyslogpolicyBinding(id string) ([]LbvserverAuditsyslogpolicyBinding, error) {
+	var results get_lbvserver_auditsyslogpolicy_binding_result
 
-	if err := c.get("lbvserver_auditsyslogpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_auditsyslogpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverAuditsyslogpolicyBinding() ([]LbvserverAu
 }
 
 func (c *NitroClient) GetLbvserverAuditsyslogpolicyBinding(key LbvserverAuditsyslogpolicyBindingKey) (*LbvserverAuditsyslogpolicyBinding, error) {
-	var results get_lbvserver_auditsyslogpolicy_binding
+	var results get_lbvserver_auditsyslogpolicy_binding_result
 
-	id, args := lbvserver_auditsyslogpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_auditsyslogpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_auditsyslogpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_auditsyslogpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverAuditsyslogpolicyBinding(key LbvserverAuditsys
 }
 
 func (c *NitroClient) DeleteLbvserverAuditsyslogpolicyBinding(key LbvserverAuditsyslogpolicyBindingKey) error {
-	id, args := lbvserver_auditsyslogpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_auditsyslogpolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_auditsyslogpolicy_binding", id, "", args)
+	return c.delete("lbvserver_auditsyslogpolicy_binding", id, qs)
 }

@@ -17,51 +17,97 @@ type LbvserverServiceBindingKey struct {
 	Servicename string
 }
 
-type get_lbvserver_service_binding struct {
+type add_lbvserver_service_binding_payload struct {
+	Resources LbvserverServiceBinding `json:"lbvserver_service_binding"`
+}
+
+type get_lbvserver_service_binding_result struct {
 	Results []LbvserverServiceBinding `json:"lbvserver_service_binding"`
 }
 
-type add_lbvserver_service_binding_payload struct {
-	lbvserver_service_binding LbvserverServiceBinding
+type count_lbvserver_service_binding_result struct {
+	Results []Count `json:"lbvserver_service_binding"`
 }
 
-func lbvserver_service_binding_key_to_id_args(key LbvserverServiceBindingKey) (string, string) {
+func lbvserver_service_binding_key_to_id_args(key LbvserverServiceBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
 	args = append(args, "name:"+key.Name)
 	args = append(args, "servicename:"+key.Servicename)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverServiceBinding(binding LbvserverServiceBinding) error {
 	payload := add_lbvserver_service_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_service_binding", "", "", "", payload)
+	return c.put("lbvserver_service_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverServiceBinding(key LbvserverServiceBindingKey) ([]LbvserverServiceBinding, error) {
-	var results get_lbvserver_service_binding
+func (c *NitroClient) BulkCountLbvserverServiceBinding() (int, error) {
+	var results count_lbvserver_service_binding_result
 
-	id, args := lbvserver_service_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_service_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_service_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverServiceBinding(id string) (int, error) {
+	var results count_lbvserver_service_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_service_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverServiceBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverServiceBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverServiceBinding() ([]LbvserverServiceBinding, error) {
+	var results get_lbvserver_service_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_service_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverServiceBinding() ([]LbvserverServiceBinding, error) {
-	var results get_lbvserver_service_binding
+func (c *NitroClient) ListLbvserverServiceBinding(id string) ([]LbvserverServiceBinding, error) {
+	var results get_lbvserver_service_binding_result
 
-	if err := c.get("lbvserver_service_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_service_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -69,11 +115,11 @@ func (c *NitroClient) BulkListLbvserverServiceBinding() ([]LbvserverServiceBindi
 }
 
 func (c *NitroClient) GetLbvserverServiceBinding(key LbvserverServiceBindingKey) (*LbvserverServiceBinding, error) {
-	var results get_lbvserver_service_binding
+	var results get_lbvserver_service_binding_result
 
-	id, args := lbvserver_service_binding_key_to_id_args(key)
+	id, qs := lbvserver_service_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_service_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_service_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -89,7 +135,7 @@ func (c *NitroClient) GetLbvserverServiceBinding(key LbvserverServiceBindingKey)
 }
 
 func (c *NitroClient) DeleteLbvserverServiceBinding(key LbvserverServiceBindingKey) error {
-	id, args := lbvserver_service_binding_key_to_id_args(key)
+	id, qs := lbvserver_service_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_service_binding", id, "", args)
+	return c.delete("lbvserver_service_binding", id, qs)
 }

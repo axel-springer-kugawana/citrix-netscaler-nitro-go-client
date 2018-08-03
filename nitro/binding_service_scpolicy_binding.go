@@ -16,51 +16,97 @@ type ServiceScpolicyBindingKey struct {
 	Policyname string
 }
 
-type get_service_scpolicy_binding struct {
+type add_service_scpolicy_binding_payload struct {
+	Resources ServiceScpolicyBinding `json:"service_scpolicy_binding"`
+}
+
+type get_service_scpolicy_binding_result struct {
 	Results []ServiceScpolicyBinding `json:"service_scpolicy_binding"`
 }
 
-type add_service_scpolicy_binding_payload struct {
-	service_scpolicy_binding ServiceScpolicyBinding
+type count_service_scpolicy_binding_result struct {
+	Results []Count `json:"service_scpolicy_binding"`
 }
 
-func service_scpolicy_binding_key_to_id_args(key ServiceScpolicyBindingKey) (string, string) {
+func service_scpolicy_binding_key_to_id_args(key ServiceScpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
 	args = append(args, "name:"+key.Name)
 	args = append(args, "policyname:"+key.Policyname)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddServiceScpolicyBinding(binding ServiceScpolicyBinding) error {
 	payload := add_service_scpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("service_scpolicy_binding", "", "", "", payload)
+	return c.put("service_scpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListServiceScpolicyBinding(key ServiceScpolicyBindingKey) ([]ServiceScpolicyBinding, error) {
-	var results get_service_scpolicy_binding
+func (c *NitroClient) BulkCountServiceScpolicyBinding() (int, error) {
+	var results count_service_scpolicy_binding_result
 
-	id, args := service_scpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("service_scpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("service_scpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountServiceScpolicyBinding(id string) (int, error) {
+	var results count_service_scpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("service_scpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsServiceScpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountServiceScpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListServiceScpolicyBinding() ([]ServiceScpolicyBinding, error) {
+	var results get_service_scpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("service_scpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListServiceScpolicyBinding() ([]ServiceScpolicyBinding, error) {
-	var results get_service_scpolicy_binding
+func (c *NitroClient) ListServiceScpolicyBinding(id string) ([]ServiceScpolicyBinding, error) {
+	var results get_service_scpolicy_binding_result
 
-	if err := c.get("service_scpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("service_scpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -68,11 +114,11 @@ func (c *NitroClient) BulkListServiceScpolicyBinding() ([]ServiceScpolicyBinding
 }
 
 func (c *NitroClient) GetServiceScpolicyBinding(key ServiceScpolicyBindingKey) (*ServiceScpolicyBinding, error) {
-	var results get_service_scpolicy_binding
+	var results get_service_scpolicy_binding_result
 
-	id, args := service_scpolicy_binding_key_to_id_args(key)
+	id, qs := service_scpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("service_scpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("service_scpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -88,7 +134,7 @@ func (c *NitroClient) GetServiceScpolicyBinding(key ServiceScpolicyBindingKey) (
 }
 
 func (c *NitroClient) DeleteServiceScpolicyBinding(key ServiceScpolicyBindingKey) error {
-	id, args := service_scpolicy_binding_key_to_id_args(key)
+	id, qs := service_scpolicy_binding_key_to_id_args(key)
 
-	return c.delete("service_scpolicy_binding", id, "", args)
+	return c.delete("service_scpolicy_binding", id, qs)
 }

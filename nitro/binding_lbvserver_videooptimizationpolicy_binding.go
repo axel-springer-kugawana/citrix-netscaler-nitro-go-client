@@ -23,15 +23,19 @@ type LbvserverVideooptimizationpolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_videooptimizationpolicy_binding struct {
+type add_lbvserver_videooptimizationpolicy_binding_payload struct {
+	Resources LbvserverVideooptimizationpolicyBinding `json:"lbvserver_videooptimizationpolicy_binding"`
+}
+
+type get_lbvserver_videooptimizationpolicy_binding_result struct {
 	Results []LbvserverVideooptimizationpolicyBinding `json:"lbvserver_videooptimizationpolicy_binding"`
 }
 
-type add_lbvserver_videooptimizationpolicy_binding_payload struct {
-	lbvserver_videooptimizationpolicy_binding LbvserverVideooptimizationpolicyBinding
+type count_lbvserver_videooptimizationpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_videooptimizationpolicy_binding"`
 }
 
-func lbvserver_videooptimizationpolicy_binding_key_to_id_args(key LbvserverVideooptimizationpolicyBindingKey) (string, string) {
+func lbvserver_videooptimizationpolicy_binding_key_to_id_args(key LbvserverVideooptimizationpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_videooptimizationpolicy_binding_key_to_id_args(key LbvserverVideo
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverVideooptimizationpolicyBinding(binding LbvserverVideooptimizationpolicyBinding) error {
 	payload := add_lbvserver_videooptimizationpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_videooptimizationpolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_videooptimizationpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverVideooptimizationpolicyBinding(key LbvserverVideooptimizationpolicyBindingKey) ([]LbvserverVideooptimizationpolicyBinding, error) {
-	var results get_lbvserver_videooptimizationpolicy_binding
+func (c *NitroClient) BulkCountLbvserverVideooptimizationpolicyBinding() (int, error) {
+	var results count_lbvserver_videooptimizationpolicy_binding_result
 
-	id, args := lbvserver_videooptimizationpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_videooptimizationpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_videooptimizationpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverVideooptimizationpolicyBinding(id string) (int, error) {
+	var results count_lbvserver_videooptimizationpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_videooptimizationpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverVideooptimizationpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverVideooptimizationpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverVideooptimizationpolicyBinding() ([]LbvserverVideooptimizationpolicyBinding, error) {
+	var results get_lbvserver_videooptimizationpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_videooptimizationpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverVideooptimizationpolicyBinding() ([]LbvserverVideooptimizationpolicyBinding, error) {
-	var results get_lbvserver_videooptimizationpolicy_binding
+func (c *NitroClient) ListLbvserverVideooptimizationpolicyBinding(id string) ([]LbvserverVideooptimizationpolicyBinding, error) {
+	var results get_lbvserver_videooptimizationpolicy_binding_result
 
-	if err := c.get("lbvserver_videooptimizationpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_videooptimizationpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverVideooptimizationpolicyBinding() ([]Lbvse
 }
 
 func (c *NitroClient) GetLbvserverVideooptimizationpolicyBinding(key LbvserverVideooptimizationpolicyBindingKey) (*LbvserverVideooptimizationpolicyBinding, error) {
-	var results get_lbvserver_videooptimizationpolicy_binding
+	var results get_lbvserver_videooptimizationpolicy_binding_result
 
-	id, args := lbvserver_videooptimizationpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_videooptimizationpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_videooptimizationpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_videooptimizationpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverVideooptimizationpolicyBinding(key LbvserverVi
 }
 
 func (c *NitroClient) DeleteLbvserverVideooptimizationpolicyBinding(key LbvserverVideooptimizationpolicyBindingKey) error {
-	id, args := lbvserver_videooptimizationpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_videooptimizationpolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_videooptimizationpolicy_binding", id, "", args)
+	return c.delete("lbvserver_videooptimizationpolicy_binding", id, qs)
 }

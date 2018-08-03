@@ -23,15 +23,19 @@ type LbvserverFeopolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_feopolicy_binding struct {
+type add_lbvserver_feopolicy_binding_payload struct {
+	Resources LbvserverFeopolicyBinding `json:"lbvserver_feopolicy_binding"`
+}
+
+type get_lbvserver_feopolicy_binding_result struct {
 	Results []LbvserverFeopolicyBinding `json:"lbvserver_feopolicy_binding"`
 }
 
-type add_lbvserver_feopolicy_binding_payload struct {
-	lbvserver_feopolicy_binding LbvserverFeopolicyBinding
+type count_lbvserver_feopolicy_binding_result struct {
+	Results []Count `json:"lbvserver_feopolicy_binding"`
 }
 
-func lbvserver_feopolicy_binding_key_to_id_args(key LbvserverFeopolicyBindingKey) (string, string) {
+func lbvserver_feopolicy_binding_key_to_id_args(key LbvserverFeopolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_feopolicy_binding_key_to_id_args(key LbvserverFeopolicyBindingKey
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverFeopolicyBinding(binding LbvserverFeopolicyBinding) error {
 	payload := add_lbvserver_feopolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_feopolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_feopolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverFeopolicyBinding(key LbvserverFeopolicyBindingKey) ([]LbvserverFeopolicyBinding, error) {
-	var results get_lbvserver_feopolicy_binding
+func (c *NitroClient) BulkCountLbvserverFeopolicyBinding() (int, error) {
+	var results count_lbvserver_feopolicy_binding_result
 
-	id, args := lbvserver_feopolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_feopolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_feopolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverFeopolicyBinding(id string) (int, error) {
+	var results count_lbvserver_feopolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_feopolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverFeopolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverFeopolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverFeopolicyBinding() ([]LbvserverFeopolicyBinding, error) {
+	var results get_lbvserver_feopolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_feopolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverFeopolicyBinding() ([]LbvserverFeopolicyBinding, error) {
-	var results get_lbvserver_feopolicy_binding
+func (c *NitroClient) ListLbvserverFeopolicyBinding(id string) ([]LbvserverFeopolicyBinding, error) {
+	var results get_lbvserver_feopolicy_binding_result
 
-	if err := c.get("lbvserver_feopolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_feopolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverFeopolicyBinding() ([]LbvserverFeopolicyB
 }
 
 func (c *NitroClient) GetLbvserverFeopolicyBinding(key LbvserverFeopolicyBindingKey) (*LbvserverFeopolicyBinding, error) {
-	var results get_lbvserver_feopolicy_binding
+	var results get_lbvserver_feopolicy_binding_result
 
-	id, args := lbvserver_feopolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_feopolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_feopolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_feopolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverFeopolicyBinding(key LbvserverFeopolicyBinding
 }
 
 func (c *NitroClient) DeleteLbvserverFeopolicyBinding(key LbvserverFeopolicyBindingKey) error {
-	id, args := lbvserver_feopolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_feopolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_feopolicy_binding", id, "", args)
+	return c.delete("lbvserver_feopolicy_binding", id, qs)
 }

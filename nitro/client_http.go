@@ -71,40 +71,40 @@ func (c *NitroClient) doHTTPRequest(method string, url string, bytes *bytes.Buff
 	return ret, err
 }
 
-func make_url(resourceType string, resourceId string, action string, args string) string {
-	var qs []string
-
+func make_url(resourceType string, resourceId string, qs map[string]string) string {
 	url := "/nitro/v1/config/" + resourceType
 
 	if len(resourceId) > 0 {
 		url = url + "/" + resourceId
 	}
 
-	if len(args) > 0 {
-		qs = append(qs, "args="+args)
-	}
-
-	if len(action) > 0 {
-		qs = append(qs, "action="+args)
-	}
-
 	if len(qs) > 0 {
-		url = url + "?" + strings.Join(qs, "&")
+		var args []string
+
+		for key, value := range qs {
+			if len(value) > 0 {
+				args = append(args, key+"="+value)
+			}
+		}
+
+		if len(args) > 0 {
+			url = url + "?" + strings.Join(args, "&")
+		}
 	}
 
 	return url
 }
 
-func (c *NitroClient) get(resourceType string, resourceId string, action string, args string, payload interface{}) error {
-	url := make_url(resourceType, resourceId, action, args)
+func (c *NitroClient) get(resourceType string, resourceId string, qs map[string]string, payload interface{}) error {
+	url := make_url(resourceType, resourceId, qs)
 
 	_, err := c.doHTTPRequest("GET", url, bytes.NewBuffer([]byte{}))
 
 	return err
 }
 
-func (c *NitroClient) put(resourceType string, resourceId string, action string, args string, payload interface{}) error {
-	url := make_url(resourceType, resourceId, action, args)
+func (c *NitroClient) put(resourceType string, resourceId string, qs map[string]string, payload interface{}) error {
+	url := make_url(resourceType, resourceId, qs)
 
 	if body, err := json.Marshal(payload); err != nil {
 		return err
@@ -115,8 +115,8 @@ func (c *NitroClient) put(resourceType string, resourceId string, action string,
 	}
 }
 
-func (c *NitroClient) post(resourceType string, resourceId string, action string, args string, payload interface{}) error {
-	url := make_url(resourceType, resourceId, action, args)
+func (c *NitroClient) post(resourceType string, resourceId string, qs map[string]string, payload interface{}) error {
+	url := make_url(resourceType, resourceId, qs)
 
 	if body, err := json.Marshal(payload); err != nil {
 		return err
@@ -127,8 +127,8 @@ func (c *NitroClient) post(resourceType string, resourceId string, action string
 	}
 }
 
-func (c *NitroClient) delete(resourceType string, resourceId string, action string, args string) error {
-	url := make_url(resourceType, resourceId, action, args)
+func (c *NitroClient) delete(resourceType string, resourceId string, qs map[string]string) error {
+	url := make_url(resourceType, resourceId, qs)
 
 	_, err := c.doHTTPRequest("DELETE", url, bytes.NewBuffer([]byte{}))
 

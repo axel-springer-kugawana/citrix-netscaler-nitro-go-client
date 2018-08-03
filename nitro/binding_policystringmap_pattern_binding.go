@@ -17,51 +17,97 @@ type PolicystringmapPatternBindingKey struct {
 	Key  string
 }
 
-type get_policystringmap_pattern_binding struct {
+type add_policystringmap_pattern_binding_payload struct {
+	Resources PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
+}
+
+type get_policystringmap_pattern_binding_result struct {
 	Results []PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
 }
 
-type add_policystringmap_pattern_binding_payload struct {
-	policystringmap_pattern_binding PolicystringmapPatternBinding
+type count_policystringmap_pattern_binding_result struct {
+	Results []Count `json:"policystringmap_pattern_binding"`
 }
 
-func policystringmap_pattern_binding_key_to_id_args(key PolicystringmapPatternBindingKey) (string, string) {
+func policystringmap_pattern_binding_key_to_id_args(key PolicystringmapPatternBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
 	args = append(args, "name:"+key.Name)
 	args = append(args, "key:"+key.Key)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddPolicystringmapPatternBinding(binding PolicystringmapPatternBinding) error {
 	payload := add_policystringmap_pattern_binding_payload{
 		binding,
 	}
 
-	return c.put("policystringmap_pattern_binding", "", "", "", payload)
+	return c.put("policystringmap_pattern_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListPolicystringmapPatternBinding(key PolicystringmapPatternBindingKey) ([]PolicystringmapPatternBinding, error) {
-	var results get_policystringmap_pattern_binding
+func (c *NitroClient) BulkCountPolicystringmapPatternBinding() (int, error) {
+	var results count_policystringmap_pattern_binding_result
 
-	id, args := policystringmap_pattern_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("policystringmap_pattern_binding", id, "", args, &results); err != nil {
+	if err := c.get("policystringmap_pattern_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountPolicystringmapPatternBinding(id string) (int, error) {
+	var results count_policystringmap_pattern_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("policystringmap_pattern_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsPolicystringmapPatternBinding(id string) (bool, error) {
+	if count, err := c.CountPolicystringmapPatternBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListPolicystringmapPatternBinding() ([]PolicystringmapPatternBinding, error) {
+	var results get_policystringmap_pattern_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("policystringmap_pattern_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListPolicystringmapPatternBinding() ([]PolicystringmapPatternBinding, error) {
-	var results get_policystringmap_pattern_binding
+func (c *NitroClient) ListPolicystringmapPatternBinding(id string) ([]PolicystringmapPatternBinding, error) {
+	var results get_policystringmap_pattern_binding_result
 
-	if err := c.get("policystringmap_pattern_binding", "", "", "", &results); err != nil {
+	if err := c.get("policystringmap_pattern_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -69,11 +115,11 @@ func (c *NitroClient) BulkListPolicystringmapPatternBinding() ([]Policystringmap
 }
 
 func (c *NitroClient) GetPolicystringmapPatternBinding(key PolicystringmapPatternBindingKey) (*PolicystringmapPatternBinding, error) {
-	var results get_policystringmap_pattern_binding
+	var results get_policystringmap_pattern_binding_result
 
-	id, args := policystringmap_pattern_binding_key_to_id_args(key)
+	id, qs := policystringmap_pattern_binding_key_to_id_args(key)
 
-	if err := c.get("policystringmap_pattern_binding", id, "", args, &results); err != nil {
+	if err := c.get("policystringmap_pattern_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -89,7 +135,7 @@ func (c *NitroClient) GetPolicystringmapPatternBinding(key PolicystringmapPatter
 }
 
 func (c *NitroClient) DeletePolicystringmapPatternBinding(key PolicystringmapPatternBindingKey) error {
-	id, args := policystringmap_pattern_binding_key_to_id_args(key)
+	id, qs := policystringmap_pattern_binding_key_to_id_args(key)
 
-	return c.delete("policystringmap_pattern_binding", id, "", args)
+	return c.delete("policystringmap_pattern_binding", id, qs)
 }

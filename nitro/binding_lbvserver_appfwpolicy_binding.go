@@ -23,15 +23,19 @@ type LbvserverAppfwpolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_appfwpolicy_binding struct {
+type add_lbvserver_appfwpolicy_binding_payload struct {
+	Resources LbvserverAppfwpolicyBinding `json:"lbvserver_appfwpolicy_binding"`
+}
+
+type get_lbvserver_appfwpolicy_binding_result struct {
 	Results []LbvserverAppfwpolicyBinding `json:"lbvserver_appfwpolicy_binding"`
 }
 
-type add_lbvserver_appfwpolicy_binding_payload struct {
-	lbvserver_appfwpolicy_binding LbvserverAppfwpolicyBinding
+type count_lbvserver_appfwpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_appfwpolicy_binding"`
 }
 
-func lbvserver_appfwpolicy_binding_key_to_id_args(key LbvserverAppfwpolicyBindingKey) (string, string) {
+func lbvserver_appfwpolicy_binding_key_to_id_args(key LbvserverAppfwpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_appfwpolicy_binding_key_to_id_args(key LbvserverAppfwpolicyBindin
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverAppfwpolicyBinding(binding LbvserverAppfwpolicyBinding) error {
 	payload := add_lbvserver_appfwpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_appfwpolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_appfwpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverAppfwpolicyBinding(key LbvserverAppfwpolicyBindingKey) ([]LbvserverAppfwpolicyBinding, error) {
-	var results get_lbvserver_appfwpolicy_binding
+func (c *NitroClient) BulkCountLbvserverAppfwpolicyBinding() (int, error) {
+	var results count_lbvserver_appfwpolicy_binding_result
 
-	id, args := lbvserver_appfwpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_appfwpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_appfwpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverAppfwpolicyBinding(id string) (int, error) {
+	var results count_lbvserver_appfwpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_appfwpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverAppfwpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverAppfwpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverAppfwpolicyBinding() ([]LbvserverAppfwpolicyBinding, error) {
+	var results get_lbvserver_appfwpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_appfwpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverAppfwpolicyBinding() ([]LbvserverAppfwpolicyBinding, error) {
-	var results get_lbvserver_appfwpolicy_binding
+func (c *NitroClient) ListLbvserverAppfwpolicyBinding(id string) ([]LbvserverAppfwpolicyBinding, error) {
+	var results get_lbvserver_appfwpolicy_binding_result
 
-	if err := c.get("lbvserver_appfwpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_appfwpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverAppfwpolicyBinding() ([]LbvserverAppfwpol
 }
 
 func (c *NitroClient) GetLbvserverAppfwpolicyBinding(key LbvserverAppfwpolicyBindingKey) (*LbvserverAppfwpolicyBinding, error) {
-	var results get_lbvserver_appfwpolicy_binding
+	var results get_lbvserver_appfwpolicy_binding_result
 
-	id, args := lbvserver_appfwpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_appfwpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_appfwpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_appfwpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverAppfwpolicyBinding(key LbvserverAppfwpolicyBin
 }
 
 func (c *NitroClient) DeleteLbvserverAppfwpolicyBinding(key LbvserverAppfwpolicyBindingKey) error {
-	id, args := lbvserver_appfwpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_appfwpolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_appfwpolicy_binding", id, "", args)
+	return c.delete("lbvserver_appfwpolicy_binding", id, qs)
 }

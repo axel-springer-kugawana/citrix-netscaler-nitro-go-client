@@ -18,50 +18,96 @@ type ServiceLbmonitorBindingKey struct {
 	Name string
 }
 
-type get_service_lbmonitor_binding struct {
+type add_service_lbmonitor_binding_payload struct {
+	Resources ServiceLbmonitorBinding `json:"service_lbmonitor_binding"`
+}
+
+type get_service_lbmonitor_binding_result struct {
 	Results []ServiceLbmonitorBinding `json:"service_lbmonitor_binding"`
 }
 
-type add_service_lbmonitor_binding_payload struct {
-	service_lbmonitor_binding ServiceLbmonitorBinding
+type count_service_lbmonitor_binding_result struct {
+	Results []Count `json:"service_lbmonitor_binding"`
 }
 
-func service_lbmonitor_binding_key_to_id_args(key ServiceLbmonitorBindingKey) (string, string) {
+func service_lbmonitor_binding_key_to_id_args(key ServiceLbmonitorBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
 	args = append(args, "name:"+key.Name)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddServiceLbmonitorBinding(binding ServiceLbmonitorBinding) error {
 	payload := add_service_lbmonitor_binding_payload{
 		binding,
 	}
 
-	return c.put("service_lbmonitor_binding", "", "", "", payload)
+	return c.put("service_lbmonitor_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListServiceLbmonitorBinding(key ServiceLbmonitorBindingKey) ([]ServiceLbmonitorBinding, error) {
-	var results get_service_lbmonitor_binding
+func (c *NitroClient) BulkCountServiceLbmonitorBinding() (int, error) {
+	var results count_service_lbmonitor_binding_result
 
-	id, args := service_lbmonitor_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("service_lbmonitor_binding", id, "", args, &results); err != nil {
+	if err := c.get("service_lbmonitor_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountServiceLbmonitorBinding(id string) (int, error) {
+	var results count_service_lbmonitor_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("service_lbmonitor_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsServiceLbmonitorBinding(id string) (bool, error) {
+	if count, err := c.CountServiceLbmonitorBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListServiceLbmonitorBinding() ([]ServiceLbmonitorBinding, error) {
+	var results get_service_lbmonitor_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("service_lbmonitor_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListServiceLbmonitorBinding() ([]ServiceLbmonitorBinding, error) {
-	var results get_service_lbmonitor_binding
+func (c *NitroClient) ListServiceLbmonitorBinding(id string) ([]ServiceLbmonitorBinding, error) {
+	var results get_service_lbmonitor_binding_result
 
-	if err := c.get("service_lbmonitor_binding", "", "", "", &results); err != nil {
+	if err := c.get("service_lbmonitor_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -69,11 +115,11 @@ func (c *NitroClient) BulkListServiceLbmonitorBinding() ([]ServiceLbmonitorBindi
 }
 
 func (c *NitroClient) GetServiceLbmonitorBinding(key ServiceLbmonitorBindingKey) (*ServiceLbmonitorBinding, error) {
-	var results get_service_lbmonitor_binding
+	var results get_service_lbmonitor_binding_result
 
-	id, args := service_lbmonitor_binding_key_to_id_args(key)
+	id, qs := service_lbmonitor_binding_key_to_id_args(key)
 
-	if err := c.get("service_lbmonitor_binding", id, "", args, &results); err != nil {
+	if err := c.get("service_lbmonitor_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -89,7 +135,7 @@ func (c *NitroClient) GetServiceLbmonitorBinding(key ServiceLbmonitorBindingKey)
 }
 
 func (c *NitroClient) DeleteServiceLbmonitorBinding(key ServiceLbmonitorBindingKey) error {
-	id, args := service_lbmonitor_binding_key_to_id_args(key)
+	id, qs := service_lbmonitor_binding_key_to_id_args(key)
 
-	return c.delete("service_lbmonitor_binding", id, "", args)
+	return c.delete("service_lbmonitor_binding", id, qs)
 }

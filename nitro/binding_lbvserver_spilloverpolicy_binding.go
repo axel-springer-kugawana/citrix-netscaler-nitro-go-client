@@ -23,15 +23,19 @@ type LbvserverSpilloverpolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_spilloverpolicy_binding struct {
+type add_lbvserver_spilloverpolicy_binding_payload struct {
+	Resources LbvserverSpilloverpolicyBinding `json:"lbvserver_spilloverpolicy_binding"`
+}
+
+type get_lbvserver_spilloverpolicy_binding_result struct {
 	Results []LbvserverSpilloverpolicyBinding `json:"lbvserver_spilloverpolicy_binding"`
 }
 
-type add_lbvserver_spilloverpolicy_binding_payload struct {
-	lbvserver_spilloverpolicy_binding LbvserverSpilloverpolicyBinding
+type count_lbvserver_spilloverpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_spilloverpolicy_binding"`
 }
 
-func lbvserver_spilloverpolicy_binding_key_to_id_args(key LbvserverSpilloverpolicyBindingKey) (string, string) {
+func lbvserver_spilloverpolicy_binding_key_to_id_args(key LbvserverSpilloverpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_spilloverpolicy_binding_key_to_id_args(key LbvserverSpilloverpoli
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverSpilloverpolicyBinding(binding LbvserverSpilloverpolicyBinding) error {
 	payload := add_lbvserver_spilloverpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_spilloverpolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_spilloverpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverSpilloverpolicyBinding(key LbvserverSpilloverpolicyBindingKey) ([]LbvserverSpilloverpolicyBinding, error) {
-	var results get_lbvserver_spilloverpolicy_binding
+func (c *NitroClient) BulkCountLbvserverSpilloverpolicyBinding() (int, error) {
+	var results count_lbvserver_spilloverpolicy_binding_result
 
-	id, args := lbvserver_spilloverpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_spilloverpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_spilloverpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverSpilloverpolicyBinding(id string) (int, error) {
+	var results count_lbvserver_spilloverpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_spilloverpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverSpilloverpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverSpilloverpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverSpilloverpolicyBinding() ([]LbvserverSpilloverpolicyBinding, error) {
+	var results get_lbvserver_spilloverpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_spilloverpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverSpilloverpolicyBinding() ([]LbvserverSpilloverpolicyBinding, error) {
-	var results get_lbvserver_spilloverpolicy_binding
+func (c *NitroClient) ListLbvserverSpilloverpolicyBinding(id string) ([]LbvserverSpilloverpolicyBinding, error) {
+	var results get_lbvserver_spilloverpolicy_binding_result
 
-	if err := c.get("lbvserver_spilloverpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_spilloverpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverSpilloverpolicyBinding() ([]LbvserverSpil
 }
 
 func (c *NitroClient) GetLbvserverSpilloverpolicyBinding(key LbvserverSpilloverpolicyBindingKey) (*LbvserverSpilloverpolicyBinding, error) {
-	var results get_lbvserver_spilloverpolicy_binding
+	var results get_lbvserver_spilloverpolicy_binding_result
 
-	id, args := lbvserver_spilloverpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_spilloverpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_spilloverpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_spilloverpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverSpilloverpolicyBinding(key LbvserverSpilloverp
 }
 
 func (c *NitroClient) DeleteLbvserverSpilloverpolicyBinding(key LbvserverSpilloverpolicyBindingKey) error {
-	id, args := lbvserver_spilloverpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_spilloverpolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_spilloverpolicy_binding", id, "", args)
+	return c.delete("lbvserver_spilloverpolicy_binding", id, qs)
 }

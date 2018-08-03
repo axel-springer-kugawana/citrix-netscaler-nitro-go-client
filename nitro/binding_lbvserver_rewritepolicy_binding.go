@@ -23,15 +23,19 @@ type LbvserverRewritepolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_rewritepolicy_binding struct {
+type add_lbvserver_rewritepolicy_binding_payload struct {
+	Resources LbvserverRewritepolicyBinding `json:"lbvserver_rewritepolicy_binding"`
+}
+
+type get_lbvserver_rewritepolicy_binding_result struct {
 	Results []LbvserverRewritepolicyBinding `json:"lbvserver_rewritepolicy_binding"`
 }
 
-type add_lbvserver_rewritepolicy_binding_payload struct {
-	lbvserver_rewritepolicy_binding LbvserverRewritepolicyBinding
+type count_lbvserver_rewritepolicy_binding_result struct {
+	Results []Count `json:"lbvserver_rewritepolicy_binding"`
 }
 
-func lbvserver_rewritepolicy_binding_key_to_id_args(key LbvserverRewritepolicyBindingKey) (string, string) {
+func lbvserver_rewritepolicy_binding_key_to_id_args(key LbvserverRewritepolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_rewritepolicy_binding_key_to_id_args(key LbvserverRewritepolicyBi
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverRewritepolicyBinding(binding LbvserverRewritepolicyBinding) error {
 	payload := add_lbvserver_rewritepolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_rewritepolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_rewritepolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverRewritepolicyBinding(key LbvserverRewritepolicyBindingKey) ([]LbvserverRewritepolicyBinding, error) {
-	var results get_lbvserver_rewritepolicy_binding
+func (c *NitroClient) BulkCountLbvserverRewritepolicyBinding() (int, error) {
+	var results count_lbvserver_rewritepolicy_binding_result
 
-	id, args := lbvserver_rewritepolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_rewritepolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_rewritepolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverRewritepolicyBinding(id string) (int, error) {
+	var results count_lbvserver_rewritepolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_rewritepolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverRewritepolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverRewritepolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverRewritepolicyBinding() ([]LbvserverRewritepolicyBinding, error) {
+	var results get_lbvserver_rewritepolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_rewritepolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverRewritepolicyBinding() ([]LbvserverRewritepolicyBinding, error) {
-	var results get_lbvserver_rewritepolicy_binding
+func (c *NitroClient) ListLbvserverRewritepolicyBinding(id string) ([]LbvserverRewritepolicyBinding, error) {
+	var results get_lbvserver_rewritepolicy_binding_result
 
-	if err := c.get("lbvserver_rewritepolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_rewritepolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverRewritepolicyBinding() ([]LbvserverRewrit
 }
 
 func (c *NitroClient) GetLbvserverRewritepolicyBinding(key LbvserverRewritepolicyBindingKey) (*LbvserverRewritepolicyBinding, error) {
-	var results get_lbvserver_rewritepolicy_binding
+	var results get_lbvserver_rewritepolicy_binding_result
 
-	id, args := lbvserver_rewritepolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_rewritepolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_rewritepolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_rewritepolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverRewritepolicyBinding(key LbvserverRewritepolic
 }
 
 func (c *NitroClient) DeleteLbvserverRewritepolicyBinding(key LbvserverRewritepolicyBindingKey) error {
-	id, args := lbvserver_rewritepolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_rewritepolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_rewritepolicy_binding", id, "", args)
+	return c.delete("lbvserver_rewritepolicy_binding", id, qs)
 }

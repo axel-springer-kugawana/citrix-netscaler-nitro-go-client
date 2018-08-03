@@ -21,51 +21,97 @@ type AppflowglobalAppflowpolicyBindingKey struct {
 	Policyname string
 }
 
-type get_appflowglobal_appflowpolicy_binding struct {
+type add_appflowglobal_appflowpolicy_binding_payload struct {
+	Resources AppflowglobalAppflowpolicyBinding `json:"appflowglobal_appflowpolicy_binding"`
+}
+
+type get_appflowglobal_appflowpolicy_binding_result struct {
 	Results []AppflowglobalAppflowpolicyBinding `json:"appflowglobal_appflowpolicy_binding"`
 }
 
-type add_appflowglobal_appflowpolicy_binding_payload struct {
-	appflowglobal_appflowpolicy_binding AppflowglobalAppflowpolicyBinding
+type count_appflowglobal_appflowpolicy_binding_result struct {
+	Results []Count `json:"appflowglobal_appflowpolicy_binding"`
 }
 
-func appflowglobal_appflowpolicy_binding_key_to_id_args(key AppflowglobalAppflowpolicyBindingKey) (string, string) {
+func appflowglobal_appflowpolicy_binding_key_to_id_args(key AppflowglobalAppflowpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
 	args = append(args, "labelname:"+key.Labelname)
 	args = append(args, "policyname:"+key.Policyname)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddAppflowglobalAppflowpolicyBinding(binding AppflowglobalAppflowpolicyBinding) error {
 	payload := add_appflowglobal_appflowpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("appflowglobal_appflowpolicy_binding", "", "", "", payload)
+	return c.put("appflowglobal_appflowpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListAppflowglobalAppflowpolicyBinding(key AppflowglobalAppflowpolicyBindingKey) ([]AppflowglobalAppflowpolicyBinding, error) {
-	var results get_appflowglobal_appflowpolicy_binding
+func (c *NitroClient) BulkCountAppflowglobalAppflowpolicyBinding() (int, error) {
+	var results count_appflowglobal_appflowpolicy_binding_result
 
-	id, args := appflowglobal_appflowpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("appflowglobal_appflowpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("appflowglobal_appflowpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountAppflowglobalAppflowpolicyBinding(id string) (int, error) {
+	var results count_appflowglobal_appflowpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("appflowglobal_appflowpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAppflowglobalAppflowpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountAppflowglobalAppflowpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListAppflowglobalAppflowpolicyBinding() ([]AppflowglobalAppflowpolicyBinding, error) {
+	var results get_appflowglobal_appflowpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("appflowglobal_appflowpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListAppflowglobalAppflowpolicyBinding() ([]AppflowglobalAppflowpolicyBinding, error) {
-	var results get_appflowglobal_appflowpolicy_binding
+func (c *NitroClient) ListAppflowglobalAppflowpolicyBinding(id string) ([]AppflowglobalAppflowpolicyBinding, error) {
+	var results get_appflowglobal_appflowpolicy_binding_result
 
-	if err := c.get("appflowglobal_appflowpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("appflowglobal_appflowpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -73,11 +119,11 @@ func (c *NitroClient) BulkListAppflowglobalAppflowpolicyBinding() ([]Appflowglob
 }
 
 func (c *NitroClient) GetAppflowglobalAppflowpolicyBinding(key AppflowglobalAppflowpolicyBindingKey) (*AppflowglobalAppflowpolicyBinding, error) {
-	var results get_appflowglobal_appflowpolicy_binding
+	var results get_appflowglobal_appflowpolicy_binding_result
 
-	id, args := appflowglobal_appflowpolicy_binding_key_to_id_args(key)
+	id, qs := appflowglobal_appflowpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("appflowglobal_appflowpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("appflowglobal_appflowpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -93,7 +139,7 @@ func (c *NitroClient) GetAppflowglobalAppflowpolicyBinding(key AppflowglobalAppf
 }
 
 func (c *NitroClient) DeleteAppflowglobalAppflowpolicyBinding(key AppflowglobalAppflowpolicyBindingKey) error {
-	id, args := appflowglobal_appflowpolicy_binding_key_to_id_args(key)
+	id, qs := appflowglobal_appflowpolicy_binding_key_to_id_args(key)
 
-	return c.delete("appflowglobal_appflowpolicy_binding", id, "", args)
+	return c.delete("appflowglobal_appflowpolicy_binding", id, qs)
 }

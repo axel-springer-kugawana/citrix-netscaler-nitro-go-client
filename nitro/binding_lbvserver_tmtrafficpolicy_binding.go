@@ -23,15 +23,19 @@ type LbvserverTmtrafficpolicyBindingKey struct {
 	Bindpoint  string
 }
 
-type get_lbvserver_tmtrafficpolicy_binding struct {
+type add_lbvserver_tmtrafficpolicy_binding_payload struct {
+	Resources LbvserverTmtrafficpolicyBinding `json:"lbvserver_tmtrafficpolicy_binding"`
+}
+
+type get_lbvserver_tmtrafficpolicy_binding_result struct {
 	Results []LbvserverTmtrafficpolicyBinding `json:"lbvserver_tmtrafficpolicy_binding"`
 }
 
-type add_lbvserver_tmtrafficpolicy_binding_payload struct {
-	lbvserver_tmtrafficpolicy_binding LbvserverTmtrafficpolicyBinding
+type count_lbvserver_tmtrafficpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_tmtrafficpolicy_binding"`
 }
 
-func lbvserver_tmtrafficpolicy_binding_key_to_id_args(key LbvserverTmtrafficpolicyBindingKey) (string, string) {
+func lbvserver_tmtrafficpolicy_binding_key_to_id_args(key LbvserverTmtrafficpolicyBindingKey) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,36 +43,78 @@ func lbvserver_tmtrafficpolicy_binding_key_to_id_args(key LbvserverTmtrafficpoli
 	args = append(args, "policyname:"+key.Policyname)
 	args = append(args, "bindpoint:"+key.Bindpoint)
 
-	return "", strings.Join(args, ",")
-}
+	qs := map[string]string{}
 
-// TODO : Exists
-// TODO : Count
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return "", qs
+}
 
 func (c *NitroClient) AddLbvserverTmtrafficpolicyBinding(binding LbvserverTmtrafficpolicyBinding) error {
 	payload := add_lbvserver_tmtrafficpolicy_binding_payload{
 		binding,
 	}
 
-	return c.put("lbvserver_tmtrafficpolicy_binding", "", "", "", payload)
+	return c.put("lbvserver_tmtrafficpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) ListLbvserverTmtrafficpolicyBinding(key LbvserverTmtrafficpolicyBindingKey) ([]LbvserverTmtrafficpolicyBinding, error) {
-	var results get_lbvserver_tmtrafficpolicy_binding
+func (c *NitroClient) BulkCountLbvserverTmtrafficpolicyBinding() (int, error) {
+	var results count_lbvserver_tmtrafficpolicy_binding_result
 
-	id, args := lbvserver_tmtrafficpolicy_binding_key_to_id_args(key)
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
 
-	if err := c.get("lbvserver_tmtrafficpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_tmtrafficpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) CountLbvserverTmtrafficpolicyBinding(id string) (int, error) {
+	var results count_lbvserver_tmtrafficpolicy_binding_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver_tmtrafficpolicy_binding", id, qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserverTmtrafficpolicyBinding(id string) (bool, error) {
+	if count, err := c.CountLbvserverTmtrafficpolicyBinding(id); err != nil {
+		return false, err
+	} else {
+		return count == 1, nil
+	}
+}
+
+func (c *NitroClient) BulkListLbvserverTmtrafficpolicyBinding() ([]LbvserverTmtrafficpolicyBinding, error) {
+	var results get_lbvserver_tmtrafficpolicy_binding_result
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_tmtrafficpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) BulkListLbvserverTmtrafficpolicyBinding() ([]LbvserverTmtrafficpolicyBinding, error) {
-	var results get_lbvserver_tmtrafficpolicy_binding
+func (c *NitroClient) ListLbvserverTmtrafficpolicyBinding(id string) ([]LbvserverTmtrafficpolicyBinding, error) {
+	var results get_lbvserver_tmtrafficpolicy_binding_result
 
-	if err := c.get("lbvserver_tmtrafficpolicy_binding", "", "", "", &results); err != nil {
+	if err := c.get("lbvserver_tmtrafficpolicy_binding", id, nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
@@ -76,11 +122,11 @@ func (c *NitroClient) BulkListLbvserverTmtrafficpolicyBinding() ([]LbvserverTmtr
 }
 
 func (c *NitroClient) GetLbvserverTmtrafficpolicyBinding(key LbvserverTmtrafficpolicyBindingKey) (*LbvserverTmtrafficpolicyBinding, error) {
-	var results get_lbvserver_tmtrafficpolicy_binding
+	var results get_lbvserver_tmtrafficpolicy_binding_result
 
-	id, args := lbvserver_tmtrafficpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_tmtrafficpolicy_binding_key_to_id_args(key)
 
-	if err := c.get("lbvserver_tmtrafficpolicy_binding", id, "", args, &results); err != nil {
+	if err := c.get("lbvserver_tmtrafficpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
 	} else {
 		if len(results.Results) > 1 {
@@ -96,7 +142,7 @@ func (c *NitroClient) GetLbvserverTmtrafficpolicyBinding(key LbvserverTmtrafficp
 }
 
 func (c *NitroClient) DeleteLbvserverTmtrafficpolicyBinding(key LbvserverTmtrafficpolicyBindingKey) error {
-	id, args := lbvserver_tmtrafficpolicy_binding_key_to_id_args(key)
+	id, qs := lbvserver_tmtrafficpolicy_binding_key_to_id_args(key)
 
-	return c.delete("lbvserver_tmtrafficpolicy_binding", id, "", args)
+	return c.delete("lbvserver_tmtrafficpolicy_binding", id, qs)
 }

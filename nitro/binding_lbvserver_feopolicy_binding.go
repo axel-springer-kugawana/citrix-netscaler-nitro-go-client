@@ -24,7 +24,7 @@ type LbvserverFeopolicyBindingKey struct {
 }
 
 type add_lbvserver_feopolicy_binding_payload struct {
-	Resources LbvserverFeopolicyBinding `json:"lbvserver_feopolicy_binding"`
+	Resource LbvserverFeopolicyBinding `json:"lbvserver_feopolicy_binding"`
 }
 
 type get_lbvserver_feopolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverFeopolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverFeopolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverFeopolicyBinding(id); err != nil {
 		return false, err
 	} else {

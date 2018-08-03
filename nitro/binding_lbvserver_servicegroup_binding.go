@@ -18,7 +18,7 @@ type LbvserverServicegroupBindingKey struct {
 }
 
 type add_lbvserver_servicegroup_binding_payload struct {
-	Resources LbvserverServicegroupBinding `json:"lbvserver_servicegroup_binding"`
+	Resource LbvserverServicegroupBinding `json:"lbvserver_servicegroup_binding"`
 }
 
 type get_lbvserver_servicegroup_binding_result struct {
@@ -83,6 +83,7 @@ func (c *NitroClient) CountLbvserverServicegroupBinding(id string) (int, error) 
 }
 
 func (c *NitroClient) ExistsLbvserverServicegroupBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverServicegroupBinding(id); err != nil {
 		return false, err
 	} else {

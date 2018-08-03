@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Lbvserver struct {
 	Name                               string `json:"name"`
 	State                              string `json:"state,omitempty"`
@@ -96,10 +102,100 @@ type Lbvserver struct {
 }
 
 type LbvserverKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type lbvserver_update struct {
+type LbvserverUnset struct {
+	Name                               string `json:"name"`
+	Ipv46                              bool   `json:"ipv46,string,omitempty"`
+	Ippattern                          bool   `json:"ippattern,string,omitempty"`
+	Ipmask                             bool   `json:"ipmask,string,omitempty"`
+	Persistencetype                    bool   `json:"persistencetype,string,omitempty"`
+	Timeout                            bool   `json:"timeout,string,omitempty"`
+	Persistencebackup                  bool   `json:"persistencebackup,string,omitempty"`
+	Backuppersistencetimeout           bool   `json:"backuppersistencetimeout,string,omitempty"`
+	Lbmethod                           bool   `json:"lbmethod,string,omitempty"`
+	Hashlength                         bool   `json:"hashlength,string,omitempty"`
+	Netmask                            bool   `json:"netmask,string,omitempty"`
+	V6netmasklen                       bool   `json:"v6netmasklen,string,omitempty"`
+	Backuplbmethod                     bool   `json:"backuplbmethod,string,omitempty"`
+	Rule                               bool   `json:"rule,string,omitempty"`
+	Cookiename                         bool   `json:"cookiename,string,omitempty"`
+	Resrule                            bool   `json:"resrule,string,omitempty"`
+	Persistmask                        bool   `json:"persistmask,string,omitempty"`
+	V6persistmasklen                   bool   `json:"v6persistmasklen,string,omitempty"`
+	Pq                                 bool   `json:"pq,string,omitempty"`
+	Sc                                 bool   `json:"sc,string,omitempty"`
+	Rtspnat                            bool   `json:"rtspnat,string,omitempty"`
+	M                                  bool   `json:"m,string,omitempty"`
+	Tosid                              bool   `json:"tosid,string,omitempty"`
+	Datalength                         bool   `json:"datalength,string,omitempty"`
+	Dataoffset                         bool   `json:"dataoffset,string,omitempty"`
+	Sessionless                        bool   `json:"sessionless,string,omitempty"`
+	Trofspersistence                   bool   `json:"trofspersistence,string,omitempty"`
+	Connfailover                       bool   `json:"connfailover,string,omitempty"`
+	Backupvserver                      bool   `json:"backupvserver,string,omitempty"`
+	Redirurl                           bool   `json:"redirurl,string,omitempty"`
+	Cacheable                          bool   `json:"cacheable,string,omitempty"`
+	Clttimeout                         bool   `json:"clttimeout,string,omitempty"`
+	Somethod                           bool   `json:"somethod,string,omitempty"`
+	Sothreshold                        bool   `json:"sothreshold,string,omitempty"`
+	Sopersistence                      bool   `json:"sopersistence,string,omitempty"`
+	Sopersistencetimeout               bool   `json:"sopersistencetimeout,string,omitempty"`
+	Healththreshold                    bool   `json:"healththreshold,string,omitempty"`
+	Sobackupaction                     bool   `json:"sobackupaction,string,omitempty"`
+	Redirectportrewrite                bool   `json:"redirectportrewrite,string,omitempty"`
+	Downstateflush                     bool   `json:"downstateflush,string,omitempty"`
+	Insertvserveripport                bool   `json:"insertvserveripport,string,omitempty"`
+	Vipheader                          bool   `json:"vipheader,string,omitempty"`
+	Disableprimaryondown               bool   `json:"disableprimaryondown,string,omitempty"`
+	Authenticationhost                 bool   `json:"authenticationhost,string,omitempty"`
+	Authentication                     bool   `json:"authentication,string,omitempty"`
+	Authn401                           bool   `json:"authn401,string,omitempty"`
+	Authnvsname                        bool   `json:"authnvsname,string,omitempty"`
+	Push                               bool   `json:"push,string,omitempty"`
+	Pushvserver                        bool   `json:"pushvserver,string,omitempty"`
+	Pushlabel                          bool   `json:"pushlabel,string,omitempty"`
+	Pushmulticlients                   bool   `json:"pushmulticlients,string,omitempty"`
+	Listenpolicy                       bool   `json:"listenpolicy,string,omitempty"`
+	Listenpriority                     bool   `json:"listenpriority,string,omitempty"`
+	Tcpprofilename                     bool   `json:"tcpprofilename,string,omitempty"`
+	Httpprofilename                    bool   `json:"httpprofilename,string,omitempty"`
+	Dbprofilename                      bool   `json:"dbprofilename,string,omitempty"`
+	Comment                            bool   `json:"comment,string,omitempty"`
+	L2conn                             bool   `json:"l2conn,string,omitempty"`
+	Oracleserverversion                bool   `json:"oracleserverversion,string,omitempty"`
+	Mssqlserverversion                 bool   `json:"mssqlserverversion,string,omitempty"`
+	Mysqlprotocolversion               bool   `json:"mysqlprotocolversion,string,omitempty"`
+	Mysqlserverversion                 bool   `json:"mysqlserverversion,string,omitempty"`
+	Mysqlcharacterset                  bool   `json:"mysqlcharacterset,string,omitempty"`
+	Mysqlservercapabilities            bool   `json:"mysqlservercapabilities,string,omitempty"`
+	Appflowlog                         bool   `json:"appflowlog,string,omitempty"`
+	Netprofile                         bool   `json:"netprofile,string,omitempty"`
+	Icmpvsrresponse                    bool   `json:"icmpvsrresponse,string,omitempty"`
+	Rhistate                           bool   `json:"rhistate,string,omitempty"`
+	Newservicerequest                  bool   `json:"newservicerequest,string,omitempty"`
+	Newservicerequestunit              bool   `json:"newservicerequestunit,string,omitempty"`
+	Newservicerequestincrementinterval bool   `json:"newservicerequestincrementinterval,string,omitempty"`
+	Minautoscalemembers                bool   `json:"minautoscalemembers,string,omitempty"`
+	Maxautoscalemembers                bool   `json:"maxautoscalemembers,string,omitempty"`
+	Persistavpno                       bool   `json:"persistavpno,string,omitempty"`
+	Skippersistency                    bool   `json:"skippersistency,string,omitempty"`
+	Authnprofile                       bool   `json:"authnprofile,string,omitempty"`
+	Macmoderetainvlan                  bool   `json:"macmoderetainvlan,string,omitempty"`
+	Dbslb                              bool   `json:"dbslb,string,omitempty"`
+	Dns64                              bool   `json:"dns64,string,omitempty"`
+	Bypassaaaa                         bool   `json:"bypassaaaa,string,omitempty"`
+	Recursionavailable                 bool   `json:"recursionavailable,string,omitempty"`
+	Processlocal                       bool   `json:"processlocal,string,omitempty"`
+	Dnsprofilename                     bool   `json:"dnsprofilename,string,omitempty"`
+	Lbprofilename                      bool   `json:"lbprofilename,string,omitempty"`
+	Redirectfromport                   bool   `json:"redirectfromport,string,omitempty"`
+	Httpsredirecturl                   bool   `json:"httpsredirecturl,string,omitempty"`
+	Retainconnectionsoncluster         bool   `json:"retainconnectionsoncluster,string,omitempty"`
+}
+
+type update_lbvserver struct {
 	Name                               string `json:"name"`
 	Ipv46                              string `json:"ipv46,omitempty"`
 	Ippattern                          string `json:"ippattern,omitempty"`
@@ -189,153 +285,267 @@ type lbvserver_update struct {
 	Retainconnectionsoncluster         string `json:"retainconnectionsoncluster,omitempty"`
 }
 
-type lbvserver_payload struct {
-	lbvserver interface{}
+type rename_lbvserver struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func lbvserver_key_to_args(key LbvserverKey) string {
-	result := ""
-
-	return result
+type add_lbvserver_payload struct {
+	Resource Lbvserver `json:"lbvserver"`
 }
 
-func (c *NitroClient) DeleteLbvserver(key LbvserverKey) error {
-	return c.deleteResourceWithArgs("lbvserver", key.Name, lbvserver_key_to_args(key))
+type rename_lbvserver_payload struct {
+	Rename rename_lbvserver `json:"lbvserver"`
 }
 
-func (c *NitroClient) GetLbvserver(key LbvserverKey) (*Lbvserver, error) {
-	var results struct {
-		Lbvserver []Lbvserver
-	}
-
-	if err := c.getResourceWithArgs("lbvserver", key.Name, lbvserver_key_to_args(key), &results); err != nil || len(results.Lbvserver) != 1 {
-		return nil, err
-	}
-
-	return &results.Lbvserver[0], nil
+type state_lbvserver_payload struct {
+	Key LbvserverKey `json:"lbvserver"`
 }
 
-func (c *NitroClient) ListLbvserver() ([]Lbvserver, error) {
-	var results struct {
-		Lbvserver []Lbvserver
+type unset_lbvserver_payload struct {
+	Unset LbvserverUnset `json:"lbvserver"`
+}
+
+type update_lbvserver_payload struct {
+	Update update_lbvserver `json:"lbvserver"`
+}
+
+type get_lbvserver_result struct {
+	Results []Lbvserver `json:"lbvserver"`
+}
+
+type count_lbvserver_result struct {
+	Results []Count `json:"lbvserver"`
+}
+
+func lbvserver_key_to_id_args(key LbvserverKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("lbvserver", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Lbvserver, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddLbvserver(resource Lbvserver) error {
-	return c.addResource("lbvserver", resource)
+	payload := add_lbvserver_payload{
+		resource,
+	}
+
+	return c.post("lbvserver", "", nil, payload)
 }
 
 func (c *NitroClient) RenameLbvserver(name string, newName string) error {
-	return c.renameResource("lbvserver", "name", name, newName)
+	payload := rename_lbvserver_payload{
+		rename_lbvserver{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("lbvserver", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetLbvserver(name string, fields ...string) error {
-	return c.unsetResource("lbvserver", "name", name, fields)
+func (c *NitroClient) CountLbvserver() (int, error) {
+	var results count_lbvserver_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("lbvserver", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsLbvserver(key LbvserverKey) (bool, error) {
+	var results count_lbvserver_result
+
+	id, qs := lbvserver_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbvserver", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListLbvserver() ([]Lbvserver, error) {
+	var results get_lbvserver_result
+
+	if err := c.get("lbvserver", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetLbvserver(key LbvserverKey) (*Lbvserver, error) {
+	var results get_lbvserver_result
+
+	id, qs := lbvserver_key_to_id_args(key)
+
+	if err := c.get("lbvserver", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one lbvserver element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("lbvserver element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteLbvserver(key LbvserverKey) error {
+	id, qs := lbvserver_key_to_id_args(key)
+
+	return c.delete("lbvserver", id, qs)
+}
+
+func (c *NitroClient) UnsetLbvserver(unset LbvserverUnset) error {
+	payload := unset_lbvserver_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("lbvserver", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateLbvserver(resource Lbvserver) error {
-	update := lbvserver_update{
-		resource.Name,
-		resource.Ipv46,
-		resource.Ippattern,
-		resource.Ipmask,
-		resource.Persistencetype,
-		resource.Timeout,
-		resource.Persistencebackup,
-		resource.Backuppersistencetimeout,
-		resource.Lbmethod,
-		resource.Hashlength,
-		resource.Netmask,
-		resource.V6netmasklen,
-		resource.Backuplbmethod,
-		resource.Rule,
-		resource.Cookiename,
-		resource.Resrule,
-		resource.Persistmask,
-		resource.V6persistmasklen,
-		resource.Pq,
-		resource.Sc,
-		resource.Rtspnat,
-		resource.M,
-		resource.Tosid,
-		resource.Datalength,
-		resource.Dataoffset,
-		resource.Sessionless,
-		resource.Trofspersistence,
-		resource.Connfailover,
-		resource.Backupvserver,
-		resource.Redirurl,
-		resource.Cacheable,
-		resource.Clttimeout,
-		resource.Somethod,
-		resource.Sothreshold,
-		resource.Sopersistence,
-		resource.Sopersistencetimeout,
-		resource.Healththreshold,
-		resource.Sobackupaction,
-		resource.Redirectportrewrite,
-		resource.Downstateflush,
-		resource.Insertvserveripport,
-		resource.Vipheader,
-		resource.Disableprimaryondown,
-		resource.Authenticationhost,
-		resource.Authentication,
-		resource.Authn401,
-		resource.Authnvsname,
-		resource.Push,
-		resource.Pushvserver,
-		resource.Pushlabel,
-		resource.Pushmulticlients,
-		resource.Listenpolicy,
-		resource.Listenpriority,
-		resource.Tcpprofilename,
-		resource.Httpprofilename,
-		resource.Dbprofilename,
-		resource.Comment,
-		resource.L2conn,
-		resource.Oracleserverversion,
-		resource.Mssqlserverversion,
-		resource.Mysqlprotocolversion,
-		resource.Mysqlserverversion,
-		resource.Mysqlcharacterset,
-		resource.Mysqlservercapabilities,
-		resource.Appflowlog,
-		resource.Netprofile,
-		resource.Icmpvsrresponse,
-		resource.Rhistate,
-		resource.Newservicerequest,
-		resource.Newservicerequestunit,
-		resource.Newservicerequestincrementinterval,
-		resource.Minautoscalemembers,
-		resource.Maxautoscalemembers,
-		resource.Persistavpno,
-		resource.Skippersistency,
-		resource.Authnprofile,
-		resource.Macmoderetainvlan,
-		resource.Dbslb,
-		resource.Dns64,
-		resource.Bypassaaaa,
-		resource.Recursionavailable,
-		resource.Processlocal,
-		resource.Dnsprofilename,
-		resource.Lbprofilename,
-		resource.Redirectfromport,
-		resource.Httpsredirecturl,
-		resource.Retainconnectionsoncluster,
+	payload := update_lbvserver_payload{
+		update_lbvserver{
+			resource.Name,
+			resource.Ipv46,
+			resource.Ippattern,
+			resource.Ipmask,
+			resource.Persistencetype,
+			resource.Timeout,
+			resource.Persistencebackup,
+			resource.Backuppersistencetimeout,
+			resource.Lbmethod,
+			resource.Hashlength,
+			resource.Netmask,
+			resource.V6netmasklen,
+			resource.Backuplbmethod,
+			resource.Rule,
+			resource.Cookiename,
+			resource.Resrule,
+			resource.Persistmask,
+			resource.V6persistmasklen,
+			resource.Pq,
+			resource.Sc,
+			resource.Rtspnat,
+			resource.M,
+			resource.Tosid,
+			resource.Datalength,
+			resource.Dataoffset,
+			resource.Sessionless,
+			resource.Trofspersistence,
+			resource.Connfailover,
+			resource.Backupvserver,
+			resource.Redirurl,
+			resource.Cacheable,
+			resource.Clttimeout,
+			resource.Somethod,
+			resource.Sothreshold,
+			resource.Sopersistence,
+			resource.Sopersistencetimeout,
+			resource.Healththreshold,
+			resource.Sobackupaction,
+			resource.Redirectportrewrite,
+			resource.Downstateflush,
+			resource.Insertvserveripport,
+			resource.Vipheader,
+			resource.Disableprimaryondown,
+			resource.Authenticationhost,
+			resource.Authentication,
+			resource.Authn401,
+			resource.Authnvsname,
+			resource.Push,
+			resource.Pushvserver,
+			resource.Pushlabel,
+			resource.Pushmulticlients,
+			resource.Listenpolicy,
+			resource.Listenpriority,
+			resource.Tcpprofilename,
+			resource.Httpprofilename,
+			resource.Dbprofilename,
+			resource.Comment,
+			resource.L2conn,
+			resource.Oracleserverversion,
+			resource.Mssqlserverversion,
+			resource.Mysqlprotocolversion,
+			resource.Mysqlserverversion,
+			resource.Mysqlcharacterset,
+			resource.Mysqlservercapabilities,
+			resource.Appflowlog,
+			resource.Netprofile,
+			resource.Icmpvsrresponse,
+			resource.Rhistate,
+			resource.Newservicerequest,
+			resource.Newservicerequestunit,
+			resource.Newservicerequestincrementinterval,
+			resource.Minautoscalemembers,
+			resource.Maxautoscalemembers,
+			resource.Persistavpno,
+			resource.Skippersistency,
+			resource.Authnprofile,
+			resource.Macmoderetainvlan,
+			resource.Dbslb,
+			resource.Dns64,
+			resource.Bypassaaaa,
+			resource.Recursionavailable,
+			resource.Processlocal,
+			resource.Dnsprofilename,
+			resource.Lbprofilename,
+			resource.Redirectfromport,
+			resource.Httpsredirecturl,
+			resource.Retainconnectionsoncluster,
+		},
 	}
 
-	return c.Put("lbvserver", update)
-}
-func (c *NitroClient) EnableLbvserver(name string) error {
-	return c.enableResource("lbvserver", "name", name)
+	return c.put("lbvserver", "", nil, payload)
 }
 
-func (c *NitroClient) DisableLbvserver(name string) error {
-	return c.disableResource("lbvserver", "name", name)
+func (c *NitroClient) EnableLbvserver(key LbvserverKey) error {
+	payload := state_lbvserver_payload{
+		key,
+	}
+
+	qs := map[string]string{
+		"action": "enable",
+	}
+
+	return c.post("lbvserver", "", qs, payload)
+}
+
+func (c *NitroClient) DisableLbvserver(key LbvserverKey) error {
+	payload := state_lbvserver_payload{
+		key,
+	}
+
+	qs := map[string]string{
+		"action": "disable",
+	}
+
+	return c.post("lbvserver", "", qs, payload)
 }

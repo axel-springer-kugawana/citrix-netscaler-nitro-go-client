@@ -1,60 +1,137 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Transformpolicylabel struct {
 	Labelname       string `json:"labelname"`
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
 
 type TransformpolicylabelKey struct {
-	Labelname string
-}
-
-type transformpolicylabel_update struct {
 	Labelname string `json:"labelname"`
 }
 
-type transformpolicylabel_payload struct {
-	transformpolicylabel interface{}
+type rename_transformpolicylabel struct {
+	Name    string `json:"labelname"`
+	Newname string `json:"newname"`
 }
 
-func transformpolicylabel_key_to_args(key TransformpolicylabelKey) string {
-	result := ""
-
-	return result
+type add_transformpolicylabel_payload struct {
+	Resource Transformpolicylabel `json:"transformpolicylabel"`
 }
 
-func (c *NitroClient) DeleteTransformpolicylabel(key TransformpolicylabelKey) error {
-	return c.deleteResourceWithArgs("transformpolicylabel", key.Labelname, transformpolicylabel_key_to_args(key))
+type rename_transformpolicylabel_payload struct {
+	Rename rename_transformpolicylabel `json:"transformpolicylabel"`
 }
 
-func (c *NitroClient) GetTransformpolicylabel(key TransformpolicylabelKey) (*Transformpolicylabel, error) {
-	var results struct {
-		Transformpolicylabel []Transformpolicylabel
-	}
-
-	if err := c.getResourceWithArgs("transformpolicylabel", key.Labelname, transformpolicylabel_key_to_args(key), &results); err != nil || len(results.Transformpolicylabel) != 1 {
-		return nil, err
-	}
-
-	return &results.Transformpolicylabel[0], nil
+type get_transformpolicylabel_result struct {
+	Results []Transformpolicylabel `json:"transformpolicylabel"`
 }
 
-func (c *NitroClient) ListTransformpolicylabel() ([]Transformpolicylabel, error) {
-	var results struct {
-		Transformpolicylabel []Transformpolicylabel
+type count_transformpolicylabel_result struct {
+	Results []Count `json:"transformpolicylabel"`
+}
+
+func transformpolicylabel_key_to_id_args(key TransformpolicylabelKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("transformpolicylabel", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Transformpolicylabel, nil
+	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddTransformpolicylabel(resource Transformpolicylabel) error {
-	return c.addResource("transformpolicylabel", resource)
+	payload := add_transformpolicylabel_payload{
+		resource,
+	}
+
+	return c.post("transformpolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameTransformpolicylabel(labelname string, newName string) error {
-	return c.renameResource("transformpolicylabel", "labelname", labelname, newName)
+func (c *NitroClient) RenameTransformpolicylabel(name string, newName string) error {
+	payload := rename_transformpolicylabel_payload{
+		rename_transformpolicylabel{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("transformpolicylabel", "", qs, payload)
+}
+
+func (c *NitroClient) CountTransformpolicylabel() (int, error) {
+	var results count_transformpolicylabel_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("transformpolicylabel", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsTransformpolicylabel(key TransformpolicylabelKey) (bool, error) {
+	var results count_transformpolicylabel_result
+
+	id, qs := transformpolicylabel_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("transformpolicylabel", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListTransformpolicylabel() ([]Transformpolicylabel, error) {
+	var results get_transformpolicylabel_result
+
+	if err := c.get("transformpolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetTransformpolicylabel(key TransformpolicylabelKey) (*Transformpolicylabel, error) {
+	var results get_transformpolicylabel_result
+
+	id, qs := transformpolicylabel_key_to_id_args(key)
+
+	if err := c.get("transformpolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one transformpolicylabel element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("transformpolicylabel element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteTransformpolicylabel(key TransformpolicylabelKey) error {
+	id, qs := transformpolicylabel_key_to_id_args(key)
+
+	return c.delete("transformpolicylabel", id, qs)
 }

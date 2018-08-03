@@ -23,7 +23,7 @@ type {{$.Name|name}}Key struct {
 }
 
 type add_{{$.Name}}_payload struct {
-        Resources {{$.Name|name}} `json:"{{$.Name}}"`
+        Resource {{$.Name|name}} `json:"{{$.Name}}"`
 }
 
 type get_{{$.Name}}_result struct {
@@ -93,6 +93,7 @@ func (c *NitroClient) Count{{$.Name|name}} (id string) (int, error) {
 }
 
 func (c *NitroClient) Exists{{$.Name|name}} (id string) (bool, error) {
+        // TODO : wrong implementation
         if count, err := c.Count{{$.Name|name}}(id); err != nil {
                 return false, err
         } else {

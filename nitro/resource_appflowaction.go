@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Appflowaction struct {
 	Name                   string   `json:"name"`
 	Clientsidemeasurements string   `json:"clientsidemeasurements,omitempty"`
@@ -15,10 +21,22 @@ type Appflowaction struct {
 }
 
 type AppflowactionKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type appflowaction_update struct {
+type AppflowactionUnset struct {
+	Name                   string `json:"name"`
+	Collectors             bool   `json:"collectors,string,omitempty"`
+	Clientsidemeasurements bool   `json:"clientsidemeasurements,string,omitempty"`
+	Comment                bool   `json:"comment,string,omitempty"`
+	Pagetracking           bool   `json:"pagetracking,string,omitempty"`
+	Webinsight             bool   `json:"webinsight,string,omitempty"`
+	Securityinsight        bool   `json:"securityinsight,string,omitempty"`
+	Videoanalytics         bool   `json:"videoanalytics,string,omitempty"`
+	Distributionalgorithm  bool   `json:"distributionalgorithm,string,omitempty"`
+}
+
+type update_appflowaction struct {
 	Name                   string   `json:"name"`
 	Collectors             []string `json:"collectors,omitempty"`
 	Clientsidemeasurements string   `json:"clientsidemeasurements,omitempty"`
@@ -30,68 +48,161 @@ type appflowaction_update struct {
 	Distributionalgorithm  string   `json:"distributionalgorithm,omitempty"`
 }
 
-type appflowaction_payload struct {
-	appflowaction interface{}
+type rename_appflowaction struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func appflowaction_key_to_args(key AppflowactionKey) string {
-	result := ""
-
-	return result
+type add_appflowaction_payload struct {
+	Resource Appflowaction `json:"appflowaction"`
 }
 
-func (c *NitroClient) DeleteAppflowaction(key AppflowactionKey) error {
-	return c.deleteResourceWithArgs("appflowaction", key.Name, appflowaction_key_to_args(key))
+type rename_appflowaction_payload struct {
+	Rename rename_appflowaction `json:"appflowaction"`
 }
 
-func (c *NitroClient) GetAppflowaction(key AppflowactionKey) (*Appflowaction, error) {
-	var results struct {
-		Appflowaction []Appflowaction
-	}
-
-	if err := c.getResourceWithArgs("appflowaction", key.Name, appflowaction_key_to_args(key), &results); err != nil || len(results.Appflowaction) != 1 {
-		return nil, err
-	}
-
-	return &results.Appflowaction[0], nil
+type unset_appflowaction_payload struct {
+	Unset AppflowactionUnset `json:"appflowaction"`
 }
 
-func (c *NitroClient) ListAppflowaction() ([]Appflowaction, error) {
-	var results struct {
-		Appflowaction []Appflowaction
+type update_appflowaction_payload struct {
+	Update update_appflowaction `json:"appflowaction"`
+}
+
+type get_appflowaction_result struct {
+	Results []Appflowaction `json:"appflowaction"`
+}
+
+type count_appflowaction_result struct {
+	Results []Count `json:"appflowaction"`
+}
+
+func appflowaction_key_to_id_args(key AppflowactionKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("appflowaction", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Appflowaction, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAppflowaction(resource Appflowaction) error {
-	return c.addResource("appflowaction", resource)
+	payload := add_appflowaction_payload{
+		resource,
+	}
+
+	return c.post("appflowaction", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAppflowaction(name string, newName string) error {
-	return c.renameResource("appflowaction", "name", name, newName)
+	payload := rename_appflowaction_payload{
+		rename_appflowaction{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("appflowaction", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAppflowaction(name string, fields ...string) error {
-	return c.unsetResource("appflowaction", "name", name, fields)
+func (c *NitroClient) CountAppflowaction() (int, error) {
+	var results count_appflowaction_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("appflowaction", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAppflowaction(key AppflowactionKey) (bool, error) {
+	var results count_appflowaction_result
+
+	id, qs := appflowaction_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("appflowaction", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAppflowaction() ([]Appflowaction, error) {
+	var results get_appflowaction_result
+
+	if err := c.get("appflowaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAppflowaction(key AppflowactionKey) (*Appflowaction, error) {
+	var results get_appflowaction_result
+
+	id, qs := appflowaction_key_to_id_args(key)
+
+	if err := c.get("appflowaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one appflowaction element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("appflowaction element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAppflowaction(key AppflowactionKey) error {
+	id, qs := appflowaction_key_to_id_args(key)
+
+	return c.delete("appflowaction", id, qs)
+}
+
+func (c *NitroClient) UnsetAppflowaction(unset AppflowactionUnset) error {
+	payload := unset_appflowaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("appflowaction", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAppflowaction(resource Appflowaction) error {
-	update := appflowaction_update{
-		resource.Name,
-		resource.Collectors,
-		resource.Clientsidemeasurements,
-		resource.Comment,
-		resource.Pagetracking,
-		resource.Webinsight,
-		resource.Securityinsight,
-		resource.Videoanalytics,
-		resource.Distributionalgorithm,
+	payload := update_appflowaction_payload{
+		update_appflowaction{
+			resource.Name,
+			resource.Collectors,
+			resource.Clientsidemeasurements,
+			resource.Comment,
+			resource.Pagetracking,
+			resource.Webinsight,
+			resource.Securityinsight,
+			resource.Videoanalytics,
+			resource.Distributionalgorithm,
+		},
 	}
 
-	return c.Put("appflowaction", update)
+	return c.put("appflowaction", "", nil, payload)
 }

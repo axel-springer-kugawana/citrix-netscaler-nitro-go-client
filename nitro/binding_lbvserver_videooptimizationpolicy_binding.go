@@ -24,7 +24,7 @@ type LbvserverVideooptimizationpolicyBindingKey struct {
 }
 
 type add_lbvserver_videooptimizationpolicy_binding_payload struct {
-	Resources LbvserverVideooptimizationpolicyBinding `json:"lbvserver_videooptimizationpolicy_binding"`
+	Resource LbvserverVideooptimizationpolicyBinding `json:"lbvserver_videooptimizationpolicy_binding"`
 }
 
 type get_lbvserver_videooptimizationpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverVideooptimizationpolicyBinding(id string) (i
 }
 
 func (c *NitroClient) ExistsLbvserverVideooptimizationpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverVideooptimizationpolicyBinding(id); err != nil {
 		return false, err
 	} else {

@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Server struct {
 	Name               string `json:"name"`
 	State              string `json:"state,omitempty"`
@@ -14,10 +20,19 @@ type Server struct {
 }
 
 type ServerKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type server_update struct {
+type ServerUnset struct {
+	Name               string `json:"name"`
+	Comment            bool   `json:"comment,string,omitempty"`
+	Domainresolveretry bool   `json:"domainresolveretry,string,omitempty"`
+	Ipaddress          bool   `json:"ipaddress,string,omitempty"`
+	Translationip      bool   `json:"translationip,string,omitempty"`
+	Translationmask    bool   `json:"translationmask,string,omitempty"`
+}
+
+type update_server struct {
 	Name               string `json:"name"`
 	Comment            string `json:"comment,omitempty"`
 	Domainresolveretry int    `json:"domainresolveretry,omitempty"`
@@ -26,72 +41,186 @@ type server_update struct {
 	Translationmask    string `json:"translationmask,omitempty"`
 }
 
-type server_payload struct {
-	server interface{}
+type rename_server struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func server_key_to_args(key ServerKey) string {
-	result := ""
-
-	return result
+type add_server_payload struct {
+	Resource Server `json:"server"`
 }
 
-func (c *NitroClient) DeleteServer(key ServerKey) error {
-	return c.deleteResourceWithArgs("server", key.Name, server_key_to_args(key))
+type rename_server_payload struct {
+	Rename rename_server `json:"server"`
 }
 
-func (c *NitroClient) GetServer(key ServerKey) (*Server, error) {
-	var results struct {
-		Server []Server
-	}
-
-	if err := c.getResourceWithArgs("server", key.Name, server_key_to_args(key), &results); err != nil || len(results.Server) != 1 {
-		return nil, err
-	}
-
-	return &results.Server[0], nil
+type state_server_payload struct {
+	Key ServerKey `json:"server"`
 }
 
-func (c *NitroClient) ListServer() ([]Server, error) {
-	var results struct {
-		Server []Server
+type unset_server_payload struct {
+	Unset ServerUnset `json:"server"`
+}
+
+type update_server_payload struct {
+	Update update_server `json:"server"`
+}
+
+type get_server_result struct {
+	Results []Server `json:"server"`
+}
+
+type count_server_result struct {
+	Results []Count `json:"server"`
+}
+
+func server_key_to_id_args(key ServerKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("server", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Server, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddServer(resource Server) error {
-	return c.addResource("server", resource)
+	payload := add_server_payload{
+		resource,
+	}
+
+	return c.post("server", "", nil, payload)
 }
 
 func (c *NitroClient) RenameServer(name string, newName string) error {
-	return c.renameResource("server", "name", name, newName)
+	payload := rename_server_payload{
+		rename_server{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("server", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetServer(name string, fields ...string) error {
-	return c.unsetResource("server", "name", name, fields)
+func (c *NitroClient) CountServer() (int, error) {
+	var results count_server_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("server", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsServer(key ServerKey) (bool, error) {
+	var results count_server_result
+
+	id, qs := server_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("server", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListServer() ([]Server, error) {
+	var results get_server_result
+
+	if err := c.get("server", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetServer(key ServerKey) (*Server, error) {
+	var results get_server_result
+
+	id, qs := server_key_to_id_args(key)
+
+	if err := c.get("server", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one server element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("server element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteServer(key ServerKey) error {
+	id, qs := server_key_to_id_args(key)
+
+	return c.delete("server", id, qs)
+}
+
+func (c *NitroClient) UnsetServer(unset ServerUnset) error {
+	payload := unset_server_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("server", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateServer(resource Server) error {
-	update := server_update{
-		resource.Name,
-		resource.Comment,
-		resource.Domainresolveretry,
-		resource.Ipaddress,
-		resource.Translationip,
-		resource.Translationmask,
+	payload := update_server_payload{
+		update_server{
+			resource.Name,
+			resource.Comment,
+			resource.Domainresolveretry,
+			resource.Ipaddress,
+			resource.Translationip,
+			resource.Translationmask,
+		},
 	}
 
-	return c.Put("server", update)
-}
-func (c *NitroClient) EnableServer(name string) error {
-	return c.enableResource("server", "name", name)
+	return c.put("server", "", nil, payload)
 }
 
-func (c *NitroClient) DisableServer(name string) error {
-	return c.disableResource("server", "name", name)
+func (c *NitroClient) EnableServer(key ServerKey) error {
+	payload := state_server_payload{
+		key,
+	}
+
+	qs := map[string]string{
+		"action": "enable",
+	}
+
+	return c.post("server", "", qs, payload)
+}
+
+func (c *NitroClient) DisableServer(key ServerKey) error {
+	payload := state_server_payload{
+		key,
+	}
+
+	qs := map[string]string{
+		"action": "disable",
+	}
+
+	return c.post("server", "", qs, payload)
 }

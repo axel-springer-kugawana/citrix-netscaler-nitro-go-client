@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Csaction struct {
 	Name              string `json:"name"`
 	Comment           string `json:"comment,omitempty"`
@@ -9,10 +15,18 @@ type Csaction struct {
 }
 
 type CsactionKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type csaction_update struct {
+type CsactionUnset struct {
+	Name              string `json:"name"`
+	Targetlbvserver   bool   `json:"targetlbvserver,string,omitempty"`
+	Targetvserver     bool   `json:"targetvserver,string,omitempty"`
+	Targetvserverexpr bool   `json:"targetvserverexpr,string,omitempty"`
+	Comment           bool   `json:"comment,string,omitempty"`
+}
+
+type update_csaction struct {
 	Name              string `json:"name"`
 	Targetlbvserver   string `json:"targetlbvserver,omitempty"`
 	Targetvserver     string `json:"targetvserver,omitempty"`
@@ -20,64 +34,157 @@ type csaction_update struct {
 	Comment           string `json:"comment,omitempty"`
 }
 
-type csaction_payload struct {
-	csaction interface{}
+type rename_csaction struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func csaction_key_to_args(key CsactionKey) string {
-	result := ""
-
-	return result
+type add_csaction_payload struct {
+	Resource Csaction `json:"csaction"`
 }
 
-func (c *NitroClient) DeleteCsaction(key CsactionKey) error {
-	return c.deleteResourceWithArgs("csaction", key.Name, csaction_key_to_args(key))
+type rename_csaction_payload struct {
+	Rename rename_csaction `json:"csaction"`
 }
 
-func (c *NitroClient) GetCsaction(key CsactionKey) (*Csaction, error) {
-	var results struct {
-		Csaction []Csaction
-	}
-
-	if err := c.getResourceWithArgs("csaction", key.Name, csaction_key_to_args(key), &results); err != nil || len(results.Csaction) != 1 {
-		return nil, err
-	}
-
-	return &results.Csaction[0], nil
+type unset_csaction_payload struct {
+	Unset CsactionUnset `json:"csaction"`
 }
 
-func (c *NitroClient) ListCsaction() ([]Csaction, error) {
-	var results struct {
-		Csaction []Csaction
+type update_csaction_payload struct {
+	Update update_csaction `json:"csaction"`
+}
+
+type get_csaction_result struct {
+	Results []Csaction `json:"csaction"`
+}
+
+type count_csaction_result struct {
+	Results []Count `json:"csaction"`
+}
+
+func csaction_key_to_id_args(key CsactionKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("csaction", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Csaction, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddCsaction(resource Csaction) error {
-	return c.addResource("csaction", resource)
+	payload := add_csaction_payload{
+		resource,
+	}
+
+	return c.post("csaction", "", nil, payload)
 }
 
 func (c *NitroClient) RenameCsaction(name string, newName string) error {
-	return c.renameResource("csaction", "name", name, newName)
+	payload := rename_csaction_payload{
+		rename_csaction{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("csaction", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetCsaction(name string, fields ...string) error {
-	return c.unsetResource("csaction", "name", name, fields)
+func (c *NitroClient) CountCsaction() (int, error) {
+	var results count_csaction_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("csaction", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsCsaction(key CsactionKey) (bool, error) {
+	var results count_csaction_result
+
+	id, qs := csaction_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("csaction", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListCsaction() ([]Csaction, error) {
+	var results get_csaction_result
+
+	if err := c.get("csaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetCsaction(key CsactionKey) (*Csaction, error) {
+	var results get_csaction_result
+
+	id, qs := csaction_key_to_id_args(key)
+
+	if err := c.get("csaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one csaction element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("csaction element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteCsaction(key CsactionKey) error {
+	id, qs := csaction_key_to_id_args(key)
+
+	return c.delete("csaction", id, qs)
+}
+
+func (c *NitroClient) UnsetCsaction(unset CsactionUnset) error {
+	payload := unset_csaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("csaction", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateCsaction(resource Csaction) error {
-	update := csaction_update{
-		resource.Name,
-		resource.Targetlbvserver,
-		resource.Targetvserver,
-		resource.Targetvserverexpr,
-		resource.Comment,
+	payload := update_csaction_payload{
+		update_csaction{
+			resource.Name,
+			resource.Targetlbvserver,
+			resource.Targetvserver,
+			resource.Targetvserverexpr,
+			resource.Comment,
+		},
 	}
 
-	return c.Put("csaction", update)
+	return c.put("csaction", "", nil, payload)
 }

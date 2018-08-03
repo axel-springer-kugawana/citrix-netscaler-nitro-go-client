@@ -1,0 +1,150 @@
+package nitro
+
+type {{$.Name|name}} struct {
+        {{$.Schema.Key.Name|title}} string `json:"{{$.Schema.Key.Name}}"`
+        {{if $.Schema.State -}}
+        {{$.Schema.State|title}} string `json:"{{$.Schema.State}},omitempty"`
+        {{end -}}
+        {{range $field, $type := $.Schema.Fields -}}
+        {{if eq $type "double" -}}
+        {{$field|title}} {{$type|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{$type|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+}
+
+type {{$.Name|name}}Key struct {
+        {{$.Schema.Key.Name|title}} string
+        {{range $field := $.Schema.Key.Fields -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}}
+        {{end -}}
+}
+
+type add_{{$.Name}}_payload struct {
+        Resource {{$.Name|name}} `json:"{{$.Name}}"`
+}
+
+type get_{{$.Name}}_result struct {
+        Results []{{$.Name|name}} `json:"{{$.Name}}"`
+}
+
+type count_{{$.Name}}_result struct {
+        Results []Count `json:"{{$.Name}}"`
+}
+
+func (c *NitroClient) Add{{$.Name|name}} (resource {{$.Name|name}}) error {
+        payload := add_{{$.Name}}_payload {
+                resource,
+        }
+
+        return c.post("{{$.Name}}", "", nil, payload)
+}
+
+func (c *NitroClient) BulkCount{{$.Name|name}} () (int, error) {
+        var results count_{{$.Name}}_result
+        
+        qs := map[string]string {
+                "count": "yes",
+        }
+
+	if err := c.get("{{$.Name}}", "", qs, &results); err != nil {
+                return -1, err
+        } else {
+                return results.Results[0].Count, err
+        }
+}
+
+
+
+type {{$.Name}}_update struct {
+        {{if $.Schema.Key.Name -}}
+        {{$.Schema.Key.Name|title}} string `json:"{{$.Schema.Key.Name}}"`
+        {{end -}}
+        {{range $field := $.Schema.Update -}}
+        {{if eq (index $.Schema.Fields $field) "double" -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+}
+
+type {{$.Name}}_payload struct {
+        {{$.Name}} interface{}
+}
+
+func {{$.Name}}_key_to_args (key {{$.Name|name}}Key) (string) {
+        result := ""
+
+        {{range $field := $.Schema.Key.Fields -}}
+        result = result + ",{{$field}}:" + key.{{$field|title}}
+        {{end -}}
+
+        return result
+}
+
+func (c *NitroClient) Delete{{$.Name|name}} (key {{$.Name|name}}Key) error {
+	return c.deleteResourceWithArgs("{{$.Name}}", key.{{$.Schema.Key.Name|title}}, {{$.Name}}_key_to_args(key))
+}
+
+func (c *NitroClient) Get{{$.Name|name}} (key {{$.Name|name}}Key) (*{{$.Name|name}}, error) {
+        var results struct {
+                {{$.Name|title}} []{{$.Name|name}}
+        }
+        
+	if err := c.getResourceWithArgs("{{$.Name}}", key.{{$.Schema.Key.Name|title}}, {{$.Name}}_key_to_args(key), &results); err != nil || len(results.{{$.Name|title}}) != 1 {
+		return nil, err
+	}
+
+        return &results.{{$.Name|title}}[0], nil
+}
+
+func (c *NitroClient) List{{$.Name|name}} () ([]{{$.Name|name}}, error) {
+        var results struct {
+                {{$.Name|title}} []{{$.Name|name}}
+        }
+        
+	if err := c.listResources("{{$.Name}}", &results); err != nil {
+                return nil, err
+        }
+
+        return results.{{$.Name|title}}, nil
+}
+
+func (c *NitroClient) Add{{$.Name|name}} (resource {{$.Name|name}}) error {
+	return c.addResource("{{$.Name}}", resource)
+}
+
+func (c *NitroClient) Rename{{$.Name|name}} ({{$.Schema.Key.Name}} string, newName string) error {
+	return c.renameResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}}, newName)
+}
+
+{{if $.Schema.Update -}}
+func (c *NitroClient) Unset{{$.Name|name}} ({{$.Schema.Key.Name}} string, fields ...string) error {
+        return c.unsetResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}}, fields)
+}
+
+func (c *NitroClient) Update{{$.Name|name}} (resource {{$.Name|name}}) error {
+        update := {{$.Name}}_update {
+                {{if $.Schema.Key.Name -}}
+                resource.{{$.Schema.Key.Name|title}},
+                {{end -}}
+                {{range $field := $.Schema.Update -}}
+                resource.{{$field|title}},
+                {{end -}}
+        }
+
+	return c.Put("{{$.Name}}", update)
+}
+{{end -}}
+
+{{if $.Schema.State -}}
+func (c *NitroClient) Enable{{$.Name|name}} ({{$.Schema.Key.Name}} string) error {
+        return c.enableResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}})
+}
+
+func (c *NitroClient) Disable{{$.Name|name}} ({{$.Schema.Key.Name}} string) error {
+        return c.disableResource("{{$.Name}}", "{{$.Schema.Key.Name}}", {{$.Schema.Key.Name}})
+}
+{{end -}}

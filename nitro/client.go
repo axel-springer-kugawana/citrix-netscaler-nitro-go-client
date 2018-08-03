@@ -1,9 +1,7 @@
 package nitro
 
 import (
-	"bytes"
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -96,46 +94,4 @@ func NewNitroClientFromEnv() (*NitroClient, error) {
 		SslVerify: sslVerify,
 	}
 	return NewNitroClientFromParams(nitroParams)
-}
-
-func (c *NitroClient) PostWithArgs(endpoint string, args string, resource interface{}) error {
-	url := "/nitro/v1/config/" + endpoint
-
-	if len(args) > 0 {
-		url = url + "?" + args
-	}
-
-	payload := map[string]interface{}{
-		endpoint: resource,
-	}
-
-	body, err := json.Marshal(payload)
-
-	if err != nil {
-		return err
-	}
-
-	_, err = c.doHTTPRequest("POST", url, bytes.NewBuffer(body))
-
-	return err
-}
-
-func (c *NitroClient) Post(endpoint string, resource interface{}) error {
-	return c.PostWithArgs(endpoint, "", resource)
-}
-
-func (c *NitroClient) Put(endpoint string, resource interface{}) error {
-	payload := map[string]interface{}{
-		endpoint: resource,
-	}
-
-	body, err := json.Marshal(payload)
-
-	if err != nil {
-		return err
-	}
-
-	_, err = c.doHTTPRequest("PUT", "/nitro/v1/config/"+endpoint, bytes.NewBuffer(body))
-
-	return err
 }

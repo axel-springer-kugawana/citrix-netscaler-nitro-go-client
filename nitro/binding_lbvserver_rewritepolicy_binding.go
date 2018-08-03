@@ -24,7 +24,7 @@ type LbvserverRewritepolicyBindingKey struct {
 }
 
 type add_lbvserver_rewritepolicy_binding_payload struct {
-	Resources LbvserverRewritepolicyBinding `json:"lbvserver_rewritepolicy_binding"`
+	Resource LbvserverRewritepolicyBinding `json:"lbvserver_rewritepolicy_binding"`
 }
 
 type get_lbvserver_rewritepolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverRewritepolicyBinding(id string) (int, error)
 }
 
 func (c *NitroClient) ExistsLbvserverRewritepolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverRewritepolicyBinding(id); err != nil {
 		return false, err
 	} else {

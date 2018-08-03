@@ -24,7 +24,7 @@ type LbvserverSpilloverpolicyBindingKey struct {
 }
 
 type add_lbvserver_spilloverpolicy_binding_payload struct {
-	Resources LbvserverSpilloverpolicyBinding `json:"lbvserver_spilloverpolicy_binding"`
+	Resource LbvserverSpilloverpolicyBinding `json:"lbvserver_spilloverpolicy_binding"`
 }
 
 type get_lbvserver_spilloverpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverSpilloverpolicyBinding(id string) (int, erro
 }
 
 func (c *NitroClient) ExistsLbvserverSpilloverpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverSpilloverpolicyBinding(id); err != nil {
 		return false, err
 	} else {

@@ -24,7 +24,7 @@ type LbvserverAppfwpolicyBindingKey struct {
 }
 
 type add_lbvserver_appfwpolicy_binding_payload struct {
-	Resources LbvserverAppfwpolicyBinding `json:"lbvserver_appfwpolicy_binding"`
+	Resource LbvserverAppfwpolicyBinding `json:"lbvserver_appfwpolicy_binding"`
 }
 
 type get_lbvserver_appfwpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverAppfwpolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverAppfwpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverAppfwpolicyBinding(id); err != nil {
 		return false, err
 	} else {

@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Auditnslogpolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
@@ -7,71 +13,170 @@ type Auditnslogpolicy struct {
 }
 
 type AuditnslogpolicyKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type auditnslogpolicy_update struct {
+type AuditnslogpolicyUnset struct {
+	Name   string `json:"name"`
+	Rule   bool   `json:"rule,string,omitempty"`
+	Action bool   `json:"action,string,omitempty"`
+}
+
+type update_auditnslogpolicy struct {
 	Name   string `json:"name"`
 	Rule   string `json:"rule,omitempty"`
 	Action string `json:"action,omitempty"`
 }
 
-type auditnslogpolicy_payload struct {
-	auditnslogpolicy interface{}
+type rename_auditnslogpolicy struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func auditnslogpolicy_key_to_args(key AuditnslogpolicyKey) string {
-	result := ""
-
-	return result
+type add_auditnslogpolicy_payload struct {
+	Resource Auditnslogpolicy `json:"auditnslogpolicy"`
 }
 
-func (c *NitroClient) DeleteAuditnslogpolicy(key AuditnslogpolicyKey) error {
-	return c.deleteResourceWithArgs("auditnslogpolicy", key.Name, auditnslogpolicy_key_to_args(key))
+type rename_auditnslogpolicy_payload struct {
+	Rename rename_auditnslogpolicy `json:"auditnslogpolicy"`
 }
 
-func (c *NitroClient) GetAuditnslogpolicy(key AuditnslogpolicyKey) (*Auditnslogpolicy, error) {
-	var results struct {
-		Auditnslogpolicy []Auditnslogpolicy
-	}
-
-	if err := c.getResourceWithArgs("auditnslogpolicy", key.Name, auditnslogpolicy_key_to_args(key), &results); err != nil || len(results.Auditnslogpolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Auditnslogpolicy[0], nil
+type unset_auditnslogpolicy_payload struct {
+	Unset AuditnslogpolicyUnset `json:"auditnslogpolicy"`
 }
 
-func (c *NitroClient) ListAuditnslogpolicy() ([]Auditnslogpolicy, error) {
-	var results struct {
-		Auditnslogpolicy []Auditnslogpolicy
+type update_auditnslogpolicy_payload struct {
+	Update update_auditnslogpolicy `json:"auditnslogpolicy"`
+}
+
+type get_auditnslogpolicy_result struct {
+	Results []Auditnslogpolicy `json:"auditnslogpolicy"`
+}
+
+type count_auditnslogpolicy_result struct {
+	Results []Count `json:"auditnslogpolicy"`
+}
+
+func auditnslogpolicy_key_to_id_args(key AuditnslogpolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("auditnslogpolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Auditnslogpolicy, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAuditnslogpolicy(resource Auditnslogpolicy) error {
-	return c.addResource("auditnslogpolicy", resource)
+	payload := add_auditnslogpolicy_payload{
+		resource,
+	}
+
+	return c.post("auditnslogpolicy", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAuditnslogpolicy(name string, newName string) error {
-	return c.renameResource("auditnslogpolicy", "name", name, newName)
+	payload := rename_auditnslogpolicy_payload{
+		rename_auditnslogpolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("auditnslogpolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAuditnslogpolicy(name string, fields ...string) error {
-	return c.unsetResource("auditnslogpolicy", "name", name, fields)
+func (c *NitroClient) CountAuditnslogpolicy() (int, error) {
+	var results count_auditnslogpolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("auditnslogpolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAuditnslogpolicy(key AuditnslogpolicyKey) (bool, error) {
+	var results count_auditnslogpolicy_result
+
+	id, qs := auditnslogpolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("auditnslogpolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAuditnslogpolicy() ([]Auditnslogpolicy, error) {
+	var results get_auditnslogpolicy_result
+
+	if err := c.get("auditnslogpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAuditnslogpolicy(key AuditnslogpolicyKey) (*Auditnslogpolicy, error) {
+	var results get_auditnslogpolicy_result
+
+	id, qs := auditnslogpolicy_key_to_id_args(key)
+
+	if err := c.get("auditnslogpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one auditnslogpolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("auditnslogpolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAuditnslogpolicy(key AuditnslogpolicyKey) error {
+	id, qs := auditnslogpolicy_key_to_id_args(key)
+
+	return c.delete("auditnslogpolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetAuditnslogpolicy(unset AuditnslogpolicyUnset) error {
+	payload := unset_auditnslogpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("auditnslogpolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAuditnslogpolicy(resource Auditnslogpolicy) error {
-	update := auditnslogpolicy_update{
-		resource.Name,
-		resource.Rule,
-		resource.Action,
+	payload := update_auditnslogpolicy_payload{
+		update_auditnslogpolicy{
+			resource.Name,
+			resource.Rule,
+			resource.Action,
+		},
 	}
 
-	return c.Put("auditnslogpolicy", update)
+	return c.put("auditnslogpolicy", "", nil, payload)
 }

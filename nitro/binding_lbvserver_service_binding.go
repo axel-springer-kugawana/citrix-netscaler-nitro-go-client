@@ -18,7 +18,7 @@ type LbvserverServiceBindingKey struct {
 }
 
 type add_lbvserver_service_binding_payload struct {
-	Resources LbvserverServiceBinding `json:"lbvserver_service_binding"`
+	Resource LbvserverServiceBinding `json:"lbvserver_service_binding"`
 }
 
 type get_lbvserver_service_binding_result struct {
@@ -83,6 +83,7 @@ func (c *NitroClient) CountLbvserverServiceBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverServiceBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverServiceBinding(id); err != nil {
 		return false, err
 	} else {

@@ -18,7 +18,7 @@ type ServicegroupLbmonitorBindingKey struct {
 }
 
 type add_servicegroup_lbmonitor_binding_payload struct {
-	Resources ServicegroupLbmonitorBinding `json:"servicegroup_lbmonitor_binding"`
+	Resource ServicegroupLbmonitorBinding `json:"servicegroup_lbmonitor_binding"`
 }
 
 type get_servicegroup_lbmonitor_binding_result struct {
@@ -83,6 +83,7 @@ func (c *NitroClient) CountServicegroupLbmonitorBinding(id string) (int, error) 
 }
 
 func (c *NitroClient) ExistsServicegroupLbmonitorBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountServicegroupLbmonitorBinding(id); err != nil {
 		return false, err
 	} else {

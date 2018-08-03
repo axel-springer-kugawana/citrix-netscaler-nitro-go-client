@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Rewriteaction struct {
 	Name              string `json:"name"`
 	Bypasssafetycheck string `json:"bypasssafetycheck,omitempty"`
@@ -13,10 +19,21 @@ type Rewriteaction struct {
 }
 
 type RewriteactionKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type rewriteaction_update struct {
+type RewriteactionUnset struct {
+	Name              string `json:"name"`
+	Target            bool   `json:"target,string,omitempty"`
+	Stringbuilderexpr bool   `json:"stringbuilderexpr,string,omitempty"`
+	Pattern           bool   `json:"pattern,string,omitempty"`
+	Search            bool   `json:"search,string,omitempty"`
+	Bypasssafetycheck bool   `json:"bypasssafetycheck,string,omitempty"`
+	Refinesearch      bool   `json:"refinesearch,string,omitempty"`
+	Comment           bool   `json:"comment,string,omitempty"`
+}
+
+type update_rewriteaction struct {
 	Name              string `json:"name"`
 	Target            string `json:"target,omitempty"`
 	Stringbuilderexpr string `json:"stringbuilderexpr,omitempty"`
@@ -27,67 +44,160 @@ type rewriteaction_update struct {
 	Comment           string `json:"comment,omitempty"`
 }
 
-type rewriteaction_payload struct {
-	rewriteaction interface{}
+type rename_rewriteaction struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func rewriteaction_key_to_args(key RewriteactionKey) string {
-	result := ""
-
-	return result
+type add_rewriteaction_payload struct {
+	Resource Rewriteaction `json:"rewriteaction"`
 }
 
-func (c *NitroClient) DeleteRewriteaction(key RewriteactionKey) error {
-	return c.deleteResourceWithArgs("rewriteaction", key.Name, rewriteaction_key_to_args(key))
+type rename_rewriteaction_payload struct {
+	Rename rename_rewriteaction `json:"rewriteaction"`
 }
 
-func (c *NitroClient) GetRewriteaction(key RewriteactionKey) (*Rewriteaction, error) {
-	var results struct {
-		Rewriteaction []Rewriteaction
-	}
-
-	if err := c.getResourceWithArgs("rewriteaction", key.Name, rewriteaction_key_to_args(key), &results); err != nil || len(results.Rewriteaction) != 1 {
-		return nil, err
-	}
-
-	return &results.Rewriteaction[0], nil
+type unset_rewriteaction_payload struct {
+	Unset RewriteactionUnset `json:"rewriteaction"`
 }
 
-func (c *NitroClient) ListRewriteaction() ([]Rewriteaction, error) {
-	var results struct {
-		Rewriteaction []Rewriteaction
+type update_rewriteaction_payload struct {
+	Update update_rewriteaction `json:"rewriteaction"`
+}
+
+type get_rewriteaction_result struct {
+	Results []Rewriteaction `json:"rewriteaction"`
+}
+
+type count_rewriteaction_result struct {
+	Results []Count `json:"rewriteaction"`
+}
+
+func rewriteaction_key_to_id_args(key RewriteactionKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("rewriteaction", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Rewriteaction, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddRewriteaction(resource Rewriteaction) error {
-	return c.addResource("rewriteaction", resource)
+	payload := add_rewriteaction_payload{
+		resource,
+	}
+
+	return c.post("rewriteaction", "", nil, payload)
 }
 
 func (c *NitroClient) RenameRewriteaction(name string, newName string) error {
-	return c.renameResource("rewriteaction", "name", name, newName)
+	payload := rename_rewriteaction_payload{
+		rename_rewriteaction{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("rewriteaction", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetRewriteaction(name string, fields ...string) error {
-	return c.unsetResource("rewriteaction", "name", name, fields)
+func (c *NitroClient) CountRewriteaction() (int, error) {
+	var results count_rewriteaction_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("rewriteaction", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsRewriteaction(key RewriteactionKey) (bool, error) {
+	var results count_rewriteaction_result
+
+	id, qs := rewriteaction_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("rewriteaction", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListRewriteaction() ([]Rewriteaction, error) {
+	var results get_rewriteaction_result
+
+	if err := c.get("rewriteaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetRewriteaction(key RewriteactionKey) (*Rewriteaction, error) {
+	var results get_rewriteaction_result
+
+	id, qs := rewriteaction_key_to_id_args(key)
+
+	if err := c.get("rewriteaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one rewriteaction element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("rewriteaction element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteRewriteaction(key RewriteactionKey) error {
+	id, qs := rewriteaction_key_to_id_args(key)
+
+	return c.delete("rewriteaction", id, qs)
+}
+
+func (c *NitroClient) UnsetRewriteaction(unset RewriteactionUnset) error {
+	payload := unset_rewriteaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("rewriteaction", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateRewriteaction(resource Rewriteaction) error {
-	update := rewriteaction_update{
-		resource.Name,
-		resource.Target,
-		resource.Stringbuilderexpr,
-		resource.Pattern,
-		resource.Search,
-		resource.Bypasssafetycheck,
-		resource.Refinesearch,
-		resource.Comment,
+	payload := update_rewriteaction_payload{
+		update_rewriteaction{
+			resource.Name,
+			resource.Target,
+			resource.Stringbuilderexpr,
+			resource.Pattern,
+			resource.Search,
+			resource.Bypasssafetycheck,
+			resource.Refinesearch,
+			resource.Comment,
+		},
 	}
 
-	return c.Put("rewriteaction", update)
+	return c.put("rewriteaction", "", nil, payload)
 }

@@ -24,7 +24,7 @@ type LbvserverCachepolicyBindingKey struct {
 }
 
 type add_lbvserver_cachepolicy_binding_payload struct {
-	Resources LbvserverCachepolicyBinding `json:"lbvserver_cachepolicy_binding"`
+	Resource LbvserverCachepolicyBinding `json:"lbvserver_cachepolicy_binding"`
 }
 
 type get_lbvserver_cachepolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverCachepolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverCachepolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverCachepolicyBinding(id); err != nil {
 		return false, err
 	} else {

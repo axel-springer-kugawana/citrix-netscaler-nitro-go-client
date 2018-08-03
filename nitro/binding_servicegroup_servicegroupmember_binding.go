@@ -20,7 +20,7 @@ type ServicegroupServicegroupmemberBindingKey struct {
 }
 
 type add_servicegroup_servicegroupmember_binding_payload struct {
-	Resources ServicegroupServicegroupmemberBinding `json:"servicegroup_servicegroupmember_binding"`
+	Resource ServicegroupServicegroupmemberBinding `json:"servicegroup_servicegroupmember_binding"`
 }
 
 type get_servicegroup_servicegroupmember_binding_result struct {
@@ -86,6 +86,7 @@ func (c *NitroClient) CountServicegroupServicegroupmemberBinding(id string) (int
 }
 
 func (c *NitroClient) ExistsServicegroupServicegroupmemberBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountServicegroupServicegroupmemberBinding(id); err != nil {
 		return false, err
 	} else {

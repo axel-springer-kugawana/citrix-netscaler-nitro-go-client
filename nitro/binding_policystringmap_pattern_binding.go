@@ -18,7 +18,7 @@ type PolicystringmapPatternBindingKey struct {
 }
 
 type add_policystringmap_pattern_binding_payload struct {
-	Resources PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
+	Resource PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
 }
 
 type get_policystringmap_pattern_binding_result struct {
@@ -83,6 +83,7 @@ func (c *NitroClient) CountPolicystringmapPatternBinding(id string) (int, error)
 }
 
 func (c *NitroClient) ExistsPolicystringmapPatternBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountPolicystringmapPatternBinding(id); err != nil {
 		return false, err
 	} else {

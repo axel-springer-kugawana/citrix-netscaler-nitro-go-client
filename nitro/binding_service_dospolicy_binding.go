@@ -17,7 +17,7 @@ type ServiceDospolicyBindingKey struct {
 }
 
 type add_service_dospolicy_binding_payload struct {
-	Resources ServiceDospolicyBinding `json:"service_dospolicy_binding"`
+	Resource ServiceDospolicyBinding `json:"service_dospolicy_binding"`
 }
 
 type get_service_dospolicy_binding_result struct {
@@ -82,6 +82,7 @@ func (c *NitroClient) CountServiceDospolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsServiceDospolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountServiceDospolicyBinding(id); err != nil {
 		return false, err
 	} else {

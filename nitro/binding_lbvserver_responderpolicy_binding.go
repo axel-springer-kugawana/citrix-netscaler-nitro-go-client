@@ -24,7 +24,7 @@ type LbvserverResponderpolicyBindingKey struct {
 }
 
 type add_lbvserver_responderpolicy_binding_payload struct {
-	Resources LbvserverResponderpolicyBinding `json:"lbvserver_responderpolicy_binding"`
+	Resource LbvserverResponderpolicyBinding `json:"lbvserver_responderpolicy_binding"`
 }
 
 type get_lbvserver_responderpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverResponderpolicyBinding(id string) (int, erro
 }
 
 func (c *NitroClient) ExistsLbvserverResponderpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverResponderpolicyBinding(id); err != nil {
 		return false, err
 	} else {

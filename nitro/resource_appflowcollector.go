@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Appflowcollector struct {
 	Name       string `json:"name"`
 	Ipaddress  string `json:"ipaddress,omitempty"`
@@ -9,73 +15,173 @@ type Appflowcollector struct {
 }
 
 type AppflowcollectorKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type appflowcollector_update struct {
+type AppflowcollectorUnset struct {
+	Name       string `json:"name"`
+	Ipaddress  bool   `json:"ipaddress,string,omitempty"`
+	Port       bool   `json:"port,string,omitempty"`
+	Netprofile bool   `json:"netprofile,string,omitempty"`
+}
+
+type update_appflowcollector struct {
 	Name       string `json:"name"`
 	Ipaddress  string `json:"ipaddress,omitempty"`
 	Port       int    `json:"port,omitempty"`
 	Netprofile string `json:"netprofile,omitempty"`
 }
 
-type appflowcollector_payload struct {
-	appflowcollector interface{}
+type rename_appflowcollector struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func appflowcollector_key_to_args(key AppflowcollectorKey) string {
-	result := ""
-
-	return result
+type add_appflowcollector_payload struct {
+	Resource Appflowcollector `json:"appflowcollector"`
 }
 
-func (c *NitroClient) DeleteAppflowcollector(key AppflowcollectorKey) error {
-	return c.deleteResourceWithArgs("appflowcollector", key.Name, appflowcollector_key_to_args(key))
+type rename_appflowcollector_payload struct {
+	Rename rename_appflowcollector `json:"appflowcollector"`
 }
 
-func (c *NitroClient) GetAppflowcollector(key AppflowcollectorKey) (*Appflowcollector, error) {
-	var results struct {
-		Appflowcollector []Appflowcollector
-	}
-
-	if err := c.getResourceWithArgs("appflowcollector", key.Name, appflowcollector_key_to_args(key), &results); err != nil || len(results.Appflowcollector) != 1 {
-		return nil, err
-	}
-
-	return &results.Appflowcollector[0], nil
+type unset_appflowcollector_payload struct {
+	Unset AppflowcollectorUnset `json:"appflowcollector"`
 }
 
-func (c *NitroClient) ListAppflowcollector() ([]Appflowcollector, error) {
-	var results struct {
-		Appflowcollector []Appflowcollector
+type update_appflowcollector_payload struct {
+	Update update_appflowcollector `json:"appflowcollector"`
+}
+
+type get_appflowcollector_result struct {
+	Results []Appflowcollector `json:"appflowcollector"`
+}
+
+type count_appflowcollector_result struct {
+	Results []Count `json:"appflowcollector"`
+}
+
+func appflowcollector_key_to_id_args(key AppflowcollectorKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("appflowcollector", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Appflowcollector, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAppflowcollector(resource Appflowcollector) error {
-	return c.addResource("appflowcollector", resource)
+	payload := add_appflowcollector_payload{
+		resource,
+	}
+
+	return c.post("appflowcollector", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAppflowcollector(name string, newName string) error {
-	return c.renameResource("appflowcollector", "name", name, newName)
+	payload := rename_appflowcollector_payload{
+		rename_appflowcollector{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("appflowcollector", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAppflowcollector(name string, fields ...string) error {
-	return c.unsetResource("appflowcollector", "name", name, fields)
+func (c *NitroClient) CountAppflowcollector() (int, error) {
+	var results count_appflowcollector_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("appflowcollector", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAppflowcollector(key AppflowcollectorKey) (bool, error) {
+	var results count_appflowcollector_result
+
+	id, qs := appflowcollector_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("appflowcollector", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAppflowcollector() ([]Appflowcollector, error) {
+	var results get_appflowcollector_result
+
+	if err := c.get("appflowcollector", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAppflowcollector(key AppflowcollectorKey) (*Appflowcollector, error) {
+	var results get_appflowcollector_result
+
+	id, qs := appflowcollector_key_to_id_args(key)
+
+	if err := c.get("appflowcollector", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one appflowcollector element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("appflowcollector element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAppflowcollector(key AppflowcollectorKey) error {
+	id, qs := appflowcollector_key_to_id_args(key)
+
+	return c.delete("appflowcollector", id, qs)
+}
+
+func (c *NitroClient) UnsetAppflowcollector(unset AppflowcollectorUnset) error {
+	payload := unset_appflowcollector_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("appflowcollector", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAppflowcollector(resource Appflowcollector) error {
-	update := appflowcollector_update{
-		resource.Name,
-		resource.Ipaddress,
-		resource.Port,
-		resource.Netprofile,
+	payload := update_appflowcollector_payload{
+		update_appflowcollector{
+			resource.Name,
+			resource.Ipaddress,
+			resource.Port,
+			resource.Netprofile,
+		},
 	}
 
-	return c.Put("appflowcollector", update)
+	return c.put("appflowcollector", "", nil, payload)
 }

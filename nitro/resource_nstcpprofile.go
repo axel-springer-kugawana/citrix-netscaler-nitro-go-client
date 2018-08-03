@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Nstcpprofile struct {
 	Name                        string `json:"name"`
 	Ackaggregation              string `json:"ackaggregation,omitempty"`
@@ -54,10 +60,63 @@ type Nstcpprofile struct {
 }
 
 type NstcpprofileKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type nstcpprofile_update struct {
+type NstcpprofileUnset struct {
+	Name                        string `json:"name"`
+	Ws                          bool   `json:"ws,string,omitempty"`
+	Sack                        bool   `json:"sack,string,omitempty"`
+	Wsval                       bool   `json:"wsval,string,omitempty"`
+	Nagle                       bool   `json:"nagle,string,omitempty"`
+	Ackonpush                   bool   `json:"ackonpush,string,omitempty"`
+	Mss                         bool   `json:"mss,string,omitempty"`
+	Maxburst                    bool   `json:"maxburst,string,omitempty"`
+	Initialcwnd                 bool   `json:"initialcwnd,string,omitempty"`
+	Delayedack                  bool   `json:"delayedack,string,omitempty"`
+	Oooqsize                    bool   `json:"oooqsize,string,omitempty"`
+	Maxpktpermss                bool   `json:"maxpktpermss,string,omitempty"`
+	Pktperretx                  bool   `json:"pktperretx,string,omitempty"`
+	Minrto                      bool   `json:"minrto,string,omitempty"`
+	Slowstartincr               bool   `json:"slowstartincr,string,omitempty"`
+	Buffersize                  bool   `json:"buffersize,string,omitempty"`
+	Syncookie                   bool   `json:"syncookie,string,omitempty"`
+	Kaprobeupdatelastactivity   bool   `json:"kaprobeupdatelastactivity,string,omitempty"`
+	Flavor                      bool   `json:"flavor,string,omitempty"`
+	Dynamicreceivebuffering     bool   `json:"dynamicreceivebuffering,string,omitempty"`
+	Ka                          bool   `json:"ka,string,omitempty"`
+	Kaconnidletime              bool   `json:"kaconnidletime,string,omitempty"`
+	Kamaxprobes                 bool   `json:"kamaxprobes,string,omitempty"`
+	Kaprobeinterval             bool   `json:"kaprobeinterval,string,omitempty"`
+	Sendbuffsize                bool   `json:"sendbuffsize,string,omitempty"`
+	Mptcp                       bool   `json:"mptcp,string,omitempty"`
+	Establishclientconn         bool   `json:"establishclientconn,string,omitempty"`
+	Tcpsegoffload               bool   `json:"tcpsegoffload,string,omitempty"`
+	Rstwindowattenuate          bool   `json:"rstwindowattenuate,string,omitempty"`
+	Rstmaxack                   bool   `json:"rstmaxack,string,omitempty"`
+	Spoofsyndrop                bool   `json:"spoofsyndrop,string,omitempty"`
+	Ecn                         bool   `json:"ecn,string,omitempty"`
+	Mptcpdropdataonpreestsf     bool   `json:"mptcpdropdataonpreestsf,string,omitempty"`
+	Mptcpfastopen               bool   `json:"mptcpfastopen,string,omitempty"`
+	Mptcpsessiontimeout         bool   `json:"mptcpsessiontimeout,string,omitempty"`
+	Timestamp                   bool   `json:"timestamp,string,omitempty"`
+	Dsack                       bool   `json:"dsack,string,omitempty"`
+	Ackaggregation              bool   `json:"ackaggregation,string,omitempty"`
+	Frto                        bool   `json:"frto,string,omitempty"`
+	Maxcwnd                     bool   `json:"maxcwnd,string,omitempty"`
+	Fack                        bool   `json:"fack,string,omitempty"`
+	Tcpmode                     bool   `json:"tcpmode,string,omitempty"`
+	Tcpfastopen                 bool   `json:"tcpfastopen,string,omitempty"`
+	Hystart                     bool   `json:"hystart,string,omitempty"`
+	Dupackthresh                bool   `json:"dupackthresh,string,omitempty"`
+	Burstratecontrol            bool   `json:"burstratecontrol,string,omitempty"`
+	Tcprate                     bool   `json:"tcprate,string,omitempty"`
+	Rateqmax                    bool   `json:"rateqmax,string,omitempty"`
+	Drophalfclosedconnontimeout bool   `json:"drophalfclosedconnontimeout,string,omitempty"`
+	Dropestconnontimeout        bool   `json:"dropestconnontimeout,string,omitempty"`
+}
+
+type update_nstcpprofile struct {
 	Name                        string `json:"name"`
 	Ws                          string `json:"ws,omitempty"`
 	Sack                        string `json:"sack,omitempty"`
@@ -110,109 +169,202 @@ type nstcpprofile_update struct {
 	Dropestconnontimeout        string `json:"dropestconnontimeout,omitempty"`
 }
 
-type nstcpprofile_payload struct {
-	nstcpprofile interface{}
+type rename_nstcpprofile struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func nstcpprofile_key_to_args(key NstcpprofileKey) string {
-	result := ""
-
-	return result
+type add_nstcpprofile_payload struct {
+	Resource Nstcpprofile `json:"nstcpprofile"`
 }
 
-func (c *NitroClient) DeleteNstcpprofile(key NstcpprofileKey) error {
-	return c.deleteResourceWithArgs("nstcpprofile", key.Name, nstcpprofile_key_to_args(key))
+type rename_nstcpprofile_payload struct {
+	Rename rename_nstcpprofile `json:"nstcpprofile"`
 }
 
-func (c *NitroClient) GetNstcpprofile(key NstcpprofileKey) (*Nstcpprofile, error) {
-	var results struct {
-		Nstcpprofile []Nstcpprofile
-	}
-
-	if err := c.getResourceWithArgs("nstcpprofile", key.Name, nstcpprofile_key_to_args(key), &results); err != nil || len(results.Nstcpprofile) != 1 {
-		return nil, err
-	}
-
-	return &results.Nstcpprofile[0], nil
+type unset_nstcpprofile_payload struct {
+	Unset NstcpprofileUnset `json:"nstcpprofile"`
 }
 
-func (c *NitroClient) ListNstcpprofile() ([]Nstcpprofile, error) {
-	var results struct {
-		Nstcpprofile []Nstcpprofile
+type update_nstcpprofile_payload struct {
+	Update update_nstcpprofile `json:"nstcpprofile"`
+}
+
+type get_nstcpprofile_result struct {
+	Results []Nstcpprofile `json:"nstcpprofile"`
+}
+
+type count_nstcpprofile_result struct {
+	Results []Count `json:"nstcpprofile"`
+}
+
+func nstcpprofile_key_to_id_args(key NstcpprofileKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("nstcpprofile", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Nstcpprofile, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddNstcpprofile(resource Nstcpprofile) error {
-	return c.addResource("nstcpprofile", resource)
+	payload := add_nstcpprofile_payload{
+		resource,
+	}
+
+	return c.post("nstcpprofile", "", nil, payload)
 }
 
 func (c *NitroClient) RenameNstcpprofile(name string, newName string) error {
-	return c.renameResource("nstcpprofile", "name", name, newName)
+	payload := rename_nstcpprofile_payload{
+		rename_nstcpprofile{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("nstcpprofile", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetNstcpprofile(name string, fields ...string) error {
-	return c.unsetResource("nstcpprofile", "name", name, fields)
+func (c *NitroClient) CountNstcpprofile() (int, error) {
+	var results count_nstcpprofile_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("nstcpprofile", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsNstcpprofile(key NstcpprofileKey) (bool, error) {
+	var results count_nstcpprofile_result
+
+	id, qs := nstcpprofile_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("nstcpprofile", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListNstcpprofile() ([]Nstcpprofile, error) {
+	var results get_nstcpprofile_result
+
+	if err := c.get("nstcpprofile", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetNstcpprofile(key NstcpprofileKey) (*Nstcpprofile, error) {
+	var results get_nstcpprofile_result
+
+	id, qs := nstcpprofile_key_to_id_args(key)
+
+	if err := c.get("nstcpprofile", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one nstcpprofile element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("nstcpprofile element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteNstcpprofile(key NstcpprofileKey) error {
+	id, qs := nstcpprofile_key_to_id_args(key)
+
+	return c.delete("nstcpprofile", id, qs)
+}
+
+func (c *NitroClient) UnsetNstcpprofile(unset NstcpprofileUnset) error {
+	payload := unset_nstcpprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("nstcpprofile", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateNstcpprofile(resource Nstcpprofile) error {
-	update := nstcpprofile_update{
-		resource.Name,
-		resource.Ws,
-		resource.Sack,
-		resource.Wsval,
-		resource.Nagle,
-		resource.Ackonpush,
-		resource.Mss,
-		resource.Maxburst,
-		resource.Initialcwnd,
-		resource.Delayedack,
-		resource.Oooqsize,
-		resource.Maxpktpermss,
-		resource.Pktperretx,
-		resource.Minrto,
-		resource.Slowstartincr,
-		resource.Buffersize,
-		resource.Syncookie,
-		resource.Kaprobeupdatelastactivity,
-		resource.Flavor,
-		resource.Dynamicreceivebuffering,
-		resource.Ka,
-		resource.Kaconnidletime,
-		resource.Kamaxprobes,
-		resource.Kaprobeinterval,
-		resource.Sendbuffsize,
-		resource.Mptcp,
-		resource.Establishclientconn,
-		resource.Tcpsegoffload,
-		resource.Rstwindowattenuate,
-		resource.Rstmaxack,
-		resource.Spoofsyndrop,
-		resource.Ecn,
-		resource.Mptcpdropdataonpreestsf,
-		resource.Mptcpfastopen,
-		resource.Mptcpsessiontimeout,
-		resource.Timestamp,
-		resource.Dsack,
-		resource.Ackaggregation,
-		resource.Frto,
-		resource.Maxcwnd,
-		resource.Fack,
-		resource.Tcpmode,
-		resource.Tcpfastopen,
-		resource.Hystart,
-		resource.Dupackthresh,
-		resource.Burstratecontrol,
-		resource.Tcprate,
-		resource.Rateqmax,
-		resource.Drophalfclosedconnontimeout,
-		resource.Dropestconnontimeout,
+	payload := update_nstcpprofile_payload{
+		update_nstcpprofile{
+			resource.Name,
+			resource.Ws,
+			resource.Sack,
+			resource.Wsval,
+			resource.Nagle,
+			resource.Ackonpush,
+			resource.Mss,
+			resource.Maxburst,
+			resource.Initialcwnd,
+			resource.Delayedack,
+			resource.Oooqsize,
+			resource.Maxpktpermss,
+			resource.Pktperretx,
+			resource.Minrto,
+			resource.Slowstartincr,
+			resource.Buffersize,
+			resource.Syncookie,
+			resource.Kaprobeupdatelastactivity,
+			resource.Flavor,
+			resource.Dynamicreceivebuffering,
+			resource.Ka,
+			resource.Kaconnidletime,
+			resource.Kamaxprobes,
+			resource.Kaprobeinterval,
+			resource.Sendbuffsize,
+			resource.Mptcp,
+			resource.Establishclientconn,
+			resource.Tcpsegoffload,
+			resource.Rstwindowattenuate,
+			resource.Rstmaxack,
+			resource.Spoofsyndrop,
+			resource.Ecn,
+			resource.Mptcpdropdataonpreestsf,
+			resource.Mptcpfastopen,
+			resource.Mptcpsessiontimeout,
+			resource.Timestamp,
+			resource.Dsack,
+			resource.Ackaggregation,
+			resource.Frto,
+			resource.Maxcwnd,
+			resource.Fack,
+			resource.Tcpmode,
+			resource.Tcpfastopen,
+			resource.Hystart,
+			resource.Dupackthresh,
+			resource.Burstratecontrol,
+			resource.Tcprate,
+			resource.Rateqmax,
+			resource.Drophalfclosedconnontimeout,
+			resource.Dropestconnontimeout,
+		},
 	}
 
-	return c.Put("nstcpprofile", update)
+	return c.put("nstcpprofile", "", nil, payload)
 }

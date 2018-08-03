@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Authorizationpolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
@@ -7,71 +13,170 @@ type Authorizationpolicy struct {
 }
 
 type AuthorizationpolicyKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type authorizationpolicy_update struct {
+type AuthorizationpolicyUnset struct {
+	Name   string `json:"name"`
+	Rule   bool   `json:"rule,string,omitempty"`
+	Action bool   `json:"action,string,omitempty"`
+}
+
+type update_authorizationpolicy struct {
 	Name   string `json:"name"`
 	Rule   string `json:"rule,omitempty"`
 	Action string `json:"action,omitempty"`
 }
 
-type authorizationpolicy_payload struct {
-	authorizationpolicy interface{}
+type rename_authorizationpolicy struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func authorizationpolicy_key_to_args(key AuthorizationpolicyKey) string {
-	result := ""
-
-	return result
+type add_authorizationpolicy_payload struct {
+	Resource Authorizationpolicy `json:"authorizationpolicy"`
 }
 
-func (c *NitroClient) DeleteAuthorizationpolicy(key AuthorizationpolicyKey) error {
-	return c.deleteResourceWithArgs("authorizationpolicy", key.Name, authorizationpolicy_key_to_args(key))
+type rename_authorizationpolicy_payload struct {
+	Rename rename_authorizationpolicy `json:"authorizationpolicy"`
 }
 
-func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*Authorizationpolicy, error) {
-	var results struct {
-		Authorizationpolicy []Authorizationpolicy
-	}
-
-	if err := c.getResourceWithArgs("authorizationpolicy", key.Name, authorizationpolicy_key_to_args(key), &results); err != nil || len(results.Authorizationpolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Authorizationpolicy[0], nil
+type unset_authorizationpolicy_payload struct {
+	Unset AuthorizationpolicyUnset `json:"authorizationpolicy"`
 }
 
-func (c *NitroClient) ListAuthorizationpolicy() ([]Authorizationpolicy, error) {
-	var results struct {
-		Authorizationpolicy []Authorizationpolicy
+type update_authorizationpolicy_payload struct {
+	Update update_authorizationpolicy `json:"authorizationpolicy"`
+}
+
+type get_authorizationpolicy_result struct {
+	Results []Authorizationpolicy `json:"authorizationpolicy"`
+}
+
+type count_authorizationpolicy_result struct {
+	Results []Count `json:"authorizationpolicy"`
+}
+
+func authorizationpolicy_key_to_id_args(key AuthorizationpolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("authorizationpolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Authorizationpolicy, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAuthorizationpolicy(resource Authorizationpolicy) error {
-	return c.addResource("authorizationpolicy", resource)
+	payload := add_authorizationpolicy_payload{
+		resource,
+	}
+
+	return c.post("authorizationpolicy", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAuthorizationpolicy(name string, newName string) error {
-	return c.renameResource("authorizationpolicy", "name", name, newName)
+	payload := rename_authorizationpolicy_payload{
+		rename_authorizationpolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("authorizationpolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAuthorizationpolicy(name string, fields ...string) error {
-	return c.unsetResource("authorizationpolicy", "name", name, fields)
+func (c *NitroClient) CountAuthorizationpolicy() (int, error) {
+	var results count_authorizationpolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("authorizationpolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAuthorizationpolicy(key AuthorizationpolicyKey) (bool, error) {
+	var results count_authorizationpolicy_result
+
+	id, qs := authorizationpolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("authorizationpolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAuthorizationpolicy() ([]Authorizationpolicy, error) {
+	var results get_authorizationpolicy_result
+
+	if err := c.get("authorizationpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*Authorizationpolicy, error) {
+	var results get_authorizationpolicy_result
+
+	id, qs := authorizationpolicy_key_to_id_args(key)
+
+	if err := c.get("authorizationpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one authorizationpolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("authorizationpolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAuthorizationpolicy(key AuthorizationpolicyKey) error {
+	id, qs := authorizationpolicy_key_to_id_args(key)
+
+	return c.delete("authorizationpolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetAuthorizationpolicy(unset AuthorizationpolicyUnset) error {
+	payload := unset_authorizationpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("authorizationpolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAuthorizationpolicy(resource Authorizationpolicy) error {
-	update := authorizationpolicy_update{
-		resource.Name,
-		resource.Rule,
-		resource.Action,
+	payload := update_authorizationpolicy_payload{
+		update_authorizationpolicy{
+			resource.Name,
+			resource.Rule,
+			resource.Action,
+		},
 	}
 
-	return c.Put("authorizationpolicy", update)
+	return c.put("authorizationpolicy", "", nil, payload)
 }

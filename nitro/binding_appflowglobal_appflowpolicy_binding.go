@@ -22,7 +22,7 @@ type AppflowglobalAppflowpolicyBindingKey struct {
 }
 
 type add_appflowglobal_appflowpolicy_binding_payload struct {
-	Resources AppflowglobalAppflowpolicyBinding `json:"appflowglobal_appflowpolicy_binding"`
+	Resource AppflowglobalAppflowpolicyBinding `json:"appflowglobal_appflowpolicy_binding"`
 }
 
 type get_appflowglobal_appflowpolicy_binding_result struct {
@@ -87,6 +87,7 @@ func (c *NitroClient) CountAppflowglobalAppflowpolicyBinding(id string) (int, er
 }
 
 func (c *NitroClient) ExistsAppflowglobalAppflowpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountAppflowglobalAppflowpolicyBinding(id); err != nil {
 		return false, err
 	} else {

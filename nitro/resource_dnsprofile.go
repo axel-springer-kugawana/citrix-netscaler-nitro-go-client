@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Dnsprofile struct {
 	Dnsprofilename         string `json:"dnsprofilename"`
 	Cacheecsresponses      string `json:"cacheecsresponses,omitempty"`
@@ -13,10 +19,22 @@ type Dnsprofile struct {
 }
 
 type DnsprofileKey struct {
-	Dnsprofilename string
+	Dnsprofilename string `json:"dnsprofilename"`
 }
 
-type dnsprofile_update struct {
+type DnsprofileUnset struct {
+	Dnsprofilename         string `json:"dnsprofilename"`
+	Dnsquerylogging        bool   `json:"dnsquerylogging,string,omitempty"`
+	Dnsanswerseclogging    bool   `json:"dnsanswerseclogging,string,omitempty"`
+	Dnsextendedlogging     bool   `json:"dnsextendedlogging,string,omitempty"`
+	Dnserrorlogging        bool   `json:"dnserrorlogging,string,omitempty"`
+	Cacherecords           bool   `json:"cacherecords,string,omitempty"`
+	Cachenegativeresponses bool   `json:"cachenegativeresponses,string,omitempty"`
+	Dropmultiqueryrequest  bool   `json:"dropmultiqueryrequest,string,omitempty"`
+	Cacheecsresponses      bool   `json:"cacheecsresponses,string,omitempty"`
+}
+
+type update_dnsprofile struct {
 	Dnsprofilename         string `json:"dnsprofilename"`
 	Dnsquerylogging        string `json:"dnsquerylogging,omitempty"`
 	Dnsanswerseclogging    string `json:"dnsanswerseclogging,omitempty"`
@@ -28,68 +46,161 @@ type dnsprofile_update struct {
 	Cacheecsresponses      string `json:"cacheecsresponses,omitempty"`
 }
 
-type dnsprofile_payload struct {
-	dnsprofile interface{}
+type rename_dnsprofile struct {
+	Name    string `json:"dnsprofilename"`
+	Newname string `json:"newname"`
 }
 
-func dnsprofile_key_to_args(key DnsprofileKey) string {
-	result := ""
-
-	return result
+type add_dnsprofile_payload struct {
+	Resource Dnsprofile `json:"dnsprofile"`
 }
 
-func (c *NitroClient) DeleteDnsprofile(key DnsprofileKey) error {
-	return c.deleteResourceWithArgs("dnsprofile", key.Dnsprofilename, dnsprofile_key_to_args(key))
+type rename_dnsprofile_payload struct {
+	Rename rename_dnsprofile `json:"dnsprofile"`
 }
 
-func (c *NitroClient) GetDnsprofile(key DnsprofileKey) (*Dnsprofile, error) {
-	var results struct {
-		Dnsprofile []Dnsprofile
-	}
-
-	if err := c.getResourceWithArgs("dnsprofile", key.Dnsprofilename, dnsprofile_key_to_args(key), &results); err != nil || len(results.Dnsprofile) != 1 {
-		return nil, err
-	}
-
-	return &results.Dnsprofile[0], nil
+type unset_dnsprofile_payload struct {
+	Unset DnsprofileUnset `json:"dnsprofile"`
 }
 
-func (c *NitroClient) ListDnsprofile() ([]Dnsprofile, error) {
-	var results struct {
-		Dnsprofile []Dnsprofile
+type update_dnsprofile_payload struct {
+	Update update_dnsprofile `json:"dnsprofile"`
+}
+
+type get_dnsprofile_result struct {
+	Results []Dnsprofile `json:"dnsprofile"`
+}
+
+type count_dnsprofile_result struct {
+	Results []Count `json:"dnsprofile"`
+}
+
+func dnsprofile_key_to_id_args(key DnsprofileKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("dnsprofile", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Dnsprofile, nil
+	return key.Dnsprofilename, qs
 }
 
 func (c *NitroClient) AddDnsprofile(resource Dnsprofile) error {
-	return c.addResource("dnsprofile", resource)
+	payload := add_dnsprofile_payload{
+		resource,
+	}
+
+	return c.post("dnsprofile", "", nil, payload)
 }
 
-func (c *NitroClient) RenameDnsprofile(dnsprofilename string, newName string) error {
-	return c.renameResource("dnsprofile", "dnsprofilename", dnsprofilename, newName)
+func (c *NitroClient) RenameDnsprofile(name string, newName string) error {
+	payload := rename_dnsprofile_payload{
+		rename_dnsprofile{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("dnsprofile", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetDnsprofile(dnsprofilename string, fields ...string) error {
-	return c.unsetResource("dnsprofile", "dnsprofilename", dnsprofilename, fields)
+func (c *NitroClient) CountDnsprofile() (int, error) {
+	var results count_dnsprofile_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("dnsprofile", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsDnsprofile(key DnsprofileKey) (bool, error) {
+	var results count_dnsprofile_result
+
+	id, qs := dnsprofile_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("dnsprofile", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListDnsprofile() ([]Dnsprofile, error) {
+	var results get_dnsprofile_result
+
+	if err := c.get("dnsprofile", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetDnsprofile(key DnsprofileKey) (*Dnsprofile, error) {
+	var results get_dnsprofile_result
+
+	id, qs := dnsprofile_key_to_id_args(key)
+
+	if err := c.get("dnsprofile", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one dnsprofile element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("dnsprofile element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteDnsprofile(key DnsprofileKey) error {
+	id, qs := dnsprofile_key_to_id_args(key)
+
+	return c.delete("dnsprofile", id, qs)
+}
+
+func (c *NitroClient) UnsetDnsprofile(unset DnsprofileUnset) error {
+	payload := unset_dnsprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("dnsprofile", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateDnsprofile(resource Dnsprofile) error {
-	update := dnsprofile_update{
-		resource.Dnsprofilename,
-		resource.Dnsquerylogging,
-		resource.Dnsanswerseclogging,
-		resource.Dnsextendedlogging,
-		resource.Dnserrorlogging,
-		resource.Cacherecords,
-		resource.Cachenegativeresponses,
-		resource.Dropmultiqueryrequest,
-		resource.Cacheecsresponses,
+	payload := update_dnsprofile_payload{
+		update_dnsprofile{
+			resource.Dnsprofilename,
+			resource.Dnsquerylogging,
+			resource.Dnsanswerseclogging,
+			resource.Dnsextendedlogging,
+			resource.Dnserrorlogging,
+			resource.Cacherecords,
+			resource.Cachenegativeresponses,
+			resource.Dropmultiqueryrequest,
+			resource.Cacheecsresponses,
+		},
 	}
 
-	return c.Put("dnsprofile", update)
+	return c.put("dnsprofile", "", nil, payload)
 }

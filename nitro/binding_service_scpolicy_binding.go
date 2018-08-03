@@ -17,7 +17,7 @@ type ServiceScpolicyBindingKey struct {
 }
 
 type add_service_scpolicy_binding_payload struct {
-	Resources ServiceScpolicyBinding `json:"service_scpolicy_binding"`
+	Resource ServiceScpolicyBinding `json:"service_scpolicy_binding"`
 }
 
 type get_service_scpolicy_binding_result struct {
@@ -82,6 +82,7 @@ func (c *NitroClient) CountServiceScpolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsServiceScpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountServiceScpolicyBinding(id); err != nil {
 		return false, err
 	} else {

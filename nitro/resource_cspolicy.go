@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Cspolicy struct {
 	Policyname string `json:"policyname"`
 	Action     string `json:"action,omitempty"`
@@ -10,10 +16,19 @@ type Cspolicy struct {
 }
 
 type CspolicyKey struct {
-	Policyname string
+	Policyname string `json:"policyname"`
 }
 
-type cspolicy_update struct {
+type CspolicyUnset struct {
+	Policyname string `json:"policyname"`
+	Url        bool   `json:"url,string,omitempty"`
+	Rule       bool   `json:"rule,string,omitempty"`
+	Domain     bool   `json:"domain,string,omitempty"`
+	Action     bool   `json:"action,string,omitempty"`
+	Logaction  bool   `json:"logaction,string,omitempty"`
+}
+
+type update_cspolicy struct {
 	Policyname string `json:"policyname"`
 	Url        string `json:"url,omitempty"`
 	Rule       string `json:"rule,omitempty"`
@@ -22,65 +37,158 @@ type cspolicy_update struct {
 	Logaction  string `json:"logaction,omitempty"`
 }
 
-type cspolicy_payload struct {
-	cspolicy interface{}
+type rename_cspolicy struct {
+	Name    string `json:"policyname"`
+	Newname string `json:"newname"`
 }
 
-func cspolicy_key_to_args(key CspolicyKey) string {
-	result := ""
-
-	return result
+type add_cspolicy_payload struct {
+	Resource Cspolicy `json:"cspolicy"`
 }
 
-func (c *NitroClient) DeleteCspolicy(key CspolicyKey) error {
-	return c.deleteResourceWithArgs("cspolicy", key.Policyname, cspolicy_key_to_args(key))
+type rename_cspolicy_payload struct {
+	Rename rename_cspolicy `json:"cspolicy"`
 }
 
-func (c *NitroClient) GetCspolicy(key CspolicyKey) (*Cspolicy, error) {
-	var results struct {
-		Cspolicy []Cspolicy
-	}
-
-	if err := c.getResourceWithArgs("cspolicy", key.Policyname, cspolicy_key_to_args(key), &results); err != nil || len(results.Cspolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Cspolicy[0], nil
+type unset_cspolicy_payload struct {
+	Unset CspolicyUnset `json:"cspolicy"`
 }
 
-func (c *NitroClient) ListCspolicy() ([]Cspolicy, error) {
-	var results struct {
-		Cspolicy []Cspolicy
+type update_cspolicy_payload struct {
+	Update update_cspolicy `json:"cspolicy"`
+}
+
+type get_cspolicy_result struct {
+	Results []Cspolicy `json:"cspolicy"`
+}
+
+type count_cspolicy_result struct {
+	Results []Count `json:"cspolicy"`
+}
+
+func cspolicy_key_to_id_args(key CspolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("cspolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Cspolicy, nil
+	return key.Policyname, qs
 }
 
 func (c *NitroClient) AddCspolicy(resource Cspolicy) error {
-	return c.addResource("cspolicy", resource)
+	payload := add_cspolicy_payload{
+		resource,
+	}
+
+	return c.post("cspolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCspolicy(policyname string, newName string) error {
-	return c.renameResource("cspolicy", "policyname", policyname, newName)
+func (c *NitroClient) RenameCspolicy(name string, newName string) error {
+	payload := rename_cspolicy_payload{
+		rename_cspolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("cspolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetCspolicy(policyname string, fields ...string) error {
-	return c.unsetResource("cspolicy", "policyname", policyname, fields)
+func (c *NitroClient) CountCspolicy() (int, error) {
+	var results count_cspolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("cspolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsCspolicy(key CspolicyKey) (bool, error) {
+	var results count_cspolicy_result
+
+	id, qs := cspolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("cspolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListCspolicy() ([]Cspolicy, error) {
+	var results get_cspolicy_result
+
+	if err := c.get("cspolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetCspolicy(key CspolicyKey) (*Cspolicy, error) {
+	var results get_cspolicy_result
+
+	id, qs := cspolicy_key_to_id_args(key)
+
+	if err := c.get("cspolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cspolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("cspolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteCspolicy(key CspolicyKey) error {
+	id, qs := cspolicy_key_to_id_args(key)
+
+	return c.delete("cspolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetCspolicy(unset CspolicyUnset) error {
+	payload := unset_cspolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("cspolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateCspolicy(resource Cspolicy) error {
-	update := cspolicy_update{
-		resource.Policyname,
-		resource.Url,
-		resource.Rule,
-		resource.Domain,
-		resource.Action,
-		resource.Logaction,
+	payload := update_cspolicy_payload{
+		update_cspolicy{
+			resource.Policyname,
+			resource.Url,
+			resource.Rule,
+			resource.Domain,
+			resource.Action,
+			resource.Logaction,
+		},
 	}
 
-	return c.Put("cspolicy", update)
+	return c.put("cspolicy", "", nil, payload)
 }

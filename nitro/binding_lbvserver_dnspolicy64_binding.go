@@ -24,7 +24,7 @@ type LbvserverDnspolicy64BindingKey struct {
 }
 
 type add_lbvserver_dnspolicy64_binding_payload struct {
-	Resources LbvserverDnspolicy64Binding `json:"lbvserver_dnspolicy64_binding"`
+	Resource LbvserverDnspolicy64Binding `json:"lbvserver_dnspolicy64_binding"`
 }
 
 type get_lbvserver_dnspolicy64_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverDnspolicy64Binding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverDnspolicy64Binding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverDnspolicy64Binding(id); err != nil {
 		return false, err
 	} else {

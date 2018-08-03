@@ -22,7 +22,7 @@ type AuthorizationpolicylabelAuthorizationpolicyBindingKey struct {
 }
 
 type add_authorizationpolicylabel_authorizationpolicy_binding_payload struct {
-	Resources AuthorizationpolicylabelAuthorizationpolicyBinding `json:"authorizationpolicylabel_authorizationpolicy_binding"`
+	Resource AuthorizationpolicylabelAuthorizationpolicyBinding `json:"authorizationpolicylabel_authorizationpolicy_binding"`
 }
 
 type get_authorizationpolicylabel_authorizationpolicy_binding_result struct {
@@ -87,6 +87,7 @@ func (c *NitroClient) CountAuthorizationpolicylabelAuthorizationpolicyBinding(id
 }
 
 func (c *NitroClient) ExistsAuthorizationpolicylabelAuthorizationpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountAuthorizationpolicylabelAuthorizationpolicyBinding(id); err != nil {
 		return false, err
 	} else {

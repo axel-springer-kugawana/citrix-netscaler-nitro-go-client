@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Appqoeaction struct {
 	Name              string `json:"name"`
 	Altcontentpath    string `json:"altcontentpath,omitempty"`
@@ -17,10 +23,24 @@ type Appqoeaction struct {
 }
 
 type AppqoeactionKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type appqoeaction_update struct {
+type AppqoeactionUnset struct {
+	Name              string `json:"name"`
+	Priority          bool   `json:"priority,string,omitempty"`
+	Altcontentsvcname bool   `json:"altcontentsvcname,string,omitempty"`
+	Altcontentpath    bool   `json:"altcontentpath,string,omitempty"`
+	Polqdepth         bool   `json:"polqdepth,string,omitempty"`
+	Priqdepth         bool   `json:"priqdepth,string,omitempty"`
+	Maxconn           bool   `json:"maxconn,string,omitempty"`
+	Delay             bool   `json:"delay,string,omitempty"`
+	Dostrigexpression bool   `json:"dostrigexpression,string,omitempty"`
+	Dosaction         bool   `json:"dosaction,string,omitempty"`
+	Tcpprofile        bool   `json:"tcpprofile,string,omitempty"`
+}
+
+type update_appqoeaction struct {
 	Name              string `json:"name"`
 	Priority          string `json:"priority,omitempty"`
 	Altcontentsvcname string `json:"altcontentsvcname,omitempty"`
@@ -34,70 +54,163 @@ type appqoeaction_update struct {
 	Tcpprofile        string `json:"tcpprofile,omitempty"`
 }
 
-type appqoeaction_payload struct {
-	appqoeaction interface{}
+type rename_appqoeaction struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func appqoeaction_key_to_args(key AppqoeactionKey) string {
-	result := ""
-
-	return result
+type add_appqoeaction_payload struct {
+	Resource Appqoeaction `json:"appqoeaction"`
 }
 
-func (c *NitroClient) DeleteAppqoeaction(key AppqoeactionKey) error {
-	return c.deleteResourceWithArgs("appqoeaction", key.Name, appqoeaction_key_to_args(key))
+type rename_appqoeaction_payload struct {
+	Rename rename_appqoeaction `json:"appqoeaction"`
 }
 
-func (c *NitroClient) GetAppqoeaction(key AppqoeactionKey) (*Appqoeaction, error) {
-	var results struct {
-		Appqoeaction []Appqoeaction
-	}
-
-	if err := c.getResourceWithArgs("appqoeaction", key.Name, appqoeaction_key_to_args(key), &results); err != nil || len(results.Appqoeaction) != 1 {
-		return nil, err
-	}
-
-	return &results.Appqoeaction[0], nil
+type unset_appqoeaction_payload struct {
+	Unset AppqoeactionUnset `json:"appqoeaction"`
 }
 
-func (c *NitroClient) ListAppqoeaction() ([]Appqoeaction, error) {
-	var results struct {
-		Appqoeaction []Appqoeaction
+type update_appqoeaction_payload struct {
+	Update update_appqoeaction `json:"appqoeaction"`
+}
+
+type get_appqoeaction_result struct {
+	Results []Appqoeaction `json:"appqoeaction"`
+}
+
+type count_appqoeaction_result struct {
+	Results []Count `json:"appqoeaction"`
+}
+
+func appqoeaction_key_to_id_args(key AppqoeactionKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("appqoeaction", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Appqoeaction, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAppqoeaction(resource Appqoeaction) error {
-	return c.addResource("appqoeaction", resource)
+	payload := add_appqoeaction_payload{
+		resource,
+	}
+
+	return c.post("appqoeaction", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAppqoeaction(name string, newName string) error {
-	return c.renameResource("appqoeaction", "name", name, newName)
+	payload := rename_appqoeaction_payload{
+		rename_appqoeaction{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("appqoeaction", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAppqoeaction(name string, fields ...string) error {
-	return c.unsetResource("appqoeaction", "name", name, fields)
+func (c *NitroClient) CountAppqoeaction() (int, error) {
+	var results count_appqoeaction_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("appqoeaction", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAppqoeaction(key AppqoeactionKey) (bool, error) {
+	var results count_appqoeaction_result
+
+	id, qs := appqoeaction_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("appqoeaction", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAppqoeaction() ([]Appqoeaction, error) {
+	var results get_appqoeaction_result
+
+	if err := c.get("appqoeaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAppqoeaction(key AppqoeactionKey) (*Appqoeaction, error) {
+	var results get_appqoeaction_result
+
+	id, qs := appqoeaction_key_to_id_args(key)
+
+	if err := c.get("appqoeaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one appqoeaction element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("appqoeaction element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAppqoeaction(key AppqoeactionKey) error {
+	id, qs := appqoeaction_key_to_id_args(key)
+
+	return c.delete("appqoeaction", id, qs)
+}
+
+func (c *NitroClient) UnsetAppqoeaction(unset AppqoeactionUnset) error {
+	payload := unset_appqoeaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("appqoeaction", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAppqoeaction(resource Appqoeaction) error {
-	update := appqoeaction_update{
-		resource.Name,
-		resource.Priority,
-		resource.Altcontentsvcname,
-		resource.Altcontentpath,
-		resource.Polqdepth,
-		resource.Priqdepth,
-		resource.Maxconn,
-		resource.Delay,
-		resource.Dostrigexpression,
-		resource.Dosaction,
-		resource.Tcpprofile,
+	payload := update_appqoeaction_payload{
+		update_appqoeaction{
+			resource.Name,
+			resource.Priority,
+			resource.Altcontentsvcname,
+			resource.Altcontentpath,
+			resource.Polqdepth,
+			resource.Priqdepth,
+			resource.Maxconn,
+			resource.Delay,
+			resource.Dostrigexpression,
+			resource.Dosaction,
+			resource.Tcpprofile,
+		},
 	}
 
-	return c.Put("appqoeaction", update)
+	return c.put("appqoeaction", "", nil, payload)
 }

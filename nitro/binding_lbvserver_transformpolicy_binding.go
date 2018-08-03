@@ -24,7 +24,7 @@ type LbvserverTransformpolicyBindingKey struct {
 }
 
 type add_lbvserver_transformpolicy_binding_payload struct {
-	Resources LbvserverTransformpolicyBinding `json:"lbvserver_transformpolicy_binding"`
+	Resource LbvserverTransformpolicyBinding `json:"lbvserver_transformpolicy_binding"`
 }
 
 type get_lbvserver_transformpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverTransformpolicyBinding(id string) (int, erro
 }
 
 func (c *NitroClient) ExistsLbvserverTransformpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverTransformpolicyBinding(id); err != nil {
 		return false, err
 	} else {

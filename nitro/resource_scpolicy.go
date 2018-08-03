@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Scpolicy struct {
 	Name              string `json:"name"`
 	Action            string `json:"action,omitempty"`
@@ -12,10 +18,21 @@ type Scpolicy struct {
 }
 
 type ScpolicyKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type scpolicy_update struct {
+type ScpolicyUnset struct {
+	Name              string `json:"name"`
+	Url               bool   `json:"url,string,omitempty"`
+	Rule              bool   `json:"rule,string,omitempty"`
+	Delay             bool   `json:"delay,string,omitempty"`
+	Maxconn           bool   `json:"maxconn,string,omitempty"`
+	Action            bool   `json:"action,string,omitempty"`
+	Altcontentsvcname bool   `json:"altcontentsvcname,string,omitempty"`
+	Altcontentpath    bool   `json:"altcontentpath,string,omitempty"`
+}
+
+type update_scpolicy struct {
 	Name              string `json:"name"`
 	Url               string `json:"url,omitempty"`
 	Rule              string `json:"rule,omitempty"`
@@ -26,67 +43,160 @@ type scpolicy_update struct {
 	Altcontentpath    string `json:"altcontentpath,omitempty"`
 }
 
-type scpolicy_payload struct {
-	scpolicy interface{}
+type rename_scpolicy struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func scpolicy_key_to_args(key ScpolicyKey) string {
-	result := ""
-
-	return result
+type add_scpolicy_payload struct {
+	Resource Scpolicy `json:"scpolicy"`
 }
 
-func (c *NitroClient) DeleteScpolicy(key ScpolicyKey) error {
-	return c.deleteResourceWithArgs("scpolicy", key.Name, scpolicy_key_to_args(key))
+type rename_scpolicy_payload struct {
+	Rename rename_scpolicy `json:"scpolicy"`
 }
 
-func (c *NitroClient) GetScpolicy(key ScpolicyKey) (*Scpolicy, error) {
-	var results struct {
-		Scpolicy []Scpolicy
-	}
-
-	if err := c.getResourceWithArgs("scpolicy", key.Name, scpolicy_key_to_args(key), &results); err != nil || len(results.Scpolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Scpolicy[0], nil
+type unset_scpolicy_payload struct {
+	Unset ScpolicyUnset `json:"scpolicy"`
 }
 
-func (c *NitroClient) ListScpolicy() ([]Scpolicy, error) {
-	var results struct {
-		Scpolicy []Scpolicy
+type update_scpolicy_payload struct {
+	Update update_scpolicy `json:"scpolicy"`
+}
+
+type get_scpolicy_result struct {
+	Results []Scpolicy `json:"scpolicy"`
+}
+
+type count_scpolicy_result struct {
+	Results []Count `json:"scpolicy"`
+}
+
+func scpolicy_key_to_id_args(key ScpolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("scpolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Scpolicy, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddScpolicy(resource Scpolicy) error {
-	return c.addResource("scpolicy", resource)
+	payload := add_scpolicy_payload{
+		resource,
+	}
+
+	return c.post("scpolicy", "", nil, payload)
 }
 
 func (c *NitroClient) RenameScpolicy(name string, newName string) error {
-	return c.renameResource("scpolicy", "name", name, newName)
+	payload := rename_scpolicy_payload{
+		rename_scpolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("scpolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetScpolicy(name string, fields ...string) error {
-	return c.unsetResource("scpolicy", "name", name, fields)
+func (c *NitroClient) CountScpolicy() (int, error) {
+	var results count_scpolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("scpolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsScpolicy(key ScpolicyKey) (bool, error) {
+	var results count_scpolicy_result
+
+	id, qs := scpolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("scpolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListScpolicy() ([]Scpolicy, error) {
+	var results get_scpolicy_result
+
+	if err := c.get("scpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetScpolicy(key ScpolicyKey) (*Scpolicy, error) {
+	var results get_scpolicy_result
+
+	id, qs := scpolicy_key_to_id_args(key)
+
+	if err := c.get("scpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one scpolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("scpolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteScpolicy(key ScpolicyKey) error {
+	id, qs := scpolicy_key_to_id_args(key)
+
+	return c.delete("scpolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetScpolicy(unset ScpolicyUnset) error {
+	payload := unset_scpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("scpolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateScpolicy(resource Scpolicy) error {
-	update := scpolicy_update{
-		resource.Name,
-		resource.Url,
-		resource.Rule,
-		resource.Delay,
-		resource.Maxconn,
-		resource.Action,
-		resource.Altcontentsvcname,
-		resource.Altcontentpath,
+	payload := update_scpolicy_payload{
+		update_scpolicy{
+			resource.Name,
+			resource.Url,
+			resource.Rule,
+			resource.Delay,
+			resource.Maxconn,
+			resource.Action,
+			resource.Altcontentsvcname,
+			resource.Altcontentpath,
+		},
 	}
 
-	return c.Put("scpolicy", update)
+	return c.put("scpolicy", "", nil, payload)
 }

@@ -24,7 +24,7 @@ type LbvserverCmppolicyBindingKey struct {
 }
 
 type add_lbvserver_cmppolicy_binding_payload struct {
-	Resources LbvserverCmppolicyBinding `json:"lbvserver_cmppolicy_binding"`
+	Resource LbvserverCmppolicyBinding `json:"lbvserver_cmppolicy_binding"`
 }
 
 type get_lbvserver_cmppolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverCmppolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverCmppolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverCmppolicyBinding(id); err != nil {
 		return false, err
 	} else {

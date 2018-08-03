@@ -24,7 +24,7 @@ type LbvserverFilterpolicyBindingKey struct {
 }
 
 type add_lbvserver_filterpolicy_binding_payload struct {
-	Resources LbvserverFilterpolicyBinding `json:"lbvserver_filterpolicy_binding"`
+	Resource LbvserverFilterpolicyBinding `json:"lbvserver_filterpolicy_binding"`
 }
 
 type get_lbvserver_filterpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverFilterpolicyBinding(id string) (int, error) 
 }
 
 func (c *NitroClient) ExistsLbvserverFilterpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverFilterpolicyBinding(id); err != nil {
 		return false, err
 	} else {

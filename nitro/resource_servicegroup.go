@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Servicegroup struct {
 	Servicegroupname   string `json:"servicegroupname"`
 	Appflowlog         string `json:"appflowlog,omitempty"`
@@ -38,10 +44,41 @@ type Servicegroup struct {
 }
 
 type ServicegroupKey struct {
-	Servicegroupname string
+	Servicegroupname string `json:"servicegroupname"`
 }
 
-type servicegroup_update struct {
+type ServicegroupUnset struct {
+	Servicegroupname   string `json:"servicegroupname"`
+	Maxclient          bool   `json:"maxclient,string,omitempty"`
+	Maxreq             bool   `json:"maxreq,string,omitempty"`
+	Healthmonitor      bool   `json:"healthmonitor,string,omitempty"`
+	Cacheable          bool   `json:"cacheable,string,omitempty"`
+	Cip                bool   `json:"cip,string,omitempty"`
+	Cipheader          bool   `json:"cipheader,string,omitempty"`
+	Usip               bool   `json:"usip,string,omitempty"`
+	Pathmonitor        bool   `json:"pathmonitor,string,omitempty"`
+	Pathmonitorindv    bool   `json:"pathmonitorindv,string,omitempty"`
+	Useproxyport       bool   `json:"useproxyport,string,omitempty"`
+	Sc                 bool   `json:"sc,string,omitempty"`
+	Sp                 bool   `json:"sp,string,omitempty"`
+	Rtspsessionidremap bool   `json:"rtspsessionidremap,string,omitempty"`
+	Clttimeout         bool   `json:"clttimeout,string,omitempty"`
+	Svrtimeout         bool   `json:"svrtimeout,string,omitempty"`
+	Cka                bool   `json:"cka,string,omitempty"`
+	Tcpb               bool   `json:"tcpb,string,omitempty"`
+	Cmp                bool   `json:"cmp,string,omitempty"`
+	Maxbandwidth       bool   `json:"maxbandwidth,string,omitempty"`
+	Monthreshold       bool   `json:"monthreshold,string,omitempty"`
+	Downstateflush     bool   `json:"downstateflush,string,omitempty"`
+	Tcpprofilename     bool   `json:"tcpprofilename,string,omitempty"`
+	Httpprofilename    bool   `json:"httpprofilename,string,omitempty"`
+	Comment            bool   `json:"comment,string,omitempty"`
+	Appflowlog         bool   `json:"appflowlog,string,omitempty"`
+	Netprofile         bool   `json:"netprofile,string,omitempty"`
+	Monconnectionclose bool   `json:"monconnectionclose,string,omitempty"`
+}
+
+type update_servicegroup struct {
 	Servicegroupname   string `json:"servicegroupname"`
 	Maxclient          int    `json:"maxclient,string,omitempty"`
 	Maxreq             int    `json:"maxreq,string,omitempty"`
@@ -72,87 +109,180 @@ type servicegroup_update struct {
 	Monconnectionclose string `json:"monconnectionclose,omitempty"`
 }
 
-type servicegroup_payload struct {
-	servicegroup interface{}
+type rename_servicegroup struct {
+	Name    string `json:"servicegroupname"`
+	Newname string `json:"newname"`
 }
 
-func servicegroup_key_to_args(key ServicegroupKey) string {
-	result := ""
-
-	return result
+type add_servicegroup_payload struct {
+	Resource Servicegroup `json:"servicegroup"`
 }
 
-func (c *NitroClient) DeleteServicegroup(key ServicegroupKey) error {
-	return c.deleteResourceWithArgs("servicegroup", key.Servicegroupname, servicegroup_key_to_args(key))
+type rename_servicegroup_payload struct {
+	Rename rename_servicegroup `json:"servicegroup"`
 }
 
-func (c *NitroClient) GetServicegroup(key ServicegroupKey) (*Servicegroup, error) {
-	var results struct {
-		Servicegroup []Servicegroup
-	}
-
-	if err := c.getResourceWithArgs("servicegroup", key.Servicegroupname, servicegroup_key_to_args(key), &results); err != nil || len(results.Servicegroup) != 1 {
-		return nil, err
-	}
-
-	return &results.Servicegroup[0], nil
+type unset_servicegroup_payload struct {
+	Unset ServicegroupUnset `json:"servicegroup"`
 }
 
-func (c *NitroClient) ListServicegroup() ([]Servicegroup, error) {
-	var results struct {
-		Servicegroup []Servicegroup
+type update_servicegroup_payload struct {
+	Update update_servicegroup `json:"servicegroup"`
+}
+
+type get_servicegroup_result struct {
+	Results []Servicegroup `json:"servicegroup"`
+}
+
+type count_servicegroup_result struct {
+	Results []Count `json:"servicegroup"`
+}
+
+func servicegroup_key_to_id_args(key ServicegroupKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("servicegroup", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Servicegroup, nil
+	return key.Servicegroupname, qs
 }
 
 func (c *NitroClient) AddServicegroup(resource Servicegroup) error {
-	return c.addResource("servicegroup", resource)
+	payload := add_servicegroup_payload{
+		resource,
+	}
+
+	return c.post("servicegroup", "", nil, payload)
 }
 
-func (c *NitroClient) RenameServicegroup(servicegroupname string, newName string) error {
-	return c.renameResource("servicegroup", "servicegroupname", servicegroupname, newName)
+func (c *NitroClient) RenameServicegroup(name string, newName string) error {
+	payload := rename_servicegroup_payload{
+		rename_servicegroup{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("servicegroup", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetServicegroup(servicegroupname string, fields ...string) error {
-	return c.unsetResource("servicegroup", "servicegroupname", servicegroupname, fields)
+func (c *NitroClient) CountServicegroup() (int, error) {
+	var results count_servicegroup_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("servicegroup", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsServicegroup(key ServicegroupKey) (bool, error) {
+	var results count_servicegroup_result
+
+	id, qs := servicegroup_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("servicegroup", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListServicegroup() ([]Servicegroup, error) {
+	var results get_servicegroup_result
+
+	if err := c.get("servicegroup", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetServicegroup(key ServicegroupKey) (*Servicegroup, error) {
+	var results get_servicegroup_result
+
+	id, qs := servicegroup_key_to_id_args(key)
+
+	if err := c.get("servicegroup", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one servicegroup element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("servicegroup element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteServicegroup(key ServicegroupKey) error {
+	id, qs := servicegroup_key_to_id_args(key)
+
+	return c.delete("servicegroup", id, qs)
+}
+
+func (c *NitroClient) UnsetServicegroup(unset ServicegroupUnset) error {
+	payload := unset_servicegroup_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("servicegroup", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateServicegroup(resource Servicegroup) error {
-	update := servicegroup_update{
-		resource.Servicegroupname,
-		resource.Maxclient,
-		resource.Maxreq,
-		resource.Healthmonitor,
-		resource.Cacheable,
-		resource.Cip,
-		resource.Cipheader,
-		resource.Usip,
-		resource.Pathmonitor,
-		resource.Pathmonitorindv,
-		resource.Useproxyport,
-		resource.Sc,
-		resource.Sp,
-		resource.Rtspsessionidremap,
-		resource.Clttimeout,
-		resource.Svrtimeout,
-		resource.Cka,
-		resource.Tcpb,
-		resource.Cmp,
-		resource.Maxbandwidth,
-		resource.Monthreshold,
-		resource.Downstateflush,
-		resource.Tcpprofilename,
-		resource.Httpprofilename,
-		resource.Comment,
-		resource.Appflowlog,
-		resource.Netprofile,
-		resource.Monconnectionclose,
+	payload := update_servicegroup_payload{
+		update_servicegroup{
+			resource.Servicegroupname,
+			resource.Maxclient,
+			resource.Maxreq,
+			resource.Healthmonitor,
+			resource.Cacheable,
+			resource.Cip,
+			resource.Cipheader,
+			resource.Usip,
+			resource.Pathmonitor,
+			resource.Pathmonitorindv,
+			resource.Useproxyport,
+			resource.Sc,
+			resource.Sp,
+			resource.Rtspsessionidremap,
+			resource.Clttimeout,
+			resource.Svrtimeout,
+			resource.Cka,
+			resource.Tcpb,
+			resource.Cmp,
+			resource.Maxbandwidth,
+			resource.Monthreshold,
+			resource.Downstateflush,
+			resource.Tcpprofilename,
+			resource.Httpprofilename,
+			resource.Comment,
+			resource.Appflowlog,
+			resource.Netprofile,
+			resource.Monconnectionclose,
+		},
 	}
 
-	return c.Put("servicegroup", update)
+	return c.put("servicegroup", "", nil, payload)
 }

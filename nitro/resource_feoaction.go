@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Feoaction struct {
 	Name                   string   `json:"name"`
 	Cachemaxage            int      `json:"cachemaxage,string,omitempty"`
@@ -27,10 +33,36 @@ type Feoaction struct {
 }
 
 type FeoactionKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type feoaction_update struct {
+type FeoactionUnset struct {
+	Name                   string `json:"name"`
+	Pageextendcache        bool   `json:"pageextendcache,string,omitempty"`
+	Cachemaxage            bool   `json:"cachemaxage,string,omitempty"`
+	Imgshrinktoattrib      bool   `json:"imgshrinktoattrib,string,omitempty"`
+	Imggiftopng            bool   `json:"imggiftopng,string,omitempty"`
+	Imgtowebp              bool   `json:"imgtowebp,string,omitempty"`
+	Imgtojpegxr            bool   `json:"imgtojpegxr,string,omitempty"`
+	Imginline              bool   `json:"imginline,string,omitempty"`
+	Cssimginline           bool   `json:"cssimginline,string,omitempty"`
+	Jpgoptimize            bool   `json:"jpgoptimize,string,omitempty"`
+	Imglazyload            bool   `json:"imglazyload,string,omitempty"`
+	Cssminify              bool   `json:"cssminify,string,omitempty"`
+	Cssinline              bool   `json:"cssinline,string,omitempty"`
+	Csscombine             bool   `json:"csscombine,string,omitempty"`
+	Convertimporttolink    bool   `json:"convertimporttolink,string,omitempty"`
+	Jsminify               bool   `json:"jsminify,string,omitempty"`
+	Jsinline               bool   `json:"jsinline,string,omitempty"`
+	Htmlminify             bool   `json:"htmlminify,string,omitempty"`
+	Cssmovetohead          bool   `json:"cssmovetohead,string,omitempty"`
+	Jsmovetoend            bool   `json:"jsmovetoend,string,omitempty"`
+	Domainsharding         bool   `json:"domainsharding,string,omitempty"`
+	Dnsshards              bool   `json:"dnsshards,string,omitempty"`
+	Clientsidemeasurements bool   `json:"clientsidemeasurements,string,omitempty"`
+}
+
+type update_feoaction struct {
 	Name                   string   `json:"name"`
 	Pageextendcache        bool     `json:"pageextendcache,omitempty"`
 	Cachemaxage            int      `json:"cachemaxage,string,omitempty"`
@@ -56,82 +88,175 @@ type feoaction_update struct {
 	Clientsidemeasurements bool     `json:"clientsidemeasurements,omitempty"`
 }
 
-type feoaction_payload struct {
-	feoaction interface{}
+type rename_feoaction struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func feoaction_key_to_args(key FeoactionKey) string {
-	result := ""
-
-	return result
+type add_feoaction_payload struct {
+	Resource Feoaction `json:"feoaction"`
 }
 
-func (c *NitroClient) DeleteFeoaction(key FeoactionKey) error {
-	return c.deleteResourceWithArgs("feoaction", key.Name, feoaction_key_to_args(key))
+type rename_feoaction_payload struct {
+	Rename rename_feoaction `json:"feoaction"`
 }
 
-func (c *NitroClient) GetFeoaction(key FeoactionKey) (*Feoaction, error) {
-	var results struct {
-		Feoaction []Feoaction
-	}
-
-	if err := c.getResourceWithArgs("feoaction", key.Name, feoaction_key_to_args(key), &results); err != nil || len(results.Feoaction) != 1 {
-		return nil, err
-	}
-
-	return &results.Feoaction[0], nil
+type unset_feoaction_payload struct {
+	Unset FeoactionUnset `json:"feoaction"`
 }
 
-func (c *NitroClient) ListFeoaction() ([]Feoaction, error) {
-	var results struct {
-		Feoaction []Feoaction
+type update_feoaction_payload struct {
+	Update update_feoaction `json:"feoaction"`
+}
+
+type get_feoaction_result struct {
+	Results []Feoaction `json:"feoaction"`
+}
+
+type count_feoaction_result struct {
+	Results []Count `json:"feoaction"`
+}
+
+func feoaction_key_to_id_args(key FeoactionKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("feoaction", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Feoaction, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddFeoaction(resource Feoaction) error {
-	return c.addResource("feoaction", resource)
+	payload := add_feoaction_payload{
+		resource,
+	}
+
+	return c.post("feoaction", "", nil, payload)
 }
 
 func (c *NitroClient) RenameFeoaction(name string, newName string) error {
-	return c.renameResource("feoaction", "name", name, newName)
+	payload := rename_feoaction_payload{
+		rename_feoaction{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("feoaction", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetFeoaction(name string, fields ...string) error {
-	return c.unsetResource("feoaction", "name", name, fields)
+func (c *NitroClient) CountFeoaction() (int, error) {
+	var results count_feoaction_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("feoaction", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsFeoaction(key FeoactionKey) (bool, error) {
+	var results count_feoaction_result
+
+	id, qs := feoaction_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("feoaction", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListFeoaction() ([]Feoaction, error) {
+	var results get_feoaction_result
+
+	if err := c.get("feoaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetFeoaction(key FeoactionKey) (*Feoaction, error) {
+	var results get_feoaction_result
+
+	id, qs := feoaction_key_to_id_args(key)
+
+	if err := c.get("feoaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one feoaction element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("feoaction element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteFeoaction(key FeoactionKey) error {
+	id, qs := feoaction_key_to_id_args(key)
+
+	return c.delete("feoaction", id, qs)
+}
+
+func (c *NitroClient) UnsetFeoaction(unset FeoactionUnset) error {
+	payload := unset_feoaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("feoaction", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateFeoaction(resource Feoaction) error {
-	update := feoaction_update{
-		resource.Name,
-		resource.Pageextendcache,
-		resource.Cachemaxage,
-		resource.Imgshrinktoattrib,
-		resource.Imggiftopng,
-		resource.Imgtowebp,
-		resource.Imgtojpegxr,
-		resource.Imginline,
-		resource.Cssimginline,
-		resource.Jpgoptimize,
-		resource.Imglazyload,
-		resource.Cssminify,
-		resource.Cssinline,
-		resource.Csscombine,
-		resource.Convertimporttolink,
-		resource.Jsminify,
-		resource.Jsinline,
-		resource.Htmlminify,
-		resource.Cssmovetohead,
-		resource.Jsmovetoend,
-		resource.Domainsharding,
-		resource.Dnsshards,
-		resource.Clientsidemeasurements,
+	payload := update_feoaction_payload{
+		update_feoaction{
+			resource.Name,
+			resource.Pageextendcache,
+			resource.Cachemaxage,
+			resource.Imgshrinktoattrib,
+			resource.Imggiftopng,
+			resource.Imgtowebp,
+			resource.Imgtojpegxr,
+			resource.Imginline,
+			resource.Cssimginline,
+			resource.Jpgoptimize,
+			resource.Imglazyload,
+			resource.Cssminify,
+			resource.Cssinline,
+			resource.Csscombine,
+			resource.Convertimporttolink,
+			resource.Jsminify,
+			resource.Jsinline,
+			resource.Htmlminify,
+			resource.Cssmovetohead,
+			resource.Jsmovetoend,
+			resource.Domainsharding,
+			resource.Dnsshards,
+			resource.Clientsidemeasurements,
+		},
 	}
 
-	return c.Put("feoaction", update)
+	return c.put("feoaction", "", nil, payload)
 }

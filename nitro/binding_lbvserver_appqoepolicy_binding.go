@@ -24,7 +24,7 @@ type LbvserverAppqoepolicyBindingKey struct {
 }
 
 type add_lbvserver_appqoepolicy_binding_payload struct {
-	Resources LbvserverAppqoepolicyBinding `json:"lbvserver_appqoepolicy_binding"`
+	Resource LbvserverAppqoepolicyBinding `json:"lbvserver_appqoepolicy_binding"`
 }
 
 type get_lbvserver_appqoepolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverAppqoepolicyBinding(id string) (int, error) 
 }
 
 func (c *NitroClient) ExistsLbvserverAppqoepolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverAppqoepolicyBinding(id); err != nil {
 		return false, err
 	} else {

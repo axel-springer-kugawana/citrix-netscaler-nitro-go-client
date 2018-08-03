@@ -19,7 +19,7 @@ type ServiceLbmonitorBindingKey struct {
 }
 
 type add_service_lbmonitor_binding_payload struct {
-	Resources ServiceLbmonitorBinding `json:"service_lbmonitor_binding"`
+	Resource ServiceLbmonitorBinding `json:"service_lbmonitor_binding"`
 }
 
 type get_service_lbmonitor_binding_result struct {
@@ -83,6 +83,7 @@ func (c *NitroClient) CountServiceLbmonitorBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsServiceLbmonitorBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountServiceLbmonitorBinding(id); err != nil {
 		return false, err
 	} else {

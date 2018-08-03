@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Appqoepolicy struct {
 	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
@@ -7,71 +13,170 @@ type Appqoepolicy struct {
 }
 
 type AppqoepolicyKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type appqoepolicy_update struct {
+type AppqoepolicyUnset struct {
+	Name   string `json:"name"`
+	Rule   bool   `json:"rule,string,omitempty"`
+	Action bool   `json:"action,string,omitempty"`
+}
+
+type update_appqoepolicy struct {
 	Name   string `json:"name"`
 	Rule   string `json:"rule,omitempty"`
 	Action string `json:"action,omitempty"`
 }
 
-type appqoepolicy_payload struct {
-	appqoepolicy interface{}
+type rename_appqoepolicy struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func appqoepolicy_key_to_args(key AppqoepolicyKey) string {
-	result := ""
-
-	return result
+type add_appqoepolicy_payload struct {
+	Resource Appqoepolicy `json:"appqoepolicy"`
 }
 
-func (c *NitroClient) DeleteAppqoepolicy(key AppqoepolicyKey) error {
-	return c.deleteResourceWithArgs("appqoepolicy", key.Name, appqoepolicy_key_to_args(key))
+type rename_appqoepolicy_payload struct {
+	Rename rename_appqoepolicy `json:"appqoepolicy"`
 }
 
-func (c *NitroClient) GetAppqoepolicy(key AppqoepolicyKey) (*Appqoepolicy, error) {
-	var results struct {
-		Appqoepolicy []Appqoepolicy
-	}
-
-	if err := c.getResourceWithArgs("appqoepolicy", key.Name, appqoepolicy_key_to_args(key), &results); err != nil || len(results.Appqoepolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Appqoepolicy[0], nil
+type unset_appqoepolicy_payload struct {
+	Unset AppqoepolicyUnset `json:"appqoepolicy"`
 }
 
-func (c *NitroClient) ListAppqoepolicy() ([]Appqoepolicy, error) {
-	var results struct {
-		Appqoepolicy []Appqoepolicy
+type update_appqoepolicy_payload struct {
+	Update update_appqoepolicy `json:"appqoepolicy"`
+}
+
+type get_appqoepolicy_result struct {
+	Results []Appqoepolicy `json:"appqoepolicy"`
+}
+
+type count_appqoepolicy_result struct {
+	Results []Count `json:"appqoepolicy"`
+}
+
+func appqoepolicy_key_to_id_args(key AppqoepolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("appqoepolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Appqoepolicy, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAppqoepolicy(resource Appqoepolicy) error {
-	return c.addResource("appqoepolicy", resource)
+	payload := add_appqoepolicy_payload{
+		resource,
+	}
+
+	return c.post("appqoepolicy", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAppqoepolicy(name string, newName string) error {
-	return c.renameResource("appqoepolicy", "name", name, newName)
+	payload := rename_appqoepolicy_payload{
+		rename_appqoepolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("appqoepolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAppqoepolicy(name string, fields ...string) error {
-	return c.unsetResource("appqoepolicy", "name", name, fields)
+func (c *NitroClient) CountAppqoepolicy() (int, error) {
+	var results count_appqoepolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("appqoepolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAppqoepolicy(key AppqoepolicyKey) (bool, error) {
+	var results count_appqoepolicy_result
+
+	id, qs := appqoepolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("appqoepolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAppqoepolicy() ([]Appqoepolicy, error) {
+	var results get_appqoepolicy_result
+
+	if err := c.get("appqoepolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAppqoepolicy(key AppqoepolicyKey) (*Appqoepolicy, error) {
+	var results get_appqoepolicy_result
+
+	id, qs := appqoepolicy_key_to_id_args(key)
+
+	if err := c.get("appqoepolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one appqoepolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("appqoepolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAppqoepolicy(key AppqoepolicyKey) error {
+	id, qs := appqoepolicy_key_to_id_args(key)
+
+	return c.delete("appqoepolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetAppqoepolicy(unset AppqoepolicyUnset) error {
+	payload := unset_appqoepolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("appqoepolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAppqoepolicy(resource Appqoepolicy) error {
-	update := appqoepolicy_update{
-		resource.Name,
-		resource.Rule,
-		resource.Action,
+	payload := update_appqoepolicy_payload{
+		update_appqoepolicy{
+			resource.Name,
+			resource.Rule,
+			resource.Action,
+		},
 	}
 
-	return c.Put("appqoepolicy", update)
+	return c.put("appqoepolicy", "", nil, payload)
 }

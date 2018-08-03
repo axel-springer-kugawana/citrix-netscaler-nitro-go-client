@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Rewritepolicy struct {
 	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
@@ -10,10 +16,19 @@ type Rewritepolicy struct {
 }
 
 type RewritepolicyKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type rewritepolicy_update struct {
+type RewritepolicyUnset struct {
+	Name        string `json:"name"`
+	Rule        bool   `json:"rule,string,omitempty"`
+	Action      bool   `json:"action,string,omitempty"`
+	Undefaction bool   `json:"undefaction,string,omitempty"`
+	Comment     bool   `json:"comment,string,omitempty"`
+	Logaction   bool   `json:"logaction,string,omitempty"`
+}
+
+type update_rewritepolicy struct {
 	Name        string `json:"name"`
 	Rule        string `json:"rule,omitempty"`
 	Action      string `json:"action,omitempty"`
@@ -22,65 +37,158 @@ type rewritepolicy_update struct {
 	Logaction   string `json:"logaction,omitempty"`
 }
 
-type rewritepolicy_payload struct {
-	rewritepolicy interface{}
+type rename_rewritepolicy struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func rewritepolicy_key_to_args(key RewritepolicyKey) string {
-	result := ""
-
-	return result
+type add_rewritepolicy_payload struct {
+	Resource Rewritepolicy `json:"rewritepolicy"`
 }
 
-func (c *NitroClient) DeleteRewritepolicy(key RewritepolicyKey) error {
-	return c.deleteResourceWithArgs("rewritepolicy", key.Name, rewritepolicy_key_to_args(key))
+type rename_rewritepolicy_payload struct {
+	Rename rename_rewritepolicy `json:"rewritepolicy"`
 }
 
-func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*Rewritepolicy, error) {
-	var results struct {
-		Rewritepolicy []Rewritepolicy
-	}
-
-	if err := c.getResourceWithArgs("rewritepolicy", key.Name, rewritepolicy_key_to_args(key), &results); err != nil || len(results.Rewritepolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Rewritepolicy[0], nil
+type unset_rewritepolicy_payload struct {
+	Unset RewritepolicyUnset `json:"rewritepolicy"`
 }
 
-func (c *NitroClient) ListRewritepolicy() ([]Rewritepolicy, error) {
-	var results struct {
-		Rewritepolicy []Rewritepolicy
+type update_rewritepolicy_payload struct {
+	Update update_rewritepolicy `json:"rewritepolicy"`
+}
+
+type get_rewritepolicy_result struct {
+	Results []Rewritepolicy `json:"rewritepolicy"`
+}
+
+type count_rewritepolicy_result struct {
+	Results []Count `json:"rewritepolicy"`
+}
+
+func rewritepolicy_key_to_id_args(key RewritepolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("rewritepolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Rewritepolicy, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddRewritepolicy(resource Rewritepolicy) error {
-	return c.addResource("rewritepolicy", resource)
+	payload := add_rewritepolicy_payload{
+		resource,
+	}
+
+	return c.post("rewritepolicy", "", nil, payload)
 }
 
 func (c *NitroClient) RenameRewritepolicy(name string, newName string) error {
-	return c.renameResource("rewritepolicy", "name", name, newName)
+	payload := rename_rewritepolicy_payload{
+		rename_rewritepolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("rewritepolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetRewritepolicy(name string, fields ...string) error {
-	return c.unsetResource("rewritepolicy", "name", name, fields)
+func (c *NitroClient) CountRewritepolicy() (int, error) {
+	var results count_rewritepolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("rewritepolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsRewritepolicy(key RewritepolicyKey) (bool, error) {
+	var results count_rewritepolicy_result
+
+	id, qs := rewritepolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("rewritepolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListRewritepolicy() ([]Rewritepolicy, error) {
+	var results get_rewritepolicy_result
+
+	if err := c.get("rewritepolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*Rewritepolicy, error) {
+	var results get_rewritepolicy_result
+
+	id, qs := rewritepolicy_key_to_id_args(key)
+
+	if err := c.get("rewritepolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one rewritepolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("rewritepolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteRewritepolicy(key RewritepolicyKey) error {
+	id, qs := rewritepolicy_key_to_id_args(key)
+
+	return c.delete("rewritepolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetRewritepolicy(unset RewritepolicyUnset) error {
+	payload := unset_rewritepolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("rewritepolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateRewritepolicy(resource Rewritepolicy) error {
-	update := rewritepolicy_update{
-		resource.Name,
-		resource.Rule,
-		resource.Action,
-		resource.Undefaction,
-		resource.Comment,
-		resource.Logaction,
+	payload := update_rewritepolicy_payload{
+		update_rewritepolicy{
+			resource.Name,
+			resource.Rule,
+			resource.Action,
+			resource.Undefaction,
+			resource.Comment,
+			resource.Logaction,
+		},
 	}
 
-	return c.Put("rewritepolicy", update)
+	return c.put("rewritepolicy", "", nil, payload)
 }

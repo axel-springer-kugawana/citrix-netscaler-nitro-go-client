@@ -24,7 +24,7 @@ type LbvserverScpolicyBindingKey struct {
 }
 
 type add_lbvserver_scpolicy_binding_payload struct {
-	Resources LbvserverScpolicyBinding `json:"lbvserver_scpolicy_binding"`
+	Resource LbvserverScpolicyBinding `json:"lbvserver_scpolicy_binding"`
 }
 
 type get_lbvserver_scpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverScpolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverScpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverScpolicyBinding(id); err != nil {
 		return false, err
 	} else {

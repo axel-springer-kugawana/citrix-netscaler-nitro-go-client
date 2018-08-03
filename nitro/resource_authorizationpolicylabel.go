@@ -1,59 +1,136 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Authorizationpolicylabel struct {
 	Labelname string `json:"labelname"`
 }
 
 type AuthorizationpolicylabelKey struct {
-	Labelname string
-}
-
-type authorizationpolicylabel_update struct {
 	Labelname string `json:"labelname"`
 }
 
-type authorizationpolicylabel_payload struct {
-	authorizationpolicylabel interface{}
+type rename_authorizationpolicylabel struct {
+	Name    string `json:"labelname"`
+	Newname string `json:"newname"`
 }
 
-func authorizationpolicylabel_key_to_args(key AuthorizationpolicylabelKey) string {
-	result := ""
-
-	return result
+type add_authorizationpolicylabel_payload struct {
+	Resource Authorizationpolicylabel `json:"authorizationpolicylabel"`
 }
 
-func (c *NitroClient) DeleteAuthorizationpolicylabel(key AuthorizationpolicylabelKey) error {
-	return c.deleteResourceWithArgs("authorizationpolicylabel", key.Labelname, authorizationpolicylabel_key_to_args(key))
+type rename_authorizationpolicylabel_payload struct {
+	Rename rename_authorizationpolicylabel `json:"authorizationpolicylabel"`
 }
 
-func (c *NitroClient) GetAuthorizationpolicylabel(key AuthorizationpolicylabelKey) (*Authorizationpolicylabel, error) {
-	var results struct {
-		Authorizationpolicylabel []Authorizationpolicylabel
-	}
-
-	if err := c.getResourceWithArgs("authorizationpolicylabel", key.Labelname, authorizationpolicylabel_key_to_args(key), &results); err != nil || len(results.Authorizationpolicylabel) != 1 {
-		return nil, err
-	}
-
-	return &results.Authorizationpolicylabel[0], nil
+type get_authorizationpolicylabel_result struct {
+	Results []Authorizationpolicylabel `json:"authorizationpolicylabel"`
 }
 
-func (c *NitroClient) ListAuthorizationpolicylabel() ([]Authorizationpolicylabel, error) {
-	var results struct {
-		Authorizationpolicylabel []Authorizationpolicylabel
+type count_authorizationpolicylabel_result struct {
+	Results []Count `json:"authorizationpolicylabel"`
+}
+
+func authorizationpolicylabel_key_to_id_args(key AuthorizationpolicylabelKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("authorizationpolicylabel", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Authorizationpolicylabel, nil
+	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddAuthorizationpolicylabel(resource Authorizationpolicylabel) error {
-	return c.addResource("authorizationpolicylabel", resource)
+	payload := add_authorizationpolicylabel_payload{
+		resource,
+	}
+
+	return c.post("authorizationpolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameAuthorizationpolicylabel(labelname string, newName string) error {
-	return c.renameResource("authorizationpolicylabel", "labelname", labelname, newName)
+func (c *NitroClient) RenameAuthorizationpolicylabel(name string, newName string) error {
+	payload := rename_authorizationpolicylabel_payload{
+		rename_authorizationpolicylabel{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("authorizationpolicylabel", "", qs, payload)
+}
+
+func (c *NitroClient) CountAuthorizationpolicylabel() (int, error) {
+	var results count_authorizationpolicylabel_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("authorizationpolicylabel", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAuthorizationpolicylabel(key AuthorizationpolicylabelKey) (bool, error) {
+	var results count_authorizationpolicylabel_result
+
+	id, qs := authorizationpolicylabel_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("authorizationpolicylabel", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAuthorizationpolicylabel() ([]Authorizationpolicylabel, error) {
+	var results get_authorizationpolicylabel_result
+
+	if err := c.get("authorizationpolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAuthorizationpolicylabel(key AuthorizationpolicylabelKey) (*Authorizationpolicylabel, error) {
+	var results get_authorizationpolicylabel_result
+
+	id, qs := authorizationpolicylabel_key_to_id_args(key)
+
+	if err := c.get("authorizationpolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one authorizationpolicylabel element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("authorizationpolicylabel element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAuthorizationpolicylabel(key AuthorizationpolicylabelKey) error {
+	id, qs := authorizationpolicylabel_key_to_id_args(key)
+
+	return c.delete("authorizationpolicylabel", id, qs)
 }

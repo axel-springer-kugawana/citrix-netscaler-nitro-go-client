@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Nshttpprofile struct {
 	Name                      string `json:"name"`
 	Adpttimeout               string `json:"adpttimeout,omitempty"`
@@ -37,10 +43,46 @@ type Nshttpprofile struct {
 }
 
 type NshttpprofileKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type nshttpprofile_update struct {
+type NshttpprofileUnset struct {
+	Name                      string `json:"name"`
+	Dropinvalreqs             bool   `json:"dropinvalreqs,string,omitempty"`
+	Markhttp09inval           bool   `json:"markhttp09inval,string,omitempty"`
+	Markconnreqinval          bool   `json:"markconnreqinval,string,omitempty"`
+	Cmponpush                 bool   `json:"cmponpush,string,omitempty"`
+	Conmultiplex              bool   `json:"conmultiplex,string,omitempty"`
+	Maxreusepool              bool   `json:"maxreusepool,string,omitempty"`
+	Dropextracrlf             bool   `json:"dropextracrlf,string,omitempty"`
+	Incomphdrdelay            bool   `json:"incomphdrdelay,string,omitempty"`
+	Websocket                 bool   `json:"websocket,string,omitempty"`
+	Rtsptunnel                bool   `json:"rtsptunnel,string,omitempty"`
+	Reqtimeout                bool   `json:"reqtimeout,string,omitempty"`
+	Adpttimeout               bool   `json:"adpttimeout,string,omitempty"`
+	Reqtimeoutaction          bool   `json:"reqtimeoutaction,string,omitempty"`
+	Dropextradata             bool   `json:"dropextradata,string,omitempty"`
+	Weblog                    bool   `json:"weblog,string,omitempty"`
+	Clientiphdrexpr           bool   `json:"clientiphdrexpr,string,omitempty"`
+	Maxreq                    bool   `json:"maxreq,string,omitempty"`
+	Persistentetag            bool   `json:"persistentetag,string,omitempty"`
+	Spdy                      bool   `json:"spdy,string,omitempty"`
+	Http2                     bool   `json:"http2,string,omitempty"`
+	Http2direct               bool   `json:"http2direct,string,omitempty"`
+	Altsvc                    bool   `json:"altsvc,string,omitempty"`
+	Http2maxheaderlistsize    bool   `json:"http2maxheaderlistsize,string,omitempty"`
+	Http2maxframesize         bool   `json:"http2maxframesize,string,omitempty"`
+	Http2maxconcurrentstreams bool   `json:"http2maxconcurrentstreams,string,omitempty"`
+	Http2initialwindowsize    bool   `json:"http2initialwindowsize,string,omitempty"`
+	Http2headertablesize      bool   `json:"http2headertablesize,string,omitempty"`
+	Http2minseverconn         bool   `json:"http2minseverconn,string,omitempty"`
+	Reusepooltimeout          bool   `json:"reusepooltimeout,string,omitempty"`
+	Maxheaderlen              bool   `json:"maxheaderlen,string,omitempty"`
+	Minreusepool              bool   `json:"minreusepool,string,omitempty"`
+	Apdexcltresptimethreshold bool   `json:"apdexcltresptimethreshold,string,omitempty"`
+}
+
+type update_nshttpprofile struct {
 	Name                      string `json:"name"`
 	Dropinvalreqs             string `json:"dropinvalreqs,omitempty"`
 	Markhttp09inval           string `json:"markhttp09inval,omitempty"`
@@ -76,92 +118,185 @@ type nshttpprofile_update struct {
 	Apdexcltresptimethreshold int    `json:"apdexcltresptimethreshold,string,omitempty"`
 }
 
-type nshttpprofile_payload struct {
-	nshttpprofile interface{}
+type rename_nshttpprofile struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func nshttpprofile_key_to_args(key NshttpprofileKey) string {
-	result := ""
-
-	return result
+type add_nshttpprofile_payload struct {
+	Resource Nshttpprofile `json:"nshttpprofile"`
 }
 
-func (c *NitroClient) DeleteNshttpprofile(key NshttpprofileKey) error {
-	return c.deleteResourceWithArgs("nshttpprofile", key.Name, nshttpprofile_key_to_args(key))
+type rename_nshttpprofile_payload struct {
+	Rename rename_nshttpprofile `json:"nshttpprofile"`
 }
 
-func (c *NitroClient) GetNshttpprofile(key NshttpprofileKey) (*Nshttpprofile, error) {
-	var results struct {
-		Nshttpprofile []Nshttpprofile
-	}
-
-	if err := c.getResourceWithArgs("nshttpprofile", key.Name, nshttpprofile_key_to_args(key), &results); err != nil || len(results.Nshttpprofile) != 1 {
-		return nil, err
-	}
-
-	return &results.Nshttpprofile[0], nil
+type unset_nshttpprofile_payload struct {
+	Unset NshttpprofileUnset `json:"nshttpprofile"`
 }
 
-func (c *NitroClient) ListNshttpprofile() ([]Nshttpprofile, error) {
-	var results struct {
-		Nshttpprofile []Nshttpprofile
+type update_nshttpprofile_payload struct {
+	Update update_nshttpprofile `json:"nshttpprofile"`
+}
+
+type get_nshttpprofile_result struct {
+	Results []Nshttpprofile `json:"nshttpprofile"`
+}
+
+type count_nshttpprofile_result struct {
+	Results []Count `json:"nshttpprofile"`
+}
+
+func nshttpprofile_key_to_id_args(key NshttpprofileKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("nshttpprofile", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Nshttpprofile, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddNshttpprofile(resource Nshttpprofile) error {
-	return c.addResource("nshttpprofile", resource)
+	payload := add_nshttpprofile_payload{
+		resource,
+	}
+
+	return c.post("nshttpprofile", "", nil, payload)
 }
 
 func (c *NitroClient) RenameNshttpprofile(name string, newName string) error {
-	return c.renameResource("nshttpprofile", "name", name, newName)
+	payload := rename_nshttpprofile_payload{
+		rename_nshttpprofile{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("nshttpprofile", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetNshttpprofile(name string, fields ...string) error {
-	return c.unsetResource("nshttpprofile", "name", name, fields)
+func (c *NitroClient) CountNshttpprofile() (int, error) {
+	var results count_nshttpprofile_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("nshttpprofile", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsNshttpprofile(key NshttpprofileKey) (bool, error) {
+	var results count_nshttpprofile_result
+
+	id, qs := nshttpprofile_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("nshttpprofile", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListNshttpprofile() ([]Nshttpprofile, error) {
+	var results get_nshttpprofile_result
+
+	if err := c.get("nshttpprofile", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetNshttpprofile(key NshttpprofileKey) (*Nshttpprofile, error) {
+	var results get_nshttpprofile_result
+
+	id, qs := nshttpprofile_key_to_id_args(key)
+
+	if err := c.get("nshttpprofile", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one nshttpprofile element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("nshttpprofile element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteNshttpprofile(key NshttpprofileKey) error {
+	id, qs := nshttpprofile_key_to_id_args(key)
+
+	return c.delete("nshttpprofile", id, qs)
+}
+
+func (c *NitroClient) UnsetNshttpprofile(unset NshttpprofileUnset) error {
+	payload := unset_nshttpprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("nshttpprofile", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateNshttpprofile(resource Nshttpprofile) error {
-	update := nshttpprofile_update{
-		resource.Name,
-		resource.Dropinvalreqs,
-		resource.Markhttp09inval,
-		resource.Markconnreqinval,
-		resource.Cmponpush,
-		resource.Conmultiplex,
-		resource.Maxreusepool,
-		resource.Dropextracrlf,
-		resource.Incomphdrdelay,
-		resource.Websocket,
-		resource.Rtsptunnel,
-		resource.Reqtimeout,
-		resource.Adpttimeout,
-		resource.Reqtimeoutaction,
-		resource.Dropextradata,
-		resource.Weblog,
-		resource.Clientiphdrexpr,
-		resource.Maxreq,
-		resource.Persistentetag,
-		resource.Spdy,
-		resource.Http2,
-		resource.Http2direct,
-		resource.Altsvc,
-		resource.Http2maxheaderlistsize,
-		resource.Http2maxframesize,
-		resource.Http2maxconcurrentstreams,
-		resource.Http2initialwindowsize,
-		resource.Http2headertablesize,
-		resource.Http2minseverconn,
-		resource.Reusepooltimeout,
-		resource.Maxheaderlen,
-		resource.Minreusepool,
-		resource.Apdexcltresptimethreshold,
+	payload := update_nshttpprofile_payload{
+		update_nshttpprofile{
+			resource.Name,
+			resource.Dropinvalreqs,
+			resource.Markhttp09inval,
+			resource.Markconnreqinval,
+			resource.Cmponpush,
+			resource.Conmultiplex,
+			resource.Maxreusepool,
+			resource.Dropextracrlf,
+			resource.Incomphdrdelay,
+			resource.Websocket,
+			resource.Rtsptunnel,
+			resource.Reqtimeout,
+			resource.Adpttimeout,
+			resource.Reqtimeoutaction,
+			resource.Dropextradata,
+			resource.Weblog,
+			resource.Clientiphdrexpr,
+			resource.Maxreq,
+			resource.Persistentetag,
+			resource.Spdy,
+			resource.Http2,
+			resource.Http2direct,
+			resource.Altsvc,
+			resource.Http2maxheaderlistsize,
+			resource.Http2maxframesize,
+			resource.Http2maxconcurrentstreams,
+			resource.Http2initialwindowsize,
+			resource.Http2headertablesize,
+			resource.Http2minseverconn,
+			resource.Reusepooltimeout,
+			resource.Maxheaderlen,
+			resource.Minreusepool,
+			resource.Apdexcltresptimethreshold,
+		},
 	}
 
-	return c.Put("nshttpprofile", update)
+	return c.put("nshttpprofile", "", nil, payload)
 }

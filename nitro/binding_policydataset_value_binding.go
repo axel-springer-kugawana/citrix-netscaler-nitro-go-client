@@ -18,7 +18,7 @@ type PolicydatasetValueBindingKey struct {
 }
 
 type add_policydataset_value_binding_payload struct {
-	Resources PolicydatasetValueBinding `json:"policydataset_value_binding"`
+	Resource PolicydatasetValueBinding `json:"policydataset_value_binding"`
 }
 
 type get_policydataset_value_binding_result struct {
@@ -83,6 +83,7 @@ func (c *NitroClient) CountPolicydatasetValueBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsPolicydatasetValueBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountPolicydatasetValueBinding(id); err != nil {
 		return false, err
 	} else {

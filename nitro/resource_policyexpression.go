@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Policyexpression struct {
 	Name                  string `json:"name"`
 	Clientsecuritymessage string `json:"clientsecuritymessage,omitempty"`
@@ -9,10 +15,18 @@ type Policyexpression struct {
 }
 
 type PolicyexpressionKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type policyexpression_update struct {
+type PolicyexpressionUnset struct {
+	Name                  string `json:"name"`
+	Value                 bool   `json:"value,string,omitempty"`
+	Description           bool   `json:"description,string,omitempty"`
+	Comment               bool   `json:"comment,string,omitempty"`
+	Clientsecuritymessage bool   `json:"clientsecuritymessage,string,omitempty"`
+}
+
+type update_policyexpression struct {
 	Name                  string `json:"name"`
 	Value                 string `json:"value,omitempty"`
 	Description           string `json:"description,omitempty"`
@@ -20,64 +34,157 @@ type policyexpression_update struct {
 	Clientsecuritymessage string `json:"clientsecuritymessage,omitempty"`
 }
 
-type policyexpression_payload struct {
-	policyexpression interface{}
+type rename_policyexpression struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func policyexpression_key_to_args(key PolicyexpressionKey) string {
-	result := ""
-
-	return result
+type add_policyexpression_payload struct {
+	Resource Policyexpression `json:"policyexpression"`
 }
 
-func (c *NitroClient) DeletePolicyexpression(key PolicyexpressionKey) error {
-	return c.deleteResourceWithArgs("policyexpression", key.Name, policyexpression_key_to_args(key))
+type rename_policyexpression_payload struct {
+	Rename rename_policyexpression `json:"policyexpression"`
 }
 
-func (c *NitroClient) GetPolicyexpression(key PolicyexpressionKey) (*Policyexpression, error) {
-	var results struct {
-		Policyexpression []Policyexpression
-	}
-
-	if err := c.getResourceWithArgs("policyexpression", key.Name, policyexpression_key_to_args(key), &results); err != nil || len(results.Policyexpression) != 1 {
-		return nil, err
-	}
-
-	return &results.Policyexpression[0], nil
+type unset_policyexpression_payload struct {
+	Unset PolicyexpressionUnset `json:"policyexpression"`
 }
 
-func (c *NitroClient) ListPolicyexpression() ([]Policyexpression, error) {
-	var results struct {
-		Policyexpression []Policyexpression
+type update_policyexpression_payload struct {
+	Update update_policyexpression `json:"policyexpression"`
+}
+
+type get_policyexpression_result struct {
+	Results []Policyexpression `json:"policyexpression"`
+}
+
+type count_policyexpression_result struct {
+	Results []Count `json:"policyexpression"`
+}
+
+func policyexpression_key_to_id_args(key PolicyexpressionKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("policyexpression", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Policyexpression, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddPolicyexpression(resource Policyexpression) error {
-	return c.addResource("policyexpression", resource)
+	payload := add_policyexpression_payload{
+		resource,
+	}
+
+	return c.post("policyexpression", "", nil, payload)
 }
 
 func (c *NitroClient) RenamePolicyexpression(name string, newName string) error {
-	return c.renameResource("policyexpression", "name", name, newName)
+	payload := rename_policyexpression_payload{
+		rename_policyexpression{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("policyexpression", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetPolicyexpression(name string, fields ...string) error {
-	return c.unsetResource("policyexpression", "name", name, fields)
+func (c *NitroClient) CountPolicyexpression() (int, error) {
+	var results count_policyexpression_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("policyexpression", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsPolicyexpression(key PolicyexpressionKey) (bool, error) {
+	var results count_policyexpression_result
+
+	id, qs := policyexpression_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("policyexpression", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListPolicyexpression() ([]Policyexpression, error) {
+	var results get_policyexpression_result
+
+	if err := c.get("policyexpression", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetPolicyexpression(key PolicyexpressionKey) (*Policyexpression, error) {
+	var results get_policyexpression_result
+
+	id, qs := policyexpression_key_to_id_args(key)
+
+	if err := c.get("policyexpression", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one policyexpression element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("policyexpression element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeletePolicyexpression(key PolicyexpressionKey) error {
+	id, qs := policyexpression_key_to_id_args(key)
+
+	return c.delete("policyexpression", id, qs)
+}
+
+func (c *NitroClient) UnsetPolicyexpression(unset PolicyexpressionUnset) error {
+	payload := unset_policyexpression_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("policyexpression", "", qs, payload)
 }
 
 func (c *NitroClient) UpdatePolicyexpression(resource Policyexpression) error {
-	update := policyexpression_update{
-		resource.Name,
-		resource.Value,
-		resource.Description,
-		resource.Comment,
-		resource.Clientsecuritymessage,
+	payload := update_policyexpression_payload{
+		update_policyexpression{
+			resource.Name,
+			resource.Value,
+			resource.Description,
+			resource.Comment,
+			resource.Clientsecuritymessage,
+		},
 	}
 
-	return c.Put("policyexpression", update)
+	return c.put("policyexpression", "", nil, payload)
 }

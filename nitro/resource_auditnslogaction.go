@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Auditnslogaction struct {
 	Name                string   `json:"name"`
 	Acl                 string   `json:"acl,omitempty"`
@@ -21,10 +27,30 @@ type Auditnslogaction struct {
 }
 
 type AuditnslogactionKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type auditnslogaction_update struct {
+type AuditnslogactionUnset struct {
+	Name                string `json:"name"`
+	Serverip            bool   `json:"serverip,string,omitempty"`
+	Serverdomainname    bool   `json:"serverdomainname,string,omitempty"`
+	Domainresolveretry  bool   `json:"domainresolveretry,string,omitempty"`
+	Serverport          bool   `json:"serverport,string,omitempty"`
+	Loglevel            bool   `json:"loglevel,string,omitempty"`
+	Dateformat          bool   `json:"dateformat,string,omitempty"`
+	Logfacility         bool   `json:"logfacility,string,omitempty"`
+	Tcp                 bool   `json:"tcp,string,omitempty"`
+	Acl                 bool   `json:"acl,string,omitempty"`
+	Timezone            bool   `json:"timezone,string,omitempty"`
+	Userdefinedauditlog bool   `json:"userdefinedauditlog,string,omitempty"`
+	Appflowexport       bool   `json:"appflowexport,string,omitempty"`
+	Lsn                 bool   `json:"lsn,string,omitempty"`
+	Alg                 bool   `json:"alg,string,omitempty"`
+	Subscriberlog       bool   `json:"subscriberlog,string,omitempty"`
+	Sslinterception     bool   `json:"sslinterception,string,omitempty"`
+}
+
+type update_auditnslogaction struct {
 	Name                string   `json:"name"`
 	Serverip            string   `json:"serverip,omitempty"`
 	Serverdomainname    string   `json:"serverdomainname,omitempty"`
@@ -44,76 +70,169 @@ type auditnslogaction_update struct {
 	Sslinterception     string   `json:"sslinterception,omitempty"`
 }
 
-type auditnslogaction_payload struct {
-	auditnslogaction interface{}
+type rename_auditnslogaction struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func auditnslogaction_key_to_args(key AuditnslogactionKey) string {
-	result := ""
-
-	return result
+type add_auditnslogaction_payload struct {
+	Resource Auditnslogaction `json:"auditnslogaction"`
 }
 
-func (c *NitroClient) DeleteAuditnslogaction(key AuditnslogactionKey) error {
-	return c.deleteResourceWithArgs("auditnslogaction", key.Name, auditnslogaction_key_to_args(key))
+type rename_auditnslogaction_payload struct {
+	Rename rename_auditnslogaction `json:"auditnslogaction"`
 }
 
-func (c *NitroClient) GetAuditnslogaction(key AuditnslogactionKey) (*Auditnslogaction, error) {
-	var results struct {
-		Auditnslogaction []Auditnslogaction
-	}
-
-	if err := c.getResourceWithArgs("auditnslogaction", key.Name, auditnslogaction_key_to_args(key), &results); err != nil || len(results.Auditnslogaction) != 1 {
-		return nil, err
-	}
-
-	return &results.Auditnslogaction[0], nil
+type unset_auditnslogaction_payload struct {
+	Unset AuditnslogactionUnset `json:"auditnslogaction"`
 }
 
-func (c *NitroClient) ListAuditnslogaction() ([]Auditnslogaction, error) {
-	var results struct {
-		Auditnslogaction []Auditnslogaction
+type update_auditnslogaction_payload struct {
+	Update update_auditnslogaction `json:"auditnslogaction"`
+}
+
+type get_auditnslogaction_result struct {
+	Results []Auditnslogaction `json:"auditnslogaction"`
+}
+
+type count_auditnslogaction_result struct {
+	Results []Count `json:"auditnslogaction"`
+}
+
+func auditnslogaction_key_to_id_args(key AuditnslogactionKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("auditnslogaction", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Auditnslogaction, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAuditnslogaction(resource Auditnslogaction) error {
-	return c.addResource("auditnslogaction", resource)
+	payload := add_auditnslogaction_payload{
+		resource,
+	}
+
+	return c.post("auditnslogaction", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAuditnslogaction(name string, newName string) error {
-	return c.renameResource("auditnslogaction", "name", name, newName)
+	payload := rename_auditnslogaction_payload{
+		rename_auditnslogaction{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("auditnslogaction", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAuditnslogaction(name string, fields ...string) error {
-	return c.unsetResource("auditnslogaction", "name", name, fields)
+func (c *NitroClient) CountAuditnslogaction() (int, error) {
+	var results count_auditnslogaction_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("auditnslogaction", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAuditnslogaction(key AuditnslogactionKey) (bool, error) {
+	var results count_auditnslogaction_result
+
+	id, qs := auditnslogaction_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("auditnslogaction", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAuditnslogaction() ([]Auditnslogaction, error) {
+	var results get_auditnslogaction_result
+
+	if err := c.get("auditnslogaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAuditnslogaction(key AuditnslogactionKey) (*Auditnslogaction, error) {
+	var results get_auditnslogaction_result
+
+	id, qs := auditnslogaction_key_to_id_args(key)
+
+	if err := c.get("auditnslogaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one auditnslogaction element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("auditnslogaction element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAuditnslogaction(key AuditnslogactionKey) error {
+	id, qs := auditnslogaction_key_to_id_args(key)
+
+	return c.delete("auditnslogaction", id, qs)
+}
+
+func (c *NitroClient) UnsetAuditnslogaction(unset AuditnslogactionUnset) error {
+	payload := unset_auditnslogaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("auditnslogaction", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAuditnslogaction(resource Auditnslogaction) error {
-	update := auditnslogaction_update{
-		resource.Name,
-		resource.Serverip,
-		resource.Serverdomainname,
-		resource.Domainresolveretry,
-		resource.Serverport,
-		resource.Loglevel,
-		resource.Dateformat,
-		resource.Logfacility,
-		resource.Tcp,
-		resource.Acl,
-		resource.Timezone,
-		resource.Userdefinedauditlog,
-		resource.Appflowexport,
-		resource.Lsn,
-		resource.Alg,
-		resource.Subscriberlog,
-		resource.Sslinterception,
+	payload := update_auditnslogaction_payload{
+		update_auditnslogaction{
+			resource.Name,
+			resource.Serverip,
+			resource.Serverdomainname,
+			resource.Domainresolveretry,
+			resource.Serverport,
+			resource.Loglevel,
+			resource.Dateformat,
+			resource.Logfacility,
+			resource.Tcp,
+			resource.Acl,
+			resource.Timezone,
+			resource.Userdefinedauditlog,
+			resource.Appflowexport,
+			resource.Lsn,
+			resource.Alg,
+			resource.Subscriberlog,
+			resource.Sslinterception,
+		},
 	}
 
-	return c.Put("auditnslogaction", update)
+	return c.put("auditnslogaction", "", nil, payload)
 }

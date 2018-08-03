@@ -24,7 +24,7 @@ type LbvserverAuditsyslogpolicyBindingKey struct {
 }
 
 type add_lbvserver_auditsyslogpolicy_binding_payload struct {
-	Resources LbvserverAuditsyslogpolicyBinding `json:"lbvserver_auditsyslogpolicy_binding"`
+	Resource LbvserverAuditsyslogpolicyBinding `json:"lbvserver_auditsyslogpolicy_binding"`
 }
 
 type get_lbvserver_auditsyslogpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverAuditsyslogpolicyBinding(id string) (int, er
 }
 
 func (c *NitroClient) ExistsLbvserverAuditsyslogpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverAuditsyslogpolicyBinding(id); err != nil {
 		return false, err
 	} else {

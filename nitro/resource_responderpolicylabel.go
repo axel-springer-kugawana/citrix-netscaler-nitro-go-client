@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Responderpolicylabel struct {
 	Labelname       string `json:"labelname"`
 	Comment         string `json:"comment,omitempty"`
@@ -7,55 +13,126 @@ type Responderpolicylabel struct {
 }
 
 type ResponderpolicylabelKey struct {
-	Labelname string
-}
-
-type responderpolicylabel_update struct {
 	Labelname string `json:"labelname"`
 }
 
-type responderpolicylabel_payload struct {
-	responderpolicylabel interface{}
+type rename_responderpolicylabel struct {
+	Name    string `json:"labelname"`
+	Newname string `json:"newname"`
 }
 
-func responderpolicylabel_key_to_args(key ResponderpolicylabelKey) string {
-	result := ""
-
-	return result
+type add_responderpolicylabel_payload struct {
+	Resource Responderpolicylabel `json:"responderpolicylabel"`
 }
 
-func (c *NitroClient) DeleteResponderpolicylabel(key ResponderpolicylabelKey) error {
-	return c.deleteResourceWithArgs("responderpolicylabel", key.Labelname, responderpolicylabel_key_to_args(key))
+type rename_responderpolicylabel_payload struct {
+	Rename rename_responderpolicylabel `json:"responderpolicylabel"`
 }
 
-func (c *NitroClient) GetResponderpolicylabel(key ResponderpolicylabelKey) (*Responderpolicylabel, error) {
-	var results struct {
-		Responderpolicylabel []Responderpolicylabel
-	}
-
-	if err := c.getResourceWithArgs("responderpolicylabel", key.Labelname, responderpolicylabel_key_to_args(key), &results); err != nil || len(results.Responderpolicylabel) != 1 {
-		return nil, err
-	}
-
-	return &results.Responderpolicylabel[0], nil
+type get_responderpolicylabel_result struct {
+	Results []Responderpolicylabel `json:"responderpolicylabel"`
 }
 
-func (c *NitroClient) ListResponderpolicylabel() ([]Responderpolicylabel, error) {
-	var results struct {
-		Responderpolicylabel []Responderpolicylabel
+type count_responderpolicylabel_result struct {
+	Results []Count `json:"responderpolicylabel"`
+}
+
+func responderpolicylabel_key_to_id_args(key ResponderpolicylabelKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("responderpolicylabel", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Responderpolicylabel, nil
+	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddResponderpolicylabel(resource Responderpolicylabel) error {
-	return c.addResource("responderpolicylabel", resource)
+	payload := add_responderpolicylabel_payload{
+		resource,
+	}
+
+	return c.post("responderpolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameResponderpolicylabel(labelname string, newName string) error {
-	return c.renameResource("responderpolicylabel", "labelname", labelname, newName)
+func (c *NitroClient) RenameResponderpolicylabel(name string, newName string) error {
+	payload := rename_responderpolicylabel_payload{
+		rename_responderpolicylabel{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("responderpolicylabel", "", qs, payload)
+}
+
+func (c *NitroClient) CountResponderpolicylabel() (int, error) {
+	var results count_responderpolicylabel_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("responderpolicylabel", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsResponderpolicylabel(key ResponderpolicylabelKey) (bool, error) {
+	var results count_responderpolicylabel_result
+
+	id, qs := responderpolicylabel_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("responderpolicylabel", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListResponderpolicylabel() ([]Responderpolicylabel, error) {
+	var results get_responderpolicylabel_result
+
+	if err := c.get("responderpolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetResponderpolicylabel(key ResponderpolicylabelKey) (*Responderpolicylabel, error) {
+	var results get_responderpolicylabel_result
+
+	id, qs := responderpolicylabel_key_to_id_args(key)
+
+	if err := c.get("responderpolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one responderpolicylabel element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("responderpolicylabel element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteResponderpolicylabel(key ResponderpolicylabelKey) error {
+	id, qs := responderpolicylabel_key_to_id_args(key)
+
+	return c.delete("responderpolicylabel", id, qs)
 }

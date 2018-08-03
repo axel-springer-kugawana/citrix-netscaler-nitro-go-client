@@ -24,7 +24,7 @@ type LbvserverAuthorizationpolicyBindingKey struct {
 }
 
 type add_lbvserver_authorizationpolicy_binding_payload struct {
-	Resources LbvserverAuthorizationpolicyBinding `json:"lbvserver_authorizationpolicy_binding"`
+	Resource LbvserverAuthorizationpolicyBinding `json:"lbvserver_authorizationpolicy_binding"`
 }
 
 type get_lbvserver_authorizationpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverAuthorizationpolicyBinding(id string) (int, 
 }
 
 func (c *NitroClient) ExistsLbvserverAuthorizationpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverAuthorizationpolicyBinding(id); err != nil {
 		return false, err
 	} else {

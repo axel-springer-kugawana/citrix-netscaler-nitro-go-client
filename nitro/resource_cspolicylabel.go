@@ -1,60 +1,137 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Cspolicylabel struct {
 	Labelname         string `json:"labelname"`
 	Cspolicylabeltype string `json:"cspolicylabeltype,omitempty"`
 }
 
 type CspolicylabelKey struct {
-	Labelname string
-}
-
-type cspolicylabel_update struct {
 	Labelname string `json:"labelname"`
 }
 
-type cspolicylabel_payload struct {
-	cspolicylabel interface{}
+type rename_cspolicylabel struct {
+	Name    string `json:"labelname"`
+	Newname string `json:"newname"`
 }
 
-func cspolicylabel_key_to_args(key CspolicylabelKey) string {
-	result := ""
-
-	return result
+type add_cspolicylabel_payload struct {
+	Resource Cspolicylabel `json:"cspolicylabel"`
 }
 
-func (c *NitroClient) DeleteCspolicylabel(key CspolicylabelKey) error {
-	return c.deleteResourceWithArgs("cspolicylabel", key.Labelname, cspolicylabel_key_to_args(key))
+type rename_cspolicylabel_payload struct {
+	Rename rename_cspolicylabel `json:"cspolicylabel"`
 }
 
-func (c *NitroClient) GetCspolicylabel(key CspolicylabelKey) (*Cspolicylabel, error) {
-	var results struct {
-		Cspolicylabel []Cspolicylabel
-	}
-
-	if err := c.getResourceWithArgs("cspolicylabel", key.Labelname, cspolicylabel_key_to_args(key), &results); err != nil || len(results.Cspolicylabel) != 1 {
-		return nil, err
-	}
-
-	return &results.Cspolicylabel[0], nil
+type get_cspolicylabel_result struct {
+	Results []Cspolicylabel `json:"cspolicylabel"`
 }
 
-func (c *NitroClient) ListCspolicylabel() ([]Cspolicylabel, error) {
-	var results struct {
-		Cspolicylabel []Cspolicylabel
+type count_cspolicylabel_result struct {
+	Results []Count `json:"cspolicylabel"`
+}
+
+func cspolicylabel_key_to_id_args(key CspolicylabelKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("cspolicylabel", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Cspolicylabel, nil
+	return key.Labelname, qs
 }
 
 func (c *NitroClient) AddCspolicylabel(resource Cspolicylabel) error {
-	return c.addResource("cspolicylabel", resource)
+	payload := add_cspolicylabel_payload{
+		resource,
+	}
+
+	return c.post("cspolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCspolicylabel(labelname string, newName string) error {
-	return c.renameResource("cspolicylabel", "labelname", labelname, newName)
+func (c *NitroClient) RenameCspolicylabel(name string, newName string) error {
+	payload := rename_cspolicylabel_payload{
+		rename_cspolicylabel{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("cspolicylabel", "", qs, payload)
+}
+
+func (c *NitroClient) CountCspolicylabel() (int, error) {
+	var results count_cspolicylabel_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("cspolicylabel", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsCspolicylabel(key CspolicylabelKey) (bool, error) {
+	var results count_cspolicylabel_result
+
+	id, qs := cspolicylabel_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("cspolicylabel", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListCspolicylabel() ([]Cspolicylabel, error) {
+	var results get_cspolicylabel_result
+
+	if err := c.get("cspolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetCspolicylabel(key CspolicylabelKey) (*Cspolicylabel, error) {
+	var results get_cspolicylabel_result
+
+	id, qs := cspolicylabel_key_to_id_args(key)
+
+	if err := c.get("cspolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cspolicylabel element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("cspolicylabel element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteCspolicylabel(key CspolicylabelKey) error {
+	id, qs := cspolicylabel_key_to_id_args(key)
+
+	return c.delete("cspolicylabel", id, qs)
 }

@@ -24,7 +24,7 @@ type LbvserverTmtrafficpolicyBindingKey struct {
 }
 
 type add_lbvserver_tmtrafficpolicy_binding_payload struct {
-	Resources LbvserverTmtrafficpolicyBinding `json:"lbvserver_tmtrafficpolicy_binding"`
+	Resource LbvserverTmtrafficpolicyBinding `json:"lbvserver_tmtrafficpolicy_binding"`
 }
 
 type get_lbvserver_tmtrafficpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverTmtrafficpolicyBinding(id string) (int, erro
 }
 
 func (c *NitroClient) ExistsLbvserverTmtrafficpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverTmtrafficpolicyBinding(id); err != nil {
 		return false, err
 	} else {

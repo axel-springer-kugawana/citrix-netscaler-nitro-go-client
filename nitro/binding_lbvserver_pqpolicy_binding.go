@@ -24,7 +24,7 @@ type LbvserverPqpolicyBindingKey struct {
 }
 
 type add_lbvserver_pqpolicy_binding_payload struct {
-	Resources LbvserverPqpolicyBinding `json:"lbvserver_pqpolicy_binding"`
+	Resource LbvserverPqpolicyBinding `json:"lbvserver_pqpolicy_binding"`
 }
 
 type get_lbvserver_pqpolicy_binding_result struct {
@@ -90,6 +90,7 @@ func (c *NitroClient) CountLbvserverPqpolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverPqpolicyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbvserverPqpolicyBinding(id); err != nil {
 		return false, err
 	} else {

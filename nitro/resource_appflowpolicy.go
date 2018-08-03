@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Appflowpolicy struct {
 	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
@@ -9,10 +15,18 @@ type Appflowpolicy struct {
 }
 
 type AppflowpolicyKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type appflowpolicy_update struct {
+type AppflowpolicyUnset struct {
+	Name        string `json:"name"`
+	Rule        bool   `json:"rule,string,omitempty"`
+	Action      bool   `json:"action,string,omitempty"`
+	Undefaction bool   `json:"undefaction,string,omitempty"`
+	Comment     bool   `json:"comment,string,omitempty"`
+}
+
+type update_appflowpolicy struct {
 	Name        string `json:"name"`
 	Rule        string `json:"rule,omitempty"`
 	Action      string `json:"action,omitempty"`
@@ -20,64 +34,157 @@ type appflowpolicy_update struct {
 	Comment     string `json:"comment,omitempty"`
 }
 
-type appflowpolicy_payload struct {
-	appflowpolicy interface{}
+type rename_appflowpolicy struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func appflowpolicy_key_to_args(key AppflowpolicyKey) string {
-	result := ""
-
-	return result
+type add_appflowpolicy_payload struct {
+	Resource Appflowpolicy `json:"appflowpolicy"`
 }
 
-func (c *NitroClient) DeleteAppflowpolicy(key AppflowpolicyKey) error {
-	return c.deleteResourceWithArgs("appflowpolicy", key.Name, appflowpolicy_key_to_args(key))
+type rename_appflowpolicy_payload struct {
+	Rename rename_appflowpolicy `json:"appflowpolicy"`
 }
 
-func (c *NitroClient) GetAppflowpolicy(key AppflowpolicyKey) (*Appflowpolicy, error) {
-	var results struct {
-		Appflowpolicy []Appflowpolicy
-	}
-
-	if err := c.getResourceWithArgs("appflowpolicy", key.Name, appflowpolicy_key_to_args(key), &results); err != nil || len(results.Appflowpolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Appflowpolicy[0], nil
+type unset_appflowpolicy_payload struct {
+	Unset AppflowpolicyUnset `json:"appflowpolicy"`
 }
 
-func (c *NitroClient) ListAppflowpolicy() ([]Appflowpolicy, error) {
-	var results struct {
-		Appflowpolicy []Appflowpolicy
+type update_appflowpolicy_payload struct {
+	Update update_appflowpolicy `json:"appflowpolicy"`
+}
+
+type get_appflowpolicy_result struct {
+	Results []Appflowpolicy `json:"appflowpolicy"`
+}
+
+type count_appflowpolicy_result struct {
+	Results []Count `json:"appflowpolicy"`
+}
+
+func appflowpolicy_key_to_id_args(key AppflowpolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("appflowpolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Appflowpolicy, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddAppflowpolicy(resource Appflowpolicy) error {
-	return c.addResource("appflowpolicy", resource)
+	payload := add_appflowpolicy_payload{
+		resource,
+	}
+
+	return c.post("appflowpolicy", "", nil, payload)
 }
 
 func (c *NitroClient) RenameAppflowpolicy(name string, newName string) error {
-	return c.renameResource("appflowpolicy", "name", name, newName)
+	payload := rename_appflowpolicy_payload{
+		rename_appflowpolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("appflowpolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetAppflowpolicy(name string, fields ...string) error {
-	return c.unsetResource("appflowpolicy", "name", name, fields)
+func (c *NitroClient) CountAppflowpolicy() (int, error) {
+	var results count_appflowpolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("appflowpolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsAppflowpolicy(key AppflowpolicyKey) (bool, error) {
+	var results count_appflowpolicy_result
+
+	id, qs := appflowpolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("appflowpolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListAppflowpolicy() ([]Appflowpolicy, error) {
+	var results get_appflowpolicy_result
+
+	if err := c.get("appflowpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetAppflowpolicy(key AppflowpolicyKey) (*Appflowpolicy, error) {
+	var results get_appflowpolicy_result
+
+	id, qs := appflowpolicy_key_to_id_args(key)
+
+	if err := c.get("appflowpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one appflowpolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("appflowpolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteAppflowpolicy(key AppflowpolicyKey) error {
+	id, qs := appflowpolicy_key_to_id_args(key)
+
+	return c.delete("appflowpolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetAppflowpolicy(unset AppflowpolicyUnset) error {
+	payload := unset_appflowpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("appflowpolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateAppflowpolicy(resource Appflowpolicy) error {
-	update := appflowpolicy_update{
-		resource.Name,
-		resource.Rule,
-		resource.Action,
-		resource.Undefaction,
-		resource.Comment,
+	payload := update_appflowpolicy_payload{
+		update_appflowpolicy{
+			resource.Name,
+			resource.Rule,
+			resource.Action,
+			resource.Undefaction,
+			resource.Comment,
+		},
 	}
 
-	return c.Put("appflowpolicy", update)
+	return c.put("appflowpolicy", "", nil, payload)
 }

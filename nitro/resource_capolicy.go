@@ -1,5 +1,11 @@
 package nitro
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
 type Capolicy struct {
 	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
@@ -10,10 +16,19 @@ type Capolicy struct {
 }
 
 type CapolicyKey struct {
-	Name string
+	Name string `json:"name"`
 }
 
-type capolicy_update struct {
+type CapolicyUnset struct {
+	Name        string `json:"name"`
+	Rule        bool   `json:"rule,string,omitempty"`
+	Action      bool   `json:"action,string,omitempty"`
+	Comment     bool   `json:"comment,string,omitempty"`
+	Logaction   bool   `json:"logaction,string,omitempty"`
+	Undefaction bool   `json:"undefaction,string,omitempty"`
+}
+
+type update_capolicy struct {
 	Name        string `json:"name"`
 	Rule        string `json:"rule,omitempty"`
 	Action      string `json:"action,omitempty"`
@@ -22,65 +37,158 @@ type capolicy_update struct {
 	Undefaction string `json:"undefaction,omitempty"`
 }
 
-type capolicy_payload struct {
-	capolicy interface{}
+type rename_capolicy struct {
+	Name    string `json:"name"`
+	Newname string `json:"newname"`
 }
 
-func capolicy_key_to_args(key CapolicyKey) string {
-	result := ""
-
-	return result
+type add_capolicy_payload struct {
+	Resource Capolicy `json:"capolicy"`
 }
 
-func (c *NitroClient) DeleteCapolicy(key CapolicyKey) error {
-	return c.deleteResourceWithArgs("capolicy", key.Name, capolicy_key_to_args(key))
+type rename_capolicy_payload struct {
+	Rename rename_capolicy `json:"capolicy"`
 }
 
-func (c *NitroClient) GetCapolicy(key CapolicyKey) (*Capolicy, error) {
-	var results struct {
-		Capolicy []Capolicy
-	}
-
-	if err := c.getResourceWithArgs("capolicy", key.Name, capolicy_key_to_args(key), &results); err != nil || len(results.Capolicy) != 1 {
-		return nil, err
-	}
-
-	return &results.Capolicy[0], nil
+type unset_capolicy_payload struct {
+	Unset CapolicyUnset `json:"capolicy"`
 }
 
-func (c *NitroClient) ListCapolicy() ([]Capolicy, error) {
-	var results struct {
-		Capolicy []Capolicy
+type update_capolicy_payload struct {
+	Update update_capolicy `json:"capolicy"`
+}
+
+type get_capolicy_result struct {
+	Results []Capolicy `json:"capolicy"`
+}
+
+type count_capolicy_result struct {
+	Results []Count `json:"capolicy"`
+}
+
+func capolicy_key_to_id_args(key CapolicyKey) (string, map[string]string) {
+	var _ = strconv.Itoa
+	var args []string
+
+	qs := map[string]string{}
+
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	if err := c.listResources("capolicy", &results); err != nil {
-		return nil, err
-	}
-
-	return results.Capolicy, nil
+	return key.Name, qs
 }
 
 func (c *NitroClient) AddCapolicy(resource Capolicy) error {
-	return c.addResource("capolicy", resource)
+	payload := add_capolicy_payload{
+		resource,
+	}
+
+	return c.post("capolicy", "", nil, payload)
 }
 
 func (c *NitroClient) RenameCapolicy(name string, newName string) error {
-	return c.renameResource("capolicy", "name", name, newName)
+	payload := rename_capolicy_payload{
+		rename_capolicy{
+			name,
+			newName,
+		},
+	}
+
+	qs := map[string]string{
+		"action": "rename",
+	}
+
+	return c.post("capolicy", "", qs, payload)
 }
 
-func (c *NitroClient) UnsetCapolicy(name string, fields ...string) error {
-	return c.unsetResource("capolicy", "name", name, fields)
+func (c *NitroClient) CountCapolicy() (int, error) {
+	var results count_capolicy_result
+
+	qs := map[string]string{
+		"count": "yes",
+	}
+
+	if err := c.get("capolicy", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
+	}
+}
+
+func (c *NitroClient) ExistsCapolicy(key CapolicyKey) (bool, error) {
+	var results count_capolicy_result
+
+	id, qs := capolicy_key_to_id_args(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("capolicy", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+func (c *NitroClient) ListCapolicy() ([]Capolicy, error) {
+	var results get_capolicy_result
+
+	if err := c.get("capolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+func (c *NitroClient) GetCapolicy(key CapolicyKey) (*Capolicy, error) {
+	var results get_capolicy_result
+
+	id, qs := capolicy_key_to_id_args(key)
+
+	if err := c.get("capolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one capolicy element found")
+		} else if len(results.Results) < 1 {
+			// TODO
+			// return nil, fmt.Errorf("capolicy element not found")
+			return nil, nil
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+func (c *NitroClient) DeleteCapolicy(key CapolicyKey) error {
+	id, qs := capolicy_key_to_id_args(key)
+
+	return c.delete("capolicy", id, qs)
+}
+
+func (c *NitroClient) UnsetCapolicy(unset CapolicyUnset) error {
+	payload := unset_capolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.put("capolicy", "", qs, payload)
 }
 
 func (c *NitroClient) UpdateCapolicy(resource Capolicy) error {
-	update := capolicy_update{
-		resource.Name,
-		resource.Rule,
-		resource.Action,
-		resource.Comment,
-		resource.Logaction,
-		resource.Undefaction,
+	payload := update_capolicy_payload{
+		update_capolicy{
+			resource.Name,
+			resource.Rule,
+			resource.Action,
+			resource.Comment,
+			resource.Logaction,
+			resource.Undefaction,
+		},
 	}
 
-	return c.Put("capolicy", update)
+	return c.put("capolicy", "", nil, payload)
 }

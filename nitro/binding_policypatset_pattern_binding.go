@@ -19,7 +19,7 @@ type PolicypatsetPatternBindingKey struct {
 }
 
 type add_policypatset_pattern_binding_payload struct {
-	Resources PolicypatsetPatternBinding `json:"policypatset_pattern_binding"`
+	Resource PolicypatsetPatternBinding `json:"policypatset_pattern_binding"`
 }
 
 type get_policypatset_pattern_binding_result struct {
@@ -84,6 +84,7 @@ func (c *NitroClient) CountPolicypatsetPatternBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsPolicypatsetPatternBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountPolicypatsetPatternBinding(id); err != nil {
 		return false, err
 	} else {

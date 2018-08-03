@@ -20,7 +20,7 @@ type LbmonitorSslcertkeyBindingKey struct {
 }
 
 type add_lbmonitor_sslcertkey_binding_payload struct {
-	Resources LbmonitorSslcertkeyBinding `json:"lbmonitor_sslcertkey_binding"`
+	Resource LbmonitorSslcertkeyBinding `json:"lbmonitor_sslcertkey_binding"`
 }
 
 type get_lbmonitor_sslcertkey_binding_result struct {
@@ -85,6 +85,7 @@ func (c *NitroClient) CountLbmonitorSslcertkeyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbmonitorSslcertkeyBinding(id string) (bool, error) {
+	// TODO : wrong implementation
 	if count, err := c.CountLbmonitorSslcertkeyBinding(id); err != nil {
 		return false, err
 	} else {

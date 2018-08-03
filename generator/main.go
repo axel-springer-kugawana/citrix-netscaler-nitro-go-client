@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/doubret/citrix-netscaler-nitro-go-client/spec"
+	"github.com/doubret/citrix-netscaler-nitro-go-specs/specs"
 	"log"
 	"os"
 	"path/filepath"

@@ -24,9 +24,9 @@ func pqpolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type PqpolicyUnset struct {
 	Policyname string `json:"policyname"`
-	Weight     bool   `json:"weight,string,omitempty"`
-	Qdepth     bool   `json:"qdepth,string,omitempty"`
-	Polqdepth  bool   `json:"polqdepth,string,omitempty"`
+	Weight     bool   `json:"weight,omitempty"`
+	Qdepth     bool   `json:"qdepth,omitempty"`
+	Polqdepth  bool   `json:"polqdepth,omitempty"`
 }
 
 type update_pqpolicy struct {

@@ -24,11 +24,11 @@ func dbdbprofile_key_to_id_args(key string) (string, map[string]string) {
 
 type DbdbprofileUnset struct {
 	Name                   string `json:"name"`
-	Interpretquery         bool   `json:"interpretquery,string,omitempty"`
-	Stickiness             bool   `json:"stickiness,string,omitempty"`
-	Kcdaccount             bool   `json:"kcdaccount,string,omitempty"`
-	Conmultiplex           bool   `json:"conmultiplex,string,omitempty"`
-	Enablecachingconmuxoff bool   `json:"enablecachingconmuxoff,string,omitempty"`
+	Interpretquery         bool   `json:"interpretquery,omitempty"`
+	Stickiness             bool   `json:"stickiness,omitempty"`
+	Kcdaccount             bool   `json:"kcdaccount,omitempty"`
+	Conmultiplex           bool   `json:"conmultiplex,omitempty"`
+	Enablecachingconmuxoff bool   `json:"enablecachingconmuxoff,omitempty"`
 }
 
 type update_dbdbprofile struct {

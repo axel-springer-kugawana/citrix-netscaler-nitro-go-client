@@ -29,15 +29,15 @@ func transformaction_key_to_id_args(key string) (string, map[string]string) {
 
 type TransformactionUnset struct {
 	Name             string `json:"name"`
-	Priority         bool   `json:"priority,string,omitempty"`
-	Requrlfrom       bool   `json:"requrlfrom,string,omitempty"`
-	Requrlinto       bool   `json:"requrlinto,string,omitempty"`
-	Resurlfrom       bool   `json:"resurlfrom,string,omitempty"`
-	Resurlinto       bool   `json:"resurlinto,string,omitempty"`
-	Cookiedomainfrom bool   `json:"cookiedomainfrom,string,omitempty"`
-	Cookiedomaininto bool   `json:"cookiedomaininto,string,omitempty"`
-	State            bool   `json:"state,string,omitempty"`
-	Comment          bool   `json:"comment,string,omitempty"`
+	Priority         bool   `json:"priority,omitempty"`
+	Requrlfrom       bool   `json:"requrlfrom,omitempty"`
+	Requrlinto       bool   `json:"requrlinto,omitempty"`
+	Resurlfrom       bool   `json:"resurlfrom,omitempty"`
+	Resurlinto       bool   `json:"resurlinto,omitempty"`
+	Cookiedomainfrom bool   `json:"cookiedomainfrom,omitempty"`
+	Cookiedomaininto bool   `json:"cookiedomaininto,omitempty"`
+	State            bool   `json:"state,omitempty"`
+	Comment          bool   `json:"comment,omitempty"`
 }
 
 type update_transformaction struct {

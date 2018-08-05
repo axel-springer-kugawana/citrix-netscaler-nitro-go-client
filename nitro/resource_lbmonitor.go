@@ -122,105 +122,101 @@ func lbmonitor_key_to_id_args(key LbmonitorKey) (string, map[string]string) {
 }
 
 type LbmonitorUnset struct {
-	Monitorname string `json:"monitorname"`
-	// TODO
-	// Type string `json:"type,omitempty"`
-	Type                           bool `json:"type,string,omitempty"`
-	Action                         bool `json:"action,string,omitempty"`
-	Httprequest                    bool `json:"httprequest,string,omitempty"`
-	Rtsprequest                    bool `json:"rtsprequest,string,omitempty"`
-	Customheaders                  bool `json:"customheaders,string,omitempty"`
-	Maxforwards                    bool `json:"maxforwards,string,omitempty"`
-	Sipmethod                      bool `json:"sipmethod,string,omitempty"`
-	Sipreguri                      bool `json:"sipreguri,string,omitempty"`
-	Sipuri                         bool `json:"sipuri,string,omitempty"`
-	Send                           bool `json:"send,string,omitempty"`
-	Recv                           bool `json:"recv,string,omitempty"`
-	Query                          bool `json:"query,string,omitempty"`
-	Querytype                      bool `json:"querytype,string,omitempty"`
-	Username                       bool `json:"username,string,omitempty"`
-	Password                       bool `json:"password,string,omitempty"`
-	Secondarypassword              bool `json:"secondarypassword,string,omitempty"`
-	Logonpointname                 bool `json:"logonpointname,string,omitempty"`
-	Lasversion                     bool `json:"lasversion,string,omitempty"`
-	Radkey                         bool `json:"radkey,string,omitempty"`
-	Radnasid                       bool `json:"radnasid,string,omitempty"`
-	Radnasip                       bool `json:"radnasip,string,omitempty"`
-	Radaccounttype                 bool `json:"radaccounttype,string,omitempty"`
-	Radframedip                    bool `json:"radframedip,string,omitempty"`
-	Radapn                         bool `json:"radapn,string,omitempty"`
-	Radmsisdn                      bool `json:"radmsisdn,string,omitempty"`
-	Radaccountsession              bool `json:"radaccountsession,string,omitempty"`
-	Lrtm                           bool `json:"lrtm,string,omitempty"`
-	Deviation                      bool `json:"deviation,string,omitempty"`
-	Units1                         bool `json:"units1,string,omitempty"`
-	Scriptname                     bool `json:"scriptname,string,omitempty"`
-	Scriptargs                     bool `json:"scriptargs,string,omitempty"`
-	Validatecred                   bool `json:"validatecred,string,omitempty"`
-	Domain                         bool `json:"domain,string,omitempty"`
-	Dispatcherip                   bool `json:"dispatcherip,string,omitempty"`
-	Dispatcherport                 bool `json:"dispatcherport,string,omitempty"`
-	Interval                       bool `json:"interval,string,omitempty"`
-	Units3                         bool `json:"units3,string,omitempty"`
-	Resptimeout                    bool `json:"resptimeout,string,omitempty"`
-	Units4                         bool `json:"units4,string,omitempty"`
-	Resptimeoutthresh              bool `json:"resptimeoutthresh,string,omitempty"`
-	Retries                        bool `json:"retries,string,omitempty"`
-	Failureretries                 bool `json:"failureretries,string,omitempty"`
-	Alertretries                   bool `json:"alertretries,string,omitempty"`
-	Successretries                 bool `json:"successretries,string,omitempty"`
-	Downtime                       bool `json:"downtime,string,omitempty"`
-	Units2                         bool `json:"units2,string,omitempty"`
-	Destip                         bool `json:"destip,string,omitempty"`
-	Destport                       bool `json:"destport,string,omitempty"`
-	State                          bool `json:"state,string,omitempty"`
-	Reverse                        bool `json:"reverse,string,omitempty"`
-	Transparent                    bool `json:"transparent,string,omitempty"`
-	Iptunnel                       bool `json:"iptunnel,string,omitempty"`
-	Tos                            bool `json:"tos,string,omitempty"`
-	Tosid                          bool `json:"tosid,string,omitempty"`
-	Secure                         bool `json:"secure,string,omitempty"`
-	Group                          bool `json:"group,string,omitempty"`
-	Filename                       bool `json:"filename,string,omitempty"`
-	Basedn                         bool `json:"basedn,string,omitempty"`
-	Binddn                         bool `json:"binddn,string,omitempty"`
-	Filter                         bool `json:"filter,string,omitempty"`
-	Attribute                      bool `json:"attribute,string,omitempty"`
-	Database                       bool `json:"database,string,omitempty"`
-	Oraclesid                      bool `json:"oraclesid,string,omitempty"`
-	Sqlquery                       bool `json:"sqlquery,string,omitempty"`
-	Evalrule                       bool `json:"evalrule,string,omitempty"`
-	Snmpoid                        bool `json:"snmpoid,string,omitempty"`
-	Snmpcommunity                  bool `json:"snmpcommunity,string,omitempty"`
-	Snmpthreshold                  bool `json:"snmpthreshold,string,omitempty"`
-	Snmpversion                    bool `json:"snmpversion,string,omitempty"`
-	Metrictable                    bool `json:"metrictable,string,omitempty"`
-	Application                    bool `json:"application,string,omitempty"`
-	Sitepath                       bool `json:"sitepath,string,omitempty"`
-	Storename                      bool `json:"storename,string,omitempty"`
-	Storefrontacctservice          bool `json:"storefrontacctservice,string,omitempty"`
-	Storefrontcheckbackendservices bool `json:"storefrontcheckbackendservices,string,omitempty"`
-	Hostname                       bool `json:"hostname,string,omitempty"`
-	Netprofile                     bool `json:"netprofile,string,omitempty"`
-	Mssqlprotocolversion           bool `json:"mssqlprotocolversion,string,omitempty"`
-	Originhost                     bool `json:"originhost,string,omitempty"`
-	Originrealm                    bool `json:"originrealm,string,omitempty"`
-	Hostipaddress                  bool `json:"hostipaddress,string,omitempty"`
-	Vendorid                       bool `json:"vendorid,string,omitempty"`
-	Productname                    bool `json:"productname,string,omitempty"`
-	Firmwarerevision               bool `json:"firmwarerevision,string,omitempty"`
-	Vendorspecificvendorid         bool `json:"vendorspecificvendorid,string,omitempty"`
-	Kcdaccount                     bool `json:"kcdaccount,string,omitempty"`
-	Storedb                        bool `json:"storedb,string,omitempty"`
-	Trofscode                      bool `json:"trofscode,string,omitempty"`
-	Trofsstring                    bool `json:"trofsstring,string,omitempty"`
-	Sslprofile                     bool `json:"sslprofile,string,omitempty"`
+	Monitorname                    string `json:"monitorname"`
+	Type                           string `json:"type,omitempty"`
+	Action                         bool   `json:"action,omitempty"`
+	Httprequest                    bool   `json:"httprequest,omitempty"`
+	Rtsprequest                    bool   `json:"rtsprequest,omitempty"`
+	Customheaders                  bool   `json:"customheaders,omitempty"`
+	Maxforwards                    bool   `json:"maxforwards,omitempty"`
+	Sipmethod                      bool   `json:"sipmethod,omitempty"`
+	Sipreguri                      bool   `json:"sipreguri,omitempty"`
+	Sipuri                         bool   `json:"sipuri,omitempty"`
+	Send                           bool   `json:"send,omitempty"`
+	Recv                           bool   `json:"recv,omitempty"`
+	Query                          bool   `json:"query,omitempty"`
+	Querytype                      bool   `json:"querytype,omitempty"`
+	Username                       bool   `json:"username,omitempty"`
+	Password                       bool   `json:"password,omitempty"`
+	Secondarypassword              bool   `json:"secondarypassword,omitempty"`
+	Logonpointname                 bool   `json:"logonpointname,omitempty"`
+	Lasversion                     bool   `json:"lasversion,omitempty"`
+	Radkey                         bool   `json:"radkey,omitempty"`
+	Radnasid                       bool   `json:"radnasid,omitempty"`
+	Radnasip                       bool   `json:"radnasip,omitempty"`
+	Radaccounttype                 bool   `json:"radaccounttype,omitempty"`
+	Radframedip                    bool   `json:"radframedip,omitempty"`
+	Radapn                         bool   `json:"radapn,omitempty"`
+	Radmsisdn                      bool   `json:"radmsisdn,omitempty"`
+	Radaccountsession              bool   `json:"radaccountsession,omitempty"`
+	Lrtm                           bool   `json:"lrtm,omitempty"`
+	Deviation                      bool   `json:"deviation,omitempty"`
+	Units1                         bool   `json:"units1,omitempty"`
+	Scriptname                     bool   `json:"scriptname,omitempty"`
+	Scriptargs                     bool   `json:"scriptargs,omitempty"`
+	Validatecred                   bool   `json:"validatecred,omitempty"`
+	Domain                         bool   `json:"domain,omitempty"`
+	Dispatcherip                   bool   `json:"dispatcherip,omitempty"`
+	Dispatcherport                 bool   `json:"dispatcherport,omitempty"`
+	Interval                       bool   `json:"interval,omitempty"`
+	Units3                         bool   `json:"units3,omitempty"`
+	Resptimeout                    bool   `json:"resptimeout,omitempty"`
+	Units4                         bool   `json:"units4,omitempty"`
+	Resptimeoutthresh              bool   `json:"resptimeoutthresh,omitempty"`
+	Retries                        bool   `json:"retries,omitempty"`
+	Failureretries                 bool   `json:"failureretries,omitempty"`
+	Alertretries                   bool   `json:"alertretries,omitempty"`
+	Successretries                 bool   `json:"successretries,omitempty"`
+	Downtime                       bool   `json:"downtime,omitempty"`
+	Units2                         bool   `json:"units2,omitempty"`
+	Destip                         bool   `json:"destip,omitempty"`
+	Destport                       bool   `json:"destport,omitempty"`
+	State                          bool   `json:"state,omitempty"`
+	Reverse                        bool   `json:"reverse,omitempty"`
+	Transparent                    bool   `json:"transparent,omitempty"`
+	Iptunnel                       bool   `json:"iptunnel,omitempty"`
+	Tos                            bool   `json:"tos,omitempty"`
+	Tosid                          bool   `json:"tosid,omitempty"`
+	Secure                         bool   `json:"secure,omitempty"`
+	Group                          bool   `json:"group,omitempty"`
+	Filename                       bool   `json:"filename,omitempty"`
+	Basedn                         bool   `json:"basedn,omitempty"`
+	Binddn                         bool   `json:"binddn,omitempty"`
+	Filter                         bool   `json:"filter,omitempty"`
+	Attribute                      bool   `json:"attribute,omitempty"`
+	Database                       bool   `json:"database,omitempty"`
+	Oraclesid                      bool   `json:"oraclesid,omitempty"`
+	Sqlquery                       bool   `json:"sqlquery,omitempty"`
+	Evalrule                       bool   `json:"evalrule,omitempty"`
+	Snmpoid                        bool   `json:"snmpoid,omitempty"`
+	Snmpcommunity                  bool   `json:"snmpcommunity,omitempty"`
+	Snmpthreshold                  bool   `json:"snmpthreshold,omitempty"`
+	Snmpversion                    bool   `json:"snmpversion,omitempty"`
+	Metrictable                    bool   `json:"metrictable,omitempty"`
+	Application                    bool   `json:"application,omitempty"`
+	Sitepath                       bool   `json:"sitepath,omitempty"`
+	Storename                      bool   `json:"storename,omitempty"`
+	Storefrontacctservice          bool   `json:"storefrontacctservice,omitempty"`
+	Storefrontcheckbackendservices bool   `json:"storefrontcheckbackendservices,omitempty"`
+	Hostname                       bool   `json:"hostname,omitempty"`
+	Netprofile                     bool   `json:"netprofile,omitempty"`
+	Mssqlprotocolversion           bool   `json:"mssqlprotocolversion,omitempty"`
+	Originhost                     bool   `json:"originhost,omitempty"`
+	Originrealm                    bool   `json:"originrealm,omitempty"`
+	Hostipaddress                  bool   `json:"hostipaddress,omitempty"`
+	Vendorid                       bool   `json:"vendorid,omitempty"`
+	Productname                    bool   `json:"productname,omitempty"`
+	Firmwarerevision               bool   `json:"firmwarerevision,omitempty"`
+	Vendorspecificvendorid         bool   `json:"vendorspecificvendorid,omitempty"`
+	Kcdaccount                     bool   `json:"kcdaccount,omitempty"`
+	Storedb                        bool   `json:"storedb,omitempty"`
+	Trofscode                      bool   `json:"trofscode,omitempty"`
+	Trofsstring                    bool   `json:"trofsstring,omitempty"`
+	Sslprofile                     bool   `json:"sslprofile,omitempty"`
 }
 
 type update_lbmonitor struct {
-	Monitorname string `json:"monitorname"`
-	// TODO
-	// Type string `json:"type,omitempty"`
+	Monitorname                    string `json:"monitorname"`
 	Type                           string `json:"type,omitempty"`
 	Action                         string `json:"action,omitempty"`
 	Httprequest                    string `json:"httprequest,omitempty"`
@@ -451,8 +447,6 @@ func (c *NitroClient) UpdateLbmonitor(resource Lbmonitor) error {
 	payload := update_lbmonitor_payload{
 		update_lbmonitor{
 			resource.Monitorname,
-			// TODO
-			// resource.Type,
 			resource.Type,
 			resource.Action,
 			resource.Httprequest,

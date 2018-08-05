@@ -26,13 +26,13 @@ func scpolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type ScpolicyUnset struct {
 	Name              string `json:"name"`
-	Url               bool   `json:"url,string,omitempty"`
-	Rule              bool   `json:"rule,string,omitempty"`
-	Delay             bool   `json:"delay,string,omitempty"`
-	Maxconn           bool   `json:"maxconn,string,omitempty"`
-	Action            bool   `json:"action,string,omitempty"`
-	Altcontentsvcname bool   `json:"altcontentsvcname,string,omitempty"`
-	Altcontentpath    bool   `json:"altcontentpath,string,omitempty"`
+	Url               bool   `json:"url,omitempty"`
+	Rule              bool   `json:"rule,omitempty"`
+	Delay             bool   `json:"delay,omitempty"`
+	Maxconn           bool   `json:"maxconn,omitempty"`
+	Action            bool   `json:"action,omitempty"`
+	Altcontentsvcname bool   `json:"altcontentsvcname,omitempty"`
+	Altcontentpath    bool   `json:"altcontentpath,omitempty"`
 }
 
 type update_scpolicy struct {

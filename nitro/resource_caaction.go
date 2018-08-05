@@ -23,10 +23,10 @@ func caaction_key_to_id_args(key string) (string, map[string]string) {
 
 type CaactionUnset struct {
 	Name         string `json:"name"`
-	Accumressize bool   `json:"accumressize,string,omitempty"`
-	Lbvserver    bool   `json:"lbvserver,string,omitempty"`
-	Comment      bool   `json:"comment,string,omitempty"`
-	Type         bool   `json:"type,string,omitempty"`
+	Accumressize bool   `json:"accumressize,omitempty"`
+	Lbvserver    bool   `json:"lbvserver,omitempty"`
+	Comment      bool   `json:"comment,omitempty"`
+	Type         bool   `json:"type,omitempty"`
 }
 
 type update_caaction struct {

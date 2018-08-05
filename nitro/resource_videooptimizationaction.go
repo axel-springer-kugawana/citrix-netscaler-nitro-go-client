@@ -22,9 +22,9 @@ func videooptimizationaction_key_to_id_args(key string) (string, map[string]stri
 
 type VideooptimizationactionUnset struct {
 	Name    string `json:"name"`
-	Type    bool   `json:"type,string,omitempty"`
-	Rate    bool   `json:"rate,string,omitempty"`
-	Comment bool   `json:"comment,string,omitempty"`
+	Type    bool   `json:"type,omitempty"`
+	Rate    bool   `json:"rate,omitempty"`
+	Comment bool   `json:"comment,omitempty"`
 }
 
 type update_videooptimizationaction struct {

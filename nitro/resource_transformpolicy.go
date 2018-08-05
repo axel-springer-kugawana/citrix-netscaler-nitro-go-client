@@ -23,10 +23,10 @@ func transformpolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type TransformpolicyUnset struct {
 	Name        string `json:"name"`
-	Rule        bool   `json:"rule,string,omitempty"`
-	Profilename bool   `json:"profilename,string,omitempty"`
-	Comment     bool   `json:"comment,string,omitempty"`
-	Logaction   bool   `json:"logaction,string,omitempty"`
+	Rule        bool   `json:"rule,omitempty"`
+	Profilename bool   `json:"profilename,omitempty"`
+	Comment     bool   `json:"comment,omitempty"`
+	Logaction   bool   `json:"logaction,omitempty"`
 }
 
 type update_transformpolicy struct {

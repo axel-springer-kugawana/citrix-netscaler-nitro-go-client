@@ -27,13 +27,13 @@ func rewriteaction_key_to_id_args(key string) (string, map[string]string) {
 
 type RewriteactionUnset struct {
 	Name              string `json:"name"`
-	Target            bool   `json:"target,string,omitempty"`
-	Stringbuilderexpr bool   `json:"stringbuilderexpr,string,omitempty"`
-	Pattern           bool   `json:"pattern,string,omitempty"`
-	Search            bool   `json:"search,string,omitempty"`
-	Bypasssafetycheck bool   `json:"bypasssafetycheck,string,omitempty"`
-	Refinesearch      bool   `json:"refinesearch,string,omitempty"`
-	Comment           bool   `json:"comment,string,omitempty"`
+	Target            bool   `json:"target,omitempty"`
+	Stringbuilderexpr bool   `json:"stringbuilderexpr,omitempty"`
+	Pattern           bool   `json:"pattern,omitempty"`
+	Search            bool   `json:"search,omitempty"`
+	Bypasssafetycheck bool   `json:"bypasssafetycheck,omitempty"`
+	Refinesearch      bool   `json:"refinesearch,omitempty"`
+	Comment           bool   `json:"comment,omitempty"`
 }
 
 type update_rewriteaction struct {

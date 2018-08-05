@@ -22,9 +22,9 @@ func spilloverpolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type SpilloverpolicyUnset struct {
 	Name    string `json:"name"`
-	Rule    bool   `json:"rule,string,omitempty"`
-	Action  bool   `json:"action,string,omitempty"`
-	Comment bool   `json:"comment,string,omitempty"`
+	Rule    bool   `json:"rule,omitempty"`
+	Action  bool   `json:"action,omitempty"`
+	Comment bool   `json:"comment,omitempty"`
 }
 
 type update_spilloverpolicy struct {

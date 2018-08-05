@@ -21,8 +21,8 @@ func appqoepolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type AppqoepolicyUnset struct {
 	Name   string `json:"name"`
-	Rule   bool   `json:"rule,string,omitempty"`
-	Action bool   `json:"action,string,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
 }
 
 type update_appqoepolicy struct {

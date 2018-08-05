@@ -66,33 +66,35 @@ func {{$.Name}}_key_to_id_args (key {{if $.Schema.Key.Fields}}{{$.Name|name}}Key
 type {{$.Name|name}}Unset struct {
         {{$.Schema.Key.Name|title}} string `json:"{{$.Schema.Key.Name}}"`
         {{range $field := $.Schema.Key.Fields -}}
-        // TODO
         {{if eq (index $.Schema.Fields $field) "double" -}}
-        // {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
         {{else -}}
-        // {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
         {{end -}}
         {{end -}}
         {{range $field := $.Schema.Update -}}
-        {{$field|title}} bool `json:"{{$field}},string,omitempty"`
+        {{if not (is_in $field $.Schema.Key.Fields) -}}
+        {{$field|title}} bool `json:"{{$field}},omitempty"`
+        {{end -}}
         {{end -}}
 }
 
 type update_{{$.Name}} struct {
         {{$.Schema.Key.Name|title}} string `json:"{{$.Schema.Key.Name}}"`
         {{range $field := $.Schema.Key.Fields -}}
-        // TODO
-        {{if eq (index $.Schema.Fields $field) "double" -}}
-        // {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
-        {{else -}}
-        // {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
-        {{end -}}
-        {{end -}}
-        {{range $field := $.Schema.Update -}}
         {{if eq (index $.Schema.Fields $field) "double" -}}
         {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
         {{else -}}
         {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+        {{range $field := $.Schema.Update -}}
+        {{if not (is_in $field $.Schema.Key.Fields) -}}
+        {{if eq (index $.Schema.Fields $field) "double" -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
         {{end -}}
         {{end -}}
 }
@@ -246,11 +248,12 @@ func (c *NitroClient) Update{{$.Name|name}} (resource {{$.Name|name}}) error {
                 update_{{$.Name}} {
                         resource.{{$.Schema.Key.Name|title}},
                         {{range $field := $.Schema.Key.Fields -}}
-                        // TODO
-                        // resource.{{$field|title}},
+                        resource.{{$field|title}},
                         {{end -}}
                         {{range $field := $.Schema.Update -}}
+                        {{if not (is_in $field $.Schema.Key.Fields) -}}
                         resource.{{$field|title}},
+                        {{end -}}
                         {{end -}}
                 },
         }

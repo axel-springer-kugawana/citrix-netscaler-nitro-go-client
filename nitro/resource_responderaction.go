@@ -26,12 +26,12 @@ func responderaction_key_to_id_args(key string) (string, map[string]string) {
 
 type ResponderactionUnset struct {
 	Name               string `json:"name"`
-	Target             bool   `json:"target,string,omitempty"`
-	Bypasssafetycheck  bool   `json:"bypasssafetycheck,string,omitempty"`
-	Htmlpage           bool   `json:"htmlpage,string,omitempty"`
-	Responsestatuscode bool   `json:"responsestatuscode,string,omitempty"`
-	Reasonphrase       bool   `json:"reasonphrase,string,omitempty"`
-	Comment            bool   `json:"comment,string,omitempty"`
+	Target             bool   `json:"target,omitempty"`
+	Bypasssafetycheck  bool   `json:"bypasssafetycheck,omitempty"`
+	Htmlpage           bool   `json:"htmlpage,omitempty"`
+	Responsestatuscode bool   `json:"responsestatuscode,omitempty"`
+	Reasonphrase       bool   `json:"reasonphrase,omitempty"`
+	Comment            bool   `json:"comment,omitempty"`
 }
 
 type update_responderaction struct {

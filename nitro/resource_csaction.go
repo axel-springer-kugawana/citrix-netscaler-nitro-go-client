@@ -23,10 +23,10 @@ func csaction_key_to_id_args(key string) (string, map[string]string) {
 
 type CsactionUnset struct {
 	Name              string `json:"name"`
-	Targetlbvserver   bool   `json:"targetlbvserver,string,omitempty"`
-	Targetvserver     bool   `json:"targetvserver,string,omitempty"`
-	Targetvserverexpr bool   `json:"targetvserverexpr,string,omitempty"`
-	Comment           bool   `json:"comment,string,omitempty"`
+	Targetlbvserver   bool   `json:"targetlbvserver,omitempty"`
+	Targetvserver     bool   `json:"targetvserver,omitempty"`
+	Targetvserverexpr bool   `json:"targetvserverexpr,omitempty"`
+	Comment           bool   `json:"comment,omitempty"`
 }
 
 type update_csaction struct {

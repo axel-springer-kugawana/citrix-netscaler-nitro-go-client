@@ -23,9 +23,9 @@ func cmpaction_key_to_id_args(key string) (string, map[string]string) {
 
 type CmpactionUnset struct {
 	Name            string `json:"name"`
-	Cmptype         bool   `json:"cmptype,string,omitempty"`
-	Addvaryheader   bool   `json:"addvaryheader,string,omitempty"`
-	Varyheadervalue bool   `json:"varyheadervalue,string,omitempty"`
+	Cmptype         bool   `json:"cmptype,omitempty"`
+	Addvaryheader   bool   `json:"addvaryheader,omitempty"`
+	Varyheadervalue bool   `json:"varyheadervalue,omitempty"`
 }
 
 type update_cmpaction struct {

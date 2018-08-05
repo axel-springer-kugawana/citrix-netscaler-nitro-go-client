@@ -23,10 +23,10 @@ func policyexpression_key_to_id_args(key string) (string, map[string]string) {
 
 type PolicyexpressionUnset struct {
 	Name                  string `json:"name"`
-	Value                 bool   `json:"value,string,omitempty"`
-	Description           bool   `json:"description,string,omitempty"`
-	Comment               bool   `json:"comment,string,omitempty"`
-	Clientsecuritymessage bool   `json:"clientsecuritymessage,string,omitempty"`
+	Value                 bool   `json:"value,omitempty"`
+	Description           bool   `json:"description,omitempty"`
+	Comment               bool   `json:"comment,omitempty"`
+	Clientsecuritymessage bool   `json:"clientsecuritymessage,omitempty"`
 }
 
 type update_policyexpression struct {

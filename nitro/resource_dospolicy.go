@@ -21,8 +21,8 @@ func dospolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type DospolicyUnset struct {
 	Name          string `json:"name"`
-	Qdepth        bool   `json:"qdepth,string,omitempty"`
-	Cltdetectrate bool   `json:"cltdetectrate,string,omitempty"`
+	Qdepth        bool   `json:"qdepth,omitempty"`
+	Cltdetectrate bool   `json:"cltdetectrate,omitempty"`
 }
 
 type update_dospolicy struct {

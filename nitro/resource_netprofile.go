@@ -23,9 +23,9 @@ func netprofile_key_to_id_args(key string) (string, map[string]string) {
 
 type NetprofileUnset struct {
 	Name             string `json:"name"`
-	Srcip            bool   `json:"srcip,string,omitempty"`
-	Srcippersistency bool   `json:"srcippersistency,string,omitempty"`
-	Overridelsn      bool   `json:"overridelsn,string,omitempty"`
+	Srcip            bool   `json:"srcip,omitempty"`
+	Srcippersistency bool   `json:"srcippersistency,omitempty"`
+	Overridelsn      bool   `json:"overridelsn,omitempty"`
 }
 
 type update_netprofile struct {

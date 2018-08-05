@@ -23,7 +23,7 @@ func lbwlm_key_to_id_args(key string) (string, map[string]string) {
 
 type LbwlmUnset struct {
 	Wlmname   string `json:"wlmname"`
-	Katimeout bool   `json:"katimeout,string,omitempty"`
+	Katimeout bool   `json:"katimeout,omitempty"`
 }
 
 type update_lbwlm struct {

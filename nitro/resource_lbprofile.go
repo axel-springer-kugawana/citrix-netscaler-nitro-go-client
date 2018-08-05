@@ -25,12 +25,12 @@ func lbprofile_key_to_id_args(key string) (string, map[string]string) {
 
 type LbprofileUnset struct {
 	Lbprofilename                 string `json:"lbprofilename"`
-	Cookiepassphrase              bool   `json:"cookiepassphrase,string,omitempty"`
-	Dbslb                         bool   `json:"dbslb,string,omitempty"`
-	Processlocal                  bool   `json:"processlocal,string,omitempty"`
-	Httponlycookieflag            bool   `json:"httponlycookieflag,string,omitempty"`
-	Usesecuredpersistencecookie   bool   `json:"usesecuredpersistencecookie,string,omitempty"`
-	Useencryptedpersistencecookie bool   `json:"useencryptedpersistencecookie,string,omitempty"`
+	Cookiepassphrase              bool   `json:"cookiepassphrase,omitempty"`
+	Dbslb                         bool   `json:"dbslb,omitempty"`
+	Processlocal                  bool   `json:"processlocal,omitempty"`
+	Httponlycookieflag            bool   `json:"httponlycookieflag,omitempty"`
+	Usesecuredpersistencecookie   bool   `json:"usesecuredpersistencecookie,omitempty"`
+	Useencryptedpersistencecookie bool   `json:"useencryptedpersistencecookie,omitempty"`
 }
 
 type update_lbprofile struct {

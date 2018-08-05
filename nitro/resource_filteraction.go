@@ -24,10 +24,10 @@ func filteraction_key_to_id_args(key string) (string, map[string]string) {
 
 type FilteractionUnset struct {
 	Name        string `json:"name"`
-	Servicename bool   `json:"servicename,string,omitempty"`
-	Value       bool   `json:"value,string,omitempty"`
-	Respcode    bool   `json:"respcode,string,omitempty"`
-	Page        bool   `json:"page,string,omitempty"`
+	Servicename bool   `json:"servicename,omitempty"`
+	Value       bool   `json:"value,omitempty"`
+	Respcode    bool   `json:"respcode,omitempty"`
+	Page        bool   `json:"page,omitempty"`
 }
 
 type update_filteraction struct {

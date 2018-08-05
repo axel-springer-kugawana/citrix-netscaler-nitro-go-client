@@ -29,16 +29,16 @@ func lbgroup_key_to_id_args(key string) (string, map[string]string) {
 
 type LbgroupUnset struct {
 	Name                     string `json:"name"`
-	Persistencetype          bool   `json:"persistencetype,string,omitempty"`
-	Persistencebackup        bool   `json:"persistencebackup,string,omitempty"`
-	Backuppersistencetimeout bool   `json:"backuppersistencetimeout,string,omitempty"`
-	Persistmask              bool   `json:"persistmask,string,omitempty"`
-	Cookiename               bool   `json:"cookiename,string,omitempty"`
-	V6persistmasklen         bool   `json:"v6persistmasklen,string,omitempty"`
-	Cookiedomain             bool   `json:"cookiedomain,string,omitempty"`
-	Timeout                  bool   `json:"timeout,string,omitempty"`
-	Rule                     bool   `json:"rule,string,omitempty"`
-	Usevserverpersistency    bool   `json:"usevserverpersistency,string,omitempty"`
+	Persistencetype          bool   `json:"persistencetype,omitempty"`
+	Persistencebackup        bool   `json:"persistencebackup,omitempty"`
+	Backuppersistencetimeout bool   `json:"backuppersistencetimeout,omitempty"`
+	Persistmask              bool   `json:"persistmask,omitempty"`
+	Cookiename               bool   `json:"cookiename,omitempty"`
+	V6persistmasklen         bool   `json:"v6persistmasklen,omitempty"`
+	Cookiedomain             bool   `json:"cookiedomain,omitempty"`
+	Timeout                  bool   `json:"timeout,omitempty"`
+	Rule                     bool   `json:"rule,omitempty"`
+	Usevserverpersistency    bool   `json:"usevserverpersistency,omitempty"`
 }
 
 type update_lbgroup struct {

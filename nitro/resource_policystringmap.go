@@ -20,7 +20,7 @@ func policystringmap_key_to_id_args(key string) (string, map[string]string) {
 
 type PolicystringmapUnset struct {
 	Name    string `json:"name"`
-	Comment bool   `json:"comment,string,omitempty"`
+	Comment bool   `json:"comment,omitempty"`
 }
 
 type update_policystringmap struct {

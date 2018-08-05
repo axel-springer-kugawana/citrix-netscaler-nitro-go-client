@@ -21,8 +21,8 @@ func auditsyslogpolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type AuditsyslogpolicyUnset struct {
 	Name   string `json:"name"`
-	Rule   bool   `json:"rule,string,omitempty"`
-	Action bool   `json:"action,string,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
 }
 
 type update_auditsyslogpolicy struct {

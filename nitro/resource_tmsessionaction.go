@@ -29,16 +29,16 @@ func tmsessionaction_key_to_id_args(key string) (string, map[string]string) {
 
 type TmsessionactionUnset struct {
 	Name                       string `json:"name"`
-	Sesstimeout                bool   `json:"sesstimeout,string,omitempty"`
-	Defaultauthorizationaction bool   `json:"defaultauthorizationaction,string,omitempty"`
-	Sso                        bool   `json:"sso,string,omitempty"`
-	Ssocredential              bool   `json:"ssocredential,string,omitempty"`
-	Ssodomain                  bool   `json:"ssodomain,string,omitempty"`
-	Kcdaccount                 bool   `json:"kcdaccount,string,omitempty"`
-	Httponlycookie             bool   `json:"httponlycookie,string,omitempty"`
-	Persistentcookie           bool   `json:"persistentcookie,string,omitempty"`
-	Persistentcookievalidity   bool   `json:"persistentcookievalidity,string,omitempty"`
-	Homepage                   bool   `json:"homepage,string,omitempty"`
+	Sesstimeout                bool   `json:"sesstimeout,omitempty"`
+	Defaultauthorizationaction bool   `json:"defaultauthorizationaction,omitempty"`
+	Sso                        bool   `json:"sso,omitempty"`
+	Ssocredential              bool   `json:"ssocredential,omitempty"`
+	Ssodomain                  bool   `json:"ssodomain,omitempty"`
+	Kcdaccount                 bool   `json:"kcdaccount,omitempty"`
+	Httponlycookie             bool   `json:"httponlycookie,omitempty"`
+	Persistentcookie           bool   `json:"persistentcookie,omitempty"`
+	Persistentcookievalidity   bool   `json:"persistentcookievalidity,omitempty"`
+	Homepage                   bool   `json:"homepage,omitempty"`
 }
 
 type update_tmsessionaction struct {

@@ -35,22 +35,22 @@ func auditnslogaction_key_to_id_args(key string) (string, map[string]string) {
 
 type AuditnslogactionUnset struct {
 	Name                string `json:"name"`
-	Serverip            bool   `json:"serverip,string,omitempty"`
-	Serverdomainname    bool   `json:"serverdomainname,string,omitempty"`
-	Domainresolveretry  bool   `json:"domainresolveretry,string,omitempty"`
-	Serverport          bool   `json:"serverport,string,omitempty"`
-	Loglevel            bool   `json:"loglevel,string,omitempty"`
-	Dateformat          bool   `json:"dateformat,string,omitempty"`
-	Logfacility         bool   `json:"logfacility,string,omitempty"`
-	Tcp                 bool   `json:"tcp,string,omitempty"`
-	Acl                 bool   `json:"acl,string,omitempty"`
-	Timezone            bool   `json:"timezone,string,omitempty"`
-	Userdefinedauditlog bool   `json:"userdefinedauditlog,string,omitempty"`
-	Appflowexport       bool   `json:"appflowexport,string,omitempty"`
-	Lsn                 bool   `json:"lsn,string,omitempty"`
-	Alg                 bool   `json:"alg,string,omitempty"`
-	Subscriberlog       bool   `json:"subscriberlog,string,omitempty"`
-	Sslinterception     bool   `json:"sslinterception,string,omitempty"`
+	Serverip            bool   `json:"serverip,omitempty"`
+	Serverdomainname    bool   `json:"serverdomainname,omitempty"`
+	Domainresolveretry  bool   `json:"domainresolveretry,omitempty"`
+	Serverport          bool   `json:"serverport,omitempty"`
+	Loglevel            bool   `json:"loglevel,omitempty"`
+	Dateformat          bool   `json:"dateformat,omitempty"`
+	Logfacility         bool   `json:"logfacility,omitempty"`
+	Tcp                 bool   `json:"tcp,omitempty"`
+	Acl                 bool   `json:"acl,omitempty"`
+	Timezone            bool   `json:"timezone,omitempty"`
+	Userdefinedauditlog bool   `json:"userdefinedauditlog,omitempty"`
+	Appflowexport       bool   `json:"appflowexport,omitempty"`
+	Lsn                 bool   `json:"lsn,omitempty"`
+	Alg                 bool   `json:"alg,omitempty"`
+	Subscriberlog       bool   `json:"subscriberlog,omitempty"`
+	Sslinterception     bool   `json:"sslinterception,omitempty"`
 }
 
 type update_auditnslogaction struct {

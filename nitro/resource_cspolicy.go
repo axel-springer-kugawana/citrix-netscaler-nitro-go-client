@@ -24,11 +24,11 @@ func cspolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type CspolicyUnset struct {
 	Policyname string `json:"policyname"`
-	Url        bool   `json:"url,string,omitempty"`
-	Rule       bool   `json:"rule,string,omitempty"`
-	Domain     bool   `json:"domain,string,omitempty"`
-	Action     bool   `json:"action,string,omitempty"`
-	Logaction  bool   `json:"logaction,string,omitempty"`
+	Url        bool   `json:"url,omitempty"`
+	Rule       bool   `json:"rule,omitempty"`
+	Domain     bool   `json:"domain,omitempty"`
+	Action     bool   `json:"action,omitempty"`
+	Logaction  bool   `json:"logaction,omitempty"`
 }
 
 type update_cspolicy struct {

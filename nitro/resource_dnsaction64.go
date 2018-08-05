@@ -22,9 +22,9 @@ func dnsaction64_key_to_id_args(key string) (string, map[string]string) {
 
 type Dnsaction64Unset struct {
 	Actionname  string `json:"actionname"`
-	Prefix      bool   `json:"prefix,string,omitempty"`
-	Mappedrule  bool   `json:"mappedrule,string,omitempty"`
-	Excluderule bool   `json:"excluderule,string,omitempty"`
+	Prefix      bool   `json:"prefix,omitempty"`
+	Mappedrule  bool   `json:"mappedrule,omitempty"`
+	Excluderule bool   `json:"excluderule,omitempty"`
 }
 
 type update_dnsaction64 struct {

@@ -27,14 +27,14 @@ func dnsprofile_key_to_id_args(key string) (string, map[string]string) {
 
 type DnsprofileUnset struct {
 	Dnsprofilename         string `json:"dnsprofilename"`
-	Dnsquerylogging        bool   `json:"dnsquerylogging,string,omitempty"`
-	Dnsanswerseclogging    bool   `json:"dnsanswerseclogging,string,omitempty"`
-	Dnsextendedlogging     bool   `json:"dnsextendedlogging,string,omitempty"`
-	Dnserrorlogging        bool   `json:"dnserrorlogging,string,omitempty"`
-	Cacherecords           bool   `json:"cacherecords,string,omitempty"`
-	Cachenegativeresponses bool   `json:"cachenegativeresponses,string,omitempty"`
-	Dropmultiqueryrequest  bool   `json:"dropmultiqueryrequest,string,omitempty"`
-	Cacheecsresponses      bool   `json:"cacheecsresponses,string,omitempty"`
+	Dnsquerylogging        bool   `json:"dnsquerylogging,omitempty"`
+	Dnsanswerseclogging    bool   `json:"dnsanswerseclogging,omitempty"`
+	Dnsextendedlogging     bool   `json:"dnsextendedlogging,omitempty"`
+	Dnserrorlogging        bool   `json:"dnserrorlogging,omitempty"`
+	Cacherecords           bool   `json:"cacherecords,omitempty"`
+	Cachenegativeresponses bool   `json:"cachenegativeresponses,omitempty"`
+	Dropmultiqueryrequest  bool   `json:"dropmultiqueryrequest,omitempty"`
+	Cacheecsresponses      bool   `json:"cacheecsresponses,omitempty"`
 }
 
 type update_dnsprofile struct {

@@ -25,12 +25,12 @@ func cachepolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type CachepolicyUnset struct {
 	Policyname   string `json:"policyname"`
-	Rule         bool   `json:"rule,string,omitempty"`
-	Action       bool   `json:"action,string,omitempty"`
-	Storeingroup bool   `json:"storeingroup,string,omitempty"`
-	Invalgroups  bool   `json:"invalgroups,string,omitempty"`
-	Invalobjects bool   `json:"invalobjects,string,omitempty"`
-	Undefaction  bool   `json:"undefaction,string,omitempty"`
+	Rule         bool   `json:"rule,omitempty"`
+	Action       bool   `json:"action,omitempty"`
+	Storeingroup bool   `json:"storeingroup,omitempty"`
+	Invalgroups  bool   `json:"invalgroups,omitempty"`
+	Invalobjects bool   `json:"invalobjects,omitempty"`
+	Undefaction  bool   `json:"undefaction,omitempty"`
 }
 
 type update_cachepolicy struct {

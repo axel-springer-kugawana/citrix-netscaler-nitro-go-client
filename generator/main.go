@@ -19,6 +19,7 @@ func main() {
 			"title":   strings.Title,
 			"go_type": nitro.GoType,
 			"name":    nitro.Name,
+			"is_in":   nitro.IsIn,
 		}
 
 		templates := template.Must(template.New("").Funcs(funcMap).ParseFiles("templates/resource.tmpl", "templates/binding.tmpl"))

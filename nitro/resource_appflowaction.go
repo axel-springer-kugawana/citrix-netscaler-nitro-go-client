@@ -29,14 +29,14 @@ func appflowaction_key_to_id_args(key string) (string, map[string]string) {
 
 type AppflowactionUnset struct {
 	Name                   string `json:"name"`
-	Collectors             bool   `json:"collectors,string,omitempty"`
-	Clientsidemeasurements bool   `json:"clientsidemeasurements,string,omitempty"`
-	Comment                bool   `json:"comment,string,omitempty"`
-	Pagetracking           bool   `json:"pagetracking,string,omitempty"`
-	Webinsight             bool   `json:"webinsight,string,omitempty"`
-	Securityinsight        bool   `json:"securityinsight,string,omitempty"`
-	Videoanalytics         bool   `json:"videoanalytics,string,omitempty"`
-	Distributionalgorithm  bool   `json:"distributionalgorithm,string,omitempty"`
+	Collectors             bool   `json:"collectors,omitempty"`
+	Clientsidemeasurements bool   `json:"clientsidemeasurements,omitempty"`
+	Comment                bool   `json:"comment,omitempty"`
+	Pagetracking           bool   `json:"pagetracking,omitempty"`
+	Webinsight             bool   `json:"webinsight,omitempty"`
+	Securityinsight        bool   `json:"securityinsight,omitempty"`
+	Videoanalytics         bool   `json:"videoanalytics,omitempty"`
+	Distributionalgorithm  bool   `json:"distributionalgorithm,omitempty"`
 }
 
 type update_appflowaction struct {

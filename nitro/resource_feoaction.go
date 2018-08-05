@@ -41,28 +41,28 @@ func feoaction_key_to_id_args(key string) (string, map[string]string) {
 
 type FeoactionUnset struct {
 	Name                   string `json:"name"`
-	Pageextendcache        bool   `json:"pageextendcache,string,omitempty"`
-	Cachemaxage            bool   `json:"cachemaxage,string,omitempty"`
-	Imgshrinktoattrib      bool   `json:"imgshrinktoattrib,string,omitempty"`
-	Imggiftopng            bool   `json:"imggiftopng,string,omitempty"`
-	Imgtowebp              bool   `json:"imgtowebp,string,omitempty"`
-	Imgtojpegxr            bool   `json:"imgtojpegxr,string,omitempty"`
-	Imginline              bool   `json:"imginline,string,omitempty"`
-	Cssimginline           bool   `json:"cssimginline,string,omitempty"`
-	Jpgoptimize            bool   `json:"jpgoptimize,string,omitempty"`
-	Imglazyload            bool   `json:"imglazyload,string,omitempty"`
-	Cssminify              bool   `json:"cssminify,string,omitempty"`
-	Cssinline              bool   `json:"cssinline,string,omitempty"`
-	Csscombine             bool   `json:"csscombine,string,omitempty"`
-	Convertimporttolink    bool   `json:"convertimporttolink,string,omitempty"`
-	Jsminify               bool   `json:"jsminify,string,omitempty"`
-	Jsinline               bool   `json:"jsinline,string,omitempty"`
-	Htmlminify             bool   `json:"htmlminify,string,omitempty"`
-	Cssmovetohead          bool   `json:"cssmovetohead,string,omitempty"`
-	Jsmovetoend            bool   `json:"jsmovetoend,string,omitempty"`
-	Domainsharding         bool   `json:"domainsharding,string,omitempty"`
-	Dnsshards              bool   `json:"dnsshards,string,omitempty"`
-	Clientsidemeasurements bool   `json:"clientsidemeasurements,string,omitempty"`
+	Pageextendcache        bool   `json:"pageextendcache,omitempty"`
+	Cachemaxage            bool   `json:"cachemaxage,omitempty"`
+	Imgshrinktoattrib      bool   `json:"imgshrinktoattrib,omitempty"`
+	Imggiftopng            bool   `json:"imggiftopng,omitempty"`
+	Imgtowebp              bool   `json:"imgtowebp,omitempty"`
+	Imgtojpegxr            bool   `json:"imgtojpegxr,omitempty"`
+	Imginline              bool   `json:"imginline,omitempty"`
+	Cssimginline           bool   `json:"cssimginline,omitempty"`
+	Jpgoptimize            bool   `json:"jpgoptimize,omitempty"`
+	Imglazyload            bool   `json:"imglazyload,omitempty"`
+	Cssminify              bool   `json:"cssminify,omitempty"`
+	Cssinline              bool   `json:"cssinline,omitempty"`
+	Csscombine             bool   `json:"csscombine,omitempty"`
+	Convertimporttolink    bool   `json:"convertimporttolink,omitempty"`
+	Jsminify               bool   `json:"jsminify,omitempty"`
+	Jsinline               bool   `json:"jsinline,omitempty"`
+	Htmlminify             bool   `json:"htmlminify,omitempty"`
+	Cssmovetohead          bool   `json:"cssmovetohead,omitempty"`
+	Jsmovetoend            bool   `json:"jsmovetoend,omitempty"`
+	Domainsharding         bool   `json:"domainsharding,omitempty"`
+	Dnsshards              bool   `json:"dnsshards,omitempty"`
+	Clientsidemeasurements bool   `json:"clientsidemeasurements,omitempty"`
 }
 
 type update_feoaction struct {

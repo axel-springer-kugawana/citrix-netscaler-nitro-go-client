@@ -23,9 +23,9 @@ func appflowcollector_key_to_id_args(key string) (string, map[string]string) {
 
 type AppflowcollectorUnset struct {
 	Name       string `json:"name"`
-	Ipaddress  bool   `json:"ipaddress,string,omitempty"`
-	Port       bool   `json:"port,string,omitempty"`
-	Netprofile bool   `json:"netprofile,string,omitempty"`
+	Ipaddress  bool   `json:"ipaddress,omitempty"`
+	Port       bool   `json:"port,omitempty"`
+	Netprofile bool   `json:"netprofile,omitempty"`
 }
 
 type update_appflowcollector struct {

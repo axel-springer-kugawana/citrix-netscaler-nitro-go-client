@@ -22,9 +22,9 @@ func filterpolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type FilterpolicyUnset struct {
 	Name      string `json:"name"`
-	Rule      bool   `json:"rule,string,omitempty"`
-	Reqaction bool   `json:"reqaction,string,omitempty"`
-	Resaction bool   `json:"resaction,string,omitempty"`
+	Rule      bool   `json:"rule,omitempty"`
+	Reqaction bool   `json:"reqaction,omitempty"`
+	Resaction bool   `json:"resaction,omitempty"`
 }
 
 type update_filterpolicy struct {

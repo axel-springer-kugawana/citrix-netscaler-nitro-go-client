@@ -30,17 +30,17 @@ func tmtrafficaction_key_to_id_args(key string) (string, map[string]string) {
 
 type TmtrafficactionUnset struct {
 	Name             string `json:"name"`
-	Apptimeout       bool   `json:"apptimeout,string,omitempty"`
-	Sso              bool   `json:"sso,string,omitempty"`
-	Formssoaction    bool   `json:"formssoaction,string,omitempty"`
-	Persistentcookie bool   `json:"persistentcookie,string,omitempty"`
-	Initiatelogout   bool   `json:"initiatelogout,string,omitempty"`
-	Kcdaccount       bool   `json:"kcdaccount,string,omitempty"`
-	Samlssoprofile   bool   `json:"samlssoprofile,string,omitempty"`
-	Forcedtimeout    bool   `json:"forcedtimeout,string,omitempty"`
-	Forcedtimeoutval bool   `json:"forcedtimeoutval,string,omitempty"`
-	Userexpression   bool   `json:"userexpression,string,omitempty"`
-	Passwdexpression bool   `json:"passwdexpression,string,omitempty"`
+	Apptimeout       bool   `json:"apptimeout,omitempty"`
+	Sso              bool   `json:"sso,omitempty"`
+	Formssoaction    bool   `json:"formssoaction,omitempty"`
+	Persistentcookie bool   `json:"persistentcookie,omitempty"`
+	Initiatelogout   bool   `json:"initiatelogout,omitempty"`
+	Kcdaccount       bool   `json:"kcdaccount,omitempty"`
+	Samlssoprofile   bool   `json:"samlssoprofile,omitempty"`
+	Forcedtimeout    bool   `json:"forcedtimeout,omitempty"`
+	Forcedtimeoutval bool   `json:"forcedtimeoutval,omitempty"`
+	Userexpression   bool   `json:"userexpression,omitempty"`
+	Passwdexpression bool   `json:"passwdexpression,omitempty"`
 }
 
 type update_tmtrafficaction struct {

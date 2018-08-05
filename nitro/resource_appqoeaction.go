@@ -31,16 +31,16 @@ func appqoeaction_key_to_id_args(key string) (string, map[string]string) {
 
 type AppqoeactionUnset struct {
 	Name              string `json:"name"`
-	Priority          bool   `json:"priority,string,omitempty"`
-	Altcontentsvcname bool   `json:"altcontentsvcname,string,omitempty"`
-	Altcontentpath    bool   `json:"altcontentpath,string,omitempty"`
-	Polqdepth         bool   `json:"polqdepth,string,omitempty"`
-	Priqdepth         bool   `json:"priqdepth,string,omitempty"`
-	Maxconn           bool   `json:"maxconn,string,omitempty"`
-	Delay             bool   `json:"delay,string,omitempty"`
-	Dostrigexpression bool   `json:"dostrigexpression,string,omitempty"`
-	Dosaction         bool   `json:"dosaction,string,omitempty"`
-	Tcpprofile        bool   `json:"tcpprofile,string,omitempty"`
+	Priority          bool   `json:"priority,omitempty"`
+	Altcontentsvcname bool   `json:"altcontentsvcname,omitempty"`
+	Altcontentpath    bool   `json:"altcontentpath,omitempty"`
+	Polqdepth         bool   `json:"polqdepth,omitempty"`
+	Priqdepth         bool   `json:"priqdepth,omitempty"`
+	Maxconn           bool   `json:"maxconn,omitempty"`
+	Delay             bool   `json:"delay,omitempty"`
+	Dostrigexpression bool   `json:"dostrigexpression,omitempty"`
+	Dosaction         bool   `json:"dosaction,omitempty"`
+	Tcpprofile        bool   `json:"tcpprofile,omitempty"`
 }
 
 type update_appqoeaction struct {

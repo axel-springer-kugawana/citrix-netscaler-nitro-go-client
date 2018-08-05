@@ -22,9 +22,9 @@ func transformprofile_key_to_id_args(key string) (string, map[string]string) {
 
 type TransformprofileUnset struct {
 	Name                      string `json:"name"`
-	Type                      bool   `json:"type,string,omitempty"`
-	Onlytransformabsurlinbody bool   `json:"onlytransformabsurlinbody,string,omitempty"`
-	Comment                   bool   `json:"comment,string,omitempty"`
+	Type                      bool   `json:"type,omitempty"`
+	Onlytransformabsurlinbody bool   `json:"onlytransformabsurlinbody,omitempty"`
+	Comment                   bool   `json:"comment,omitempty"`
 }
 
 type update_transformprofile struct {

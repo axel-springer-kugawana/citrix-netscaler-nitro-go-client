@@ -28,11 +28,11 @@ func server_key_to_id_args(key string) (string, map[string]string) {
 
 type ServerUnset struct {
 	Name               string `json:"name"`
-	Comment            bool   `json:"comment,string,omitempty"`
-	Domainresolveretry bool   `json:"domainresolveretry,string,omitempty"`
-	Ipaddress          bool   `json:"ipaddress,string,omitempty"`
-	Translationip      bool   `json:"translationip,string,omitempty"`
-	Translationmask    bool   `json:"translationmask,string,omitempty"`
+	Comment            bool   `json:"comment,omitempty"`
+	Domainresolveretry bool   `json:"domainresolveretry,omitempty"`
+	Ipaddress          bool   `json:"ipaddress,omitempty"`
+	Translationip      bool   `json:"translationip,omitempty"`
+	Translationmask    bool   `json:"translationmask,omitempty"`
 }
 
 type update_server struct {

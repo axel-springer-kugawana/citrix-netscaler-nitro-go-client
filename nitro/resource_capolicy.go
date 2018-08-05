@@ -24,11 +24,11 @@ func capolicy_key_to_id_args(key string) (string, map[string]string) {
 
 type CapolicyUnset struct {
 	Name        string `json:"name"`
-	Rule        bool   `json:"rule,string,omitempty"`
-	Action      bool   `json:"action,string,omitempty"`
-	Comment     bool   `json:"comment,string,omitempty"`
-	Logaction   bool   `json:"logaction,string,omitempty"`
-	Undefaction bool   `json:"undefaction,string,omitempty"`
+	Rule        bool   `json:"rule,omitempty"`
+	Action      bool   `json:"action,omitempty"`
+	Comment     bool   `json:"comment,omitempty"`
+	Logaction   bool   `json:"logaction,omitempty"`
+	Undefaction bool   `json:"undefaction,omitempty"`
 }
 
 type update_capolicy struct {

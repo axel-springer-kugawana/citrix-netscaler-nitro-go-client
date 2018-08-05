@@ -89,13 +89,14 @@ func (c *NitroClient) CountLbvserverTmtrafficpolicyBinding(id string) (int, erro
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverTmtrafficpolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverTmtrafficpolicyBinding(key LbvserverTmtrafficpolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverTmtrafficpolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverTmtrafficpolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverTmtrafficpolicyBinding() ([]LbvserverTmtrafficpolicyBinding, error) {

@@ -82,13 +82,14 @@ func (c *NitroClient) CountPolicydatasetValueBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPolicydatasetValueBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsPolicydatasetValueBinding(key PolicydatasetValueBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountPolicydatasetValueBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountPolicydatasetValueBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListPolicydatasetValueBinding() ([]PolicydatasetValueBinding, error) {

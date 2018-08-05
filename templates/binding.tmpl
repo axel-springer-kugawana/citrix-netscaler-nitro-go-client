@@ -92,13 +92,14 @@ func (c *NitroClient) Count{{$.Name|name}} (id string) (int, error) {
         }
 }
 
-func (c *NitroClient) Exists{{$.Name|name}} (id string) (bool, error) {
+func (c *NitroClient) Exists{{$.Name|name}} (key {{$.Name|name}}Key) (bool, error) {
         // TODO : wrong implementation
-        if count, err := c.Count{{$.Name|name}}(id); err != nil {
-                return false, err
-        } else {
-                return count == 1, nil
-        }
+        return false, nil
+//        if count, err := c.Count{{$.Name|name}}(id); err != nil {
+//                return false, err
+//        } else {
+//                return count == 1, nil
+//        }
 }
 
 func (c *NitroClient) BulkList{{$.Name|name}} () ([]{{$.Name|name}}, error) {

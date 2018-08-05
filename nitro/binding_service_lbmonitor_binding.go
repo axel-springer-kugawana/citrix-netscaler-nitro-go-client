@@ -82,13 +82,14 @@ func (c *NitroClient) CountServiceLbmonitorBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsServiceLbmonitorBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsServiceLbmonitorBinding(key ServiceLbmonitorBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountServiceLbmonitorBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountServiceLbmonitorBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListServiceLbmonitorBinding() ([]ServiceLbmonitorBinding, error) {

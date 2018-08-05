@@ -89,13 +89,14 @@ func (c *NitroClient) CountLbvserverAuditsyslogpolicyBinding(id string) (int, er
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverAuditsyslogpolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverAuditsyslogpolicyBinding(key LbvserverAuditsyslogpolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverAuditsyslogpolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverAuditsyslogpolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverAuditsyslogpolicyBinding() ([]LbvserverAuditsyslogpolicyBinding, error) {

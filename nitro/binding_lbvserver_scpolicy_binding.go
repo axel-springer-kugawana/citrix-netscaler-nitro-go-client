@@ -89,13 +89,14 @@ func (c *NitroClient) CountLbvserverScpolicyBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverScpolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverScpolicyBinding(key LbvserverScpolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverScpolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverScpolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverScpolicyBinding() ([]LbvserverScpolicyBinding, error) {

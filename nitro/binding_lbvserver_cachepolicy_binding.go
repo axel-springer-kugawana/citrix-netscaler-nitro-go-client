@@ -89,13 +89,14 @@ func (c *NitroClient) CountLbvserverCachepolicyBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverCachepolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverCachepolicyBinding(key LbvserverCachepolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverCachepolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverCachepolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverCachepolicyBinding() ([]LbvserverCachepolicyBinding, error) {

@@ -81,13 +81,14 @@ func (c *NitroClient) CountServiceScpolicyBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsServiceScpolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsServiceScpolicyBinding(key ServiceScpolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountServiceScpolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountServiceScpolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListServiceScpolicyBinding() ([]ServiceScpolicyBinding, error) {

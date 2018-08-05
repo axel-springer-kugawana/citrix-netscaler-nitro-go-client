@@ -89,13 +89,14 @@ func (c *NitroClient) CountLbvserverSpilloverpolicyBinding(id string) (int, erro
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverSpilloverpolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverSpilloverpolicyBinding(key LbvserverSpilloverpolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverSpilloverpolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverSpilloverpolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverSpilloverpolicyBinding() ([]LbvserverSpilloverpolicyBinding, error) {

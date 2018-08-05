@@ -89,13 +89,14 @@ func (c *NitroClient) CountLbvserverAppqoepolicyBinding(id string) (int, error) 
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverAppqoepolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverAppqoepolicyBinding(key LbvserverAppqoepolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverAppqoepolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverAppqoepolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverAppqoepolicyBinding() ([]LbvserverAppqoepolicyBinding, error) {

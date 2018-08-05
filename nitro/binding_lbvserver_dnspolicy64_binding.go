@@ -89,13 +89,14 @@ func (c *NitroClient) CountLbvserverDnspolicy64Binding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverDnspolicy64Binding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverDnspolicy64Binding(key LbvserverDnspolicy64BindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverDnspolicy64Binding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverDnspolicy64Binding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverDnspolicy64Binding() ([]LbvserverDnspolicy64Binding, error) {

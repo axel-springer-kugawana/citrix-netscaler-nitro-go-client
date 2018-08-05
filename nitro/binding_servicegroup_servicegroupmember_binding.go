@@ -85,13 +85,14 @@ func (c *NitroClient) CountServicegroupServicegroupmemberBinding(id string) (int
 	}
 }
 
-func (c *NitroClient) ExistsServicegroupServicegroupmemberBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsServicegroupServicegroupmemberBinding(key ServicegroupServicegroupmemberBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountServicegroupServicegroupmemberBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountServicegroupServicegroupmemberBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListServicegroupServicegroupmemberBinding() ([]ServicegroupServicegroupmemberBinding, error) {

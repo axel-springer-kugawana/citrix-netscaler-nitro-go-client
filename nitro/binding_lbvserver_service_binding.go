@@ -82,13 +82,14 @@ func (c *NitroClient) CountLbvserverServiceBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbvserverServiceBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbvserverServiceBinding(key LbvserverServiceBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbvserverServiceBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbvserverServiceBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbvserverServiceBinding() ([]LbvserverServiceBinding, error) {

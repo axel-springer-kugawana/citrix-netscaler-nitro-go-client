@@ -81,13 +81,14 @@ func (c *NitroClient) CountServiceDospolicyBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsServiceDospolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsServiceDospolicyBinding(key ServiceDospolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountServiceDospolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountServiceDospolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListServiceDospolicyBinding() ([]ServiceDospolicyBinding, error) {

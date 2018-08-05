@@ -86,13 +86,14 @@ func (c *NitroClient) CountAuthorizationpolicylabelAuthorizationpolicyBinding(id
 	}
 }
 
-func (c *NitroClient) ExistsAuthorizationpolicylabelAuthorizationpolicyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsAuthorizationpolicylabelAuthorizationpolicyBinding(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountAuthorizationpolicylabelAuthorizationpolicyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountAuthorizationpolicylabelAuthorizationpolicyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListAuthorizationpolicylabelAuthorizationpolicyBinding() ([]AuthorizationpolicylabelAuthorizationpolicyBinding, error) {

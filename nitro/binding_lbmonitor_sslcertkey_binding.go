@@ -84,13 +84,14 @@ func (c *NitroClient) CountLbmonitorSslcertkeyBinding(id string) (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbmonitorSslcertkeyBinding(id string) (bool, error) {
+func (c *NitroClient) ExistsLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindingKey) (bool, error) {
 	// TODO : wrong implementation
-	if count, err := c.CountLbmonitorSslcertkeyBinding(id); err != nil {
-		return false, err
-	} else {
-		return count == 1, nil
-	}
+	return false, nil
+	//        if count, err := c.CountLbmonitorSslcertkeyBinding(id); err != nil {
+	//                return false, err
+	//        } else {
+	//                return count == 1, nil
+	//        }
 }
 
 func (c *NitroClient) BulkListLbmonitorSslcertkeyBinding() ([]LbmonitorSslcertkeyBinding, error) {

@@ -31,7 +31,7 @@ type count_lbmonitor_sslcertkey_binding_result struct {
 	Results []Count `json:"lbmonitor_sslcertkey_binding"`
 }
 
-func lbmonitor_sslcertkey_binding_key_to_id_args(key LbmonitorSslcertkeyBindingKey) (string, map[string]string) {
+func lbmonitor_sslcertkey_binding_key_to_id_qs(key LbmonitorSslcertkeyBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -41,10 +41,18 @@ func lbmonitor_sslcertkey_binding_key_to_id_args(key LbmonitorSslcertkeyBindingK
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func lbmonitor_sslcertkey_binding_key_to_id_args(key LbmonitorSslcertkeyBindingKey) (string, map[string]string) {
+	return lbmonitor_sslcertkey_binding_key_to_id_qs(key, "args")
+}
+
+func lbmonitor_sslcertkey_binding_key_to_id_filter(key LbmonitorSslcertkeyBindingKey) (string, map[string]string) {
+	return lbmonitor_sslcertkey_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddLbmonitorSslcertkeyBinding(binding LbmonitorSslcertkeyBinding) error {
@@ -85,13 +93,21 @@ func (c *NitroClient) CountLbmonitorSslcertkeyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountLbmonitorSslcertkeyBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_lbmonitor_sslcertkey_binding_result
+
+	id, qs := lbmonitor_sslcertkey_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbmonitor_sslcertkey_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one lbmonitor_sslcertkey_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListLbmonitorSslcertkeyBinding() ([]LbmonitorSslcertkeyBinding, error) {

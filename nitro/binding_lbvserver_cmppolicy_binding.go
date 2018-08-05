@@ -35,7 +35,7 @@ type count_lbvserver_cmppolicy_binding_result struct {
 	Results []Count `json:"lbvserver_cmppolicy_binding"`
 }
 
-func lbvserver_cmppolicy_binding_key_to_id_args(key LbvserverCmppolicyBindingKey) (string, map[string]string) {
+func lbvserver_cmppolicy_binding_key_to_id_qs(key LbvserverCmppolicyBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -46,10 +46,18 @@ func lbvserver_cmppolicy_binding_key_to_id_args(key LbvserverCmppolicyBindingKey
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func lbvserver_cmppolicy_binding_key_to_id_args(key LbvserverCmppolicyBindingKey) (string, map[string]string) {
+	return lbvserver_cmppolicy_binding_key_to_id_qs(key, "args")
+}
+
+func lbvserver_cmppolicy_binding_key_to_id_filter(key LbvserverCmppolicyBindingKey) (string, map[string]string) {
+	return lbvserver_cmppolicy_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddLbvserverCmppolicyBinding(binding LbvserverCmppolicyBinding) error {
@@ -90,13 +98,21 @@ func (c *NitroClient) CountLbvserverCmppolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverCmppolicyBinding(key LbvserverCmppolicyBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountLbvserverCmppolicyBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_lbvserver_cmppolicy_binding_result
+
+	id, qs := lbvserver_cmppolicy_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbvserver_cmppolicy_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one lbvserver_cmppolicy_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListLbvserverCmppolicyBinding() ([]LbvserverCmppolicyBinding, error) {

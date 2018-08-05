@@ -30,7 +30,7 @@ type count_lbmonitor_metric_binding_result struct {
 	Results []Count `json:"lbmonitor_metric_binding"`
 }
 
-func lbmonitor_metric_binding_key_to_id_args(key LbmonitorMetricBindingKey) (string, map[string]string) {
+func lbmonitor_metric_binding_key_to_id_qs(key LbmonitorMetricBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -40,10 +40,18 @@ func lbmonitor_metric_binding_key_to_id_args(key LbmonitorMetricBindingKey) (str
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func lbmonitor_metric_binding_key_to_id_args(key LbmonitorMetricBindingKey) (string, map[string]string) {
+	return lbmonitor_metric_binding_key_to_id_qs(key, "args")
+}
+
+func lbmonitor_metric_binding_key_to_id_filter(key LbmonitorMetricBindingKey) (string, map[string]string) {
+	return lbmonitor_metric_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddLbmonitorMetricBinding(binding LbmonitorMetricBinding) error {
@@ -84,13 +92,21 @@ func (c *NitroClient) CountLbmonitorMetricBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbmonitorMetricBinding(key LbmonitorMetricBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountLbmonitorMetricBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_lbmonitor_metric_binding_result
+
+	id, qs := lbmonitor_metric_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbmonitor_metric_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one lbmonitor_metric_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListLbmonitorMetricBinding() ([]LbmonitorMetricBinding, error) {

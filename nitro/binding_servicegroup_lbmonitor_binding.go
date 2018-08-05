@@ -29,7 +29,7 @@ type count_servicegroup_lbmonitor_binding_result struct {
 	Results []Count `json:"servicegroup_lbmonitor_binding"`
 }
 
-func servicegroup_lbmonitor_binding_key_to_id_args(key ServicegroupLbmonitorBindingKey) (string, map[string]string) {
+func servicegroup_lbmonitor_binding_key_to_id_qs(key ServicegroupLbmonitorBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,10 +39,18 @@ func servicegroup_lbmonitor_binding_key_to_id_args(key ServicegroupLbmonitorBind
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func servicegroup_lbmonitor_binding_key_to_id_args(key ServicegroupLbmonitorBindingKey) (string, map[string]string) {
+	return servicegroup_lbmonitor_binding_key_to_id_qs(key, "args")
+}
+
+func servicegroup_lbmonitor_binding_key_to_id_filter(key ServicegroupLbmonitorBindingKey) (string, map[string]string) {
+	return servicegroup_lbmonitor_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddServicegroupLbmonitorBinding(binding ServicegroupLbmonitorBinding) error {
@@ -83,13 +91,21 @@ func (c *NitroClient) CountServicegroupLbmonitorBinding(id string) (int, error) 
 }
 
 func (c *NitroClient) ExistsServicegroupLbmonitorBinding(key ServicegroupLbmonitorBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountServicegroupLbmonitorBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_servicegroup_lbmonitor_binding_result
+
+	id, qs := servicegroup_lbmonitor_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("servicegroup_lbmonitor_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one servicegroup_lbmonitor_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListServicegroupLbmonitorBinding() ([]ServicegroupLbmonitorBinding, error) {

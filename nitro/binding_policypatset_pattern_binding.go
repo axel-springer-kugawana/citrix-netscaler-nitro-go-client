@@ -30,7 +30,7 @@ type count_policypatset_pattern_binding_result struct {
 	Results []Count `json:"policypatset_pattern_binding"`
 }
 
-func policypatset_pattern_binding_key_to_id_args(key PolicypatsetPatternBindingKey) (string, map[string]string) {
+func policypatset_pattern_binding_key_to_id_qs(key PolicypatsetPatternBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -40,10 +40,18 @@ func policypatset_pattern_binding_key_to_id_args(key PolicypatsetPatternBindingK
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func policypatset_pattern_binding_key_to_id_args(key PolicypatsetPatternBindingKey) (string, map[string]string) {
+	return policypatset_pattern_binding_key_to_id_qs(key, "args")
+}
+
+func policypatset_pattern_binding_key_to_id_filter(key PolicypatsetPatternBindingKey) (string, map[string]string) {
+	return policypatset_pattern_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddPolicypatsetPatternBinding(binding PolicypatsetPatternBinding) error {
@@ -84,13 +92,21 @@ func (c *NitroClient) CountPolicypatsetPatternBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsPolicypatsetPatternBinding(key PolicypatsetPatternBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountPolicypatsetPatternBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_policypatset_pattern_binding_result
+
+	id, qs := policypatset_pattern_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("policypatset_pattern_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one policypatset_pattern_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListPolicypatsetPatternBinding() ([]PolicypatsetPatternBinding, error) {

@@ -35,7 +35,7 @@ type count_lbvserver_transformpolicy_binding_result struct {
 	Results []Count `json:"lbvserver_transformpolicy_binding"`
 }
 
-func lbvserver_transformpolicy_binding_key_to_id_args(key LbvserverTransformpolicyBindingKey) (string, map[string]string) {
+func lbvserver_transformpolicy_binding_key_to_id_qs(key LbvserverTransformpolicyBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -46,10 +46,18 @@ func lbvserver_transformpolicy_binding_key_to_id_args(key LbvserverTransformpoli
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func lbvserver_transformpolicy_binding_key_to_id_args(key LbvserverTransformpolicyBindingKey) (string, map[string]string) {
+	return lbvserver_transformpolicy_binding_key_to_id_qs(key, "args")
+}
+
+func lbvserver_transformpolicy_binding_key_to_id_filter(key LbvserverTransformpolicyBindingKey) (string, map[string]string) {
+	return lbvserver_transformpolicy_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddLbvserverTransformpolicyBinding(binding LbvserverTransformpolicyBinding) error {
@@ -90,13 +98,21 @@ func (c *NitroClient) CountLbvserverTransformpolicyBinding(id string) (int, erro
 }
 
 func (c *NitroClient) ExistsLbvserverTransformpolicyBinding(key LbvserverTransformpolicyBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountLbvserverTransformpolicyBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_lbvserver_transformpolicy_binding_result
+
+	id, qs := lbvserver_transformpolicy_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbvserver_transformpolicy_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one lbvserver_transformpolicy_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListLbvserverTransformpolicyBinding() ([]LbvserverTransformpolicyBinding, error) {

@@ -29,7 +29,7 @@ type count_policydataset_value_binding_result struct {
 	Results []Count `json:"policydataset_value_binding"`
 }
 
-func policydataset_value_binding_key_to_id_args(key PolicydatasetValueBindingKey) (string, map[string]string) {
+func policydataset_value_binding_key_to_id_qs(key PolicydatasetValueBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,10 +39,18 @@ func policydataset_value_binding_key_to_id_args(key PolicydatasetValueBindingKey
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func policydataset_value_binding_key_to_id_args(key PolicydatasetValueBindingKey) (string, map[string]string) {
+	return policydataset_value_binding_key_to_id_qs(key, "args")
+}
+
+func policydataset_value_binding_key_to_id_filter(key PolicydatasetValueBindingKey) (string, map[string]string) {
+	return policydataset_value_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddPolicydatasetValueBinding(binding PolicydatasetValueBinding) error {
@@ -83,13 +91,21 @@ func (c *NitroClient) CountPolicydatasetValueBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsPolicydatasetValueBinding(key PolicydatasetValueBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountPolicydatasetValueBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_policydataset_value_binding_result
+
+	id, qs := policydataset_value_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("policydataset_value_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one policydataset_value_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListPolicydatasetValueBinding() ([]PolicydatasetValueBinding, error) {

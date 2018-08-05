@@ -35,7 +35,7 @@ type count_lbvserver_responderpolicy_binding_result struct {
 	Results []Count `json:"lbvserver_responderpolicy_binding"`
 }
 
-func lbvserver_responderpolicy_binding_key_to_id_args(key LbvserverResponderpolicyBindingKey) (string, map[string]string) {
+func lbvserver_responderpolicy_binding_key_to_id_qs(key LbvserverResponderpolicyBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -46,10 +46,18 @@ func lbvserver_responderpolicy_binding_key_to_id_args(key LbvserverResponderpoli
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func lbvserver_responderpolicy_binding_key_to_id_args(key LbvserverResponderpolicyBindingKey) (string, map[string]string) {
+	return lbvserver_responderpolicy_binding_key_to_id_qs(key, "args")
+}
+
+func lbvserver_responderpolicy_binding_key_to_id_filter(key LbvserverResponderpolicyBindingKey) (string, map[string]string) {
+	return lbvserver_responderpolicy_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddLbvserverResponderpolicyBinding(binding LbvserverResponderpolicyBinding) error {
@@ -90,13 +98,21 @@ func (c *NitroClient) CountLbvserverResponderpolicyBinding(id string) (int, erro
 }
 
 func (c *NitroClient) ExistsLbvserverResponderpolicyBinding(key LbvserverResponderpolicyBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountLbvserverResponderpolicyBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_lbvserver_responderpolicy_binding_result
+
+	id, qs := lbvserver_responderpolicy_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbvserver_responderpolicy_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one lbvserver_responderpolicy_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListLbvserverResponderpolicyBinding() ([]LbvserverResponderpolicyBinding, error) {

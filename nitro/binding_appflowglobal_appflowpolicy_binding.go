@@ -33,7 +33,7 @@ type count_appflowglobal_appflowpolicy_binding_result struct {
 	Results []Count `json:"appflowglobal_appflowpolicy_binding"`
 }
 
-func appflowglobal_appflowpolicy_binding_key_to_id_args(key AppflowglobalAppflowpolicyBindingKey) (string, map[string]string) {
+func appflowglobal_appflowpolicy_binding_key_to_id_qs(key AppflowglobalAppflowpolicyBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -43,10 +43,18 @@ func appflowglobal_appflowpolicy_binding_key_to_id_args(key AppflowglobalAppflow
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func appflowglobal_appflowpolicy_binding_key_to_id_args(key AppflowglobalAppflowpolicyBindingKey) (string, map[string]string) {
+	return appflowglobal_appflowpolicy_binding_key_to_id_qs(key, "args")
+}
+
+func appflowglobal_appflowpolicy_binding_key_to_id_filter(key AppflowglobalAppflowpolicyBindingKey) (string, map[string]string) {
+	return appflowglobal_appflowpolicy_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddAppflowglobalAppflowpolicyBinding(binding AppflowglobalAppflowpolicyBinding) error {
@@ -87,13 +95,21 @@ func (c *NitroClient) CountAppflowglobalAppflowpolicyBinding(id string) (int, er
 }
 
 func (c *NitroClient) ExistsAppflowglobalAppflowpolicyBinding(key AppflowglobalAppflowpolicyBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountAppflowglobalAppflowpolicyBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_appflowglobal_appflowpolicy_binding_result
+
+	id, qs := appflowglobal_appflowpolicy_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("appflowglobal_appflowpolicy_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one appflowglobal_appflowpolicy_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListAppflowglobalAppflowpolicyBinding() ([]AppflowglobalAppflowpolicyBinding, error) {

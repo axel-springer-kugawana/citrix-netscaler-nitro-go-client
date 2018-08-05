@@ -28,7 +28,7 @@ type count_service_scpolicy_binding_result struct {
 	Results []Count `json:"service_scpolicy_binding"`
 }
 
-func service_scpolicy_binding_key_to_id_args(key ServiceScpolicyBindingKey) (string, map[string]string) {
+func service_scpolicy_binding_key_to_id_qs(key ServiceScpolicyBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -38,10 +38,18 @@ func service_scpolicy_binding_key_to_id_args(key ServiceScpolicyBindingKey) (str
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func service_scpolicy_binding_key_to_id_args(key ServiceScpolicyBindingKey) (string, map[string]string) {
+	return service_scpolicy_binding_key_to_id_qs(key, "args")
+}
+
+func service_scpolicy_binding_key_to_id_filter(key ServiceScpolicyBindingKey) (string, map[string]string) {
+	return service_scpolicy_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddServiceScpolicyBinding(binding ServiceScpolicyBinding) error {
@@ -82,13 +90,21 @@ func (c *NitroClient) CountServiceScpolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsServiceScpolicyBinding(key ServiceScpolicyBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountServiceScpolicyBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_service_scpolicy_binding_result
+
+	id, qs := service_scpolicy_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("service_scpolicy_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one service_scpolicy_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListServiceScpolicyBinding() ([]ServiceScpolicyBinding, error) {

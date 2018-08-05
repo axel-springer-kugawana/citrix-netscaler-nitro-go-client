@@ -30,7 +30,7 @@ type count_service_lbmonitor_binding_result struct {
 	Results []Count `json:"service_lbmonitor_binding"`
 }
 
-func service_lbmonitor_binding_key_to_id_args(key ServiceLbmonitorBindingKey) (string, map[string]string) {
+func service_lbmonitor_binding_key_to_id_qs(key ServiceLbmonitorBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,10 +39,18 @@ func service_lbmonitor_binding_key_to_id_args(key ServiceLbmonitorBindingKey) (s
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func service_lbmonitor_binding_key_to_id_args(key ServiceLbmonitorBindingKey) (string, map[string]string) {
+	return service_lbmonitor_binding_key_to_id_qs(key, "args")
+}
+
+func service_lbmonitor_binding_key_to_id_filter(key ServiceLbmonitorBindingKey) (string, map[string]string) {
+	return service_lbmonitor_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddServiceLbmonitorBinding(binding ServiceLbmonitorBinding) error {
@@ -83,13 +91,21 @@ func (c *NitroClient) CountServiceLbmonitorBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsServiceLbmonitorBinding(key ServiceLbmonitorBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountServiceLbmonitorBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_service_lbmonitor_binding_result
+
+	id, qs := service_lbmonitor_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("service_lbmonitor_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one service_lbmonitor_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListServiceLbmonitorBinding() ([]ServiceLbmonitorBinding, error) {

@@ -35,7 +35,7 @@ type count_lbvserver_capolicy_binding_result struct {
 	Results []Count `json:"lbvserver_capolicy_binding"`
 }
 
-func lbvserver_capolicy_binding_key_to_id_args(key LbvserverCapolicyBindingKey) (string, map[string]string) {
+func lbvserver_capolicy_binding_key_to_id_qs(key LbvserverCapolicyBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -46,10 +46,18 @@ func lbvserver_capolicy_binding_key_to_id_args(key LbvserverCapolicyBindingKey) 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func lbvserver_capolicy_binding_key_to_id_args(key LbvserverCapolicyBindingKey) (string, map[string]string) {
+	return lbvserver_capolicy_binding_key_to_id_qs(key, "args")
+}
+
+func lbvserver_capolicy_binding_key_to_id_filter(key LbvserverCapolicyBindingKey) (string, map[string]string) {
+	return lbvserver_capolicy_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddLbvserverCapolicyBinding(binding LbvserverCapolicyBinding) error {
@@ -90,13 +98,21 @@ func (c *NitroClient) CountLbvserverCapolicyBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbvserverCapolicyBinding(key LbvserverCapolicyBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountLbvserverCapolicyBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_lbvserver_capolicy_binding_result
+
+	id, qs := lbvserver_capolicy_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbvserver_capolicy_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one lbvserver_capolicy_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListLbvserverCapolicyBinding() ([]LbvserverCapolicyBinding, error) {

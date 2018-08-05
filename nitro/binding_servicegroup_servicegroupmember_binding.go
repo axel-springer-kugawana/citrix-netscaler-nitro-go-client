@@ -31,7 +31,7 @@ type count_servicegroup_servicegroupmember_binding_result struct {
 	Results []Count `json:"servicegroup_servicegroupmember_binding"`
 }
 
-func servicegroup_servicegroupmember_binding_key_to_id_args(key ServicegroupServicegroupmemberBindingKey) (string, map[string]string) {
+func servicegroup_servicegroupmember_binding_key_to_id_qs(key ServicegroupServicegroupmemberBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -42,10 +42,18 @@ func servicegroup_servicegroupmember_binding_key_to_id_args(key ServicegroupServ
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func servicegroup_servicegroupmember_binding_key_to_id_args(key ServicegroupServicegroupmemberBindingKey) (string, map[string]string) {
+	return servicegroup_servicegroupmember_binding_key_to_id_qs(key, "args")
+}
+
+func servicegroup_servicegroupmember_binding_key_to_id_filter(key ServicegroupServicegroupmemberBindingKey) (string, map[string]string) {
+	return servicegroup_servicegroupmember_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddServicegroupServicegroupmemberBinding(binding ServicegroupServicegroupmemberBinding) error {
@@ -86,13 +94,21 @@ func (c *NitroClient) CountServicegroupServicegroupmemberBinding(id string) (int
 }
 
 func (c *NitroClient) ExistsServicegroupServicegroupmemberBinding(key ServicegroupServicegroupmemberBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountServicegroupServicegroupmemberBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_servicegroup_servicegroupmember_binding_result
+
+	id, qs := servicegroup_servicegroupmember_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("servicegroup_servicegroupmember_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one servicegroup_servicegroupmember_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListServicegroupServicegroupmemberBinding() ([]ServicegroupServicegroupmemberBinding, error) {

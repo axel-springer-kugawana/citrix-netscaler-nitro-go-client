@@ -29,7 +29,7 @@ type count_lbmetrictable_metric_binding_result struct {
 	Results []Count `json:"lbmetrictable_metric_binding"`
 }
 
-func lbmetrictable_metric_binding_key_to_id_args(key LbmetrictableMetricBindingKey) (string, map[string]string) {
+func lbmetrictable_metric_binding_key_to_id_qs(key LbmetrictableMetricBindingKey, arg string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var args []string
 
@@ -39,10 +39,18 @@ func lbmetrictable_metric_binding_key_to_id_args(key LbmetrictableMetricBindingK
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[arg] = strings.Join(args, ",")
 	}
 
 	return "", qs
+}
+
+func lbmetrictable_metric_binding_key_to_id_args(key LbmetrictableMetricBindingKey) (string, map[string]string) {
+	return lbmetrictable_metric_binding_key_to_id_qs(key, "args")
+}
+
+func lbmetrictable_metric_binding_key_to_id_filter(key LbmetrictableMetricBindingKey) (string, map[string]string) {
+	return lbmetrictable_metric_binding_key_to_id_qs(key, "filter")
 }
 
 func (c *NitroClient) AddLbmetrictableMetricBinding(binding LbmetrictableMetricBinding) error {
@@ -83,13 +91,21 @@ func (c *NitroClient) CountLbmetrictableMetricBinding(id string) (int, error) {
 }
 
 func (c *NitroClient) ExistsLbmetrictableMetricBinding(key LbmetrictableMetricBindingKey) (bool, error) {
-	// TODO : wrong implementation
-	return false, nil
-	//        if count, err := c.CountLbmetrictableMetricBinding(id); err != nil {
-	//                return false, err
-	//        } else {
-	//                return count == 1, nil
-	//        }
+	var results count_lbmetrictable_metric_binding_result
+
+	id, qs := lbmetrictable_metric_binding_key_to_id_filter(key)
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbmetrictable_metric_binding", id, qs, &results); err != nil {
+		return false, err
+	} else {
+		if len(results.Results) > 1 {
+			return false, fmt.Errorf("More than one lbmetrictable_metric_binding element found")
+		}
+
+		return results.Results[0].Count == 1, nil
+	}
 }
 
 func (c *NitroClient) BulkListLbmetrictableMetricBinding() ([]LbmetrictableMetricBinding, error) {

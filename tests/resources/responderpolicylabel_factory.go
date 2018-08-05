@@ -5,5 +5,10 @@ import (
 )
 
 func create_responderpolicylabel() *nitro.Responderpolicylabel {
+	//reource := nitro.Responderpolicylabel {
+	//Labelname: "responderpolicylabel",
+	//Comment: string,
+	//Policylabeltype: (HTTP|OTHERTCP|SIP_UDP|SIP_TCP|MYSQL|MSSQL|NAT|DIAMETER|RADIUS|DNS),
+	//}
 	return nil
 }

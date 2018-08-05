@@ -5,5 +5,10 @@ import (
 )
 
 func create_dospolicy() *nitro.Dospolicy {
+	//reource := nitro.Dospolicy {
+	//Name: "dospolicy",
+	//Cltdetectrate: double,
+	//Qdepth: double,
+	//}
 	return nil
 }

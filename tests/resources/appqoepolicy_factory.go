@@ -5,5 +5,10 @@ import (
 )
 
 func create_appqoepolicy() *nitro.Appqoepolicy {
+	//reource := nitro.Appqoepolicy {
+	//Name: "appqoepolicy",
+	//Action: appqoeaction.name,
+	//Rule: string,
+	//}
 	return nil
 }

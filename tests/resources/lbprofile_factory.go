@@ -5,5 +5,14 @@ import (
 )
 
 func create_lbprofile() *nitro.Lbprofile {
+	//reource := nitro.Lbprofile {
+	//Lbprofilename: "lbprofile",
+	//Cookiepassphrase: string,
+	//Dbslb: (ENABLED|DISABLED),
+	//Httponlycookieflag: (ENABLED|DISABLED),
+	//Processlocal: (ENABLED|DISABLED),
+	//Useencryptedpersistencecookie: (ENABLED|DISABLED),
+	//Usesecuredpersistencecookie: (ENABLED|DISABLED),
+	//}
 	return nil
 }

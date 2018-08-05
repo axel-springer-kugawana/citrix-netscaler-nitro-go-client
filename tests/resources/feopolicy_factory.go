@@ -5,5 +5,10 @@ import (
 )
 
 func create_feopolicy() *nitro.Feopolicy {
+	//reource := nitro.Feopolicy {
+	//Name: "feopolicy",
+	//Action: feoaction.name,
+	//Rule: string,
+	//}
 	return nil
 }

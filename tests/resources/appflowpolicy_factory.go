@@ -5,5 +5,12 @@ import (
 )
 
 func create_appflowpolicy() *nitro.Appflowpolicy {
+	//reource := nitro.Appflowpolicy {
+	//Name: "appflowpolicy",
+	//Action: appflowaction.name,
+	//Comment: string,
+	//Rule: string,
+	//Undefaction: appflowaction.name,
+	//}
 	return nil
 }

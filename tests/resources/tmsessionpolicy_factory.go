@@ -5,5 +5,10 @@ import (
 )
 
 func create_tmsessionpolicy() *nitro.Tmsessionpolicy {
+	//reource := nitro.Tmsessionpolicy {
+	//Name: "tmsessionpolicy",
+	//Action: tmsessionaction.name,
+	//Rule: string,
+	//}
 	return nil
 }

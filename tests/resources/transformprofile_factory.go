@@ -5,5 +5,11 @@ import (
 )
 
 func create_transformprofile() *nitro.Transformprofile {
+	//reource := nitro.Transformprofile {
+	//Name: "transformprofile",
+	//Comment: string,
+	//Onlytransformabsurlinbody: (ON|OFF),
+	//Type: (URL),
+	//}
 	return nil
 }

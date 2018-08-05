@@ -5,5 +5,9 @@ import (
 )
 
 func create_appflowpolicylabel() *nitro.Appflowpolicylabel {
+	//reource := nitro.Appflowpolicylabel {
+	//Labelname: "appflowpolicylabel",
+	//Policylabeltype: (HTTP|OTHERTCP),
+	//}
 	return nil
 }

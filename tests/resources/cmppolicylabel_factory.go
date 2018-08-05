@@ -5,5 +5,9 @@ import (
 )
 
 func create_cmppolicylabel() *nitro.Cmppolicylabel {
+	//reource := nitro.Cmppolicylabel {
+	//Labelname: "cmppolicylabel",
+	//Type: (REQ|RES),
+	//}
 	return nil
 }

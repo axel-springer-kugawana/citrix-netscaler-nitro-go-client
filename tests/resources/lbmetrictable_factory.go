@@ -5,5 +5,8 @@ import (
 )
 
 func create_lbmetrictable() *nitro.Lbmetrictable {
+	//reource := nitro.Lbmetrictable {
+	//Metrictable: "lbmetrictable",
+	//}
 	return nil
 }

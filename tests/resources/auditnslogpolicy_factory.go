@@ -5,5 +5,10 @@ import (
 )
 
 func create_auditnslogpolicy() *nitro.Auditnslogpolicy {
+	//reource := nitro.Auditnslogpolicy {
+	//Name: "auditnslogpolicy",
+	//Action: auditnslogaction.name,
+	//Rule: string,
+	//}
 	return nil
 }

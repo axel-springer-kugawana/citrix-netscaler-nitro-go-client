@@ -5,5 +5,11 @@ import (
 )
 
 func create_{{$.Name}}() *nitro.{{$.Name|name}} {
+	//reource := nitro.{{$.Name|name}} {
+		//{{$.Schema.Key.Name|title}}: "{{$.Name}}",
+		{{range $field, $type := $.Schema.Fields -}}
+		//{{$field|title}}: {{$type}},
+		{{end -}}
+	//}
 	return nil
 }

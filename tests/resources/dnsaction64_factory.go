@@ -5,5 +5,11 @@ import (
 )
 
 func create_dnsaction64() *nitro.Dnsaction64 {
+	//reource := nitro.Dnsaction64 {
+	//Actionname: "dnsaction64",
+	//Excluderule: string,
+	//Mappedrule: string,
+	//Prefix: string,
+	//}
 	return nil
 }

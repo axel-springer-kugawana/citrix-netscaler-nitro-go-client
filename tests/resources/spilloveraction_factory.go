@@ -5,5 +5,9 @@ import (
 )
 
 func create_spilloveraction() *nitro.Spilloveraction {
+	//reource := nitro.Spilloveraction {
+	//Name: "spilloveraction",
+	//Action: (SPILLOVER),
+	//}
 	return nil
 }

@@ -5,5 +5,8 @@ import (
 )
 
 func create_authorizationpolicylabel() *nitro.Authorizationpolicylabel {
+	//reource := nitro.Authorizationpolicylabel {
+	//Labelname: "authorizationpolicylabel",
+	//}
 	return nil
 }

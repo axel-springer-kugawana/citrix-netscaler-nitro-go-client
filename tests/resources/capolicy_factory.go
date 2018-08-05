@@ -5,5 +5,13 @@ import (
 )
 
 func create_capolicy() *nitro.Capolicy {
+	//reource := nitro.Capolicy {
+	//Name: "capolicy",
+	//Action: caaction.name,
+	//Comment: string,
+	//Logaction: string,
+	//Rule: string,
+	//Undefaction: string,
+	//}
 	return nil
 }

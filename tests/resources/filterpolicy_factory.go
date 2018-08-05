@@ -5,5 +5,11 @@ import (
 )
 
 func create_filterpolicy() *nitro.Filterpolicy {
+	//reource := nitro.Filterpolicy {
+	//Name: "filterpolicy",
+	//Reqaction: filteraction.name,
+	//Resaction: filteraction.name,
+	//Rule: string,
+	//}
 	return nil
 }

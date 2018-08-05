@@ -5,5 +5,9 @@ import (
 )
 
 func create_transformpolicylabel() *nitro.Transformpolicylabel {
+	//reource := nitro.Transformpolicylabel {
+	//Labelname: "transformpolicylabel",
+	//Policylabeltype: (http_req),
+	//}
 	return nil
 }

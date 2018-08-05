@@ -5,5 +5,10 @@ import (
 )
 
 func create_authorizationpolicy() *nitro.Authorizationpolicy {
+	//reource := nitro.Authorizationpolicy {
+	//Name: "authorizationpolicy",
+	//Action: string,
+	//Rule: string,
+	//}
 	return nil
 }

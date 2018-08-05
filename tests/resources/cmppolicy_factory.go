@@ -5,5 +5,10 @@ import (
 )
 
 func create_cmppolicy() *nitro.Cmppolicy {
+	//reource := nitro.Cmppolicy {
+	//Name: "cmppolicy",
+	//Resaction: cmpaction.name,
+	//Rule: string,
+	//}
 	return nil
 }

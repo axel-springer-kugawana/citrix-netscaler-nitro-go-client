@@ -5,5 +5,18 @@ import (
 )
 
 func create_lbgroup() *nitro.Lbgroup {
+	//reource := nitro.Lbgroup {
+	//Name: "lbgroup",
+	//Backuppersistencetimeout: double,
+	//Cookiedomain: string,
+	//Cookiename: string,
+	//Persistencebackup: (SOURCEIP|NONE),
+	//Persistencetype: (SOURCEIP|COOKIEINSERT|RULE|NONE),
+	//Persistmask: string,
+	//Rule: string,
+	//Timeout: double,
+	//Usevserverpersistency: (ENABLED|DISABLED),
+	//V6persistmasklen: double,
+	//}
 	return nil
 }

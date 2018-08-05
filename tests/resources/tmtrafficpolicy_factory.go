@@ -5,5 +5,10 @@ import (
 )
 
 func create_tmtrafficpolicy() *nitro.Tmtrafficpolicy {
+	//reource := nitro.Tmtrafficpolicy {
+	//Name: "tmtrafficpolicy",
+	//Action: tmtrafficaction.name,
+	//Rule: string,
+	//}
 	return nil
 }

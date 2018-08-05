@@ -132,9 +132,7 @@ func (c *NitroClient) GetDnspolicy64(key string) (*Dnspolicy64, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one dnspolicy64 element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("dnspolicy64 element not found")
-			return nil, nil
+			return nil, fmt.Errorf("dnspolicy64 element not found")
 		}
 
 		return &results.Results[0], nil

@@ -135,9 +135,7 @@ func (c *NitroClient) GetTransformprofile(key string) (*Transformprofile, error)
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one transformprofile element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("transformprofile element not found")
-			return nil, nil
+			return nil, fmt.Errorf("transformprofile element not found")
 		}
 
 		return &results.Results[0], nil

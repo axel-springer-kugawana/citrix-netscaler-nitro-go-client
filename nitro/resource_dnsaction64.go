@@ -135,9 +135,7 @@ func (c *NitroClient) GetDnsaction64(key string) (*Dnsaction64, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one dnsaction64 element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("dnsaction64 element not found")
-			return nil, nil
+			return nil, fmt.Errorf("dnsaction64 element not found")
 		}
 
 		return &results.Results[0], nil

@@ -132,9 +132,7 @@ func (c *NitroClient) GetAuditsyslogpolicy(key string) (*Auditsyslogpolicy, erro
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one auditsyslogpolicy element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("auditsyslogpolicy element not found")
-			return nil, nil
+			return nil, fmt.Errorf("auditsyslogpolicy element not found")
 		}
 
 		return &results.Results[0], nil

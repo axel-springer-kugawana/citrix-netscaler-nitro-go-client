@@ -110,9 +110,7 @@ func (c *NitroClient) GetAuthorizationpolicylabel(key string) (*Authorizationpol
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one authorizationpolicylabel element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("authorizationpolicylabel element not found")
-			return nil, nil
+			return nil, fmt.Errorf("authorizationpolicylabel element not found")
 		}
 
 		return &results.Results[0], nil

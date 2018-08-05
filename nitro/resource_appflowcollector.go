@@ -136,9 +136,7 @@ func (c *NitroClient) GetAppflowcollector(key string) (*Appflowcollector, error)
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one appflowcollector element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("appflowcollector element not found")
-			return nil, nil
+			return nil, fmt.Errorf("appflowcollector element not found")
 		}
 
 		return &results.Results[0], nil

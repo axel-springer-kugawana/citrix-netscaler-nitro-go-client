@@ -154,9 +154,7 @@ func (c *NitroClient) GetTransformaction(key string) (*Transformaction, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one transformaction element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("transformaction element not found")
-			return nil, nil
+			return nil, fmt.Errorf("transformaction element not found")
 		}
 
 		return &results.Results[0], nil

@@ -150,9 +150,7 @@ func (c *NitroClient) GetLbvserverDnspolicy64Binding(key LbvserverDnspolicy64Bin
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one lbvserver_dnspolicy64_binding element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("lbvserver_dnspolicy64_binding element not found")
-			return nil, nil
+			return nil, fmt.Errorf("lbvserver_dnspolicy64_binding element not found")
 		}
 
 		return &results.Results[0], nil

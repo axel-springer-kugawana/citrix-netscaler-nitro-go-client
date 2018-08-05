@@ -153,9 +153,7 @@ func (c *NitroClient) Get{{$.Name|name}} (key {{$.Name|name}}Key) (*{{$.Name|nam
                 if len(results.Results) > 1 {
                         return nil, fmt.Errorf("More than one {{$.Name}} element found")
                 } else if len(results.Results) < 1 {
-                        // TODO
-                        // return nil, fmt.Errorf("{{$.Name}} element not found")
-                        return nil, nil
+                        return nil, fmt.Errorf("{{$.Name}} element not found")
                 }
 
                 return &results.Results[0], nil

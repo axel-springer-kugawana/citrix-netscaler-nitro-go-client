@@ -159,9 +159,7 @@ func (c *NitroClient) GetTmtrafficaction(key string) (*Tmtrafficaction, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one tmtrafficaction element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("tmtrafficaction element not found")
-			return nil, nil
+			return nil, fmt.Errorf("tmtrafficaction element not found")
 		}
 
 		return &results.Results[0], nil

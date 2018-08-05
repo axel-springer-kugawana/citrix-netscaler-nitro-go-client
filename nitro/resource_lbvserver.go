@@ -397,9 +397,7 @@ func (c *NitroClient) GetLbvserver(key string) (*Lbvserver, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one lbvserver element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("lbvserver element not found")
-			return nil, nil
+			return nil, fmt.Errorf("lbvserver element not found")
 		}
 
 		return &results.Results[0], nil

@@ -112,9 +112,7 @@ func (c *NitroClient) GetPolicypatset(key string) (*Policypatset, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one policypatset element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("policypatset element not found")
-			return nil, nil
+			return nil, fmt.Errorf("policypatset element not found")
 		}
 
 		return &results.Results[0], nil

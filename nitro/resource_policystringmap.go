@@ -129,9 +129,7 @@ func (c *NitroClient) GetPolicystringmap(key string) (*Policystringmap, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one policystringmap element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("policystringmap element not found")
-			return nil, nil
+			return nil, fmt.Errorf("policystringmap element not found")
 		}
 
 		return &results.Results[0], nil

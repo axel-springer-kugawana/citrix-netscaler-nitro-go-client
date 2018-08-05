@@ -143,9 +143,7 @@ func (c *NitroClient) GetServiceLbmonitorBinding(key ServiceLbmonitorBindingKey)
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one service_lbmonitor_binding element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("service_lbmonitor_binding element not found")
-			return nil, nil
+			return nil, fmt.Errorf("service_lbmonitor_binding element not found")
 		}
 
 		return &results.Results[0], nil

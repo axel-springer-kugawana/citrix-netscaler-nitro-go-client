@@ -135,9 +135,7 @@ func (c *NitroClient) GetVideooptimizationaction(key string) (*Videooptimization
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one videooptimizationaction element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("videooptimizationaction element not found")
-			return nil, nil
+			return nil, fmt.Errorf("videooptimizationaction element not found")
 		}
 
 		return &results.Results[0], nil

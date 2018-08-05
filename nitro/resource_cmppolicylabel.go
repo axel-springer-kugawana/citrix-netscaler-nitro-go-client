@@ -111,9 +111,7 @@ func (c *NitroClient) GetCmppolicylabel(key string) (*Cmppolicylabel, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one cmppolicylabel element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("cmppolicylabel element not found")
-			return nil, nil
+			return nil, fmt.Errorf("cmppolicylabel element not found")
 		}
 
 		return &results.Results[0], nil

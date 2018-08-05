@@ -222,9 +222,7 @@ func (c *NitroClient) GetNshttpprofile(key string) (*Nshttpprofile, error) {
 		if len(results.Results) > 1 {
 			return nil, fmt.Errorf("More than one nshttpprofile element found")
 		} else if len(results.Results) < 1 {
-			// TODO
-			// return nil, fmt.Errorf("nshttpprofile element not found")
-			return nil, nil
+			return nil, fmt.Errorf("nshttpprofile element not found")
 		}
 
 		return &results.Results[0], nil

@@ -22,7 +22,10 @@ func main() {
 			"is_in":   nitro.IsIn,
 		}
 
-		templates := template.Must(template.New("").Funcs(funcMap).ParseFiles("templates/resource.tmpl", "templates/binding.tmpl"))
+		templates := template.Must(template.New("").Funcs(funcMap).ParseFiles(
+			"templates/resource.tmpl", "templates/resource_test.tmpl", "templates/resource_factory.tmpl",
+			"templates/binding.tmpl",
+		))
 
 		for key, value := range spec.Resources {
 			context := struct {
@@ -40,6 +43,33 @@ func main() {
 			}
 
 			err = templates.ExecuteTemplate(writer, "resource.tmpl", context)
+
+			if err != nil {
+				log.Println("Failed to execute template : ", err)
+			}
+
+			if _, err := os.Stat(filepath.Join("tests", "resources", key+"_factory.go")); os.IsNotExist(err) {
+				//{
+				writer, err := os.Create(filepath.Join("tests", "resources", key+"_factory.go"))
+
+				if err != nil {
+					log.Println("Failed to create file : ", err)
+				}
+
+				err = templates.ExecuteTemplate(writer, "resource_factory.tmpl", context)
+
+				if err != nil {
+					log.Println("Failed to execute template : ", err)
+				}
+			}
+
+			writer, err = os.Create(filepath.Join("tests", "resources", key+"_test.go"))
+
+			if err != nil {
+				log.Println("Failed to create file : ", err)
+			}
+
+			err = templates.ExecuteTemplate(writer, "resource_test.tmpl", context)
 
 			if err != nil {
 				log.Println("Failed to execute template : ", err)

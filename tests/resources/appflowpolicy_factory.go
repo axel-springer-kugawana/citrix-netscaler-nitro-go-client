@@ -6,14 +6,23 @@ import (
 )
 
 func setup_appflowpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowpolicy, func()) {
-	//resource := nitro.Appflowpolicy {
-	//Name: "appflowpolicy",
-	//Action: appflowaction.name,
-	//Comment: string,
-	//Rule: string,
-	//Undefaction: appflowaction.name,
-	//}
+	action, actionTearDown := setup_appflowaction(t, client)
 
-	return nil, func() {
+	client.AddAppflowaction(*action)
+
+	resource := nitro.Appflowpolicy {
+		Name: "appflowpolicy",
+		Action: action.Name,
+		Comment: "comment",
+		Rule: "TRUE",
+		Undefaction: action.Name,
+	}
+
+	return &resource, func() {
+		client.DeleteAppflowaction(action.Name)
+
+		if actionTearDown != nil {
+			actionTearDown()
+		}
 	}
 }

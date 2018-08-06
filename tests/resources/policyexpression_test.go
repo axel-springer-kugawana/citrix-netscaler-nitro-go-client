@@ -9,7 +9,7 @@ import (
 func TestPolicyexpression(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_policyexpression(t)
+	resource, tearDown := setup_policyexpression(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestPolicyexpression(t *testing.T) {
 	err = client.DeletePolicyexpression(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

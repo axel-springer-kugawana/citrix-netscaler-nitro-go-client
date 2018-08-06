@@ -9,7 +9,7 @@ import (
 func TestCmppolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_cmppolicylabel(t)
+	resource, tearDown := setup_cmppolicylabel(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCmppolicylabel(t *testing.T) {
 	err = client.DeleteCmppolicylabel(resource.Labelname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

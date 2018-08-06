@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func setup_server(t *testing.T) *nitro.Server {
+func setup_server(t *testing.T, client *nitro.NitroClient) (*nitro.Server, func()) {
 	resource := nitro.Server{
 		Name:      "server",
 		Ipaddress: "1.3.5.7",
@@ -22,5 +22,6 @@ func setup_server(t *testing.T) *nitro.Server {
 		// Domainresolvenow: true,
 	}
 
-	return &resource
+	return &resource, func() {
+	}
 }

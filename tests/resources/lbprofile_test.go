@@ -9,7 +9,7 @@ import (
 func TestLbprofile(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_lbprofile(t)
+	resource, tearDown := setup_lbprofile(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestLbprofile(t *testing.T) {
 	err = client.DeleteLbprofile(resource.Lbprofilename + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

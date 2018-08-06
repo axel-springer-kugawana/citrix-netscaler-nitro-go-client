@@ -5,13 +5,15 @@ import (
 	"testing"
 )
 
-func setup_appfwpolicy(t *testing.T) *nitro.Appfwpolicy {
-	//reource := nitro.Appfwpolicy {
+func setup_appfwpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appfwpolicy, func()) {
+	//resource := nitro.Appfwpolicy {
 	//Name: "appfwpolicy",
 	//Comment: string,
 	//Logaction: string,
 	//Profilename: string,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

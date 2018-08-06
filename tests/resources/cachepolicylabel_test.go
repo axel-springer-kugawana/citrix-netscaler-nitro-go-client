@@ -9,7 +9,7 @@ import (
 func TestCachepolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_cachepolicylabel(t)
+	resource, tearDown := setup_cachepolicylabel(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCachepolicylabel(t *testing.T) {
 	err = client.DeleteCachepolicylabel(resource.Labelname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

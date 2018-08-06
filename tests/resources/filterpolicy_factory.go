@@ -5,12 +5,14 @@ import (
 	"testing"
 )
 
-func setup_filterpolicy(t *testing.T) *nitro.Filterpolicy {
-	//reource := nitro.Filterpolicy {
+func setup_filterpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Filterpolicy, func()) {
+	//resource := nitro.Filterpolicy {
 	//Name: "filterpolicy",
 	//Reqaction: filteraction.name,
 	//Resaction: filteraction.name,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

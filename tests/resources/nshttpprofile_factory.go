@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_nshttpprofile(t *testing.T) *nitro.Nshttpprofile {
-	//reource := nitro.Nshttpprofile {
+func setup_nshttpprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Nshttpprofile, func()) {
+	//resource := nitro.Nshttpprofile {
 	//Name: "nshttpprofile",
 	//Adpttimeout: (ENABLED|DISABLED),
 	//Altsvc: (ENABLED|DISABLED),
@@ -41,5 +41,7 @@ func setup_nshttpprofile(t *testing.T) *nitro.Nshttpprofile {
 	//Weblog: (ENABLED|DISABLED),
 	//Websocket: (ENABLED|DISABLED),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

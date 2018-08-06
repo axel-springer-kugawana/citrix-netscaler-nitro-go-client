@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_cachecontentgroup(t *testing.T) *nitro.Cachecontentgroup {
-	//reource := nitro.Cachecontentgroup {
+func setup_cachecontentgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Cachecontentgroup, func()) {
+	//resource := nitro.Cachecontentgroup {
 	//Name: "cachecontentgroup",
 	//Absexpiry: string[],
 	//Absexpirygmt: string[],
@@ -47,5 +47,7 @@ func setup_cachecontentgroup(t *testing.T) *nitro.Cachecontentgroup {
 	//Weaknegrelexpiry: double,
 	//Weakposrelexpiry: double,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

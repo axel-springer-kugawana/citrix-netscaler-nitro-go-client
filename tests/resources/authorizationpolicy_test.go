@@ -9,7 +9,7 @@ import (
 func TestAuthorizationpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_authorizationpolicy(t)
+	resource, tearDown := setup_authorizationpolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestAuthorizationpolicy(t *testing.T) {
 	err = client.DeleteAuthorizationpolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

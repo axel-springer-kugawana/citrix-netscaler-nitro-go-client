@@ -9,7 +9,7 @@ import (
 func TestCspolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_cspolicy(t)
+	resource, tearDown := setup_cspolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCspolicy(t *testing.T) {
 	err = client.DeleteCspolicy(resource.Policyname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

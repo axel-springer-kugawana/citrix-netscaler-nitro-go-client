@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_tmsessionpolicy(t *testing.T) *nitro.Tmsessionpolicy {
-	//reource := nitro.Tmsessionpolicy {
+func setup_tmsessionpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Tmsessionpolicy, func()) {
+	//resource := nitro.Tmsessionpolicy {
 	//Name: "tmsessionpolicy",
 	//Action: tmsessionaction.name,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

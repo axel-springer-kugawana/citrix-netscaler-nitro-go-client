@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_authorizationpolicy(t *testing.T) *nitro.Authorizationpolicy {
-	//reource := nitro.Authorizationpolicy {
+func setup_authorizationpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Authorizationpolicy, func()) {
+	//resource := nitro.Authorizationpolicy {
 	//Name: "authorizationpolicy",
 	//Action: string,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

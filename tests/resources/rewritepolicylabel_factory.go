@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_rewritepolicylabel(t *testing.T) *nitro.Rewritepolicylabel {
-	//reource := nitro.Rewritepolicylabel {
+func setup_rewritepolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Rewritepolicylabel, func()) {
+	//resource := nitro.Rewritepolicylabel {
 	//Labelname: "rewritepolicylabel",
 	//Comment: string,
 	//Transform: (http_req|http_res|othertcp_req|othertcp_res|url|text|clientless_vpn_req|clientless_vpn_res|sipudp_req|sipudp_res|siptcp_req|siptcp_res|diameter_req|diameter_res|radius_req|radius_res|dns_req|dns_res),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

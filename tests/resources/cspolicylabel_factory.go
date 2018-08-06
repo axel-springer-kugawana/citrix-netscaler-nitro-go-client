@@ -5,10 +5,12 @@ import (
 	"testing"
 )
 
-func setup_cspolicylabel(t *testing.T) *nitro.Cspolicylabel {
-	//reource := nitro.Cspolicylabel {
+func setup_cspolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Cspolicylabel, func()) {
+	//resource := nitro.Cspolicylabel {
 	//Labelname: "cspolicylabel",
 	//Cspolicylabeltype: (HTTP|TCP|RTSP|SSL|SSL_TCP|UDP|DNS|SIP_UDP|SIP_TCP|ANY|RADIUS|RDP|MYSQL|MSSQL|ORACLE|DIAMETER|SSL_DIAMETER|FTP|DNS_TCP|SMPP),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

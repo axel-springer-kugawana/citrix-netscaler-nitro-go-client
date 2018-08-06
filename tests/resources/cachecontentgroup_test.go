@@ -9,7 +9,7 @@ import (
 func TestCachecontentgroup(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_cachecontentgroup(t)
+	resource, tearDown := setup_cachecontentgroup(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCachecontentgroup(t *testing.T) {
 	err = client.DeleteCachecontentgroup(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

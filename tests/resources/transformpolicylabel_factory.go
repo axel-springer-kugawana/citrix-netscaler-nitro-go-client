@@ -5,10 +5,12 @@ import (
 	"testing"
 )
 
-func setup_transformpolicylabel(t *testing.T) *nitro.Transformpolicylabel {
-	//reource := nitro.Transformpolicylabel {
+func setup_transformpolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Transformpolicylabel, func()) {
+	//resource := nitro.Transformpolicylabel {
 	//Labelname: "transformpolicylabel",
 	//Policylabeltype: (http_req),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_auditsyslogaction(t *testing.T) *nitro.Auditsyslogaction {
-	//reource := nitro.Auditsyslogaction {
+func setup_auditsyslogaction(t *testing.T, client *nitro.NitroClient) (*nitro.Auditsyslogaction, func()) {
+	//resource := nitro.Auditsyslogaction {
 	//Name: "auditsyslogaction",
 	//Acl: (ENABLED|DISABLED),
 	//Alg: (ENABLED|DISABLED),
@@ -31,5 +31,7 @@ func setup_auditsyslogaction(t *testing.T) *nitro.Auditsyslogaction {
 	//Transport: (TCP|UDP),
 	//Userdefinedauditlog: (YES|NO),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

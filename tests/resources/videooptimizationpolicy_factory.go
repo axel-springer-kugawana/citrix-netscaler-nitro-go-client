@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_videooptimizationpolicy(t *testing.T) *nitro.Videooptimizationpolicy {
-	//reource := nitro.Videooptimizationpolicy {
+func setup_videooptimizationpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Videooptimizationpolicy, func()) {
+	//resource := nitro.Videooptimizationpolicy {
 	//Name: "videooptimizationpolicy",
 	//Action: videooptimizationaction.name,
 	//Comment: string,
@@ -14,5 +14,7 @@ func setup_videooptimizationpolicy(t *testing.T) *nitro.Videooptimizationpolicy 
 	//Rule: string,
 	//Undefaction: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

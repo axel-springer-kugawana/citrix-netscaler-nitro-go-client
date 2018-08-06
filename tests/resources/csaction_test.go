@@ -9,7 +9,7 @@ import (
 func TestCsaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_csaction(t)
+	resource, tearDown := setup_csaction(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCsaction(t *testing.T) {
 	err = client.DeleteCsaction(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

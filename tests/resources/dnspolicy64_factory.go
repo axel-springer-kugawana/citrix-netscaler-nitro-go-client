@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_dnspolicy64(t *testing.T) *nitro.Dnspolicy64 {
-	//reource := nitro.Dnspolicy64 {
+func setup_dnspolicy64(t *testing.T, client *nitro.NitroClient) (*nitro.Dnspolicy64, func()) {
+	//resource := nitro.Dnspolicy64 {
 	//Name: "dnspolicy64",
 	//Action: dnsaction64.actionname,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -9,7 +9,7 @@ import (
 func TestServicegroup(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_servicegroup(t)
+	resource, tearDown := setup_servicegroup(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestServicegroup(t *testing.T) {
 	err = client.DeleteServicegroup(resource.Servicegroupname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

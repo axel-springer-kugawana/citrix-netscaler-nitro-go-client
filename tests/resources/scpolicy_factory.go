@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_scpolicy(t *testing.T) *nitro.Scpolicy {
-	//reource := nitro.Scpolicy {
+func setup_scpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Scpolicy, func()) {
+	//resource := nitro.Scpolicy {
 	//Name: "scpolicy",
 	//Action: string,
 	//Altcontentpath: (ACS|NS|NOACTION),
@@ -16,5 +16,7 @@ func setup_scpolicy(t *testing.T) *nitro.Scpolicy {
 	//Rule: string,
 	//Url: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

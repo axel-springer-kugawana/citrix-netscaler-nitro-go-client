@@ -9,7 +9,7 @@ import (
 func TestAppflowpolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_appflowpolicylabel(t)
+	resource, tearDown := setup_appflowpolicylabel(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestAppflowpolicylabel(t *testing.T) {
 	err = client.DeleteAppflowpolicylabel(resource.Labelname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_auditsyslogpolicy(t *testing.T) *nitro.Auditsyslogpolicy {
-	//reource := nitro.Auditsyslogpolicy {
+func setup_auditsyslogpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Auditsyslogpolicy, func()) {
+	//resource := nitro.Auditsyslogpolicy {
 	//Name: "auditsyslogpolicy",
 	//Action: auditsyslogaction.name,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

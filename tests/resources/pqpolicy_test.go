@@ -9,7 +9,7 @@ import (
 func TestPqpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_pqpolicy(t)
+	resource, tearDown := setup_pqpolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestPqpolicy(t *testing.T) {
 	err = client.DeletePqpolicy(resource.Policyname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

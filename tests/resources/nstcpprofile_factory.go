@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_nstcpprofile(t *testing.T) *nitro.Nstcpprofile {
-	//reource := nitro.Nstcpprofile {
+func setup_nstcpprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Nstcpprofile, func()) {
+	//resource := nitro.Nstcpprofile {
 	//Name: "nstcpprofile",
 	//Ackaggregation: (ENABLED|DISABLED),
 	//Ackonpush: (ENABLED|DISABLED),
@@ -58,5 +58,7 @@ func setup_nstcpprofile(t *testing.T) *nitro.Nstcpprofile {
 	//Ws: (ENABLED|DISABLED),
 	//Wsval: double,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

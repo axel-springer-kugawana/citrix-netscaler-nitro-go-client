@@ -9,7 +9,7 @@ import (
 func TestLbvserver(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_lbvserver(t)
+	resource, tearDown := setup_lbvserver(t, client)
 
 	if resource == nil {
 		return
@@ -57,4 +57,7 @@ func TestLbvserver(t *testing.T) {
 	err = client.DeleteLbvserver(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

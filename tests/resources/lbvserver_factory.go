@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_lbvserver(t *testing.T) *nitro.Lbvserver {
-	//reource := nitro.Lbvserver {
+func setup_lbvserver(t *testing.T, client *nitro.NitroClient) (*nitro.Lbvserver, func()) {
+	//resource := nitro.Lbvserver {
 	//Name: "lbvserver",
 	//Appflowlog: (ENABLED|DISABLED),
 	//Authentication: (ON|OFF),
@@ -99,5 +99,7 @@ func setup_lbvserver(t *testing.T) *nitro.Lbvserver {
 	//V6persistmasklen: double,
 	//Vipheader: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

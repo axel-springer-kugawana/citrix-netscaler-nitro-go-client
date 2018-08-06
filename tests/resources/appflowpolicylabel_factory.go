@@ -5,10 +5,12 @@ import (
 	"testing"
 )
 
-func setup_appflowpolicylabel(t *testing.T) *nitro.Appflowpolicylabel {
-	//reource := nitro.Appflowpolicylabel {
+func setup_appflowpolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowpolicylabel, func()) {
+	//resource := nitro.Appflowpolicylabel {
 	//Labelname: "appflowpolicylabel",
 	//Policylabeltype: (HTTP|OTHERTCP),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

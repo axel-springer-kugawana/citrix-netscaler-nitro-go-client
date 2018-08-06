@@ -9,7 +9,7 @@ import (
 func TestCachepolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_cachepolicy(t)
+	resource, tearDown := setup_cachepolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCachepolicy(t *testing.T) {
 	err = client.DeleteCachepolicy(resource.Policyname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

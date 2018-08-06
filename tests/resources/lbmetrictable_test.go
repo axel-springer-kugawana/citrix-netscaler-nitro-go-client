@@ -9,7 +9,7 @@ import (
 func TestLbmetrictable(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_lbmetrictable(t)
+	resource, tearDown := setup_lbmetrictable(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestLbmetrictable(t *testing.T) {
 	err = client.DeleteLbmetrictable(resource.Metrictable + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

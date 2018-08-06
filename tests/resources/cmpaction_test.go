@@ -9,7 +9,7 @@ import (
 func TestCmpaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_cmpaction(t)
+	resource, tearDown := setup_cmpaction(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCmpaction(t *testing.T) {
 	err = client.DeleteCmpaction(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

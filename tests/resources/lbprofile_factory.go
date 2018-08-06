@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_lbprofile(t *testing.T) *nitro.Lbprofile {
-	//reource := nitro.Lbprofile {
+func setup_lbprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Lbprofile, func()) {
+	//resource := nitro.Lbprofile {
 	//Lbprofilename: "lbprofile",
 	//Cookiepassphrase: string,
 	//Dbslb: (ENABLED|DISABLED),
@@ -15,5 +15,7 @@ func setup_lbprofile(t *testing.T) *nitro.Lbprofile {
 	//Useencryptedpersistencecookie: (ENABLED|DISABLED),
 	//Usesecuredpersistencecookie: (ENABLED|DISABLED),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

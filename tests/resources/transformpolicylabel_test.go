@@ -9,7 +9,7 @@ import (
 func TestTransformpolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_transformpolicylabel(t)
+	resource, tearDown := setup_transformpolicylabel(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestTransformpolicylabel(t *testing.T) {
 	err = client.DeleteTransformpolicylabel(resource.Labelname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

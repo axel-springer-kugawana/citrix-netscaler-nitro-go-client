@@ -9,7 +9,7 @@ import (
 func TestService(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_service(t)
+	resource, tearDown := setup_service(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestService(t *testing.T) {
 	err = client.DeleteService(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

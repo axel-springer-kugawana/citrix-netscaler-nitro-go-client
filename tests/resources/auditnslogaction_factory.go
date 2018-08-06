@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_auditnslogaction(t *testing.T) *nitro.Auditnslogaction {
-	//reource := nitro.Auditnslogaction {
+func setup_auditnslogaction(t *testing.T, client *nitro.NitroClient) (*nitro.Auditnslogaction, func()) {
+	//resource := nitro.Auditnslogaction {
 	//Name: "auditnslogaction",
 	//Acl: (ENABLED|DISABLED),
 	//Alg: (ENABLED|DISABLED),
@@ -25,5 +25,7 @@ func setup_auditnslogaction(t *testing.T) *nitro.Auditnslogaction {
 	//Timezone: (GMT_TIME|LOCAL_TIME),
 	//Userdefinedauditlog: (YES|NO),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

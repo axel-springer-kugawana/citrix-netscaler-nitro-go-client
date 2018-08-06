@@ -5,8 +5,10 @@ import (
 	"testing"
 )
 
-func setup_appflowaction(t *testing.T) *nitro.Appflowaction {
-	collector := setup_appflowcollector(t)
+func setup_appflowaction(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowaction, func()) {
+	collector, collectorTearDown := setup_appflowcollector(t, client)
+
+	client.AddAppflowcollector(*collector)
 
 	resource := nitro.Appflowaction{
 		Name: "appflowaction",
@@ -19,5 +21,11 @@ func setup_appflowaction(t *testing.T) *nitro.Appflowaction {
 
 	resource.Collectors = append(resource.Collectors, collector.Name)
 
-	return &resource
+	return &resource, func() {
+		client.DeleteAppflowcollector(collector.Name)
+
+		if collectorTearDown != nil {
+			collectorTearDown()
+		}
+	}
 }

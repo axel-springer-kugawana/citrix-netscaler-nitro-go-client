@@ -9,7 +9,7 @@ import (
 func TestCapolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_capolicy(t)
+	resource, tearDown := setup_capolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestCapolicy(t *testing.T) {
 	err = client.DeleteCapolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

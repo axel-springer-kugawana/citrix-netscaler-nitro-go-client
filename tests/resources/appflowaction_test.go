@@ -9,7 +9,7 @@ import (
 func TestAppflowaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_appflowaction(t)
+	resource, tearDown := setup_appflowaction(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestAppflowaction(t *testing.T) {
 	err = client.DeleteAppflowaction(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

@@ -9,7 +9,7 @@ import (
 func TestTmtrafficpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_tmtrafficpolicy(t)
+	resource, tearDown := setup_tmtrafficpolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestTmtrafficpolicy(t *testing.T) {
 	err = client.DeleteTmtrafficpolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

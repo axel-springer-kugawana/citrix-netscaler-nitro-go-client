@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_capolicy(t *testing.T) *nitro.Capolicy {
-	//reource := nitro.Capolicy {
+func setup_capolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Capolicy, func()) {
+	//resource := nitro.Capolicy {
 	//Name: "capolicy",
 	//Action: caaction.name,
 	//Comment: string,
@@ -14,5 +14,7 @@ func setup_capolicy(t *testing.T) *nitro.Capolicy {
 	//Rule: string,
 	//Undefaction: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

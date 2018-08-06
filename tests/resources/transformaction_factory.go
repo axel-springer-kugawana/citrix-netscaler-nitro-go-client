@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_transformaction(t *testing.T) *nitro.Transformaction {
-	//reource := nitro.Transformaction {
+func setup_transformaction(t *testing.T, client *nitro.NitroClient) (*nitro.Transformaction, func()) {
+	//resource := nitro.Transformaction {
 	//Name: "transformaction",
 	//Comment: string,
 	//Cookiedomainfrom: string,
@@ -19,5 +19,7 @@ func setup_transformaction(t *testing.T) *nitro.Transformaction {
 	//Resurlinto: string,
 	//State: (ENABLED|DISABLED),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -9,7 +9,7 @@ import (
 func TestVideooptimizationpolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_videooptimizationpolicylabel(t)
+	resource, tearDown := setup_videooptimizationpolicylabel(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestVideooptimizationpolicylabel(t *testing.T) {
 	err = client.DeleteVideooptimizationpolicylabel(resource.Labelname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

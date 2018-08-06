@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_cmppolicy(t *testing.T) *nitro.Cmppolicy {
-	//reource := nitro.Cmppolicy {
+func setup_cmppolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Cmppolicy, func()) {
+	//resource := nitro.Cmppolicy {
 	//Name: "cmppolicy",
 	//Resaction: cmpaction.name,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

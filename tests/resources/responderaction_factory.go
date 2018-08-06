@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_responderaction(t *testing.T) *nitro.Responderaction {
-	//reource := nitro.Responderaction {
+func setup_responderaction(t *testing.T, client *nitro.NitroClient) (*nitro.Responderaction, func()) {
+	//resource := nitro.Responderaction {
 	//Name: "responderaction",
 	//Bypasssafetycheck: (YES|NO),
 	//Comment: string,
@@ -16,5 +16,7 @@ func setup_responderaction(t *testing.T) *nitro.Responderaction {
 	//Target: string,
 	//Type: (noop|respondwith|redirect|respondwithhtmlpage|sqlresponse_ok|sqlresponse_error),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_dnsprofile(t *testing.T) *nitro.Dnsprofile {
-	//reource := nitro.Dnsprofile {
+func setup_dnsprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dnsprofile, func()) {
+	//resource := nitro.Dnsprofile {
 	//Dnsprofilename: "dnsprofile",
 	//Cacheecsresponses: (ENABLED|DISABLED),
 	//Cachenegativeresponses: (ENABLED|DISABLED),
@@ -17,5 +17,7 @@ func setup_dnsprofile(t *testing.T) *nitro.Dnsprofile {
 	//Dnsquerylogging: (ENABLED|DISABLED),
 	//Dropmultiqueryrequest: (ENABLED|DISABLED),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

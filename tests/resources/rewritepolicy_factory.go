@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_rewritepolicy(t *testing.T) *nitro.Rewritepolicy {
-	//reource := nitro.Rewritepolicy {
+func setup_rewritepolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Rewritepolicy, func()) {
+	//resource := nitro.Rewritepolicy {
 	//Name: "rewritepolicy",
 	//Action: rewriteaction.name,
 	//Comment: string,
@@ -14,5 +14,7 @@ func setup_rewritepolicy(t *testing.T) *nitro.Rewritepolicy {
 	//Rule: string,
 	//Undefaction: rewriteaction.name,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

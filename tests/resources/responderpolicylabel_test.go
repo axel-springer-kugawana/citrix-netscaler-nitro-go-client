@@ -9,7 +9,7 @@ import (
 func TestResponderpolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_responderpolicylabel(t)
+	resource, tearDown := setup_responderpolicylabel(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestResponderpolicylabel(t *testing.T) {
 	err = client.DeleteResponderpolicylabel(resource.Labelname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

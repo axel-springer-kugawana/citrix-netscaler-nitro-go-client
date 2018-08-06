@@ -5,13 +5,15 @@ import (
 	"testing"
 )
 
-func setup_netprofile(t *testing.T) *nitro.Netprofile {
-	//reource := nitro.Netprofile {
+func setup_netprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Netprofile, func()) {
+	//resource := nitro.Netprofile {
 	//Name: "netprofile",
 	//Overridelsn: (ENABLED|DISABLED),
 	//Srcip: ip,
 	//Srcippersistency: (ENABLED|DISABLED),
 	//Td: double,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

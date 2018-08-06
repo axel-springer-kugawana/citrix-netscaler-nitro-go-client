@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_responderpolicy(t *testing.T) *nitro.Responderpolicy {
-	//reource := nitro.Responderpolicy {
+func setup_responderpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Responderpolicy, func()) {
+	//resource := nitro.Responderpolicy {
 	//Name: "responderpolicy",
 	//Action: responderaction.name,
 	//Appflowaction: appflowaction.name,
@@ -15,5 +15,7 @@ func setup_responderpolicy(t *testing.T) *nitro.Responderpolicy {
 	//Rule: string,
 	//Undefaction: (NOOP|RESET|DROP),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -5,10 +5,12 @@ import (
 	"testing"
 )
 
-func setup_policystringmap(t *testing.T) *nitro.Policystringmap {
-	//reource := nitro.Policystringmap {
+func setup_policystringmap(t *testing.T, client *nitro.NitroClient) (*nitro.Policystringmap, func()) {
+	//resource := nitro.Policystringmap {
 	//Name: "policystringmap",
 	//Comment: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

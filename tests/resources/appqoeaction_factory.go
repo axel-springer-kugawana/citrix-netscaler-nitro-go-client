@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_appqoeaction(t *testing.T) *nitro.Appqoeaction {
-	//reource := nitro.Appqoeaction {
+func setup_appqoeaction(t *testing.T, client *nitro.NitroClient) (*nitro.Appqoeaction, func()) {
+	//resource := nitro.Appqoeaction {
 	//Name: "appqoeaction",
 	//Altcontentpath: string,
 	//Altcontentsvcname: service.name,
@@ -21,5 +21,7 @@ func setup_appqoeaction(t *testing.T) *nitro.Appqoeaction {
 	//Respondwith: (ACS|NS),
 	//Tcpprofile: nstcpprofile.name,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

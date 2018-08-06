@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_servicegroup(t *testing.T) *nitro.Servicegroup {
-	//reource := nitro.Servicegroup {
+func setup_servicegroup(t *testing.T, client *nitro.NitroClient) (*nitro.Servicegroup, func()) {
+	//resource := nitro.Servicegroup {
 	//Servicegroupname: "servicegroup",
 	//Appflowlog: (ENABLED|DISABLED),
 	//Autoscale: (DISABLED|DNS|POLICY),
@@ -42,5 +42,7 @@ func setup_servicegroup(t *testing.T) *nitro.Servicegroup {
 	//Useproxyport: (YES|NO),
 	//Usip: (YES|NO),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

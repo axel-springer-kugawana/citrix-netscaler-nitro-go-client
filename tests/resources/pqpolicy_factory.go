@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_pqpolicy(t *testing.T) *nitro.Pqpolicy {
-	//reource := nitro.Pqpolicy {
+func setup_pqpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Pqpolicy, func()) {
+	//resource := nitro.Pqpolicy {
 	//Policyname: "pqpolicy",
 	//Polqdepth: double,
 	//Priority: double,
@@ -14,5 +14,7 @@ func setup_pqpolicy(t *testing.T) *nitro.Pqpolicy {
 	//Rule: string,
 	//Weight: double,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

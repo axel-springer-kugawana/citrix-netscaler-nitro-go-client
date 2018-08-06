@@ -2,14 +2,14 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func Test{{$.Name|name}}(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_{{$.Name}}(t)
+	resource, tearDown := setup_{{$.Name}}(t, client)
 
 	if resource == nil {
 		return
@@ -62,4 +62,8 @@ func Test{{$.Name|name}}(t *testing.T) {
 
 	assert.NoError(t, err)
 	{{end -}}
+
+	if tearDown != nil {
+		tearDown()
+	}
 }

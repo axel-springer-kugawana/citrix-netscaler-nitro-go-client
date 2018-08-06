@@ -9,7 +9,7 @@ import (
 func TestNstcpprofile(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_nstcpprofile(t)
+	resource, tearDown := setup_nstcpprofile(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestNstcpprofile(t *testing.T) {
 	err = client.DeleteNstcpprofile(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

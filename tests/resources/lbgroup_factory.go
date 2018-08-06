@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_lbgroup(t *testing.T) *nitro.Lbgroup {
-	//reource := nitro.Lbgroup {
+func setup_lbgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Lbgroup, func()) {
+	//resource := nitro.Lbgroup {
 	//Name: "lbgroup",
 	//Backuppersistencetimeout: double,
 	//Cookiedomain: string,
@@ -19,5 +19,7 @@ func setup_lbgroup(t *testing.T) *nitro.Lbgroup {
 	//Usevserverpersistency: (ENABLED|DISABLED),
 	//V6persistmasklen: double,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

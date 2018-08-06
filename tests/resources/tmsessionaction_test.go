@@ -9,7 +9,7 @@ import (
 func TestTmsessionaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_tmsessionaction(t)
+	resource, tearDown := setup_tmsessionaction(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestTmsessionaction(t *testing.T) {
 	err = client.DeleteTmsessionaction(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

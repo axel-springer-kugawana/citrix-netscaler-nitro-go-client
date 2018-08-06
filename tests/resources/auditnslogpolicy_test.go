@@ -9,7 +9,7 @@ import (
 func TestAuditnslogpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_auditnslogpolicy(t)
+	resource, tearDown := setup_auditnslogpolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestAuditnslogpolicy(t *testing.T) {
 	err = client.DeleteAuditnslogpolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

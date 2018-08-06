@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_lbmonitor(t *testing.T) *nitro.Lbmonitor {
-	//reource := nitro.Lbmonitor {
+func setup_lbmonitor(t *testing.T, client *nitro.NitroClient) (*nitro.Lbmonitor, func()) {
+	//resource := nitro.Lbmonitor {
 	//Monitorname: "lbmonitor",
 	//Action: (NONE|LOG|DOWN),
 	//Alertretries: int,
@@ -99,5 +99,7 @@ func setup_lbmonitor(t *testing.T) *nitro.Lbmonitor {
 	//Vendorid: double,
 	//Vendorspecificvendorid: double,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

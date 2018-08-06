@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_feoaction(t *testing.T) *nitro.Feoaction {
-	//reource := nitro.Feoaction {
+func setup_feoaction(t *testing.T, client *nitro.NitroClient) (*nitro.Feoaction, func()) {
+	//resource := nitro.Feoaction {
 	//Name: "feoaction",
 	//Cachemaxage: double,
 	//Clientsidemeasurements: bool,
@@ -31,5 +31,7 @@ func setup_feoaction(t *testing.T) *nitro.Feoaction {
 	//Jsmovetoend: bool,
 	//Pageextendcache: bool,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

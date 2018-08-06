@@ -9,7 +9,7 @@ import (
 func TestRewritepolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_rewritepolicylabel(t)
+	resource, tearDown := setup_rewritepolicylabel(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestRewritepolicylabel(t *testing.T) {
 	err = client.DeleteRewritepolicylabel(resource.Labelname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

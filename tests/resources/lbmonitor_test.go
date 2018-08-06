@@ -9,7 +9,7 @@ import (
 func TestLbmonitor(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_lbmonitor(t)
+	resource, tearDown := setup_lbmonitor(t, client)
 
 	if resource == nil {
 		return
@@ -19,4 +19,7 @@ func TestLbmonitor(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	if tearDown != nil {
+		tearDown()
+	}
 }

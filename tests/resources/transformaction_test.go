@@ -9,7 +9,7 @@ import (
 func TestTransformaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_transformaction(t)
+	resource, tearDown := setup_transformaction(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestTransformaction(t *testing.T) {
 	err = client.DeleteTransformaction(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

@@ -5,13 +5,15 @@ import (
 	"testing"
 )
 
-func setup_policyexpression(t *testing.T) *nitro.Policyexpression {
-	//reource := nitro.Policyexpression {
+func setup_policyexpression(t *testing.T, client *nitro.NitroClient) (*nitro.Policyexpression, func()) {
+	//resource := nitro.Policyexpression {
 	//Name: "policyexpression",
 	//Clientsecuritymessage: string,
 	//Comment: string,
 	//Description: string,
 	//Value: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_tmsessionaction(t *testing.T) *nitro.Tmsessionaction {
-	//reource := nitro.Tmsessionaction {
+func setup_tmsessionaction(t *testing.T, client *nitro.NitroClient) (*nitro.Tmsessionaction, func()) {
+	//resource := nitro.Tmsessionaction {
 	//Name: "tmsessionaction",
 	//Defaultauthorizationaction: (ALLOW|DENY),
 	//Homepage: string,
@@ -19,5 +19,7 @@ func setup_tmsessionaction(t *testing.T) *nitro.Tmsessionaction {
 	//Ssocredential: (PRIMARY|SECONDARY),
 	//Ssodomain: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

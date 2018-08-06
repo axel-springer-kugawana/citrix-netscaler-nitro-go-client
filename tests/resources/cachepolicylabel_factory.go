@@ -5,10 +5,12 @@ import (
 	"testing"
 )
 
-func setup_cachepolicylabel(t *testing.T) *nitro.Cachepolicylabel {
-	//reource := nitro.Cachepolicylabel {
+func setup_cachepolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Cachepolicylabel, func()) {
+	//resource := nitro.Cachepolicylabel {
 	//Labelname: "cachepolicylabel",
 	//Evaluates: (REQ|RES|MSSQL_REQ|MSSQL_RES|MYSQL_REQ|MYSQL_RES),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

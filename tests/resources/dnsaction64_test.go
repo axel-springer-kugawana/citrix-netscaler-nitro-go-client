@@ -9,7 +9,7 @@ import (
 func TestDnsaction64(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_dnsaction64(t)
+	resource, tearDown := setup_dnsaction64(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestDnsaction64(t *testing.T) {
 	err = client.DeleteDnsaction64(resource.Actionname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

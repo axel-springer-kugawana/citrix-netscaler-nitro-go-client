@@ -5,13 +5,15 @@ import (
 	"testing"
 )
 
-func setup_lbwlm(t *testing.T) *nitro.Lbwlm {
-	//reource := nitro.Lbwlm {
+func setup_lbwlm(t *testing.T, client *nitro.NitroClient) (*nitro.Lbwlm, func()) {
+	//resource := nitro.Lbwlm {
 	//Wlmname: "lbwlm",
 	//Ipaddress: ip,
 	//Katimeout: double,
 	//Lbuid: string,
 	//Port: int,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

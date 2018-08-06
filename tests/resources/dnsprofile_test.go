@@ -9,7 +9,7 @@ import (
 func TestDnsprofile(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_dnsprofile(t)
+	resource, tearDown := setup_dnsprofile(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestDnsprofile(t *testing.T) {
 	err = client.DeleteDnsprofile(resource.Dnsprofilename + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

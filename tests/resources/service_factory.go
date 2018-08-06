@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_service(t *testing.T) *nitro.Service {
-	//reource := nitro.Service {
+func setup_service(t *testing.T, client *nitro.NitroClient) (*nitro.Service, func()) {
+	//resource := nitro.Service {
 	//Name: "service",
 	//Accessdown: (YES|NO),
 	//Appflowlog: (ENABLED|DISABLED),
@@ -49,5 +49,7 @@ func setup_service(t *testing.T) *nitro.Service {
 	//Useproxyport: (YES|NO),
 	//Usip: (YES|NO),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

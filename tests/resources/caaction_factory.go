@@ -5,13 +5,15 @@ import (
 	"testing"
 )
 
-func setup_caaction(t *testing.T) *nitro.Caaction {
-	//reource := nitro.Caaction {
+func setup_caaction(t *testing.T, client *nitro.NitroClient) (*nitro.Caaction, func()) {
+	//resource := nitro.Caaction {
 	//Name: "caaction",
 	//Accumressize: double,
 	//Comment: string,
 	//Lbvserver: string,
 	//Type: (nolookup|lookup|noop),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

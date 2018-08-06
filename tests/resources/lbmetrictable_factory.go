@@ -5,9 +5,11 @@ import (
 	"testing"
 )
 
-func setup_lbmetrictable(t *testing.T) *nitro.Lbmetrictable {
-	//reource := nitro.Lbmetrictable {
+func setup_lbmetrictable(t *testing.T, client *nitro.NitroClient) (*nitro.Lbmetrictable, func()) {
+	//resource := nitro.Lbmetrictable {
 	//Metrictable: "lbmetrictable",
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_tmtrafficaction(t *testing.T) *nitro.Tmtrafficaction {
-	//reource := nitro.Tmtrafficaction {
+func setup_tmtrafficaction(t *testing.T, client *nitro.NitroClient) (*nitro.Tmtrafficaction, func()) {
+	//resource := nitro.Tmtrafficaction {
 	//Name: "tmtrafficaction",
 	//Apptimeout: double,
 	//Forcedtimeout: (START|STOP|RESET),
@@ -20,5 +20,7 @@ func setup_tmtrafficaction(t *testing.T) *nitro.Tmtrafficaction {
 	//Sso: (ON|OFF),
 	//Userexpression: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

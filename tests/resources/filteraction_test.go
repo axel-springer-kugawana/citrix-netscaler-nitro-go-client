@@ -9,7 +9,7 @@ import (
 func TestFilteraction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_filteraction(t)
+	resource, tearDown := setup_filteraction(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestFilteraction(t *testing.T) {
 	err = client.DeleteFilteraction(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

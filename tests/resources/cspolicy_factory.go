@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_cspolicy(t *testing.T) *nitro.Cspolicy {
-	//reource := nitro.Cspolicy {
+func setup_cspolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Cspolicy, func()) {
+	//resource := nitro.Cspolicy {
 	//Policyname: "cspolicy",
 	//Action: csaction.name,
 	//Domain: string,
@@ -14,5 +14,7 @@ func setup_cspolicy(t *testing.T) *nitro.Cspolicy {
 	//Rule: string,
 	//Url: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func setup_dbdbprofile(t *testing.T) *nitro.Dbdbprofile {
-	//reource := nitro.Dbdbprofile {
+func setup_dbdbprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dbdbprofile, func()) {
+	//resource := nitro.Dbdbprofile {
 	//Name: "dbdbprofile",
 	//Conmultiplex: (ENABLED|DISABLED),
 	//Enablecachingconmuxoff: (ENABLED|DISABLED),
@@ -14,5 +14,7 @@ func setup_dbdbprofile(t *testing.T) *nitro.Dbdbprofile {
 	//Kcdaccount: string,
 	//Stickiness: (YES|NO),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

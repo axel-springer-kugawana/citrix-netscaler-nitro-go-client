@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_appqoepolicy(t *testing.T) *nitro.Appqoepolicy {
-	//reource := nitro.Appqoepolicy {
+func setup_appqoepolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appqoepolicy, func()) {
+	//resource := nitro.Appqoepolicy {
 	//Name: "appqoepolicy",
 	//Action: appqoeaction.name,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

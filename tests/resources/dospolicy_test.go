@@ -9,7 +9,7 @@ import (
 func TestDospolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_dospolicy(t)
+	resource, tearDown := setup_dospolicy(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestDospolicy(t *testing.T) {
 	err = client.DeleteDospolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

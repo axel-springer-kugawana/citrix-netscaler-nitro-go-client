@@ -5,11 +5,13 @@ import (
 	"testing"
 )
 
-func setup_feopolicy(t *testing.T) *nitro.Feopolicy {
-	//reource := nitro.Feopolicy {
+func setup_feopolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Feopolicy, func()) {
+	//resource := nitro.Feopolicy {
 	//Name: "feopolicy",
 	//Action: feoaction.name,
 	//Rule: string,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

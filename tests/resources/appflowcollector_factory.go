@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func setup_appflowcollector(t *testing.T) *nitro.Appflowcollector {
+func setup_appflowcollector(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowcollector, func()) {
 	resource := nitro.Appflowcollector{
 		Name:      "appflowcollector",
 		Ipaddress: "1.3.5.7",
@@ -13,5 +13,5 @@ func setup_appflowcollector(t *testing.T) *nitro.Appflowcollector {
 		Port: 1234,
 	}
 
-	return &resource
+	return &resource, nil
 }

@@ -2,14 +2,17 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func setup_{{$.Name}}() *nitro.{{$.Name|name}} {
-	//reource := nitro.{{$.Name|name}} {
+func setup_{{$.Name}}(t *testing.T, client *nitro.NitroClient) (*nitro.{{$.Name|name}}, func()) {
+	//resource := nitro.{{$.Name|name}} {
 		//{{$.Schema.Key.Name|title}}: "{{$.Name}}",
 		{{range $field, $type := $.Schema.Fields -}}
 		//{{$field|title}}: {{$type}},
 		{{end -}}
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

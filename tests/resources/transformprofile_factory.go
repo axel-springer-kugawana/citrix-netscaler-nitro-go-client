@@ -5,12 +5,14 @@ import (
 	"testing"
 )
 
-func setup_transformprofile(t *testing.T) *nitro.Transformprofile {
-	//reource := nitro.Transformprofile {
+func setup_transformprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Transformprofile, func()) {
+	//resource := nitro.Transformprofile {
 	//Name: "transformprofile",
 	//Comment: string,
 	//Onlytransformabsurlinbody: (ON|OFF),
 	//Type: (URL),
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

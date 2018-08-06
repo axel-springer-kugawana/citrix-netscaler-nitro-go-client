@@ -9,7 +9,7 @@ import (
 func TestLbwlm(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_lbwlm(t)
+	resource, tearDown := setup_lbwlm(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestLbwlm(t *testing.T) {
 	err = client.DeleteLbwlm(resource.Wlmname + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

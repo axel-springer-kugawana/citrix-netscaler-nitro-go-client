@@ -9,7 +9,7 @@ import (
 func TestAppflowcollector(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := setup_appflowcollector(t)
+	resource, tearDown := setup_appflowcollector(t, client)
 
 	if resource == nil {
 		return
@@ -50,4 +50,7 @@ func TestAppflowcollector(t *testing.T) {
 	err = client.DeleteAppflowcollector(resource.Name + "-rename")
 
 	assert.NoError(t, err)
+	if tearDown != nil {
+		tearDown()
+	}
 }

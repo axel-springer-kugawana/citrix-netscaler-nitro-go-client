@@ -5,13 +5,15 @@ import (
 	"testing"
 )
 
-func setup_appflowpolicy(t *testing.T) *nitro.Appflowpolicy {
-	//reource := nitro.Appflowpolicy {
+func setup_appflowpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowpolicy, func()) {
+	//resource := nitro.Appflowpolicy {
 	//Name: "appflowpolicy",
 	//Action: appflowaction.name,
 	//Comment: string,
 	//Rule: string,
 	//Undefaction: appflowaction.name,
 	//}
-	return nil
+
+	return nil, func() {
+	}
 }

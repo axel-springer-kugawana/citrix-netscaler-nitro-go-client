@@ -9,7 +9,7 @@ import (
 func TestFeopolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_feopolicy()
+	resource := setup_feopolicy(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestFeopolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsFeopolicy(resource.Name)
+	exists, err = client.ExistsFeopolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

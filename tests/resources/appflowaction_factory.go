@@ -5,16 +5,16 @@ import (
 	"testing"
 )
 
-func create_appflowaction(t *testing.T) *nitro.Appflowaction {
-	collector := create_appflowcollector()
+func setup_appflowaction(t *testing.T) *nitro.Appflowaction {
+	collector := setup_appflowcollector(t)
 
-	resource := nitro.Appflowaction {
+	resource := nitro.Appflowaction{
 		Name: "appflowaction",
 		Clientsidemeasurements: "ENABLED",
-		Comment: "comment",
-		Pagetracking: "ENABLED",
-		Securityinsight: "ENABLED",
-		Webinsight: "ENABLED",
+		Comment:                "comment",
+		Pagetracking:           "ENABLED",
+		Securityinsight:        "ENABLED",
+		Webinsight:             "ENABLED",
 	}
 
 	resource.Collectors = append(resource.Collectors, collector.Name)

@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_lbvserver() *nitro.Lbvserver {
+func setup_lbvserver(t *testing.T) *nitro.Lbvserver {
 	//reource := nitro.Lbvserver {
 	//Name: "lbvserver",
 	//Appflowlog: (ENABLED|DISABLED),

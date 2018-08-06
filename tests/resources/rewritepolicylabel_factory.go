@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_rewritepolicylabel() *nitro.Rewritepolicylabel {
+func setup_rewritepolicylabel(t *testing.T) *nitro.Rewritepolicylabel {
 	//reource := nitro.Rewritepolicylabel {
 	//Labelname: "rewritepolicylabel",
 	//Comment: string,

@@ -9,7 +9,7 @@ import (
 func TestServicegroup(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_servicegroup()
+	resource := setup_servicegroup(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestServicegroup(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsServicegroup(resource.Servicegroupname)
+	exists, err = client.ExistsServicegroup(resource.Servicegroupname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_filterpolicy() *nitro.Filterpolicy {
+func setup_filterpolicy(t *testing.T) *nitro.Filterpolicy {
 	//reource := nitro.Filterpolicy {
 	//Name: "filterpolicy",
 	//Reqaction: filteraction.name,

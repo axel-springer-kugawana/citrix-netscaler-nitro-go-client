@@ -9,7 +9,7 @@ import (
 func TestCsaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_csaction()
+	resource := setup_csaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCsaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCsaction(resource.Name)
+	exists, err = client.ExistsCsaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

@@ -9,7 +9,7 @@ import (
 func TestAuditsyslogaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_auditsyslogaction()
+	resource := setup_auditsyslogaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestAuditsyslogaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsAuditsyslogaction(resource.Name)
+	exists, err = client.ExistsAuditsyslogaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

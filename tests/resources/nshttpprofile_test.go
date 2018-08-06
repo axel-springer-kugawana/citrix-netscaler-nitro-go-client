@@ -9,7 +9,7 @@ import (
 func TestNshttpprofile(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_nshttpprofile()
+	resource := setup_nshttpprofile(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestNshttpprofile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsNshttpprofile(resource.Name)
+	exists, err = client.ExistsNshttpprofile(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

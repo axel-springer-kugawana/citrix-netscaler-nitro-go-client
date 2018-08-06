@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_appqoeaction() *nitro.Appqoeaction {
+func setup_appqoeaction(t *testing.T) *nitro.Appqoeaction {
 	//reource := nitro.Appqoeaction {
 	//Name: "appqoeaction",
 	//Altcontentpath: string,

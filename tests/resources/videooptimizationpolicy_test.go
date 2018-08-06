@@ -9,7 +9,7 @@ import (
 func TestVideooptimizationpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_videooptimizationpolicy()
+	resource := setup_videooptimizationpolicy(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestVideooptimizationpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsVideooptimizationpolicy(resource.Name)
+	exists, err = client.ExistsVideooptimizationpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

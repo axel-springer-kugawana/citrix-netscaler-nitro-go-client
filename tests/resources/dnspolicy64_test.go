@@ -9,7 +9,7 @@ import (
 func TestDnspolicy64(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_dnspolicy64()
+	resource := setup_dnspolicy64(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestDnspolicy64(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsDnspolicy64(resource.Name)
+	exists, err = client.ExistsDnspolicy64(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_tmtrafficaction() *nitro.Tmtrafficaction {
+func setup_tmtrafficaction(t *testing.T) *nitro.Tmtrafficaction {
 	//reource := nitro.Tmtrafficaction {
 	//Name: "tmtrafficaction",
 	//Apptimeout: double,

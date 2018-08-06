@@ -9,7 +9,7 @@ import (
 func TestPolicyexpression(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_policyexpression()
+	resource := setup_policyexpression(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestPolicyexpression(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsPolicyexpression(resource.Name)
+	exists, err = client.ExistsPolicyexpression(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

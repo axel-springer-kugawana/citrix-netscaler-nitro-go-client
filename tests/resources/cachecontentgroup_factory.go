@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_cachecontentgroup() *nitro.Cachecontentgroup {
+func setup_cachecontentgroup(t *testing.T) *nitro.Cachecontentgroup {
 	//reource := nitro.Cachecontentgroup {
 	//Name: "cachecontentgroup",
 	//Absexpiry: string[],

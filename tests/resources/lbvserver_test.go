@@ -9,7 +9,7 @@ import (
 func TestLbvserver(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_lbvserver()
+	resource := setup_lbvserver(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestLbvserver(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsLbvserver(resource.Name)
+	exists, err = client.ExistsLbvserver(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

@@ -9,7 +9,7 @@ import (
 func TestLbmetrictable(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_lbmetrictable()
+	resource := setup_lbmetrictable(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestLbmetrictable(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsLbmetrictable(resource.Metrictable)
+	exists, err = client.ExistsLbmetrictable(resource.Metrictable)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

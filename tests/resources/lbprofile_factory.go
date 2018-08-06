@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_lbprofile() *nitro.Lbprofile {
+func setup_lbprofile(t *testing.T) *nitro.Lbprofile {
 	//reource := nitro.Lbprofile {
 	//Lbprofilename: "lbprofile",
 	//Cookiepassphrase: string,

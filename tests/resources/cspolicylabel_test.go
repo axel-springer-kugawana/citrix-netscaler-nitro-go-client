@@ -9,7 +9,7 @@ import (
 func TestCspolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_cspolicylabel()
+	resource := setup_cspolicylabel(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCspolicylabel(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCspolicylabel(resource.Labelname)
+	exists, err = client.ExistsCspolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

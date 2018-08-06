@@ -9,7 +9,7 @@ import (
 func TestCmppolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_cmppolicylabel()
+	resource := setup_cmppolicylabel(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCmppolicylabel(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCmppolicylabel(resource.Labelname)
+	exists, err = client.ExistsCmppolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

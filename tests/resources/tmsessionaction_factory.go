@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_tmsessionaction() *nitro.Tmsessionaction {
+func setup_tmsessionaction(t *testing.T) *nitro.Tmsessionaction {
 	//reource := nitro.Tmsessionaction {
 	//Name: "tmsessionaction",
 	//Defaultauthorizationaction: (ALLOW|DENY),

@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_feopolicy() *nitro.Feopolicy {
+func setup_feopolicy(t *testing.T) *nitro.Feopolicy {
 	//reource := nitro.Feopolicy {
 	//Name: "feopolicy",
 	//Action: feoaction.name,

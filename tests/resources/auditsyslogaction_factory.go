@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_auditsyslogaction() *nitro.Auditsyslogaction {
+func setup_auditsyslogaction(t *testing.T) *nitro.Auditsyslogaction {
 	//reource := nitro.Auditsyslogaction {
 	//Name: "auditsyslogaction",
 	//Acl: (ENABLED|DISABLED),

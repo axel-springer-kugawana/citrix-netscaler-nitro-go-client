@@ -9,7 +9,7 @@ import (
 func TestAuthorizationpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_authorizationpolicy()
+	resource := setup_authorizationpolicy(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestAuthorizationpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsAuthorizationpolicy(resource.Name)
+	exists, err = client.ExistsAuthorizationpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

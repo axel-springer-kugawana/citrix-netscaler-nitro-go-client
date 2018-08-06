@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_feoaction() *nitro.Feoaction {
+func setup_feoaction(t *testing.T) *nitro.Feoaction {
 	//reource := nitro.Feoaction {
 	//Name: "feoaction",
 	//Cachemaxage: double,

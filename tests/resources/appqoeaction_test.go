@@ -9,7 +9,7 @@ import (
 func TestAppqoeaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_appqoeaction()
+	resource := setup_appqoeaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestAppqoeaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsAppqoeaction(resource.Name)
+	exists, err = client.ExistsAppqoeaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

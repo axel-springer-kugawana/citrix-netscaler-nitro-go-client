@@ -9,7 +9,7 @@ import (
 func TestTransformpolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_transformpolicylabel()
+	resource := setup_transformpolicylabel(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestTransformpolicylabel(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsTransformpolicylabel(resource.Labelname)
+	exists, err = client.ExistsTransformpolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

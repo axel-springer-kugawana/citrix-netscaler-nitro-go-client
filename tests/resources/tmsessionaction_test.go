@@ -9,7 +9,7 @@ import (
 func TestTmsessionaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_tmsessionaction()
+	resource := setup_tmsessionaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestTmsessionaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsTmsessionaction(resource.Name)
+	exists, err = client.ExistsTmsessionaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

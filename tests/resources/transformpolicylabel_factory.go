@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_transformpolicylabel() *nitro.Transformpolicylabel {
+func setup_transformpolicylabel(t *testing.T) *nitro.Transformpolicylabel {
 	//reource := nitro.Transformpolicylabel {
 	//Labelname: "transformpolicylabel",
 	//Policylabeltype: (http_req),

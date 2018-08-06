@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_dnsaction64() *nitro.Dnsaction64 {
+func setup_dnsaction64(t *testing.T) *nitro.Dnsaction64 {
 	//reource := nitro.Dnsaction64 {
 	//Actionname: "dnsaction64",
 	//Excluderule: string,

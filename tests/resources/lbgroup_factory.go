@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_lbgroup() *nitro.Lbgroup {
+func setup_lbgroup(t *testing.T) *nitro.Lbgroup {
 	//reource := nitro.Lbgroup {
 	//Name: "lbgroup",
 	//Backuppersistencetimeout: double,

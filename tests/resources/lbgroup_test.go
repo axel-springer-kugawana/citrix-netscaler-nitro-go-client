@@ -9,7 +9,7 @@ import (
 func TestLbgroup(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_lbgroup()
+	resource := setup_lbgroup(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestLbgroup(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsLbgroup(resource.Name)
+	exists, err = client.ExistsLbgroup(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

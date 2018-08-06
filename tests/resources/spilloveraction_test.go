@@ -9,7 +9,7 @@ import (
 func TestSpilloveraction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_spilloveraction()
+	resource := setup_spilloveraction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestSpilloveraction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsSpilloveraction(resource.Name)
+	exists, err = client.ExistsSpilloveraction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

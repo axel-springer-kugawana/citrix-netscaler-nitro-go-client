@@ -9,7 +9,7 @@ import (
 func TestRewritepolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_rewritepolicylabel()
+	resource := setup_rewritepolicylabel(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestRewritepolicylabel(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsRewritepolicylabel(resource.Labelname)
+	exists, err = client.ExistsRewritepolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

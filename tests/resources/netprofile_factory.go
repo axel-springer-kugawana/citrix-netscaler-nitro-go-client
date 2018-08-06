@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_netprofile() *nitro.Netprofile {
+func setup_netprofile(t *testing.T) *nitro.Netprofile {
 	//reource := nitro.Netprofile {
 	//Name: "netprofile",
 	//Overridelsn: (ENABLED|DISABLED),

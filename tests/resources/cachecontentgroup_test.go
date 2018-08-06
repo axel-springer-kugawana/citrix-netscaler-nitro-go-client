@@ -9,7 +9,7 @@ import (
 func TestCachecontentgroup(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_cachecontentgroup()
+	resource := setup_cachecontentgroup(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCachecontentgroup(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCachecontentgroup(resource.Name)
+	exists, err = client.ExistsCachecontentgroup(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

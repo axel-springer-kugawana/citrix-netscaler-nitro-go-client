@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_cspolicy() *nitro.Cspolicy {
+func setup_cspolicy(t *testing.T) *nitro.Cspolicy {
 	//reource := nitro.Cspolicy {
 	//Policyname: "cspolicy",
 	//Action: csaction.name,

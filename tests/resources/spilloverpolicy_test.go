@@ -9,7 +9,7 @@ import (
 func TestSpilloverpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_spilloverpolicy()
+	resource := setup_spilloverpolicy(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestSpilloverpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsSpilloverpolicy(resource.Name)
+	exists, err = client.ExistsSpilloverpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

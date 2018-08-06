@@ -9,7 +9,7 @@ import (
 func TestDbdbprofile(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_dbdbprofile()
+	resource := setup_dbdbprofile(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestDbdbprofile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsDbdbprofile(resource.Name)
+	exists, err = client.ExistsDbdbprofile(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

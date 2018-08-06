@@ -9,7 +9,7 @@ import (
 func TestCachepolicylabel(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_cachepolicylabel()
+	resource := setup_cachepolicylabel(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCachepolicylabel(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCachepolicylabel(resource.Labelname)
+	exists, err = client.ExistsCachepolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

@@ -9,7 +9,7 @@ import (
 func TestResponderaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_responderaction()
+	resource := setup_responderaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestResponderaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsResponderaction(resource.Name)
+	exists, err = client.ExistsResponderaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

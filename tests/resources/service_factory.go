@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_service() *nitro.Service {
+func setup_service(t *testing.T) *nitro.Service {
 	//reource := nitro.Service {
 	//Name: "service",
 	//Accessdown: (YES|NO),

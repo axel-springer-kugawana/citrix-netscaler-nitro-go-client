@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_policyexpression() *nitro.Policyexpression {
+func setup_policyexpression(t *testing.T) *nitro.Policyexpression {
 	//reource := nitro.Policyexpression {
 	//Name: "policyexpression",
 	//Clientsecuritymessage: string,

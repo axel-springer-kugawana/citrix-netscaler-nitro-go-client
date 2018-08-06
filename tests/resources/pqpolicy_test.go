@@ -9,7 +9,7 @@ import (
 func TestPqpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_pqpolicy()
+	resource := setup_pqpolicy(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestPqpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsPqpolicy(resource.Policyname)
+	exists, err = client.ExistsPqpolicy(resource.Policyname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

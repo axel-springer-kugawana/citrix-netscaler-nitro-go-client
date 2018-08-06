@@ -9,7 +9,7 @@ import (
 func TestCaaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_caaction()
+	resource := setup_caaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCaaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCaaction(resource.Name)
+	exists, err = client.ExistsCaaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

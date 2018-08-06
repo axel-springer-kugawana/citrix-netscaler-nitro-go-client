@@ -9,7 +9,7 @@ import (
 func TestLbwlm(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_lbwlm()
+	resource := setup_lbwlm(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestLbwlm(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsLbwlm(resource.Wlmname)
+	exists, err = client.ExistsLbwlm(resource.Wlmname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

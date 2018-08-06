@@ -9,7 +9,7 @@ import (
 func TestCspolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_cspolicy()
+	resource := setup_cspolicy(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCspolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCspolicy(resource.Policyname)
+	exists, err = client.ExistsCspolicy(resource.Policyname)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

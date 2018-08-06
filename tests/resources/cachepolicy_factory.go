@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_cachepolicy() *nitro.Cachepolicy {
+func setup_cachepolicy(t *testing.T) *nitro.Cachepolicy {
 	//reource := nitro.Cachepolicy {
 	//Policyname: "cachepolicy",
 	//Action: (CACHE|NOCACHE|MAY_CACHE|MAY_NOCACHE|INVAL),

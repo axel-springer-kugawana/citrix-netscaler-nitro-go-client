@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_lbmonitor() *nitro.Lbmonitor {
+func setup_lbmonitor(t *testing.T) *nitro.Lbmonitor {
 	//reource := nitro.Lbmonitor {
 	//Monitorname: "lbmonitor",
 	//Action: (NONE|LOG|DOWN),

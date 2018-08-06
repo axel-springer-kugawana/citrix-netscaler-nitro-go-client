@@ -9,7 +9,7 @@ import (
 func TestLbmonitor(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_lbmonitor()
+	resource := setup_lbmonitor(t)
 
 	if resource == nil {
 		return

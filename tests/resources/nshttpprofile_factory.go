@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_nshttpprofile() *nitro.Nshttpprofile {
+func setup_nshttpprofile(t *testing.T) *nitro.Nshttpprofile {
 	//reource := nitro.Nshttpprofile {
 	//Name: "nshttpprofile",
 	//Adpttimeout: (ENABLED|DISABLED),

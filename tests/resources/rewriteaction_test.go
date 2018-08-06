@@ -9,7 +9,7 @@ import (
 func TestRewriteaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_rewriteaction()
+	resource := setup_rewriteaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestRewriteaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsRewriteaction(resource.Name)
+	exists, err = client.ExistsRewriteaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

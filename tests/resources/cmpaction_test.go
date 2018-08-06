@@ -9,7 +9,7 @@ import (
 func TestCmpaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_cmpaction()
+	resource := setup_cmpaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestCmpaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsCmpaction(resource.Name)
+	exists, err = client.ExistsCmpaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

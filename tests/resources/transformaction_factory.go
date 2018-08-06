@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_transformaction() *nitro.Transformaction {
+func setup_transformaction(t *testing.T) *nitro.Transformaction {
 	//reource := nitro.Transformaction {
 	//Name: "transformaction",
 	//Comment: string,

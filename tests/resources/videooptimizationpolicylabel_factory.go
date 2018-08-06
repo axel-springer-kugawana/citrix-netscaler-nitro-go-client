@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_videooptimizationpolicylabel() *nitro.Videooptimizationpolicylabel {
+func setup_videooptimizationpolicylabel(t *testing.T) *nitro.Videooptimizationpolicylabel {
 	//reource := nitro.Videooptimizationpolicylabel {
 	//Labelname: "videooptimizationpolicylabel",
 	//Comment: string,

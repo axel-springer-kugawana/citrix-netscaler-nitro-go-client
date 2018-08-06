@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_videooptimizationaction() *nitro.Videooptimizationaction {
+func setup_videooptimizationaction(t *testing.T) *nitro.Videooptimizationaction {
 	//reource := nitro.Videooptimizationaction {
 	//Name: "videooptimizationaction",
 	//Comment: string,

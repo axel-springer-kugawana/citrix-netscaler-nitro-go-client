@@ -9,7 +9,7 @@ import (
 func TestTmtrafficaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_tmtrafficaction()
+	resource := setup_tmtrafficaction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestTmtrafficaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsTmtrafficaction(resource.Name)
+	exists, err = client.ExistsTmtrafficaction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

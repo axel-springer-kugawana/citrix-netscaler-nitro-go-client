@@ -9,7 +9,7 @@ import (
 func TestServer(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_server()
+	resource := setup_server(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestServer(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsServer(resource.Name)
+	exists, err = client.ExistsServer(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

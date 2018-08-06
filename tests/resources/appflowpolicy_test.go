@@ -9,7 +9,7 @@ import (
 func TestAppflowpolicy(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_appflowpolicy()
+	resource := setup_appflowpolicy(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestAppflowpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsAppflowpolicy(resource.Name)
+	exists, err = client.ExistsAppflowpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

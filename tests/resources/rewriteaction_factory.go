@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_rewriteaction() *nitro.Rewriteaction {
+func setup_rewriteaction(t *testing.T) *nitro.Rewriteaction {
 	//reource := nitro.Rewriteaction {
 	//Name: "rewriteaction",
 	//Bypasssafetycheck: (YES|NO),

@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_dnsprofile() *nitro.Dnsprofile {
+func setup_dnsprofile(t *testing.T) *nitro.Dnsprofile {
 	//reource := nitro.Dnsprofile {
 	//Dnsprofilename: "dnsprofile",
 	//Cacheecsresponses: (ENABLED|DISABLED),

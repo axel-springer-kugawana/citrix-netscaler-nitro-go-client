@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_servicegroup() *nitro.Servicegroup {
+func setup_servicegroup(t *testing.T) *nitro.Servicegroup {
 	//reource := nitro.Servicegroup {
 	//Servicegroupname: "servicegroup",
 	//Appflowlog: (ENABLED|DISABLED),

@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_capolicy() *nitro.Capolicy {
+func setup_capolicy(t *testing.T) *nitro.Capolicy {
 	//reource := nitro.Capolicy {
 	//Name: "capolicy",
 	//Action: caaction.name,

@@ -9,7 +9,7 @@ import (
 func TestFilteraction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_filteraction()
+	resource := setup_filteraction(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestFilteraction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsFilteraction(resource.Name)
+	exists, err = client.ExistsFilteraction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

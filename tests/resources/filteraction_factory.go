@@ -2,9 +2,10 @@ package nitro
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
 )
 
-func create_filteraction() *nitro.Filteraction {
+func setup_filteraction(t *testing.T) *nitro.Filteraction {
 	//reource := nitro.Filteraction {
 	//Name: "filteraction",
 	//Page: string,

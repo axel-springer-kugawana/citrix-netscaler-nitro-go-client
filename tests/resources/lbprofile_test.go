@@ -9,7 +9,7 @@ import (
 func TestLbprofile(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource := create_lbprofile()
+	resource := setup_lbprofile(t)
 
 	if resource == nil {
 		return
@@ -24,7 +24,7 @@ func TestLbprofile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
-	exists, err := client.ExistsLbprofile(resource.Lbprofilename)
+	exists, err = client.ExistsLbprofile(resource.Lbprofilename)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)

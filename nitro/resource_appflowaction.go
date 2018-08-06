@@ -11,12 +11,8 @@ type Appflowaction struct {
 	Clientsidemeasurements string   `json:"clientsidemeasurements,omitempty"`
 	Collectors             []string `json:"collectors,omitempty"`
 	Comment                string   `json:"comment,omitempty"`
-	Distributionalgorithm  string   `json:"distributionalgorithm,omitempty"`
-	Metricslog             bool     `json:"metricslog,omitempty"`
 	Pagetracking           string   `json:"pagetracking,omitempty"`
 	Securityinsight        string   `json:"securityinsight,omitempty"`
-	Transactionlog         string   `json:"transactionlog,omitempty"`
-	Videoanalytics         string   `json:"videoanalytics,omitempty"`
 	Webinsight             string   `json:"webinsight,omitempty"`
 }
 
@@ -31,24 +27,20 @@ type AppflowactionUnset struct {
 	Name                   string `json:"name"`
 	Collectors             bool   `json:"collectors,omitempty"`
 	Clientsidemeasurements bool   `json:"clientsidemeasurements,omitempty"`
-	Comment                bool   `json:"comment,omitempty"`
 	Pagetracking           bool   `json:"pagetracking,omitempty"`
 	Webinsight             bool   `json:"webinsight,omitempty"`
 	Securityinsight        bool   `json:"securityinsight,omitempty"`
-	Videoanalytics         bool   `json:"videoanalytics,omitempty"`
-	Distributionalgorithm  bool   `json:"distributionalgorithm,omitempty"`
+	Comment                bool   `json:"comment,omitempty"`
 }
 
 type update_appflowaction struct {
 	Name                   string   `json:"name"`
 	Collectors             []string `json:"collectors,omitempty"`
 	Clientsidemeasurements string   `json:"clientsidemeasurements,omitempty"`
-	Comment                string   `json:"comment,omitempty"`
 	Pagetracking           string   `json:"pagetracking,omitempty"`
 	Webinsight             string   `json:"webinsight,omitempty"`
 	Securityinsight        string   `json:"securityinsight,omitempty"`
-	Videoanalytics         string   `json:"videoanalytics,omitempty"`
-	Distributionalgorithm  string   `json:"distributionalgorithm,omitempty"`
+	Comment                string   `json:"comment,omitempty"`
 }
 
 type rename_appflowaction struct {
@@ -183,12 +175,10 @@ func (c *NitroClient) UpdateAppflowaction(resource Appflowaction) error {
 			resource.Name,
 			resource.Collectors,
 			resource.Clientsidemeasurements,
-			resource.Comment,
 			resource.Pagetracking,
 			resource.Webinsight,
 			resource.Securityinsight,
-			resource.Videoanalytics,
-			resource.Distributionalgorithm,
+			resource.Comment,
 		},
 	}
 

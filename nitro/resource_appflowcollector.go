@@ -11,7 +11,6 @@ type Appflowcollector struct {
 	Ipaddress  string `json:"ipaddress,omitempty"`
 	Netprofile string `json:"netprofile,omitempty"`
 	Port       int    `json:"port,omitempty"`
-	Transport  string `json:"transport,omitempty"`
 }
 
 func appflowcollector_key_to_id_args(key string) (string, map[string]string) {

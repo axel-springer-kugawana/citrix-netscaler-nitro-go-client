@@ -19,6 +19,16 @@ func TestFilterpolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsFilterpolicy(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsFilterpolicy(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetFilterpolicy(resource.Name)
 
 	assert.NoError(t, err)

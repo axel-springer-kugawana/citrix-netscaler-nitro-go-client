@@ -59,7 +59,6 @@ func main() {
 				}
 
 				if _, err := os.Stat(filepath.Join("tests", "resources", key+"_factory.go")); os.IsNotExist(err) {
-					//{
 					writer, err := os.Create(filepath.Join("tests", "resources", key+"_factory.go"))
 
 					if err != nil {

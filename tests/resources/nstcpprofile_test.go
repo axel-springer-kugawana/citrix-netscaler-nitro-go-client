@@ -19,6 +19,16 @@ func TestNstcpprofile(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsNstcpprofile(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsNstcpprofile(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetNstcpprofile(resource.Name)
 
 	assert.NoError(t, err)

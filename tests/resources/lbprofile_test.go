@@ -19,6 +19,16 @@ func TestLbprofile(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsLbprofile(resource.Lbprofilename + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsLbprofile(resource.Lbprofilename)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetLbprofile(resource.Lbprofilename)
 
 	assert.NoError(t, err)

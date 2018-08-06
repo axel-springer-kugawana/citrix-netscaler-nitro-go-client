@@ -19,6 +19,16 @@ func TestLbwlm(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsLbwlm(resource.Wlmname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsLbwlm(resource.Wlmname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetLbwlm(resource.Wlmname)
 
 	assert.NoError(t, err)

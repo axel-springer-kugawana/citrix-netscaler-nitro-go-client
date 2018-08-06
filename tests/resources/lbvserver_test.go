@@ -19,6 +19,16 @@ func TestLbvserver(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsLbvserver(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsLbvserver(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetLbvserver(resource.Name)
 
 	assert.NoError(t, err)

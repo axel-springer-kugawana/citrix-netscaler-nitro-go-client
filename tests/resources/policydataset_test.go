@@ -19,6 +19,16 @@ func TestPolicydataset(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsPolicydataset(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsPolicydataset(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetPolicydataset(resource.Name)
 
 	assert.NoError(t, err)

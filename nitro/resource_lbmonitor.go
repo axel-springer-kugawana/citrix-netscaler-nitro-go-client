@@ -391,7 +391,9 @@ func (c *NitroClient) ExistsLbmonitor(key LbmonitorKey) (bool, error) {
 	qs["count"] = "yes"
 
 	if err := c.get("lbmonitor", id, qs, &results); err != nil {
-		return false, err
+		// TODO : detect 404
+		// return false, err
+		return false, nil
 	} else {
 		return results.Results[0].Count == 1, nil
 	}

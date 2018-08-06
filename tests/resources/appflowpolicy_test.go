@@ -19,6 +19,16 @@ func TestAppflowpolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsAppflowpolicy(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsAppflowpolicy(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetAppflowpolicy(resource.Name)
 
 	assert.NoError(t, err)

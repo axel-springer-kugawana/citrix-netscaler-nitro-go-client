@@ -19,6 +19,16 @@ func TestResponderpolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsResponderpolicy(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsResponderpolicy(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetResponderpolicy(resource.Name)
 
 	assert.NoError(t, err)

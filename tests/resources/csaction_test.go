@@ -19,6 +19,16 @@ func TestCsaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsCsaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsCsaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetCsaction(resource.Name)
 
 	assert.NoError(t, err)

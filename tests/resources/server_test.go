@@ -19,6 +19,16 @@ func TestServer(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsServer(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsServer(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetServer(resource.Name)
 
 	assert.NoError(t, err)

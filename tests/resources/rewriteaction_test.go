@@ -19,6 +19,16 @@ func TestRewriteaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsRewriteaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsRewriteaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetRewriteaction(resource.Name)
 
 	assert.NoError(t, err)

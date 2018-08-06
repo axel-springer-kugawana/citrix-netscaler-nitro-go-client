@@ -19,6 +19,16 @@ func TestCachepolicylabel(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsCachepolicylabel(resource.Labelname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsCachepolicylabel(resource.Labelname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetCachepolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)

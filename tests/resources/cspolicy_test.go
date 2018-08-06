@@ -19,6 +19,16 @@ func TestCspolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsCspolicy(resource.Policyname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsCspolicy(resource.Policyname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetCspolicy(resource.Policyname)
 
 	assert.NoError(t, err)

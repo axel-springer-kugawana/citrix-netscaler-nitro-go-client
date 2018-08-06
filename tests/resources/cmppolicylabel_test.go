@@ -19,6 +19,16 @@ func TestCmppolicylabel(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsCmppolicylabel(resource.Labelname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsCmppolicylabel(resource.Labelname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetCmppolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)

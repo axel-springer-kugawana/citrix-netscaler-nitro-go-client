@@ -19,6 +19,16 @@ func TestTransformpolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsTransformpolicy(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsTransformpolicy(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetTransformpolicy(resource.Name)
 
 	assert.NoError(t, err)

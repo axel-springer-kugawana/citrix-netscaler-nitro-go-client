@@ -19,6 +19,16 @@ func TestVideooptimizationpolicylabel(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsVideooptimizationpolicylabel(resource.Labelname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsVideooptimizationpolicylabel(resource.Labelname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetVideooptimizationpolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)

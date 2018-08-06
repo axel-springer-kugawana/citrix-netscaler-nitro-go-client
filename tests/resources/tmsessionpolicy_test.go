@@ -19,6 +19,16 @@ func TestTmsessionpolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsTmsessionpolicy(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsTmsessionpolicy(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetTmsessionpolicy(resource.Name)
 
 	assert.NoError(t, err)

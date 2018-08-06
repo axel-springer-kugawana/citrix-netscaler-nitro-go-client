@@ -19,6 +19,16 @@ func TestDospolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsDospolicy(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsDospolicy(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetDospolicy(resource.Name)
 
 	assert.NoError(t, err)

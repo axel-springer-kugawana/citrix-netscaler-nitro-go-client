@@ -19,6 +19,16 @@ func TestAuditsyslogaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsAuditsyslogaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsAuditsyslogaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetAuditsyslogaction(resource.Name)
 
 	assert.NoError(t, err)

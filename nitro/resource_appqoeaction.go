@@ -26,7 +26,9 @@ func appqoeaction_key_to_id_args(key string) (string, map[string]string) {
 	var _ = strconv.Itoa
 	var _ = strings.Join
 
-	return key, nil
+	qs := map[string]string{}
+
+	return key, qs
 }
 
 type AppqoeactionUnset struct {
@@ -131,7 +133,9 @@ func (c *NitroClient) ExistsAppqoeaction(key string) (bool, error) {
 	qs["count"] = "yes"
 
 	if err := c.get("appqoeaction", id, qs, &results); err != nil {
-		return false, err
+		// TODO : detect 404
+		// return false, err
+		return false, nil
 	} else {
 		return results.Results[0].Count == 1, nil
 	}

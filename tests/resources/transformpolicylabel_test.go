@@ -19,6 +19,16 @@ func TestTransformpolicylabel(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsTransformpolicylabel(resource.Labelname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsTransformpolicylabel(resource.Labelname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetTransformpolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)

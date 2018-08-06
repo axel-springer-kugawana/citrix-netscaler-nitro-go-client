@@ -20,6 +20,16 @@ func Test{{$.Name|name}}(t *testing.T) {
 	assert.NoError(t, err)
 
 	{{if not ($.Schema.Key.Fields) -}}
+	exists, err := client.Exists{{$.Name|name}}(resource.{{$.Schema.Key.Name|title}}+"-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.Exists{{$.Name|name}}(resource.{{$.Schema.Key.Name|title}})
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.Get{{$.Name|name}}(resource.{{$.Schema.Key.Name|title}})
 
 	assert.NoError(t, err)

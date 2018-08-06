@@ -19,6 +19,16 @@ func TestVideooptimizationaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsVideooptimizationaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsVideooptimizationaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetVideooptimizationaction(resource.Name)
 
 	assert.NoError(t, err)

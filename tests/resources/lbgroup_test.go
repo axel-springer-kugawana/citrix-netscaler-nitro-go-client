@@ -19,6 +19,16 @@ func TestLbgroup(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsLbgroup(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsLbgroup(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetLbgroup(resource.Name)
 
 	assert.NoError(t, err)

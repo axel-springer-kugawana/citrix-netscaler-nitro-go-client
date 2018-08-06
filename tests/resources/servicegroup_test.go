@@ -19,6 +19,16 @@ func TestServicegroup(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsServicegroup(resource.Servicegroupname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsServicegroup(resource.Servicegroupname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetServicegroup(resource.Servicegroupname)
 
 	assert.NoError(t, err)

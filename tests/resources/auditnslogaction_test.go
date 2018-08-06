@@ -19,6 +19,16 @@ func TestAuditnslogaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsAuditnslogaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsAuditnslogaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetAuditnslogaction(resource.Name)
 
 	assert.NoError(t, err)

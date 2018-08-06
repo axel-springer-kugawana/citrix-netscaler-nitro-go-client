@@ -19,6 +19,16 @@ func TestDnsaction64(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsDnsaction64(resource.Actionname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsDnsaction64(resource.Actionname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetDnsaction64(resource.Actionname)
 
 	assert.NoError(t, err)

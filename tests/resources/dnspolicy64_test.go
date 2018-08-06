@@ -19,6 +19,16 @@ func TestDnspolicy64(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsDnspolicy64(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsDnspolicy64(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetDnspolicy64(resource.Name)
 
 	assert.NoError(t, err)

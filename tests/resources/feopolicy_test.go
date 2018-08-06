@@ -19,6 +19,16 @@ func TestFeopolicy(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsFeopolicy(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsFeopolicy(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetFeopolicy(resource.Name)
 
 	assert.NoError(t, err)

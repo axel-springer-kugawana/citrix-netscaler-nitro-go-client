@@ -19,6 +19,16 @@ func TestTmtrafficaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsTmtrafficaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsTmtrafficaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetTmtrafficaction(resource.Name)
 
 	assert.NoError(t, err)

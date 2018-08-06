@@ -19,6 +19,16 @@ func TestResponderpolicylabel(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsResponderpolicylabel(resource.Labelname + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsResponderpolicylabel(resource.Labelname)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetResponderpolicylabel(resource.Labelname)
 
 	assert.NoError(t, err)

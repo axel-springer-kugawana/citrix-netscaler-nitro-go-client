@@ -19,6 +19,16 @@ func TestTransformaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsTransformaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsTransformaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetTransformaction(resource.Name)
 
 	assert.NoError(t, err)

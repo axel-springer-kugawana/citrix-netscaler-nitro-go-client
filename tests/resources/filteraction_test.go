@@ -19,6 +19,16 @@ func TestFilteraction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsFilteraction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsFilteraction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetFilteraction(resource.Name)
 
 	assert.NoError(t, err)

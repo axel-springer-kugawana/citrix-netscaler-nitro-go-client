@@ -19,6 +19,16 @@ func TestResponderaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsResponderaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsResponderaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetResponderaction(resource.Name)
 
 	assert.NoError(t, err)

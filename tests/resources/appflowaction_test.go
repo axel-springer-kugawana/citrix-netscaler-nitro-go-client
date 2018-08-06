@@ -19,6 +19,16 @@ func TestAppflowaction(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	exists, err := client.ExistsAppflowaction(resource.Name + "-unknown")
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, false)
+
+	exists, err := client.ExistsAppflowaction(resource.Name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
+
 	res, err := client.GetAppflowaction(resource.Name)
 
 	assert.NoError(t, err)

@@ -3,6 +3,7 @@ package nitro
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
@@ -15,25 +16,30 @@ func TestAppfwpolicy(t *testing.T) {
 		return
 	}
 
+	log.Print("--ADD--")
 	err := client.AddAppfwpolicy(*resource)
 
 	assert.NoError(t, err)
 
+	log.Print("--EXISTS--")
 	exists, err := client.ExistsAppfwpolicy(resource.Name + "-unknown")
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
+	log.Print("--EXISTS--")
 	exists, err = client.ExistsAppfwpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)
 
+	log.Print("--GET--")
 	res, err := client.GetAppfwpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	log.Print("--LIST--")
 	list, err := client.ListAppfwpolicy()
 
 	assert.NoError(t, err)
@@ -43,10 +49,12 @@ func TestAppfwpolicy(t *testing.T) {
 
 	// assert.NoError(t, err)
 
+	log.Print("--RENAME--")
 	err = client.RenameAppfwpolicy(resource.Name, resource.Name+"-rename")
 
 	assert.NoError(t, err)
 
+	log.Print("--DELETE--")
 	err = client.DeleteAppfwpolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)

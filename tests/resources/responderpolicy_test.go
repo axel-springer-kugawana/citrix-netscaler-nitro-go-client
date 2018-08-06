@@ -3,6 +3,7 @@ package nitro
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
@@ -15,25 +16,30 @@ func TestResponderpolicy(t *testing.T) {
 		return
 	}
 
+	log.Print("--ADD--")
 	err := client.AddResponderpolicy(*resource)
 
 	assert.NoError(t, err)
 
+	log.Print("--EXISTS--")
 	exists, err := client.ExistsResponderpolicy(resource.Name + "-unknown")
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
+	log.Print("--EXISTS--")
 	exists, err = client.ExistsResponderpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)
 
+	log.Print("--GET--")
 	res, err := client.GetResponderpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	log.Print("--LIST--")
 	list, err := client.ListResponderpolicy()
 
 	assert.NoError(t, err)
@@ -43,10 +49,12 @@ func TestResponderpolicy(t *testing.T) {
 
 	// assert.NoError(t, err)
 
+	log.Print("--RENAME--")
 	err = client.RenameResponderpolicy(resource.Name, resource.Name+"-rename")
 
 	assert.NoError(t, err)
 
+	log.Print("--DELETE--")
 	err = client.DeleteResponderpolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)

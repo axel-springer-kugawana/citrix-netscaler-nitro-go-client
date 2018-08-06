@@ -6,11 +6,11 @@ import (
 )
 
 func setup_appflowpolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowpolicylabel, func()) {
-	//resource := nitro.Appflowpolicylabel {
-	//Labelname: "appflowpolicylabel",
-	//Policylabeltype: (HTTP|OTHERTCP),
-	//}
+	resource := nitro.Appflowpolicylabel{
+		Labelname:       "appflowpolicylabel",
+		Policylabeltype: "HTTP",
+	}
 
-	return nil, func() {
+	return &resource, func() {
 	}
 }

@@ -3,6 +3,7 @@ package nitro
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
@@ -15,6 +16,7 @@ func TestLbmonitor(t *testing.T) {
 		return
 	}
 
+	log.Print("--ADD--")
 	err := client.AddLbmonitor(*resource)
 
 	assert.NoError(t, err)

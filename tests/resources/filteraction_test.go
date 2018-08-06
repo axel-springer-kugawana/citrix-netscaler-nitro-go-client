@@ -3,6 +3,7 @@ package nitro
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
@@ -15,25 +16,30 @@ func TestFilteraction(t *testing.T) {
 		return
 	}
 
+	log.Print("--ADD--")
 	err := client.AddFilteraction(*resource)
 
 	assert.NoError(t, err)
 
+	log.Print("--EXISTS--")
 	exists, err := client.ExistsFilteraction(resource.Name + "-unknown")
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
+	log.Print("--EXISTS--")
 	exists, err = client.ExistsFilteraction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)
 
+	log.Print("--GET--")
 	res, err := client.GetFilteraction(resource.Name)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	log.Print("--LIST--")
 	list, err := client.ListFilteraction()
 
 	assert.NoError(t, err)
@@ -43,10 +49,12 @@ func TestFilteraction(t *testing.T) {
 
 	// assert.NoError(t, err)
 
+	log.Print("--RENAME--")
 	err = client.RenameFilteraction(resource.Name, resource.Name+"-rename")
 
 	assert.NoError(t, err)
 
+	log.Print("--DELETE--")
 	err = client.DeleteFilteraction(resource.Name + "-rename")
 
 	assert.NoError(t, err)

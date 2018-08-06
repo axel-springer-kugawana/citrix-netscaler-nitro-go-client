@@ -3,6 +3,7 @@ package nitro
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
@@ -15,25 +16,30 @@ func TestVideooptimizationpolicy(t *testing.T) {
 		return
 	}
 
+	log.Print("--ADD--")
 	err := client.AddVideooptimizationpolicy(*resource)
 
 	assert.NoError(t, err)
 
+	log.Print("--EXISTS--")
 	exists, err := client.ExistsVideooptimizationpolicy(resource.Name + "-unknown")
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, false)
 
+	log.Print("--EXISTS--")
 	exists, err = client.ExistsVideooptimizationpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.Equal(t, exists, true)
 
+	log.Print("--GET--")
 	res, err := client.GetVideooptimizationpolicy(resource.Name)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	log.Print("--LIST--")
 	list, err := client.ListVideooptimizationpolicy()
 
 	assert.NoError(t, err)
@@ -43,10 +49,12 @@ func TestVideooptimizationpolicy(t *testing.T) {
 
 	// assert.NoError(t, err)
 
+	log.Print("--RENAME--")
 	err = client.RenameVideooptimizationpolicy(resource.Name, resource.Name+"-rename")
 
 	assert.NoError(t, err)
 
+	log.Print("--DELETE--")
 	err = client.DeleteVideooptimizationpolicy(resource.Name + "-rename")
 
 	assert.NoError(t, err)

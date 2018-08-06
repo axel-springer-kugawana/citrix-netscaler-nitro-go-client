@@ -6,26 +6,24 @@ import (
 )
 
 func setup_auditnslogaction(t *testing.T, client *nitro.NitroClient) (*nitro.Auditnslogaction, func()) {
-	//resource := nitro.Auditnslogaction {
-	//Name: "auditnslogaction",
-	//Acl: (ENABLED|DISABLED),
-	//Alg: (ENABLED|DISABLED),
-	//Appflowexport: (ENABLED|DISABLED),
-	//Dateformat: (MMDDYYYY|DDMMYYYY|YYYYMMDD),
-	//Domainresolveretry: int,
-	//Logfacility: (LOCAL0|LOCAL1|LOCAL2|LOCAL3|LOCAL4|LOCAL5|LOCAL6|LOCAL7),
-	//Loglevel: (ALL|EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFORMATIONAL|DEBUG|NONE)[],
-	//Lsn: (ENABLED|DISABLED),
-	//Serverdomainname: string,
-	//Serverip: ip,
-	//Serverport: int,
-	//Sslinterception: (ENABLED|DISABLED),
-	//Subscriberlog: (ENABLED|DISABLED),
-	//Tcp: (NONE|ALL),
-	//Timezone: (GMT_TIME|LOCAL_TIME),
-	//Userdefinedauditlog: (YES|NO),
-	//}
+	resource := nitro.Auditnslogaction{
+		Name:       "auditnslogaction",
+		Serverip:   "1.3.5.7",
+		Serverport: 1234,
+		// Loglevel: [ "ALL" ],
+		Dateformat:          "MMDDYYYY",
+		Logfacility:         "LOCAL0",
+		Tcp:                 "ALL",
+		Acl:                 "ENABLED",
+		Timezone:            "GMT_TIME",
+		Userdefinedauditlog: "NO",
+		Appflowexport:       "ENABLED",
+		Lsn:                 "ENABLED",
+		Alg:                 "ENABLED",
+	}
 
-	return nil, func() {
+	resource.Loglevel = append(resource.Loglevel, "ALL")
+
+	return &resource, func() {
 	}
 }

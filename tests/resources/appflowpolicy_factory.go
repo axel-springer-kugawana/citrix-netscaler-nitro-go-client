@@ -10,11 +10,11 @@ func setup_appflowpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appflo
 
 	client.AddAppflowaction(*action)
 
-	resource := nitro.Appflowpolicy {
-		Name: "appflowpolicy",
-		Action: action.Name,
-		Comment: "comment",
-		Rule: "TRUE",
+	resource := nitro.Appflowpolicy{
+		Name:        "appflowpolicy",
+		Action:      action.Name,
+		Comment:     "comment",
+		Rule:        "TRUE",
 		Undefaction: action.Name,
 	}
 

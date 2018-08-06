@@ -7,7 +7,6 @@ import (
 )
 
 type LbvserverAppfwpolicyBinding struct {
-	Bindpoint              string `json:"bindpoint,omitempty"`
 	Gotopriorityexpression string `json:"gotopriorityexpression,omitempty"`
 	Invoke                 bool   `json:"invoke,omitempty"`
 	Labelname              string `json:"labelname,omitempty"`
@@ -20,7 +19,6 @@ type LbvserverAppfwpolicyBinding struct {
 type LbvserverAppfwpolicyBindingKey struct {
 	Name       string
 	Policyname string
-	Bindpoint  string
 }
 
 type add_lbvserver_appfwpolicy_binding_payload struct {
@@ -41,7 +39,6 @@ func lbvserver_appfwpolicy_binding_key_to_id_qs(key LbvserverAppfwpolicyBindingK
 
 	args = append(args, "name:"+key.Name)
 	args = append(args, "policyname:"+key.Policyname)
-	args = append(args, "bindpoint:"+key.Bindpoint)
 
 	qs := map[string]string{}
 

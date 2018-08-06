@@ -7,7 +7,6 @@ import (
 )
 
 type LbvserverAppqoepolicyBinding struct {
-	Bindpoint              string `json:"bindpoint,omitempty"`
 	Gotopriorityexpression string `json:"gotopriorityexpression,omitempty"`
 	Invoke                 bool   `json:"invoke,omitempty"`
 	Labelname              string `json:"labelname,omitempty"`
@@ -20,7 +19,6 @@ type LbvserverAppqoepolicyBinding struct {
 type LbvserverAppqoepolicyBindingKey struct {
 	Name       string
 	Policyname string
-	Bindpoint  string
 }
 
 type add_lbvserver_appqoepolicy_binding_payload struct {
@@ -41,7 +39,6 @@ func lbvserver_appqoepolicy_binding_key_to_id_qs(key LbvserverAppqoepolicyBindin
 
 	args = append(args, "name:"+key.Name)
 	args = append(args, "policyname:"+key.Policyname)
-	args = append(args, "bindpoint:"+key.Bindpoint)
 
 	qs := map[string]string{}
 

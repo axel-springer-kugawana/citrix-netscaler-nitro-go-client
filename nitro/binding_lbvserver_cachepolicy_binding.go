@@ -33,7 +33,7 @@ func (resource LbvserverCachepolicyBinding) ToKey() LbvserverCachepolicyBindingK
 	return key
 }
 
-func (key LbvserverCachepolicyBindingKey) to_id_args() (string, map[string]string) {
+func (key LbvserverCachepolicyBindingKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
 
 	var id string
@@ -46,10 +46,18 @@ func (key LbvserverCachepolicyBindingKey) to_id_args() (string, map[string]strin
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[qsKey] = strings.Join(args, ",")
 	}
 
 	return id, qs
+}
+
+func (key LbvserverCachepolicyBindingKey) to_id_args() (string, map[string]string) {
+	return key.to_id_params("args")
+}
+
+func (key LbvserverCachepolicyBindingKey) to_id_filter() (string, map[string]string) {
+	return key.to_id_params("filter")
 }
 
 //      CREATE
@@ -75,10 +83,35 @@ type list_lbvserver_cachepolicy_binding_result struct {
 func (c *NitroClient) ListLbvserverCachepolicyBinding() ([]LbvserverCachepolicyBinding, error) {
 	results := list_lbvserver_cachepolicy_binding_result{}
 
-	if err := c.get("lbvserver_cachepolicy_binding", "", nil, &results); err != nil {
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_cachepolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
+	}
+}
+
+//      COUNT
+
+type count_lbvserver_cachepolicy_binding_result struct {
+	Results []Count `json:"lbvserver_cachepolicy_binding"`
+}
+
+func (c *NitroClient) CountLbvserverCachepolicyBinding() (int, error) {
+	results := count_lbvserver_cachepolicy_binding_result{}
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
+
+	if err := c.get("lbvserver_cachepolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
 	}
 }
 
@@ -91,7 +124,7 @@ type get_lbvserver_cachepolicy_binding_result struct {
 func (c *NitroClient) GetLbvserverCachepolicyBinding(key LbvserverCachepolicyBindingKey) (*LbvserverCachepolicyBinding, error) {
 	var results get_lbvserver_cachepolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	if err := c.get("lbvserver_cachepolicy_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -108,14 +141,10 @@ func (c *NitroClient) GetLbvserverCachepolicyBinding(key LbvserverCachepolicyBin
 
 //      EXISTS
 
-type count_lbvserver_cachepolicy_binding_result struct {
-	Results []Count `json:"lbvserver_cachepolicy_binding"`
-}
-
 func (c *NitroClient) ExistsLbvserverCachepolicyBinding(key LbvserverCachepolicyBindingKey) (bool, error) {
 	var results count_lbvserver_cachepolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	qs["count"] = "yes"
 

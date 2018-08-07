@@ -11,13 +11,13 @@ func Setup_lbmetrictable_metric_binding(t *testing.T, client *nitro.NitroClient)
 
 	client.AddLbmetrictable(*metrictable)
 
-	resource := nitro.LbmetrictableMetricBinding{
-		Metrictable: metrictable.Metrictable,
-		Metric:      "test",
-		Snmpoid:     "test",
-	}
+	// resource := nitro.LbmetrictableMetricBinding{
+	// 	Metrictable: metrictable.Metrictable,
+	// 	Metric:      "test",
+	// 	Snmpoid:     "test",
+	// }
 
-	return &resource, func() {
+	return nil, func() {
 		client.DeleteLbmetrictable(metrictable.ToKey())
 
 		if metrictableTearDown != nil {

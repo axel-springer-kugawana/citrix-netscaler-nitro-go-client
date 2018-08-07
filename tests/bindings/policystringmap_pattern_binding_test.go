@@ -18,8 +18,13 @@ func TestPolicystringmapPatternBinding(t *testing.T) {
 
 	key := resource.ToKey()
 
+	log.Print("--COUNT--")
+	count0, err := client.CountPolicystringmapPatternBinding()
+
+	assert.NoError(t, err)
+
 	log.Print("--ADD--")
-	err := client.AddPolicystringmapPatternBinding(*resource)
+	err = client.AddPolicystringmapPatternBinding(*resource)
 
 	assert.NoError(t, err)
 
@@ -28,6 +33,13 @@ func TestPolicystringmapPatternBinding(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
+
+	log.Print("--COUNT--")
+	count, err := client.CountPolicystringmapPatternBinding()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+	assert.Equal(t, count, count0+1)
 
 	log.Print("--GET--")
 	res, err := client.GetPolicystringmapPatternBinding(key)

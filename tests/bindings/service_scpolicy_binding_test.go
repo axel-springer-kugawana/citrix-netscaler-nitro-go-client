@@ -18,8 +18,13 @@ func TestServiceScpolicyBinding(t *testing.T) {
 
 	key := resource.ToKey()
 
+	log.Print("--COUNT--")
+	count0, err := client.CountServiceScpolicyBinding()
+
+	assert.NoError(t, err)
+
 	log.Print("--ADD--")
-	err := client.AddServiceScpolicyBinding(*resource)
+	err = client.AddServiceScpolicyBinding(*resource)
 
 	assert.NoError(t, err)
 
@@ -28,6 +33,13 @@ func TestServiceScpolicyBinding(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
+
+	log.Print("--COUNT--")
+	count, err := client.CountServiceScpolicyBinding()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+	assert.Equal(t, count, count0+1)
 
 	log.Print("--GET--")
 	res, err := client.GetServiceScpolicyBinding(key)

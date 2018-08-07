@@ -30,7 +30,7 @@ func (resource LbvserverAppflowpolicyBinding) ToKey() LbvserverAppflowpolicyBind
 	return key
 }
 
-func (key LbvserverAppflowpolicyBindingKey) to_id_args() (string, map[string]string) {
+func (key LbvserverAppflowpolicyBindingKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
 
 	var id string
@@ -42,10 +42,18 @@ func (key LbvserverAppflowpolicyBindingKey) to_id_args() (string, map[string]str
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[qsKey] = strings.Join(args, ",")
 	}
 
 	return id, qs
+}
+
+func (key LbvserverAppflowpolicyBindingKey) to_id_args() (string, map[string]string) {
+	return key.to_id_params("args")
+}
+
+func (key LbvserverAppflowpolicyBindingKey) to_id_filter() (string, map[string]string) {
+	return key.to_id_params("filter")
 }
 
 //      CREATE
@@ -71,10 +79,35 @@ type list_lbvserver_appflowpolicy_binding_result struct {
 func (c *NitroClient) ListLbvserverAppflowpolicyBinding() ([]LbvserverAppflowpolicyBinding, error) {
 	results := list_lbvserver_appflowpolicy_binding_result{}
 
-	if err := c.get("lbvserver_appflowpolicy_binding", "", nil, &results); err != nil {
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_appflowpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
+	}
+}
+
+//      COUNT
+
+type count_lbvserver_appflowpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_appflowpolicy_binding"`
+}
+
+func (c *NitroClient) CountLbvserverAppflowpolicyBinding() (int, error) {
+	results := count_lbvserver_appflowpolicy_binding_result{}
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
+
+	if err := c.get("lbvserver_appflowpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
 	}
 }
 
@@ -87,7 +120,7 @@ type get_lbvserver_appflowpolicy_binding_result struct {
 func (c *NitroClient) GetLbvserverAppflowpolicyBinding(key LbvserverAppflowpolicyBindingKey) (*LbvserverAppflowpolicyBinding, error) {
 	var results get_lbvserver_appflowpolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	if err := c.get("lbvserver_appflowpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -104,14 +137,10 @@ func (c *NitroClient) GetLbvserverAppflowpolicyBinding(key LbvserverAppflowpolic
 
 //      EXISTS
 
-type count_lbvserver_appflowpolicy_binding_result struct {
-	Results []Count `json:"lbvserver_appflowpolicy_binding"`
-}
-
 func (c *NitroClient) ExistsLbvserverAppflowpolicyBinding(key LbvserverAppflowpolicyBindingKey) (bool, error) {
 	var results count_lbvserver_appflowpolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	qs["count"] = "yes"
 

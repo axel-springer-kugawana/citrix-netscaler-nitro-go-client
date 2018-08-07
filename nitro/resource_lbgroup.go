@@ -32,7 +32,7 @@ func (resource Lbgroup) ToKey() LbgroupKey {
 	return key
 }
 
-func (key LbgroupKey) to_id_args() (string, map[string]string) {
+func (key LbgroupKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
 
 	var id string
@@ -43,10 +43,18 @@ func (key LbgroupKey) to_id_args() (string, map[string]string) {
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[qsKey] = strings.Join(args, ",")
 	}
 
 	return id, qs
+}
+
+func (key LbgroupKey) to_id_args() (string, map[string]string) {
+	return key.to_id_params("args")
+}
+
+func (key LbgroupKey) to_id_filter() (string, map[string]string) {
+	return key.to_id_params("filter")
 }
 
 //      CREATE

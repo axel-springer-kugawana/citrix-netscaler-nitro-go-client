@@ -27,7 +27,7 @@ func (resource LbmonitorMetricBinding) ToKey() LbmonitorMetricBindingKey {
 	return key
 }
 
-func (key LbmonitorMetricBindingKey) to_id_args() (string, map[string]string) {
+func (key LbmonitorMetricBindingKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
 
 	var id string
@@ -39,10 +39,18 @@ func (key LbmonitorMetricBindingKey) to_id_args() (string, map[string]string) {
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[qsKey] = strings.Join(args, ",")
 	}
 
 	return id, qs
+}
+
+func (key LbmonitorMetricBindingKey) to_id_args() (string, map[string]string) {
+	return key.to_id_params("args")
+}
+
+func (key LbmonitorMetricBindingKey) to_id_filter() (string, map[string]string) {
+	return key.to_id_params("filter")
 }
 
 //      CREATE
@@ -68,10 +76,35 @@ type list_lbmonitor_metric_binding_result struct {
 func (c *NitroClient) ListLbmonitorMetricBinding() ([]LbmonitorMetricBinding, error) {
 	results := list_lbmonitor_metric_binding_result{}
 
-	if err := c.get("lbmonitor_metric_binding", "", nil, &results); err != nil {
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbmonitor_metric_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
+	}
+}
+
+//      COUNT
+
+type count_lbmonitor_metric_binding_result struct {
+	Results []Count `json:"lbmonitor_metric_binding"`
+}
+
+func (c *NitroClient) CountLbmonitorMetricBinding() (int, error) {
+	results := count_lbmonitor_metric_binding_result{}
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
+
+	if err := c.get("lbmonitor_metric_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
 	}
 }
 
@@ -84,7 +117,7 @@ type get_lbmonitor_metric_binding_result struct {
 func (c *NitroClient) GetLbmonitorMetricBinding(key LbmonitorMetricBindingKey) (*LbmonitorMetricBinding, error) {
 	var results get_lbmonitor_metric_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	if err := c.get("lbmonitor_metric_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -101,14 +134,10 @@ func (c *NitroClient) GetLbmonitorMetricBinding(key LbmonitorMetricBindingKey) (
 
 //      EXISTS
 
-type count_lbmonitor_metric_binding_result struct {
-	Results []Count `json:"lbmonitor_metric_binding"`
-}
-
 func (c *NitroClient) ExistsLbmonitorMetricBinding(key LbmonitorMetricBindingKey) (bool, error) {
 	var results count_lbmonitor_metric_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	qs["count"] = "yes"
 

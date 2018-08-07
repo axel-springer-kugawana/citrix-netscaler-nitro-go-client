@@ -32,10 +32,33 @@ func (c *NitroClient) Add{{$name}} (resource {{$resource}}) error {
 func (c *NitroClient) List{{$name}} () ([]{{$resource}}, error) {
         results := list_{{$.Name}}_result{}
         
-	if err := c.get("{{$.Name}}", "", nil, &results); err != nil {
+        qs := map[string]string{
+                "bulkbindings": "yes",
+        }
+
+	if err := c.get("{{$.Name}}", "", qs, &results); err != nil {
                 return nil, err
         } else {
                 return results.Results, err
+        }
+}
+
+//      COUNT
+
+{{template "count_result" .}}
+
+func (c *NitroClient) Count{{$name}} () (int, error) {
+        results := count_{{$.Name}}_result{}
+        
+        qs := map[string]string{
+                "bulkbindings": "yes",
+                "count": "yes",
+        }
+
+	if err := c.get("{{$.Name}}", "", qs, &results); err != nil {
+                return -1, err
+        } else {
+                return results.Results[0].Count, err
         }
 }
 
@@ -46,7 +69,7 @@ func (c *NitroClient) List{{$name}} () ([]{{$resource}}, error) {
 func (c *NitroClient) Get{{$name}} (key {{$key}}) (*{{$resource}}, error) {
         var results get_{{$.Name}}_result
         
-        id, qs := key.to_id_args()
+        id, qs := key.to_id_filter()
 
 	if err := c.get("{{$.Name}}", id, qs, &results); err != nil {
                 return nil, err
@@ -63,12 +86,10 @@ func (c *NitroClient) Get{{$name}} (key {{$key}}) (*{{$resource}}, error) {
 
 //      EXISTS
 
-{{template "count_result" .}}
-
 func (c *NitroClient) Exists{{$name}} (key {{$key}}) (bool, error) {
         var results count_{{$.Name}}_result
         
-        id, qs := key.to_id_args()
+        id, qs := key.to_id_filter()
 
         qs["count"] = "yes"
 

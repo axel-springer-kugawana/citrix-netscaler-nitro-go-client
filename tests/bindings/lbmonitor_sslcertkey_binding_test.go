@@ -18,8 +18,13 @@ func TestLbmonitorSslcertkeyBinding(t *testing.T) {
 
 	key := resource.ToKey()
 
+	log.Print("--COUNT--")
+	count0, err := client.CountLbmonitorSslcertkeyBinding()
+
+	assert.NoError(t, err)
+
 	log.Print("--ADD--")
-	err := client.AddLbmonitorSslcertkeyBinding(*resource)
+	err = client.AddLbmonitorSslcertkeyBinding(*resource)
 
 	assert.NoError(t, err)
 
@@ -28,6 +33,13 @@ func TestLbmonitorSslcertkeyBinding(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
+
+	log.Print("--COUNT--")
+	count, err := client.CountLbmonitorSslcertkeyBinding()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+	assert.Equal(t, count, count0+1)
 
 	log.Print("--GET--")
 	res, err := client.GetLbmonitorSslcertkeyBinding(key)

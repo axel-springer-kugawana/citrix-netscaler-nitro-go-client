@@ -30,7 +30,7 @@ func (resource LbvserverResponderpolicyBinding) ToKey() LbvserverResponderpolicy
 	return key
 }
 
-func (key LbvserverResponderpolicyBindingKey) to_id_args() (string, map[string]string) {
+func (key LbvserverResponderpolicyBindingKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
 
 	var id string
@@ -42,10 +42,18 @@ func (key LbvserverResponderpolicyBindingKey) to_id_args() (string, map[string]s
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[qsKey] = strings.Join(args, ",")
 	}
 
 	return id, qs
+}
+
+func (key LbvserverResponderpolicyBindingKey) to_id_args() (string, map[string]string) {
+	return key.to_id_params("args")
+}
+
+func (key LbvserverResponderpolicyBindingKey) to_id_filter() (string, map[string]string) {
+	return key.to_id_params("filter")
 }
 
 //      CREATE
@@ -71,10 +79,35 @@ type list_lbvserver_responderpolicy_binding_result struct {
 func (c *NitroClient) ListLbvserverResponderpolicyBinding() ([]LbvserverResponderpolicyBinding, error) {
 	results := list_lbvserver_responderpolicy_binding_result{}
 
-	if err := c.get("lbvserver_responderpolicy_binding", "", nil, &results); err != nil {
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_responderpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
+	}
+}
+
+//      COUNT
+
+type count_lbvserver_responderpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_responderpolicy_binding"`
+}
+
+func (c *NitroClient) CountLbvserverResponderpolicyBinding() (int, error) {
+	results := count_lbvserver_responderpolicy_binding_result{}
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
+
+	if err := c.get("lbvserver_responderpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
 	}
 }
 
@@ -87,7 +120,7 @@ type get_lbvserver_responderpolicy_binding_result struct {
 func (c *NitroClient) GetLbvserverResponderpolicyBinding(key LbvserverResponderpolicyBindingKey) (*LbvserverResponderpolicyBinding, error) {
 	var results get_lbvserver_responderpolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	if err := c.get("lbvserver_responderpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -104,14 +137,10 @@ func (c *NitroClient) GetLbvserverResponderpolicyBinding(key LbvserverResponderp
 
 //      EXISTS
 
-type count_lbvserver_responderpolicy_binding_result struct {
-	Results []Count `json:"lbvserver_responderpolicy_binding"`
-}
-
 func (c *NitroClient) ExistsLbvserverResponderpolicyBinding(key LbvserverResponderpolicyBindingKey) (bool, error) {
 	var results count_lbvserver_responderpolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	qs["count"] = "yes"
 

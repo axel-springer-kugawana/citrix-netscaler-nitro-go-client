@@ -30,7 +30,7 @@ func (resource LbvserverScpolicyBinding) ToKey() LbvserverScpolicyBindingKey {
 	return key
 }
 
-func (key LbvserverScpolicyBindingKey) to_id_args() (string, map[string]string) {
+func (key LbvserverScpolicyBindingKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
 
 	var id string
@@ -42,10 +42,18 @@ func (key LbvserverScpolicyBindingKey) to_id_args() (string, map[string]string) 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[qsKey] = strings.Join(args, ",")
 	}
 
 	return id, qs
+}
+
+func (key LbvserverScpolicyBindingKey) to_id_args() (string, map[string]string) {
+	return key.to_id_params("args")
+}
+
+func (key LbvserverScpolicyBindingKey) to_id_filter() (string, map[string]string) {
+	return key.to_id_params("filter")
 }
 
 //      CREATE
@@ -71,10 +79,35 @@ type list_lbvserver_scpolicy_binding_result struct {
 func (c *NitroClient) ListLbvserverScpolicyBinding() ([]LbvserverScpolicyBinding, error) {
 	results := list_lbvserver_scpolicy_binding_result{}
 
-	if err := c.get("lbvserver_scpolicy_binding", "", nil, &results); err != nil {
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("lbvserver_scpolicy_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
+	}
+}
+
+//      COUNT
+
+type count_lbvserver_scpolicy_binding_result struct {
+	Results []Count `json:"lbvserver_scpolicy_binding"`
+}
+
+func (c *NitroClient) CountLbvserverScpolicyBinding() (int, error) {
+	results := count_lbvserver_scpolicy_binding_result{}
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
+
+	if err := c.get("lbvserver_scpolicy_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
 	}
 }
 
@@ -87,7 +120,7 @@ type get_lbvserver_scpolicy_binding_result struct {
 func (c *NitroClient) GetLbvserverScpolicyBinding(key LbvserverScpolicyBindingKey) (*LbvserverScpolicyBinding, error) {
 	var results get_lbvserver_scpolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	if err := c.get("lbvserver_scpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -104,14 +137,10 @@ func (c *NitroClient) GetLbvserverScpolicyBinding(key LbvserverScpolicyBindingKe
 
 //      EXISTS
 
-type count_lbvserver_scpolicy_binding_result struct {
-	Results []Count `json:"lbvserver_scpolicy_binding"`
-}
-
 func (c *NitroClient) ExistsLbvserverScpolicyBinding(key LbvserverScpolicyBindingKey) (bool, error) {
 	var results count_lbvserver_scpolicy_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	qs["count"] = "yes"
 

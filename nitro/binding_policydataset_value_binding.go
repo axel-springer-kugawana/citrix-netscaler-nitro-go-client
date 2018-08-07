@@ -26,7 +26,7 @@ func (resource PolicydatasetValueBinding) ToKey() PolicydatasetValueBindingKey {
 	return key
 }
 
-func (key PolicydatasetValueBindingKey) to_id_args() (string, map[string]string) {
+func (key PolicydatasetValueBindingKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
 
 	var id string
@@ -38,10 +38,18 @@ func (key PolicydatasetValueBindingKey) to_id_args() (string, map[string]string)
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs["args"] = strings.Join(args, ",")
+		qs[qsKey] = strings.Join(args, ",")
 	}
 
 	return id, qs
+}
+
+func (key PolicydatasetValueBindingKey) to_id_args() (string, map[string]string) {
+	return key.to_id_params("args")
+}
+
+func (key PolicydatasetValueBindingKey) to_id_filter() (string, map[string]string) {
+	return key.to_id_params("filter")
 }
 
 //      CREATE
@@ -67,10 +75,35 @@ type list_policydataset_value_binding_result struct {
 func (c *NitroClient) ListPolicydatasetValueBinding() ([]PolicydatasetValueBinding, error) {
 	results := list_policydataset_value_binding_result{}
 
-	if err := c.get("policydataset_value_binding", "", nil, &results); err != nil {
+	qs := map[string]string{
+		"bulkbindings": "yes",
+	}
+
+	if err := c.get("policydataset_value_binding", "", qs, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
+	}
+}
+
+//      COUNT
+
+type count_policydataset_value_binding_result struct {
+	Results []Count `json:"policydataset_value_binding"`
+}
+
+func (c *NitroClient) CountPolicydatasetValueBinding() (int, error) {
+	results := count_policydataset_value_binding_result{}
+
+	qs := map[string]string{
+		"bulkbindings": "yes",
+		"count":        "yes",
+	}
+
+	if err := c.get("policydataset_value_binding", "", qs, &results); err != nil {
+		return -1, err
+	} else {
+		return results.Results[0].Count, err
 	}
 }
 
@@ -83,7 +116,7 @@ type get_policydataset_value_binding_result struct {
 func (c *NitroClient) GetPolicydatasetValueBinding(key PolicydatasetValueBindingKey) (*PolicydatasetValueBinding, error) {
 	var results get_policydataset_value_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	if err := c.get("policydataset_value_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -100,14 +133,10 @@ func (c *NitroClient) GetPolicydatasetValueBinding(key PolicydatasetValueBinding
 
 //      EXISTS
 
-type count_policydataset_value_binding_result struct {
-	Results []Count `json:"policydataset_value_binding"`
-}
-
 func (c *NitroClient) ExistsPolicydatasetValueBinding(key PolicydatasetValueBindingKey) (bool, error) {
 	var results count_policydataset_value_binding_result
 
-	id, qs := key.to_id_args()
+	id, qs := key.to_id_filter()
 
 	qs["count"] = "yes"
 

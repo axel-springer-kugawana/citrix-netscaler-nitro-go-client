@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_appflowcollector(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowcollector, func()) {
+func Setup_appflowcollector(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowcollector, func()) {
 	resource := nitro.Appflowcollector{
 		Name:      "appflowcollector",
 		Ipaddress: "1.3.5.7",

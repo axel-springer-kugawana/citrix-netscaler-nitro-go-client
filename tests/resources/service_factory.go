@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_service(t *testing.T, client *nitro.NitroClient) (*nitro.Service, func()) {
+func Setup_service(t *testing.T, client *nitro.NitroClient) (*nitro.Service, func()) {
 	//resource := nitro.Service {
 	//Name: "service",
 	//Accessdown: (YES|NO),

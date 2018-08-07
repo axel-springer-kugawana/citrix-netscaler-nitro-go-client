@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_rewritepolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Rewritepolicylabel, func()) {
+func Setup_rewritepolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Rewritepolicylabel, func()) {
 	//resource := nitro.Rewritepolicylabel {
 	//Labelname: "rewritepolicylabel",
 	//Comment: string,

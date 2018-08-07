@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_scpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Scpolicy, func()) {
+func Setup_scpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Scpolicy, func()) {
 	//resource := nitro.Scpolicy {
 	//Name: "scpolicy",
 	//Action: string,

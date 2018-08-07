@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_lbmonitor(t *testing.T, client *nitro.NitroClient) (*nitro.Lbmonitor, func()) {
+func Setup_lbmonitor(t *testing.T, client *nitro.NitroClient) (*nitro.Lbmonitor, func()) {
 	//resource := nitro.Lbmonitor {
 	//Monitorname: "lbmonitor",
 	//Action: (NONE|LOG|DOWN),

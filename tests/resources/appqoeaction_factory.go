@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_appqoeaction(t *testing.T, client *nitro.NitroClient) (*nitro.Appqoeaction, func()) {
+func Setup_appqoeaction(t *testing.T, client *nitro.NitroClient) (*nitro.Appqoeaction, func()) {
 	//resource := nitro.Appqoeaction {
 	//Name: "appqoeaction",
 	//Altcontentpath: string,

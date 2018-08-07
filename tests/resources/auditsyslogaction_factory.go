@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_auditsyslogaction(t *testing.T, client *nitro.NitroClient) (*nitro.Auditsyslogaction, func()) {
+func Setup_auditsyslogaction(t *testing.T, client *nitro.NitroClient) (*nitro.Auditsyslogaction, func()) {
 	//resource := nitro.Auditsyslogaction {
 	//Name: "auditsyslogaction",
 	//Acl: (ENABLED|DISABLED),

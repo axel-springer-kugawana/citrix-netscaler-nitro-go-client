@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_server(t *testing.T, client *nitro.NitroClient) (*nitro.Server, func()) {
+func Setup_server(t *testing.T, client *nitro.NitroClient) (*nitro.Server, func()) {
 	resource := nitro.Server{
 		Name:      "server",
 		Ipaddress: "1.3.5.7",

@@ -1,11 +1,11 @@
-package nitro
+package bindings
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_lbvserver_appqoepolicy_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbvserverAppqoepolicyBinding, func()) {
+func Setup_lbvserver_appqoepolicy_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbvserverAppqoepolicyBinding, func()) {
 	//resource := nitro.LbvserverAppqoepolicyBinding {
 	//Gotopriorityexpression: string,
 	//Invoke: bool,

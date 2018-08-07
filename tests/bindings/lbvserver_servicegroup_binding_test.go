@@ -1,4 +1,4 @@
-package nitro
+package bindings
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
@@ -10,7 +10,7 @@ import (
 func TestLbvserverServicegroupBinding(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource, tearDown := setup_lbvserver_servicegroup_binding(t, client)
+	resource, tearDown := Setup_lbvserver_servicegroup_binding(t, client)
 
 	if resource == nil {
 		return

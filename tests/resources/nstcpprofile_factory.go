@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_nstcpprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Nstcpprofile, func()) {
+func Setup_nstcpprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Nstcpprofile, func()) {
 	//resource := nitro.Nstcpprofile {
 	//Name: "nstcpprofile",
 	//Ackaggregation: (ENABLED|DISABLED),

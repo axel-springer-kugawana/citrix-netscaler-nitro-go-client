@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_transformpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Transformpolicy, func()) {
+func Setup_transformpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Transformpolicy, func()) {
 	//resource := nitro.Transformpolicy {
 	//Name: "transformpolicy",
 	//Comment: string,

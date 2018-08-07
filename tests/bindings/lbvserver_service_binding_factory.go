@@ -1,11 +1,11 @@
-package nitro
+package bindings
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_lbvserver_service_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbvserverServiceBinding, func()) {
+func Setup_lbvserver_service_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbvserverServiceBinding, func()) {
 	//resource := nitro.LbvserverServiceBinding {
 	//Name: lbvserver.name,
 	//Servicename: service.name,

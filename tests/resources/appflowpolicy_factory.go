@@ -1,12 +1,12 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_appflowpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowpolicy, func()) {
-	action, actionTearDown := setup_appflowaction(t, client)
+func Setup_appflowpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appflowpolicy, func()) {
+	action, actionTearDown := Setup_appflowaction(t, client)
 
 	client.AddAppflowaction(*action)
 

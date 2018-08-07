@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_dnsprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dnsprofile, func()) {
+func Setup_dnsprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dnsprofile, func()) {
 	//resource := nitro.Dnsprofile {
 	//Dnsprofilename: "dnsprofile",
 	//Cacheecsresponses: (ENABLED|DISABLED),

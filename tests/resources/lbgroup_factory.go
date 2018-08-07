@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_lbgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Lbgroup, func()) {
+func Setup_lbgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Lbgroup, func()) {
 	//resource := nitro.Lbgroup {
 	//Name: "lbgroup",
 	//Backuppersistencetimeout: double,

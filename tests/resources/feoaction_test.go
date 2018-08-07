@@ -1,4 +1,4 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
@@ -10,7 +10,7 @@ import (
 func TestFeoaction(t *testing.T) {
 	client := nitro.NewNitroClient("http://10.2.0.232", "nsroot", "Charlie")
 
-	resource, tearDown := setup_feoaction(t, client)
+	resource, tearDown := Setup_feoaction(t, client)
 
 	if resource == nil {
 		return

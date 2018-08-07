@@ -1,11 +1,11 @@
-package nitro
+package bindings
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_appflowglobal_appflowpolicy_binding(t *testing.T, client *nitro.NitroClient) (*nitro.AppflowglobalAppflowpolicyBinding, func()) {
+func Setup_appflowglobal_appflowpolicy_binding(t *testing.T, client *nitro.NitroClient) (*nitro.AppflowglobalAppflowpolicyBinding, func()) {
 	//resource := nitro.AppflowglobalAppflowpolicyBinding {
 	//Gotopriorityexpression: string,
 	//Invoke: bool,

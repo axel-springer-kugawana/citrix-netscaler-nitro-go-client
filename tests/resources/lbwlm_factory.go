@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_lbwlm(t *testing.T, client *nitro.NitroClient) (*nitro.Lbwlm, func()) {
+func Setup_lbwlm(t *testing.T, client *nitro.NitroClient) (*nitro.Lbwlm, func()) {
 	//resource := nitro.Lbwlm {
 	//Wlmname: "lbwlm",
 	//Ipaddress: ip,

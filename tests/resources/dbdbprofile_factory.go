@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_dbdbprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dbdbprofile, func()) {
+func Setup_dbdbprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dbdbprofile, func()) {
 	//resource := nitro.Dbdbprofile {
 	//Name: "dbdbprofile",
 	//Conmultiplex: (ENABLED|DISABLED),

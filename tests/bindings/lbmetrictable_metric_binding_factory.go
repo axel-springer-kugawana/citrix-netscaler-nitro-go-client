@@ -1,17 +1,27 @@
-package nitro
+package bindings
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"github.com/doubret/citrix-netscaler-nitro-go-client/tests/resources"
 	"testing"
 )
 
-func setup_lbmetrictable_metric_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbmetrictableMetricBinding, func()) {
-	//resource := nitro.LbmetrictableMetricBinding {
-	//Metric: string,
-	//Metrictable: lbmetrictable.metrictable,
-	//Snmpoid: string,
-	//}
+func Setup_lbmetrictable_metric_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbmetrictableMetricBinding, func()) {
+	metrictable, metrictableTearDown := resources.Setup_lbmetrictable(t, client)
 
-	return nil, func() {
+	client.AddLbmetrictable(*metrictable)
+
+	resource := nitro.LbmetrictableMetricBinding{
+		Metrictable: metrictable.Metrictable,
+		Metric:      "test",
+		Snmpoid:     "test",
+	}
+
+	return &resource, func() {
+		client.DeleteLbmetrictable(metrictable.ToKey())
+
+		if metrictableTearDown != nil {
+			metrictableTearDown()
+		}
 	}
 }

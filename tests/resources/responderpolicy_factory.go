@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_responderpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Responderpolicy, func()) {
+func Setup_responderpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Responderpolicy, func()) {
 	//resource := nitro.Responderpolicy {
 	//Name: "responderpolicy",
 	//Action: responderaction.name,

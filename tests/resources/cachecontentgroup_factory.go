@@ -1,11 +1,11 @@
-package nitro
+package resources
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_cachecontentgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Cachecontentgroup, func()) {
+func Setup_cachecontentgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Cachecontentgroup, func()) {
 	//resource := nitro.Cachecontentgroup {
 	//Name: "cachecontentgroup",
 	//Absexpiry: string[],

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func setup_{{$.Name}}(t *testing.T, client *nitro.NitroClient) (*nitro.{{$.Name|name}}, func()) {
+func Setup_{{$.Name}}(t *testing.T, client *nitro.NitroClient) (*nitro.{{$.Name|name}}, func()) {
 	//resource := nitro.{{$.Name|name}} {
 		{{range $field, $type := $.Schema.Fields -}}
 		//{{$field|title}}: {{$type}},

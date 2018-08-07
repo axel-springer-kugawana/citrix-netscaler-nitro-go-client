@@ -1,11 +1,11 @@
-package nitro
+package bindings
 
 import (
 	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
 )
 
-func setup_lbvserver_responderpolicy_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbvserverResponderpolicyBinding, func()) {
+func Setup_lbvserver_responderpolicy_binding(t *testing.T, client *nitro.NitroClient) (*nitro.LbvserverResponderpolicyBinding, func()) {
 	//resource := nitro.LbvserverResponderpolicyBinding {
 	//Gotopriorityexpression: string,
 	//Invoke: bool,

@@ -35,12 +35,6 @@ func TestLbvserverDnspolicy64Binding(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.CountLbvserverDnspolicy64Binding()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.ExistsLbvserverDnspolicy64Binding(key)
 

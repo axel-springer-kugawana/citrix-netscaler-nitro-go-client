@@ -35,12 +35,6 @@ func Test{{$.Name|name}}(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.Count{{$.Name|name}}()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.Exists{{$.Name|name}}(key)
 

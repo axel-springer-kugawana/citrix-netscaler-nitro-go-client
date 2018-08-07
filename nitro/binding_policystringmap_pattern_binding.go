@@ -17,125 +17,73 @@ type PolicystringmapPatternBindingKey struct {
 	Key  string
 }
 
-type add_policystringmap_pattern_binding_payload struct {
-	Resource PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
+func (resource PolicystringmapPatternBinding) ToKey() PolicystringmapPatternBindingKey {
+	key := PolicystringmapPatternBindingKey{
+		resource.Name,
+		resource.Key,
+	}
+
+	return key
 }
 
-type get_policystringmap_pattern_binding_result struct {
-	Results []PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
-}
-
-type count_policystringmap_pattern_binding_result struct {
-	Results []Count `json:"policystringmap_pattern_binding"`
-}
-
-func policystringmap_pattern_binding_key_to_id_qs(key PolicystringmapPatternBindingKey, arg string) (string, map[string]string) {
+func (key PolicystringmapPatternBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "name:"+key.Name)
+	id = key.Name
 	args = append(args, "key:"+key.Key)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func policystringmap_pattern_binding_key_to_id_args(key PolicystringmapPatternBindingKey) (string, map[string]string) {
-	return policystringmap_pattern_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_policystringmap_pattern_binding_payload struct {
+	Resource PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
 }
 
-func policystringmap_pattern_binding_key_to_id_filter(key PolicystringmapPatternBindingKey) (string, map[string]string) {
-	return policystringmap_pattern_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddPolicystringmapPatternBinding(binding PolicystringmapPatternBinding) error {
+func (c *NitroClient) AddPolicystringmapPatternBinding(resource PolicystringmapPatternBinding) error {
 	payload := add_policystringmap_pattern_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("policystringmap_pattern_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountPolicystringmapPatternBinding() (int, error) {
-	var results count_policystringmap_pattern_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("policystringmap_pattern_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_policystringmap_pattern_binding_result struct {
+	Results []PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
 }
 
-func (c *NitroClient) CountPolicystringmapPatternBinding(id string) (int, error) {
-	var results count_policystringmap_pattern_binding_result
+func (c *NitroClient) ListPolicystringmapPatternBinding() ([]PolicystringmapPatternBinding, error) {
+	results := list_policystringmap_pattern_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("policystringmap_pattern_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsPolicystringmapPatternBinding(key PolicystringmapPatternBindingKey) (bool, error) {
-	var results count_policystringmap_pattern_binding_result
-
-	id, qs := policystringmap_pattern_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("policystringmap_pattern_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one policystringmap_pattern_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListPolicystringmapPatternBinding() ([]PolicystringmapPatternBinding, error) {
-	var results get_policystringmap_pattern_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("policystringmap_pattern_binding", "", qs, &results); err != nil {
+	if err := c.get("policystringmap_pattern_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListPolicystringmapPatternBinding(id string) ([]PolicystringmapPatternBinding, error) {
-	var results get_policystringmap_pattern_binding_result
+//      READ
 
-	if err := c.get("policystringmap_pattern_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_policystringmap_pattern_binding_result struct {
+	Results []PolicystringmapPatternBinding `json:"policystringmap_pattern_binding"`
 }
 
 func (c *NitroClient) GetPolicystringmapPatternBinding(key PolicystringmapPatternBindingKey) (*PolicystringmapPatternBinding, error) {
 	var results get_policystringmap_pattern_binding_result
 
-	id, qs := policystringmap_pattern_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("policystringmap_pattern_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -150,8 +98,32 @@ func (c *NitroClient) GetPolicystringmapPatternBinding(key PolicystringmapPatter
 	}
 }
 
+//      EXISTS
+
+type count_policystringmap_pattern_binding_result struct {
+	Results []Count `json:"policystringmap_pattern_binding"`
+}
+
+func (c *NitroClient) ExistsPolicystringmapPatternBinding(key PolicystringmapPatternBindingKey) (bool, error) {
+	var results count_policystringmap_pattern_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("policystringmap_pattern_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeletePolicystringmapPatternBinding(key PolicystringmapPatternBindingKey) error {
-	id, qs := policystringmap_pattern_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("policystringmap_pattern_binding", id, qs)
 }

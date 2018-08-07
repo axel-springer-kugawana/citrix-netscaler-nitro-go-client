@@ -35,12 +35,6 @@ func TestServiceDospolicyBinding(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.CountServiceDospolicyBinding()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.ExistsServiceDospolicyBinding(key)
 

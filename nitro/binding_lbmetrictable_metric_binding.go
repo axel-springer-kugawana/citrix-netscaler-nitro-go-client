@@ -17,125 +17,73 @@ type LbmetrictableMetricBindingKey struct {
 	Metric      string
 }
 
-type add_lbmetrictable_metric_binding_payload struct {
-	Resource LbmetrictableMetricBinding `json:"lbmetrictable_metric_binding"`
+func (resource LbmetrictableMetricBinding) ToKey() LbmetrictableMetricBindingKey {
+	key := LbmetrictableMetricBindingKey{
+		resource.Metrictable,
+		resource.Metric,
+	}
+
+	return key
 }
 
-type get_lbmetrictable_metric_binding_result struct {
-	Results []LbmetrictableMetricBinding `json:"lbmetrictable_metric_binding"`
-}
-
-type count_lbmetrictable_metric_binding_result struct {
-	Results []Count `json:"lbmetrictable_metric_binding"`
-}
-
-func lbmetrictable_metric_binding_key_to_id_qs(key LbmetrictableMetricBindingKey, arg string) (string, map[string]string) {
+func (key LbmetrictableMetricBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "metrictable:"+key.Metrictable)
+	id = key.Metrictable
 	args = append(args, "metric:"+key.Metric)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func lbmetrictable_metric_binding_key_to_id_args(key LbmetrictableMetricBindingKey) (string, map[string]string) {
-	return lbmetrictable_metric_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_lbmetrictable_metric_binding_payload struct {
+	Resource LbmetrictableMetricBinding `json:"lbmetrictable_metric_binding"`
 }
 
-func lbmetrictable_metric_binding_key_to_id_filter(key LbmetrictableMetricBindingKey) (string, map[string]string) {
-	return lbmetrictable_metric_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddLbmetrictableMetricBinding(binding LbmetrictableMetricBinding) error {
+func (c *NitroClient) AddLbmetrictableMetricBinding(resource LbmetrictableMetricBinding) error {
 	payload := add_lbmetrictable_metric_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("lbmetrictable_metric_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountLbmetrictableMetricBinding() (int, error) {
-	var results count_lbmetrictable_metric_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("lbmetrictable_metric_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_lbmetrictable_metric_binding_result struct {
+	Results []LbmetrictableMetricBinding `json:"lbmetrictable_metric_binding"`
 }
 
-func (c *NitroClient) CountLbmetrictableMetricBinding(id string) (int, error) {
-	var results count_lbmetrictable_metric_binding_result
+func (c *NitroClient) ListLbmetrictableMetricBinding() ([]LbmetrictableMetricBinding, error) {
+	results := list_lbmetrictable_metric_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("lbmetrictable_metric_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsLbmetrictableMetricBinding(key LbmetrictableMetricBindingKey) (bool, error) {
-	var results count_lbmetrictable_metric_binding_result
-
-	id, qs := lbmetrictable_metric_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("lbmetrictable_metric_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one lbmetrictable_metric_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListLbmetrictableMetricBinding() ([]LbmetrictableMetricBinding, error) {
-	var results get_lbmetrictable_metric_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("lbmetrictable_metric_binding", "", qs, &results); err != nil {
+	if err := c.get("lbmetrictable_metric_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListLbmetrictableMetricBinding(id string) ([]LbmetrictableMetricBinding, error) {
-	var results get_lbmetrictable_metric_binding_result
+//      READ
 
-	if err := c.get("lbmetrictable_metric_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_lbmetrictable_metric_binding_result struct {
+	Results []LbmetrictableMetricBinding `json:"lbmetrictable_metric_binding"`
 }
 
 func (c *NitroClient) GetLbmetrictableMetricBinding(key LbmetrictableMetricBindingKey) (*LbmetrictableMetricBinding, error) {
 	var results get_lbmetrictable_metric_binding_result
 
-	id, qs := lbmetrictable_metric_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("lbmetrictable_metric_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -150,8 +98,32 @@ func (c *NitroClient) GetLbmetrictableMetricBinding(key LbmetrictableMetricBindi
 	}
 }
 
+//      EXISTS
+
+type count_lbmetrictable_metric_binding_result struct {
+	Results []Count `json:"lbmetrictable_metric_binding"`
+}
+
+func (c *NitroClient) ExistsLbmetrictableMetricBinding(key LbmetrictableMetricBindingKey) (bool, error) {
+	var results count_lbmetrictable_metric_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbmetrictable_metric_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteLbmetrictableMetricBinding(key LbmetrictableMetricBindingKey) error {
-	id, qs := lbmetrictable_metric_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("lbmetrictable_metric_binding", id, qs)
 }

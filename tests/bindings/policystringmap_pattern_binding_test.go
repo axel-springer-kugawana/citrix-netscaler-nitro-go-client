@@ -35,12 +35,6 @@ func TestPolicystringmapPatternBinding(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.CountPolicystringmapPatternBinding()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.ExistsPolicystringmapPatternBinding(key)
 

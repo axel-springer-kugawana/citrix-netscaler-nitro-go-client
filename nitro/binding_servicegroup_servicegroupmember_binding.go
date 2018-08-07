@@ -19,126 +19,75 @@ type ServicegroupServicegroupmemberBindingKey struct {
 	Port             int
 }
 
-type add_servicegroup_servicegroupmember_binding_payload struct {
-	Resource ServicegroupServicegroupmemberBinding `json:"servicegroup_servicegroupmember_binding"`
+func (resource ServicegroupServicegroupmemberBinding) ToKey() ServicegroupServicegroupmemberBindingKey {
+	key := ServicegroupServicegroupmemberBindingKey{
+		resource.Servicegroupname,
+		resource.Servername,
+		resource.Port,
+	}
+
+	return key
 }
 
-type get_servicegroup_servicegroupmember_binding_result struct {
-	Results []ServicegroupServicegroupmemberBinding `json:"servicegroup_servicegroupmember_binding"`
-}
-
-type count_servicegroup_servicegroupmember_binding_result struct {
-	Results []Count `json:"servicegroup_servicegroupmember_binding"`
-}
-
-func servicegroup_servicegroupmember_binding_key_to_id_qs(key ServicegroupServicegroupmemberBindingKey, arg string) (string, map[string]string) {
+func (key ServicegroupServicegroupmemberBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "servicegroupname:"+key.Servicegroupname)
+	id = key.Servicegroupname
 	args = append(args, "servername:"+key.Servername)
 	args = append(args, "port:"+strconv.Itoa(key.Port))
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func servicegroup_servicegroupmember_binding_key_to_id_args(key ServicegroupServicegroupmemberBindingKey) (string, map[string]string) {
-	return servicegroup_servicegroupmember_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_servicegroup_servicegroupmember_binding_payload struct {
+	Resource ServicegroupServicegroupmemberBinding `json:"servicegroup_servicegroupmember_binding"`
 }
 
-func servicegroup_servicegroupmember_binding_key_to_id_filter(key ServicegroupServicegroupmemberBindingKey) (string, map[string]string) {
-	return servicegroup_servicegroupmember_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddServicegroupServicegroupmemberBinding(binding ServicegroupServicegroupmemberBinding) error {
+func (c *NitroClient) AddServicegroupServicegroupmemberBinding(resource ServicegroupServicegroupmemberBinding) error {
 	payload := add_servicegroup_servicegroupmember_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("servicegroup_servicegroupmember_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountServicegroupServicegroupmemberBinding() (int, error) {
-	var results count_servicegroup_servicegroupmember_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("servicegroup_servicegroupmember_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_servicegroup_servicegroupmember_binding_result struct {
+	Results []ServicegroupServicegroupmemberBinding `json:"servicegroup_servicegroupmember_binding"`
 }
 
-func (c *NitroClient) CountServicegroupServicegroupmemberBinding(id string) (int, error) {
-	var results count_servicegroup_servicegroupmember_binding_result
+func (c *NitroClient) ListServicegroupServicegroupmemberBinding() ([]ServicegroupServicegroupmemberBinding, error) {
+	results := list_servicegroup_servicegroupmember_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("servicegroup_servicegroupmember_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsServicegroupServicegroupmemberBinding(key ServicegroupServicegroupmemberBindingKey) (bool, error) {
-	var results count_servicegroup_servicegroupmember_binding_result
-
-	id, qs := servicegroup_servicegroupmember_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("servicegroup_servicegroupmember_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one servicegroup_servicegroupmember_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListServicegroupServicegroupmemberBinding() ([]ServicegroupServicegroupmemberBinding, error) {
-	var results get_servicegroup_servicegroupmember_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("servicegroup_servicegroupmember_binding", "", qs, &results); err != nil {
+	if err := c.get("servicegroup_servicegroupmember_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListServicegroupServicegroupmemberBinding(id string) ([]ServicegroupServicegroupmemberBinding, error) {
-	var results get_servicegroup_servicegroupmember_binding_result
+//      READ
 
-	if err := c.get("servicegroup_servicegroupmember_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_servicegroup_servicegroupmember_binding_result struct {
+	Results []ServicegroupServicegroupmemberBinding `json:"servicegroup_servicegroupmember_binding"`
 }
 
 func (c *NitroClient) GetServicegroupServicegroupmemberBinding(key ServicegroupServicegroupmemberBindingKey) (*ServicegroupServicegroupmemberBinding, error) {
 	var results get_servicegroup_servicegroupmember_binding_result
 
-	id, qs := servicegroup_servicegroupmember_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("servicegroup_servicegroupmember_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -153,8 +102,32 @@ func (c *NitroClient) GetServicegroupServicegroupmemberBinding(key ServicegroupS
 	}
 }
 
+//      EXISTS
+
+type count_servicegroup_servicegroupmember_binding_result struct {
+	Results []Count `json:"servicegroup_servicegroupmember_binding"`
+}
+
+func (c *NitroClient) ExistsServicegroupServicegroupmemberBinding(key ServicegroupServicegroupmemberBindingKey) (bool, error) {
+	var results count_servicegroup_servicegroupmember_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("servicegroup_servicegroupmember_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteServicegroupServicegroupmemberBinding(key ServicegroupServicegroupmemberBindingKey) error {
-	id, qs := servicegroup_servicegroupmember_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("servicegroup_servicegroupmember_binding", id, qs)
 }

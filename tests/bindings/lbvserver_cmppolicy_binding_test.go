@@ -35,12 +35,6 @@ func TestLbvserverCmppolicyBinding(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.CountLbvserverCmppolicyBinding()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.ExistsLbvserverCmppolicyBinding(key)
 

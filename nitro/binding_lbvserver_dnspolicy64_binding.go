@@ -21,125 +21,73 @@ type LbvserverDnspolicy64BindingKey struct {
 	Policyname string
 }
 
-type add_lbvserver_dnspolicy64_binding_payload struct {
-	Resource LbvserverDnspolicy64Binding `json:"lbvserver_dnspolicy64_binding"`
+func (resource LbvserverDnspolicy64Binding) ToKey() LbvserverDnspolicy64BindingKey {
+	key := LbvserverDnspolicy64BindingKey{
+		resource.Name,
+		resource.Policyname,
+	}
+
+	return key
 }
 
-type get_lbvserver_dnspolicy64_binding_result struct {
-	Results []LbvserverDnspolicy64Binding `json:"lbvserver_dnspolicy64_binding"`
-}
-
-type count_lbvserver_dnspolicy64_binding_result struct {
-	Results []Count `json:"lbvserver_dnspolicy64_binding"`
-}
-
-func lbvserver_dnspolicy64_binding_key_to_id_qs(key LbvserverDnspolicy64BindingKey, arg string) (string, map[string]string) {
+func (key LbvserverDnspolicy64BindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "name:"+key.Name)
+	id = key.Name
 	args = append(args, "policyname:"+key.Policyname)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func lbvserver_dnspolicy64_binding_key_to_id_args(key LbvserverDnspolicy64BindingKey) (string, map[string]string) {
-	return lbvserver_dnspolicy64_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_lbvserver_dnspolicy64_binding_payload struct {
+	Resource LbvserverDnspolicy64Binding `json:"lbvserver_dnspolicy64_binding"`
 }
 
-func lbvserver_dnspolicy64_binding_key_to_id_filter(key LbvserverDnspolicy64BindingKey) (string, map[string]string) {
-	return lbvserver_dnspolicy64_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddLbvserverDnspolicy64Binding(binding LbvserverDnspolicy64Binding) error {
+func (c *NitroClient) AddLbvserverDnspolicy64Binding(resource LbvserverDnspolicy64Binding) error {
 	payload := add_lbvserver_dnspolicy64_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("lbvserver_dnspolicy64_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountLbvserverDnspolicy64Binding() (int, error) {
-	var results count_lbvserver_dnspolicy64_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("lbvserver_dnspolicy64_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_lbvserver_dnspolicy64_binding_result struct {
+	Results []LbvserverDnspolicy64Binding `json:"lbvserver_dnspolicy64_binding"`
 }
 
-func (c *NitroClient) CountLbvserverDnspolicy64Binding(id string) (int, error) {
-	var results count_lbvserver_dnspolicy64_binding_result
+func (c *NitroClient) ListLbvserverDnspolicy64Binding() ([]LbvserverDnspolicy64Binding, error) {
+	results := list_lbvserver_dnspolicy64_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("lbvserver_dnspolicy64_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsLbvserverDnspolicy64Binding(key LbvserverDnspolicy64BindingKey) (bool, error) {
-	var results count_lbvserver_dnspolicy64_binding_result
-
-	id, qs := lbvserver_dnspolicy64_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("lbvserver_dnspolicy64_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one lbvserver_dnspolicy64_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListLbvserverDnspolicy64Binding() ([]LbvserverDnspolicy64Binding, error) {
-	var results get_lbvserver_dnspolicy64_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("lbvserver_dnspolicy64_binding", "", qs, &results); err != nil {
+	if err := c.get("lbvserver_dnspolicy64_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListLbvserverDnspolicy64Binding(id string) ([]LbvserverDnspolicy64Binding, error) {
-	var results get_lbvserver_dnspolicy64_binding_result
+//      READ
 
-	if err := c.get("lbvserver_dnspolicy64_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_lbvserver_dnspolicy64_binding_result struct {
+	Results []LbvserverDnspolicy64Binding `json:"lbvserver_dnspolicy64_binding"`
 }
 
 func (c *NitroClient) GetLbvserverDnspolicy64Binding(key LbvserverDnspolicy64BindingKey) (*LbvserverDnspolicy64Binding, error) {
 	var results get_lbvserver_dnspolicy64_binding_result
 
-	id, qs := lbvserver_dnspolicy64_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("lbvserver_dnspolicy64_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -154,8 +102,32 @@ func (c *NitroClient) GetLbvserverDnspolicy64Binding(key LbvserverDnspolicy64Bin
 	}
 }
 
+//      EXISTS
+
+type count_lbvserver_dnspolicy64_binding_result struct {
+	Results []Count `json:"lbvserver_dnspolicy64_binding"`
+}
+
+func (c *NitroClient) ExistsLbvserverDnspolicy64Binding(key LbvserverDnspolicy64BindingKey) (bool, error) {
+	var results count_lbvserver_dnspolicy64_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbvserver_dnspolicy64_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteLbvserverDnspolicy64Binding(key LbvserverDnspolicy64BindingKey) error {
-	id, qs := lbvserver_dnspolicy64_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("lbvserver_dnspolicy64_binding", id, qs)
 }

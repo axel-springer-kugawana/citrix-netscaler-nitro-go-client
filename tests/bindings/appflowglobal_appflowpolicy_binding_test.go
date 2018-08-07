@@ -35,12 +35,6 @@ func TestAppflowglobalAppflowpolicyBinding(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.CountAppflowglobalAppflowpolicyBinding()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.ExistsAppflowglobalAppflowpolicyBinding(key)
 

@@ -21,125 +21,73 @@ type AuthorizationpolicylabelAuthorizationpolicyBindingKey struct {
 	Policyname string
 }
 
-type add_authorizationpolicylabel_authorizationpolicy_binding_payload struct {
-	Resource AuthorizationpolicylabelAuthorizationpolicyBinding `json:"authorizationpolicylabel_authorizationpolicy_binding"`
+func (resource AuthorizationpolicylabelAuthorizationpolicyBinding) ToKey() AuthorizationpolicylabelAuthorizationpolicyBindingKey {
+	key := AuthorizationpolicylabelAuthorizationpolicyBindingKey{
+		resource.Labelname,
+		resource.Policyname,
+	}
+
+	return key
 }
 
-type get_authorizationpolicylabel_authorizationpolicy_binding_result struct {
-	Results []AuthorizationpolicylabelAuthorizationpolicyBinding `json:"authorizationpolicylabel_authorizationpolicy_binding"`
-}
-
-type count_authorizationpolicylabel_authorizationpolicy_binding_result struct {
-	Results []Count `json:"authorizationpolicylabel_authorizationpolicy_binding"`
-}
-
-func authorizationpolicylabel_authorizationpolicy_binding_key_to_id_qs(key AuthorizationpolicylabelAuthorizationpolicyBindingKey, arg string) (string, map[string]string) {
+func (key AuthorizationpolicylabelAuthorizationpolicyBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "labelname:"+key.Labelname)
+	id = key.Labelname
 	args = append(args, "policyname:"+key.Policyname)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func authorizationpolicylabel_authorizationpolicy_binding_key_to_id_args(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) (string, map[string]string) {
-	return authorizationpolicylabel_authorizationpolicy_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_authorizationpolicylabel_authorizationpolicy_binding_payload struct {
+	Resource AuthorizationpolicylabelAuthorizationpolicyBinding `json:"authorizationpolicylabel_authorizationpolicy_binding"`
 }
 
-func authorizationpolicylabel_authorizationpolicy_binding_key_to_id_filter(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) (string, map[string]string) {
-	return authorizationpolicylabel_authorizationpolicy_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddAuthorizationpolicylabelAuthorizationpolicyBinding(binding AuthorizationpolicylabelAuthorizationpolicyBinding) error {
+func (c *NitroClient) AddAuthorizationpolicylabelAuthorizationpolicyBinding(resource AuthorizationpolicylabelAuthorizationpolicyBinding) error {
 	payload := add_authorizationpolicylabel_authorizationpolicy_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("authorizationpolicylabel_authorizationpolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountAuthorizationpolicylabelAuthorizationpolicyBinding() (int, error) {
-	var results count_authorizationpolicylabel_authorizationpolicy_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_authorizationpolicylabel_authorizationpolicy_binding_result struct {
+	Results []AuthorizationpolicylabelAuthorizationpolicyBinding `json:"authorizationpolicylabel_authorizationpolicy_binding"`
 }
 
-func (c *NitroClient) CountAuthorizationpolicylabelAuthorizationpolicyBinding(id string) (int, error) {
-	var results count_authorizationpolicylabel_authorizationpolicy_binding_result
+func (c *NitroClient) ListAuthorizationpolicylabelAuthorizationpolicyBinding() ([]AuthorizationpolicylabelAuthorizationpolicyBinding, error) {
+	results := list_authorizationpolicylabel_authorizationpolicy_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsAuthorizationpolicylabelAuthorizationpolicyBinding(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) (bool, error) {
-	var results count_authorizationpolicylabel_authorizationpolicy_binding_result
-
-	id, qs := authorizationpolicylabel_authorizationpolicy_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one authorizationpolicylabel_authorizationpolicy_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListAuthorizationpolicylabelAuthorizationpolicyBinding() ([]AuthorizationpolicylabelAuthorizationpolicyBinding, error) {
-	var results get_authorizationpolicylabel_authorizationpolicy_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", "", qs, &results); err != nil {
+	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListAuthorizationpolicylabelAuthorizationpolicyBinding(id string) ([]AuthorizationpolicylabelAuthorizationpolicyBinding, error) {
-	var results get_authorizationpolicylabel_authorizationpolicy_binding_result
+//      READ
 
-	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_authorizationpolicylabel_authorizationpolicy_binding_result struct {
+	Results []AuthorizationpolicylabelAuthorizationpolicyBinding `json:"authorizationpolicylabel_authorizationpolicy_binding"`
 }
 
 func (c *NitroClient) GetAuthorizationpolicylabelAuthorizationpolicyBinding(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) (*AuthorizationpolicylabelAuthorizationpolicyBinding, error) {
 	var results get_authorizationpolicylabel_authorizationpolicy_binding_result
 
-	id, qs := authorizationpolicylabel_authorizationpolicy_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -154,8 +102,32 @@ func (c *NitroClient) GetAuthorizationpolicylabelAuthorizationpolicyBinding(key 
 	}
 }
 
+//      EXISTS
+
+type count_authorizationpolicylabel_authorizationpolicy_binding_result struct {
+	Results []Count `json:"authorizationpolicylabel_authorizationpolicy_binding"`
+}
+
+func (c *NitroClient) ExistsAuthorizationpolicylabelAuthorizationpolicyBinding(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) (bool, error) {
+	var results count_authorizationpolicylabel_authorizationpolicy_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("authorizationpolicylabel_authorizationpolicy_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteAuthorizationpolicylabelAuthorizationpolicyBinding(key AuthorizationpolicylabelAuthorizationpolicyBindingKey) error {
-	id, qs := authorizationpolicylabel_authorizationpolicy_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("authorizationpolicylabel_authorizationpolicy_binding", id, qs)
 }

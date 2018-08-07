@@ -16,125 +16,73 @@ type ServiceDospolicyBindingKey struct {
 	Policyname string
 }
 
-type add_service_dospolicy_binding_payload struct {
-	Resource ServiceDospolicyBinding `json:"service_dospolicy_binding"`
+func (resource ServiceDospolicyBinding) ToKey() ServiceDospolicyBindingKey {
+	key := ServiceDospolicyBindingKey{
+		resource.Name,
+		resource.Policyname,
+	}
+
+	return key
 }
 
-type get_service_dospolicy_binding_result struct {
-	Results []ServiceDospolicyBinding `json:"service_dospolicy_binding"`
-}
-
-type count_service_dospolicy_binding_result struct {
-	Results []Count `json:"service_dospolicy_binding"`
-}
-
-func service_dospolicy_binding_key_to_id_qs(key ServiceDospolicyBindingKey, arg string) (string, map[string]string) {
+func (key ServiceDospolicyBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "name:"+key.Name)
+	id = key.Name
 	args = append(args, "policyname:"+key.Policyname)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func service_dospolicy_binding_key_to_id_args(key ServiceDospolicyBindingKey) (string, map[string]string) {
-	return service_dospolicy_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_service_dospolicy_binding_payload struct {
+	Resource ServiceDospolicyBinding `json:"service_dospolicy_binding"`
 }
 
-func service_dospolicy_binding_key_to_id_filter(key ServiceDospolicyBindingKey) (string, map[string]string) {
-	return service_dospolicy_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddServiceDospolicyBinding(binding ServiceDospolicyBinding) error {
+func (c *NitroClient) AddServiceDospolicyBinding(resource ServiceDospolicyBinding) error {
 	payload := add_service_dospolicy_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("service_dospolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountServiceDospolicyBinding() (int, error) {
-	var results count_service_dospolicy_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("service_dospolicy_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_service_dospolicy_binding_result struct {
+	Results []ServiceDospolicyBinding `json:"service_dospolicy_binding"`
 }
 
-func (c *NitroClient) CountServiceDospolicyBinding(id string) (int, error) {
-	var results count_service_dospolicy_binding_result
+func (c *NitroClient) ListServiceDospolicyBinding() ([]ServiceDospolicyBinding, error) {
+	results := list_service_dospolicy_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("service_dospolicy_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsServiceDospolicyBinding(key ServiceDospolicyBindingKey) (bool, error) {
-	var results count_service_dospolicy_binding_result
-
-	id, qs := service_dospolicy_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("service_dospolicy_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one service_dospolicy_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListServiceDospolicyBinding() ([]ServiceDospolicyBinding, error) {
-	var results get_service_dospolicy_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("service_dospolicy_binding", "", qs, &results); err != nil {
+	if err := c.get("service_dospolicy_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListServiceDospolicyBinding(id string) ([]ServiceDospolicyBinding, error) {
-	var results get_service_dospolicy_binding_result
+//      READ
 
-	if err := c.get("service_dospolicy_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_service_dospolicy_binding_result struct {
+	Results []ServiceDospolicyBinding `json:"service_dospolicy_binding"`
 }
 
 func (c *NitroClient) GetServiceDospolicyBinding(key ServiceDospolicyBindingKey) (*ServiceDospolicyBinding, error) {
 	var results get_service_dospolicy_binding_result
 
-	id, qs := service_dospolicy_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("service_dospolicy_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -149,8 +97,32 @@ func (c *NitroClient) GetServiceDospolicyBinding(key ServiceDospolicyBindingKey)
 	}
 }
 
+//      EXISTS
+
+type count_service_dospolicy_binding_result struct {
+	Results []Count `json:"service_dospolicy_binding"`
+}
+
+func (c *NitroClient) ExistsServiceDospolicyBinding(key ServiceDospolicyBindingKey) (bool, error) {
+	var results count_service_dospolicy_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("service_dospolicy_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteServiceDospolicyBinding(key ServiceDospolicyBindingKey) error {
-	id, qs := service_dospolicy_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("service_dospolicy_binding", id, qs)
 }

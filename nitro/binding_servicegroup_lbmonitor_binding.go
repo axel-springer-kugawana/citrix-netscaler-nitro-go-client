@@ -17,125 +17,73 @@ type ServicegroupLbmonitorBindingKey struct {
 	Monitor_name     string
 }
 
-type add_servicegroup_lbmonitor_binding_payload struct {
-	Resource ServicegroupLbmonitorBinding `json:"servicegroup_lbmonitor_binding"`
+func (resource ServicegroupLbmonitorBinding) ToKey() ServicegroupLbmonitorBindingKey {
+	key := ServicegroupLbmonitorBindingKey{
+		resource.Servicegroupname,
+		resource.Monitor_name,
+	}
+
+	return key
 }
 
-type get_servicegroup_lbmonitor_binding_result struct {
-	Results []ServicegroupLbmonitorBinding `json:"servicegroup_lbmonitor_binding"`
-}
-
-type count_servicegroup_lbmonitor_binding_result struct {
-	Results []Count `json:"servicegroup_lbmonitor_binding"`
-}
-
-func servicegroup_lbmonitor_binding_key_to_id_qs(key ServicegroupLbmonitorBindingKey, arg string) (string, map[string]string) {
+func (key ServicegroupLbmonitorBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "servicegroupname:"+key.Servicegroupname)
+	id = key.Servicegroupname
 	args = append(args, "monitor_name:"+key.Monitor_name)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func servicegroup_lbmonitor_binding_key_to_id_args(key ServicegroupLbmonitorBindingKey) (string, map[string]string) {
-	return servicegroup_lbmonitor_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_servicegroup_lbmonitor_binding_payload struct {
+	Resource ServicegroupLbmonitorBinding `json:"servicegroup_lbmonitor_binding"`
 }
 
-func servicegroup_lbmonitor_binding_key_to_id_filter(key ServicegroupLbmonitorBindingKey) (string, map[string]string) {
-	return servicegroup_lbmonitor_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddServicegroupLbmonitorBinding(binding ServicegroupLbmonitorBinding) error {
+func (c *NitroClient) AddServicegroupLbmonitorBinding(resource ServicegroupLbmonitorBinding) error {
 	payload := add_servicegroup_lbmonitor_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("servicegroup_lbmonitor_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountServicegroupLbmonitorBinding() (int, error) {
-	var results count_servicegroup_lbmonitor_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("servicegroup_lbmonitor_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_servicegroup_lbmonitor_binding_result struct {
+	Results []ServicegroupLbmonitorBinding `json:"servicegroup_lbmonitor_binding"`
 }
 
-func (c *NitroClient) CountServicegroupLbmonitorBinding(id string) (int, error) {
-	var results count_servicegroup_lbmonitor_binding_result
+func (c *NitroClient) ListServicegroupLbmonitorBinding() ([]ServicegroupLbmonitorBinding, error) {
+	results := list_servicegroup_lbmonitor_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("servicegroup_lbmonitor_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsServicegroupLbmonitorBinding(key ServicegroupLbmonitorBindingKey) (bool, error) {
-	var results count_servicegroup_lbmonitor_binding_result
-
-	id, qs := servicegroup_lbmonitor_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("servicegroup_lbmonitor_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one servicegroup_lbmonitor_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListServicegroupLbmonitorBinding() ([]ServicegroupLbmonitorBinding, error) {
-	var results get_servicegroup_lbmonitor_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("servicegroup_lbmonitor_binding", "", qs, &results); err != nil {
+	if err := c.get("servicegroup_lbmonitor_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListServicegroupLbmonitorBinding(id string) ([]ServicegroupLbmonitorBinding, error) {
-	var results get_servicegroup_lbmonitor_binding_result
+//      READ
 
-	if err := c.get("servicegroup_lbmonitor_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_servicegroup_lbmonitor_binding_result struct {
+	Results []ServicegroupLbmonitorBinding `json:"servicegroup_lbmonitor_binding"`
 }
 
 func (c *NitroClient) GetServicegroupLbmonitorBinding(key ServicegroupLbmonitorBindingKey) (*ServicegroupLbmonitorBinding, error) {
 	var results get_servicegroup_lbmonitor_binding_result
 
-	id, qs := servicegroup_lbmonitor_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("servicegroup_lbmonitor_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -150,8 +98,32 @@ func (c *NitroClient) GetServicegroupLbmonitorBinding(key ServicegroupLbmonitorB
 	}
 }
 
+//      EXISTS
+
+type count_servicegroup_lbmonitor_binding_result struct {
+	Results []Count `json:"servicegroup_lbmonitor_binding"`
+}
+
+func (c *NitroClient) ExistsServicegroupLbmonitorBinding(key ServicegroupLbmonitorBindingKey) (bool, error) {
+	var results count_servicegroup_lbmonitor_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("servicegroup_lbmonitor_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteServicegroupLbmonitorBinding(key ServicegroupLbmonitorBindingKey) error {
-	id, qs := servicegroup_lbmonitor_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("servicegroup_lbmonitor_binding", id, qs)
 }

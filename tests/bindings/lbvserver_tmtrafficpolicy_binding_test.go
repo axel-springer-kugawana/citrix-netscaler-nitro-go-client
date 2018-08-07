@@ -35,12 +35,6 @@ func TestLbvserverTmtrafficpolicyBinding(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.CountLbvserverTmtrafficpolicyBinding()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.ExistsLbvserverTmtrafficpolicyBinding(key)
 

@@ -21,125 +21,73 @@ type LbvserverAppqoepolicyBindingKey struct {
 	Policyname string
 }
 
-type add_lbvserver_appqoepolicy_binding_payload struct {
-	Resource LbvserverAppqoepolicyBinding `json:"lbvserver_appqoepolicy_binding"`
+func (resource LbvserverAppqoepolicyBinding) ToKey() LbvserverAppqoepolicyBindingKey {
+	key := LbvserverAppqoepolicyBindingKey{
+		resource.Name,
+		resource.Policyname,
+	}
+
+	return key
 }
 
-type get_lbvserver_appqoepolicy_binding_result struct {
-	Results []LbvserverAppqoepolicyBinding `json:"lbvserver_appqoepolicy_binding"`
-}
-
-type count_lbvserver_appqoepolicy_binding_result struct {
-	Results []Count `json:"lbvserver_appqoepolicy_binding"`
-}
-
-func lbvserver_appqoepolicy_binding_key_to_id_qs(key LbvserverAppqoepolicyBindingKey, arg string) (string, map[string]string) {
+func (key LbvserverAppqoepolicyBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "name:"+key.Name)
+	id = key.Name
 	args = append(args, "policyname:"+key.Policyname)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func lbvserver_appqoepolicy_binding_key_to_id_args(key LbvserverAppqoepolicyBindingKey) (string, map[string]string) {
-	return lbvserver_appqoepolicy_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_lbvserver_appqoepolicy_binding_payload struct {
+	Resource LbvserverAppqoepolicyBinding `json:"lbvserver_appqoepolicy_binding"`
 }
 
-func lbvserver_appqoepolicy_binding_key_to_id_filter(key LbvserverAppqoepolicyBindingKey) (string, map[string]string) {
-	return lbvserver_appqoepolicy_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddLbvserverAppqoepolicyBinding(binding LbvserverAppqoepolicyBinding) error {
+func (c *NitroClient) AddLbvserverAppqoepolicyBinding(resource LbvserverAppqoepolicyBinding) error {
 	payload := add_lbvserver_appqoepolicy_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("lbvserver_appqoepolicy_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountLbvserverAppqoepolicyBinding() (int, error) {
-	var results count_lbvserver_appqoepolicy_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("lbvserver_appqoepolicy_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_lbvserver_appqoepolicy_binding_result struct {
+	Results []LbvserverAppqoepolicyBinding `json:"lbvserver_appqoepolicy_binding"`
 }
 
-func (c *NitroClient) CountLbvserverAppqoepolicyBinding(id string) (int, error) {
-	var results count_lbvserver_appqoepolicy_binding_result
+func (c *NitroClient) ListLbvserverAppqoepolicyBinding() ([]LbvserverAppqoepolicyBinding, error) {
+	results := list_lbvserver_appqoepolicy_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("lbvserver_appqoepolicy_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsLbvserverAppqoepolicyBinding(key LbvserverAppqoepolicyBindingKey) (bool, error) {
-	var results count_lbvserver_appqoepolicy_binding_result
-
-	id, qs := lbvserver_appqoepolicy_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("lbvserver_appqoepolicy_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one lbvserver_appqoepolicy_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListLbvserverAppqoepolicyBinding() ([]LbvserverAppqoepolicyBinding, error) {
-	var results get_lbvserver_appqoepolicy_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("lbvserver_appqoepolicy_binding", "", qs, &results); err != nil {
+	if err := c.get("lbvserver_appqoepolicy_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListLbvserverAppqoepolicyBinding(id string) ([]LbvserverAppqoepolicyBinding, error) {
-	var results get_lbvserver_appqoepolicy_binding_result
+//      READ
 
-	if err := c.get("lbvserver_appqoepolicy_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_lbvserver_appqoepolicy_binding_result struct {
+	Results []LbvserverAppqoepolicyBinding `json:"lbvserver_appqoepolicy_binding"`
 }
 
 func (c *NitroClient) GetLbvserverAppqoepolicyBinding(key LbvserverAppqoepolicyBindingKey) (*LbvserverAppqoepolicyBinding, error) {
 	var results get_lbvserver_appqoepolicy_binding_result
 
-	id, qs := lbvserver_appqoepolicy_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("lbvserver_appqoepolicy_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -154,8 +102,32 @@ func (c *NitroClient) GetLbvserverAppqoepolicyBinding(key LbvserverAppqoepolicyB
 	}
 }
 
+//      EXISTS
+
+type count_lbvserver_appqoepolicy_binding_result struct {
+	Results []Count `json:"lbvserver_appqoepolicy_binding"`
+}
+
+func (c *NitroClient) ExistsLbvserverAppqoepolicyBinding(key LbvserverAppqoepolicyBindingKey) (bool, error) {
+	var results count_lbvserver_appqoepolicy_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbvserver_appqoepolicy_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteLbvserverAppqoepolicyBinding(key LbvserverAppqoepolicyBindingKey) error {
-	id, qs := lbvserver_appqoepolicy_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("lbvserver_appqoepolicy_binding", id, qs)
 }

@@ -19,125 +19,73 @@ type LbmonitorSslcertkeyBindingKey struct {
 	Certkeyname string
 }
 
-type add_lbmonitor_sslcertkey_binding_payload struct {
-	Resource LbmonitorSslcertkeyBinding `json:"lbmonitor_sslcertkey_binding"`
+func (resource LbmonitorSslcertkeyBinding) ToKey() LbmonitorSslcertkeyBindingKey {
+	key := LbmonitorSslcertkeyBindingKey{
+		resource.Monitorname,
+		resource.Certkeyname,
+	}
+
+	return key
 }
 
-type get_lbmonitor_sslcertkey_binding_result struct {
-	Results []LbmonitorSslcertkeyBinding `json:"lbmonitor_sslcertkey_binding"`
-}
-
-type count_lbmonitor_sslcertkey_binding_result struct {
-	Results []Count `json:"lbmonitor_sslcertkey_binding"`
-}
-
-func lbmonitor_sslcertkey_binding_key_to_id_qs(key LbmonitorSslcertkeyBindingKey, arg string) (string, map[string]string) {
+func (key LbmonitorSslcertkeyBindingKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
+
+	var id string
 	var args []string
 
-	args = append(args, "monitorname:"+key.Monitorname)
+	id = key.Monitorname
 	args = append(args, "certkeyname:"+key.Certkeyname)
 
 	qs := map[string]string{}
 
 	if len(args) > 0 {
-		qs[arg] = strings.Join(args, ",")
+		qs["args"] = strings.Join(args, ",")
 	}
 
-	return "", qs
+	return id, qs
 }
 
-func lbmonitor_sslcertkey_binding_key_to_id_args(key LbmonitorSslcertkeyBindingKey) (string, map[string]string) {
-	return lbmonitor_sslcertkey_binding_key_to_id_qs(key, "args")
+//      CREATE
+
+type add_lbmonitor_sslcertkey_binding_payload struct {
+	Resource LbmonitorSslcertkeyBinding `json:"lbmonitor_sslcertkey_binding"`
 }
 
-func lbmonitor_sslcertkey_binding_key_to_id_filter(key LbmonitorSslcertkeyBindingKey) (string, map[string]string) {
-	return lbmonitor_sslcertkey_binding_key_to_id_qs(key, "filter")
-}
-
-func (c *NitroClient) AddLbmonitorSslcertkeyBinding(binding LbmonitorSslcertkeyBinding) error {
+func (c *NitroClient) AddLbmonitorSslcertkeyBinding(resource LbmonitorSslcertkeyBinding) error {
 	payload := add_lbmonitor_sslcertkey_binding_payload{
-		binding,
+		resource,
 	}
 
 	return c.put("lbmonitor_sslcertkey_binding", "", nil, payload)
 }
 
-func (c *NitroClient) BulkCountLbmonitorSslcertkeyBinding() (int, error) {
-	var results count_lbmonitor_sslcertkey_binding_result
+//      LIST
 
-	qs := map[string]string{
-		"bulkbindings": "yes",
-		"count":        "yes",
-	}
-
-	if err := c.get("lbmonitor_sslcertkey_binding", "", qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
+type list_lbmonitor_sslcertkey_binding_result struct {
+	Results []LbmonitorSslcertkeyBinding `json:"lbmonitor_sslcertkey_binding"`
 }
 
-func (c *NitroClient) CountLbmonitorSslcertkeyBinding(id string) (int, error) {
-	var results count_lbmonitor_sslcertkey_binding_result
+func (c *NitroClient) ListLbmonitorSslcertkeyBinding() ([]LbmonitorSslcertkeyBinding, error) {
+	results := list_lbmonitor_sslcertkey_binding_result{}
 
-	qs := map[string]string{
-		"count": "yes",
-	}
-
-	if err := c.get("lbmonitor_sslcertkey_binding", id, qs, &results); err != nil {
-		return -1, err
-	} else {
-		return results.Results[0].Count, err
-	}
-}
-
-func (c *NitroClient) ExistsLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindingKey) (bool, error) {
-	var results count_lbmonitor_sslcertkey_binding_result
-
-	id, qs := lbmonitor_sslcertkey_binding_key_to_id_filter(key)
-
-	qs["count"] = "yes"
-
-	if err := c.get("lbmonitor_sslcertkey_binding", id, qs, &results); err != nil {
-		return false, err
-	} else {
-		if len(results.Results) > 1 {
-			return false, fmt.Errorf("More than one lbmonitor_sslcertkey_binding element found")
-		}
-
-		return results.Results[0].Count == 1, nil
-	}
-}
-
-func (c *NitroClient) BulkListLbmonitorSslcertkeyBinding() ([]LbmonitorSslcertkeyBinding, error) {
-	var results get_lbmonitor_sslcertkey_binding_result
-
-	qs := map[string]string{
-		"bulkbindings": "yes",
-	}
-
-	if err := c.get("lbmonitor_sslcertkey_binding", "", qs, &results); err != nil {
+	if err := c.get("lbmonitor_sslcertkey_binding", "", nil, &results); err != nil {
 		return nil, err
 	} else {
 		return results.Results, err
 	}
 }
 
-func (c *NitroClient) ListLbmonitorSslcertkeyBinding(id string) ([]LbmonitorSslcertkeyBinding, error) {
-	var results get_lbmonitor_sslcertkey_binding_result
+//      READ
 
-	if err := c.get("lbmonitor_sslcertkey_binding", id, nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
+type get_lbmonitor_sslcertkey_binding_result struct {
+	Results []LbmonitorSslcertkeyBinding `json:"lbmonitor_sslcertkey_binding"`
 }
 
 func (c *NitroClient) GetLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindingKey) (*LbmonitorSslcertkeyBinding, error) {
 	var results get_lbmonitor_sslcertkey_binding_result
 
-	id, qs := lbmonitor_sslcertkey_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	if err := c.get("lbmonitor_sslcertkey_binding", id, qs, &results); err != nil {
 		return nil, err
@@ -152,8 +100,32 @@ func (c *NitroClient) GetLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindi
 	}
 }
 
+//      EXISTS
+
+type count_lbmonitor_sslcertkey_binding_result struct {
+	Results []Count `json:"lbmonitor_sslcertkey_binding"`
+}
+
+func (c *NitroClient) ExistsLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindingKey) (bool, error) {
+	var results count_lbmonitor_sslcertkey_binding_result
+
+	id, qs := key.to_id_args()
+
+	qs["count"] = "yes"
+
+	if err := c.get("lbmonitor_sslcertkey_binding", id, qs, &results); err != nil {
+		// TODO : detect 404
+		// return false, err
+		return false, nil
+	} else {
+		return results.Results[0].Count == 1, nil
+	}
+}
+
+//      DELETE
+
 func (c *NitroClient) DeleteLbmonitorSslcertkeyBinding(key LbmonitorSslcertkeyBindingKey) error {
-	id, qs := lbmonitor_sslcertkey_binding_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	return c.delete("lbmonitor_sslcertkey_binding", id, qs)
 }

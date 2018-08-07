@@ -35,12 +35,6 @@ func TestLbvserverResponderpolicyBinding(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
-	log.Print("--COUNT--")
-	count, err := client.CountLbvserverResponderpolicyBinding()
-
-	assert.NoError(t, err)
-	assert.NotZero(t, count)
-
 	log.Print("--EXISTS--")
 	exists, err := client.ExistsLbvserverResponderpolicyBinding(key)
 

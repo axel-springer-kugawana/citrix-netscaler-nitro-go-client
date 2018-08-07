@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -18,7 +17,6 @@ func responseHandler(resp *http.Response) ([]byte, error) {
 	case "409 Conflict":
 		body, _ := ioutil.ReadAll(resp.Body)
 		return body, errors.New("failed: " + resp.Status + " (" + string(body) + ")")
-
 	case "207 Multi Status":
 		//This happens in case of Bulk operations, which we do not support yet
 		body, _ := ioutil.ReadAll(resp.Body)
@@ -31,7 +29,6 @@ func responseHandler(resp *http.Response) ([]byte, error) {
 	default:
 		body, err := ioutil.ReadAll(resp.Body)
 		return body, err
-
 	}
 }
 
@@ -88,7 +85,7 @@ func make_url(resourceType string, resourceId string, qs map[string]string) stri
 			url = url + "?" + strings.Join(args, "&")
 		}
 	}
-	log.Println(url)
+
 	return url
 }
 

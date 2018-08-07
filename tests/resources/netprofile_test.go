@@ -16,28 +16,12 @@ func TestNetprofile(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddNetprofile(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsNetprofile(resource.Name + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsNetprofile(resource.Name)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetNetprofile(resource.Name)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListNetprofile()
@@ -45,19 +29,29 @@ func TestNetprofile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdateNetprofile(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--RENAME--")
-	err = client.RenameNetprofile(resource.Name, resource.Name+"-rename")
+	log.Print("--GET--")
+	res, err := client.GetNetprofile(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	log.Print("--COUNT--")
+	count, err := client.CountNetprofile()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsNetprofile(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeleteNetprofile(resource.Name + "-rename")
+	err = client.DeleteNetprofile(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

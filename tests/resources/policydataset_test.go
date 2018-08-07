@@ -16,28 +16,12 @@ func TestPolicydataset(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddPolicydataset(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsPolicydataset(resource.Name + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsPolicydataset(resource.Name)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetPolicydataset(resource.Name)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListPolicydataset()
@@ -45,19 +29,29 @@ func TestPolicydataset(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdatePolicydataset(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--RENAME--")
-	err = client.RenamePolicydataset(resource.Name, resource.Name+"-rename")
+	log.Print("--GET--")
+	res, err := client.GetPolicydataset(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	log.Print("--COUNT--")
+	count, err := client.CountPolicydataset()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsPolicydataset(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeletePolicydataset(resource.Name + "-rename")
+	err = client.DeletePolicydataset(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

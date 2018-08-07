@@ -16,28 +16,12 @@ func TestSpilloverpolicy(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddSpilloverpolicy(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsSpilloverpolicy(resource.Name + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsSpilloverpolicy(resource.Name)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetSpilloverpolicy(resource.Name)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListSpilloverpolicy()
@@ -45,19 +29,29 @@ func TestSpilloverpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdateSpilloverpolicy(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--RENAME--")
-	err = client.RenameSpilloverpolicy(resource.Name, resource.Name+"-rename")
+	log.Print("--GET--")
+	res, err := client.GetSpilloverpolicy(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	log.Print("--COUNT--")
+	count, err := client.CountSpilloverpolicy()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsSpilloverpolicy(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeleteSpilloverpolicy(resource.Name + "-rename")
+	err = client.DeleteSpilloverpolicy(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

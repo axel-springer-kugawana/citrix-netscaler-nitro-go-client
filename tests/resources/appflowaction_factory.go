@@ -22,7 +22,7 @@ func setup_appflowaction(t *testing.T, client *nitro.NitroClient) (*nitro.Appflo
 	resource.Collectors = append(resource.Collectors, collector.Name)
 
 	return &resource, func() {
-		client.DeleteAppflowcollector(collector.Name)
+		client.DeleteAppflowcollector(collector.ToKey())
 
 		if collectorTearDown != nil {
 			collectorTearDown()

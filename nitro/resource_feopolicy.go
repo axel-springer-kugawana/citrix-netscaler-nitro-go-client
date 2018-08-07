@@ -7,59 +7,44 @@ import (
 )
 
 type Feopolicy struct {
-	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
+	Name   string `json:"name,omitempty"`
 	Rule   string `json:"rule,omitempty"`
 }
 
-func feopolicy_key_to_id_args(key string) (string, map[string]string) {
+type FeopolicyKey struct {
+	Name string
+}
+
+func (resource Feopolicy) ToKey() FeopolicyKey {
+	key := FeopolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key FeopolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type FeopolicyUnset struct {
-	Name   string `json:"name"`
-	Rule   bool   `json:"rule,omitempty"`
-	Action bool   `json:"action,omitempty"`
-}
-
-type update_feopolicy struct {
-	Name   string `json:"name"`
-	Rule   string `json:"rule,omitempty"`
-	Action string `json:"action,omitempty"`
-}
-
-type rename_feopolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_feopolicy_payload struct {
 	Resource Feopolicy `json:"feopolicy"`
-}
-
-type rename_feopolicy_payload struct {
-	Rename rename_feopolicy `json:"feopolicy"`
-}
-
-type unset_feopolicy_payload struct {
-	Unset FeopolicyUnset `json:"feopolicy"`
-}
-
-type update_feopolicy_payload struct {
-	Update update_feopolicy `json:"feopolicy"`
-}
-
-type get_feopolicy_result struct {
-	Results []Feopolicy `json:"feopolicy"`
-}
-
-type count_feopolicy_result struct {
-	Results []Count `json:"feopolicy"`
 }
 
 func (c *NitroClient) AddFeopolicy(resource Feopolicy) error {
@@ -70,19 +55,50 @@ func (c *NitroClient) AddFeopolicy(resource Feopolicy) error {
 	return c.post("feopolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameFeopolicy(name string, newName string) error {
-	payload := rename_feopolicy_payload{
-		rename_feopolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_feopolicy_result struct {
+	Results []Feopolicy `json:"feopolicy"`
+}
 
-	return c.post("feopolicy", "", qs, payload)
+func (c *NitroClient) ListFeopolicy() ([]Feopolicy, error) {
+	results := list_feopolicy_result{}
+
+	if err := c.get("feopolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_feopolicy_result struct {
+	Results []Feopolicy `json:"feopolicy"`
+}
+
+func (c *NitroClient) GetFeopolicy(key FeopolicyKey) (*Feopolicy, error) {
+	var results get_feopolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("feopolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one feopolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("feopolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_feopolicy_result struct {
+	Results []Count `json:"feopolicy"`
 }
 
 func (c *NitroClient) CountFeopolicy() (int, error) {
@@ -99,10 +115,12 @@ func (c *NitroClient) CountFeopolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsFeopolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsFeopolicy(key FeopolicyKey) (bool, error) {
 	var results count_feopolicy_result
 
-	id, qs := feopolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -115,60 +133,19 @@ func (c *NitroClient) ExistsFeopolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListFeopolicy() ([]Feopolicy, error) {
-	results := get_feopolicy_result{}
+//      DELETE
 
-	if err := c.get("feopolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetFeopolicy(key string) (*Feopolicy, error) {
-	var results get_feopolicy_result
-
-	id, qs := feopolicy_key_to_id_args(key)
-
-	if err := c.get("feopolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one feopolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("feopolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteFeopolicy(key string) error {
-	id, qs := feopolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteFeopolicy(key FeopolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("feopolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetFeopolicy(unset FeopolicyUnset) error {
-	payload := unset_feopolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("feopolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateFeopolicy(resource Feopolicy) error {
-	payload := update_feopolicy_payload{
-		update_feopolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-		},
-	}
-
-	return c.put("feopolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

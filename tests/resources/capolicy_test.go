@@ -16,28 +16,12 @@ func TestCapolicy(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddCapolicy(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsCapolicy(resource.Name + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsCapolicy(resource.Name)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetCapolicy(resource.Name)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListCapolicy()
@@ -45,19 +29,29 @@ func TestCapolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdateCapolicy(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--RENAME--")
-	err = client.RenameCapolicy(resource.Name, resource.Name+"-rename")
+	log.Print("--GET--")
+	res, err := client.GetCapolicy(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	log.Print("--COUNT--")
+	count, err := client.CountCapolicy()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsCapolicy(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeleteCapolicy(resource.Name + "-rename")
+	err = client.DeleteCapolicy(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

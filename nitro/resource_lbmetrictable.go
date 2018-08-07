@@ -7,37 +7,42 @@ import (
 )
 
 type Lbmetrictable struct {
-	Metrictable string `json:"metrictable"`
+	Metrictable string `json:"metrictable,omitempty"`
 }
 
-func lbmetrictable_key_to_id_args(key string) (string, map[string]string) {
+type LbmetrictableKey struct {
+	Metrictable string
+}
+
+func (resource Lbmetrictable) ToKey() LbmetrictableKey {
+	key := LbmetrictableKey{
+		resource.Metrictable,
+	}
+
+	return key
+}
+
+func (key LbmetrictableKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Metrictable
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type rename_lbmetrictable struct {
-	Name    string `json:"metrictable"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_lbmetrictable_payload struct {
 	Resource Lbmetrictable `json:"lbmetrictable"`
-}
-
-type rename_lbmetrictable_payload struct {
-	Rename rename_lbmetrictable `json:"lbmetrictable"`
-}
-
-type get_lbmetrictable_result struct {
-	Results []Lbmetrictable `json:"lbmetrictable"`
-}
-
-type count_lbmetrictable_result struct {
-	Results []Count `json:"lbmetrictable"`
 }
 
 func (c *NitroClient) AddLbmetrictable(resource Lbmetrictable) error {
@@ -48,19 +53,50 @@ func (c *NitroClient) AddLbmetrictable(resource Lbmetrictable) error {
 	return c.post("lbmetrictable", "", nil, payload)
 }
 
-func (c *NitroClient) RenameLbmetrictable(name string, newName string) error {
-	payload := rename_lbmetrictable_payload{
-		rename_lbmetrictable{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_lbmetrictable_result struct {
+	Results []Lbmetrictable `json:"lbmetrictable"`
+}
 
-	return c.post("lbmetrictable", "", qs, payload)
+func (c *NitroClient) ListLbmetrictable() ([]Lbmetrictable, error) {
+	results := list_lbmetrictable_result{}
+
+	if err := c.get("lbmetrictable", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_lbmetrictable_result struct {
+	Results []Lbmetrictable `json:"lbmetrictable"`
+}
+
+func (c *NitroClient) GetLbmetrictable(key LbmetrictableKey) (*Lbmetrictable, error) {
+	var results get_lbmetrictable_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("lbmetrictable", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one lbmetrictable element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("lbmetrictable element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_lbmetrictable_result struct {
+	Results []Count `json:"lbmetrictable"`
 }
 
 func (c *NitroClient) CountLbmetrictable() (int, error) {
@@ -77,10 +113,12 @@ func (c *NitroClient) CountLbmetrictable() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbmetrictable(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsLbmetrictable(key LbmetrictableKey) (bool, error) {
 	var results count_lbmetrictable_result
 
-	id, qs := lbmetrictable_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -93,36 +131,13 @@ func (c *NitroClient) ExistsLbmetrictable(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListLbmetrictable() ([]Lbmetrictable, error) {
-	results := get_lbmetrictable_result{}
+//      DELETE
 
-	if err := c.get("lbmetrictable", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetLbmetrictable(key string) (*Lbmetrictable, error) {
-	var results get_lbmetrictable_result
-
-	id, qs := lbmetrictable_key_to_id_args(key)
-
-	if err := c.get("lbmetrictable", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one lbmetrictable element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("lbmetrictable element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteLbmetrictable(key string) error {
-	id, qs := lbmetrictable_key_to_id_args(key)
+func (c *NitroClient) DeleteLbmetrictable(key LbmetrictableKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("lbmetrictable", id, qs)
 }
+
+//      RENAME
+//      TODO

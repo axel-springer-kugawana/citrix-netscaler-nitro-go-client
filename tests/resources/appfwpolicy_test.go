@@ -16,28 +16,12 @@ func TestAppfwpolicy(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddAppfwpolicy(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsAppfwpolicy(resource.Name + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsAppfwpolicy(resource.Name)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetAppfwpolicy(resource.Name)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListAppfwpolicy()
@@ -45,19 +29,29 @@ func TestAppfwpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdateAppfwpolicy(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--RENAME--")
-	err = client.RenameAppfwpolicy(resource.Name, resource.Name+"-rename")
+	log.Print("--GET--")
+	res, err := client.GetAppfwpolicy(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	log.Print("--COUNT--")
+	count, err := client.CountAppfwpolicy()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsAppfwpolicy(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeleteAppfwpolicy(resource.Name + "-rename")
+	err = client.DeleteAppfwpolicy(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

@@ -7,56 +7,43 @@ import (
 )
 
 type Policystringmap struct {
-	Name    string `json:"name"`
 	Comment string `json:"comment,omitempty"`
+	Name    string `json:"name,omitempty"`
 }
 
-func policystringmap_key_to_id_args(key string) (string, map[string]string) {
+type PolicystringmapKey struct {
+	Name string
+}
+
+func (resource Policystringmap) ToKey() PolicystringmapKey {
+	key := PolicystringmapKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key PolicystringmapKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type PolicystringmapUnset struct {
-	Name    string `json:"name"`
-	Comment bool   `json:"comment,omitempty"`
-}
-
-type update_policystringmap struct {
-	Name    string `json:"name"`
-	Comment string `json:"comment,omitempty"`
-}
-
-type rename_policystringmap struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_policystringmap_payload struct {
 	Resource Policystringmap `json:"policystringmap"`
-}
-
-type rename_policystringmap_payload struct {
-	Rename rename_policystringmap `json:"policystringmap"`
-}
-
-type unset_policystringmap_payload struct {
-	Unset PolicystringmapUnset `json:"policystringmap"`
-}
-
-type update_policystringmap_payload struct {
-	Update update_policystringmap `json:"policystringmap"`
-}
-
-type get_policystringmap_result struct {
-	Results []Policystringmap `json:"policystringmap"`
-}
-
-type count_policystringmap_result struct {
-	Results []Count `json:"policystringmap"`
 }
 
 func (c *NitroClient) AddPolicystringmap(resource Policystringmap) error {
@@ -67,19 +54,50 @@ func (c *NitroClient) AddPolicystringmap(resource Policystringmap) error {
 	return c.post("policystringmap", "", nil, payload)
 }
 
-func (c *NitroClient) RenamePolicystringmap(name string, newName string) error {
-	payload := rename_policystringmap_payload{
-		rename_policystringmap{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_policystringmap_result struct {
+	Results []Policystringmap `json:"policystringmap"`
+}
 
-	return c.post("policystringmap", "", qs, payload)
+func (c *NitroClient) ListPolicystringmap() ([]Policystringmap, error) {
+	results := list_policystringmap_result{}
+
+	if err := c.get("policystringmap", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_policystringmap_result struct {
+	Results []Policystringmap `json:"policystringmap"`
+}
+
+func (c *NitroClient) GetPolicystringmap(key PolicystringmapKey) (*Policystringmap, error) {
+	var results get_policystringmap_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("policystringmap", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one policystringmap element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("policystringmap element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_policystringmap_result struct {
+	Results []Count `json:"policystringmap"`
 }
 
 func (c *NitroClient) CountPolicystringmap() (int, error) {
@@ -96,10 +114,12 @@ func (c *NitroClient) CountPolicystringmap() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPolicystringmap(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsPolicystringmap(key PolicystringmapKey) (bool, error) {
 	var results count_policystringmap_result
 
-	id, qs := policystringmap_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -112,59 +132,19 @@ func (c *NitroClient) ExistsPolicystringmap(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListPolicystringmap() ([]Policystringmap, error) {
-	results := get_policystringmap_result{}
+//      DELETE
 
-	if err := c.get("policystringmap", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetPolicystringmap(key string) (*Policystringmap, error) {
-	var results get_policystringmap_result
-
-	id, qs := policystringmap_key_to_id_args(key)
-
-	if err := c.get("policystringmap", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one policystringmap element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("policystringmap element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeletePolicystringmap(key string) error {
-	id, qs := policystringmap_key_to_id_args(key)
+func (c *NitroClient) DeletePolicystringmap(key PolicystringmapKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("policystringmap", id, qs)
 }
 
-func (c *NitroClient) UnsetPolicystringmap(unset PolicystringmapUnset) error {
-	payload := unset_policystringmap_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("policystringmap", "", qs, payload)
-}
-
-func (c *NitroClient) UpdatePolicystringmap(resource Policystringmap) error {
-	payload := update_policystringmap_payload{
-		update_policystringmap{
-			resource.Name,
-			resource.Comment,
-		},
-	}
-
-	return c.put("policystringmap", "", nil, payload)
-}
+//      RENAME
+//      TODO

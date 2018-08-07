@@ -7,80 +7,50 @@ import (
 )
 
 type Server struct {
-	Name               string `json:"name"`
-	State              string `json:"state,omitempty"`
 	Comment            string `json:"comment,omitempty"`
 	Domain             string `json:"domain,omitempty"`
 	Domainresolveretry int    `json:"domainresolveretry,omitempty"`
 	Ipaddress          string `json:"ipaddress,omitempty"`
 	Ipv6address        string `json:"ipv6address,omitempty"`
+	Name               string `json:"name,omitempty"`
 	Td                 int    `json:"td,string,omitempty"`
 	Translationip      string `json:"translationip,omitempty"`
 	Translationmask    string `json:"translationmask,omitempty"`
 }
 
-func server_key_to_id_args(key string) (string, map[string]string) {
+type ServerKey struct {
+	Name string
+}
+
+func (resource Server) ToKey() ServerKey {
+	key := ServerKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key ServerKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type ServerUnset struct {
-	Name               string `json:"name"`
-	Comment            bool   `json:"comment,omitempty"`
-	Domainresolveretry bool   `json:"domainresolveretry,omitempty"`
-	Ipaddress          bool   `json:"ipaddress,omitempty"`
-	Translationip      bool   `json:"translationip,omitempty"`
-	Translationmask    bool   `json:"translationmask,omitempty"`
-}
-
-type update_server struct {
-	Name               string `json:"name"`
-	Comment            string `json:"comment,omitempty"`
-	Domainresolveretry int    `json:"domainresolveretry,omitempty"`
-	Ipaddress          string `json:"ipaddress,omitempty"`
-	Translationip      string `json:"translationip,omitempty"`
-	Translationmask    string `json:"translationmask,omitempty"`
-}
-
-type rename_server struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_server_payload struct {
 	Resource Server `json:"server"`
-}
-
-type rename_server_payload struct {
-	Rename rename_server `json:"server"`
-}
-
-type state_server struct {
-	Key string `json:"name"`
-}
-
-type state_server_payload struct {
-	Sate state_server `json:"server"`
-}
-
-type unset_server_payload struct {
-	Unset ServerUnset `json:"server"`
-}
-
-type update_server_payload struct {
-	Update update_server `json:"server"`
-}
-
-type get_server_result struct {
-	Results []Server `json:"server"`
-}
-
-type count_server_result struct {
-	Results []Count `json:"server"`
 }
 
 func (c *NitroClient) AddServer(resource Server) error {
@@ -91,19 +61,50 @@ func (c *NitroClient) AddServer(resource Server) error {
 	return c.post("server", "", nil, payload)
 }
 
-func (c *NitroClient) RenameServer(name string, newName string) error {
-	payload := rename_server_payload{
-		rename_server{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_server_result struct {
+	Results []Server `json:"server"`
+}
 
-	return c.post("server", "", qs, payload)
+func (c *NitroClient) ListServer() ([]Server, error) {
+	results := list_server_result{}
+
+	if err := c.get("server", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_server_result struct {
+	Results []Server `json:"server"`
+}
+
+func (c *NitroClient) GetServer(key ServerKey) (*Server, error) {
+	var results get_server_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("server", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one server element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("server element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_server_result struct {
+	Results []Count `json:"server"`
 }
 
 func (c *NitroClient) CountServer() (int, error) {
@@ -120,10 +121,12 @@ func (c *NitroClient) CountServer() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsServer(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsServer(key ServerKey) (bool, error) {
 	var results count_server_result
 
-	id, qs := server_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -136,72 +139,32 @@ func (c *NitroClient) ExistsServer(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListServer() ([]Server, error) {
-	results := get_server_result{}
+//      DELETE
 
-	if err := c.get("server", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetServer(key string) (*Server, error) {
-	var results get_server_result
-
-	id, qs := server_key_to_id_args(key)
-
-	if err := c.get("server", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one server element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("server element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteServer(key string) error {
-	id, qs := server_key_to_id_args(key)
+func (c *NitroClient) DeleteServer(key ServerKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("server", id, qs)
 }
 
-func (c *NitroClient) UnsetServer(unset ServerUnset) error {
-	payload := unset_server_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("server", "", qs, payload)
+//      RENAME
+//      TODO
+
+//      ENABLE
+
+type state_server_payload struct {
+	State ServerKey `json:"server"`
 }
 
-func (c *NitroClient) UpdateServer(resource Server) error {
-	payload := update_server_payload{
-		update_server{
-			resource.Name,
-			resource.Comment,
-			resource.Domainresolveretry,
-			resource.Ipaddress,
-			resource.Translationip,
-			resource.Translationmask,
-		},
-	}
-
-	return c.put("server", "", nil, payload)
-}
-
-func (c *NitroClient) EnableServer(key string) error {
+func (c *NitroClient) EnableServer(key ServerKey) error {
 	payload := state_server_payload{
-		state_server{
-			key,
-		},
+		key,
 	}
 
 	qs := map[string]string{
@@ -211,11 +174,11 @@ func (c *NitroClient) EnableServer(key string) error {
 	return c.post("server", "", qs, payload)
 }
 
-func (c *NitroClient) DisableServer(key string) error {
+//      DISABLE
+
+func (c *NitroClient) DisableServer(key ServerKey) error {
 	payload := state_server_payload{
-		state_server{
-			key,
-		},
+		key,
 	}
 
 	qs := map[string]string{

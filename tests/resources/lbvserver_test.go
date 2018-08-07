@@ -16,28 +16,12 @@ func TestLbvserver(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddLbvserver(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsLbvserver(resource.Name + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsLbvserver(resource.Name)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetLbvserver(resource.Name)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListLbvserver()
@@ -45,28 +29,29 @@ func TestLbvserver(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdateLbvserver(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--ENABLE--")
-	err = client.EnableLbvserver(resource.Name)
+	log.Print("--GET--")
+	res, err := client.GetLbvserver(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
 
-	log.Print("--DISABLE--")
-	err = client.DisableLbvserver(resource.Name)
-
-	assert.NoError(t, err)
-	log.Print("--RENAME--")
-	err = client.RenameLbvserver(resource.Name, resource.Name+"-rename")
+	log.Print("--COUNT--")
+	count, err := client.CountLbvserver()
 
 	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsLbvserver(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeleteLbvserver(resource.Name + "-rename")
+	err = client.DeleteLbvserver(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

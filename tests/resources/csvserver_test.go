@@ -16,28 +16,12 @@ func TestCsvserver(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddCsvserver(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsCsvserver(resource.Name + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsCsvserver(resource.Name)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetCsvserver(resource.Name)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListCsvserver()
@@ -45,28 +29,29 @@ func TestCsvserver(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdateCsvserver(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--ENABLE--")
-	err = client.EnableCsvserver(resource.Name)
+	log.Print("--GET--")
+	res, err := client.GetCsvserver(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
 
-	log.Print("--DISABLE--")
-	err = client.DisableCsvserver(resource.Name)
-
-	assert.NoError(t, err)
-	log.Print("--RENAME--")
-	err = client.RenameCsvserver(resource.Name, resource.Name+"-rename")
+	log.Print("--COUNT--")
+	count, err := client.CountCsvserver()
 
 	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsCsvserver(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeleteCsvserver(resource.Name + "-rename")
+	err = client.DeleteCsvserver(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

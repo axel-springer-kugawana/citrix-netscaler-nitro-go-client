@@ -7,62 +7,45 @@ import (
 )
 
 type Spilloverpolicy struct {
-	Name    string `json:"name"`
 	Action  string `json:"action,omitempty"`
 	Comment string `json:"comment,omitempty"`
+	Name    string `json:"name,omitempty"`
 	Rule    string `json:"rule,omitempty"`
 }
 
-func spilloverpolicy_key_to_id_args(key string) (string, map[string]string) {
+type SpilloverpolicyKey struct {
+	Name string
+}
+
+func (resource Spilloverpolicy) ToKey() SpilloverpolicyKey {
+	key := SpilloverpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key SpilloverpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type SpilloverpolicyUnset struct {
-	Name    string `json:"name"`
-	Rule    bool   `json:"rule,omitempty"`
-	Action  bool   `json:"action,omitempty"`
-	Comment bool   `json:"comment,omitempty"`
-}
-
-type update_spilloverpolicy struct {
-	Name    string `json:"name"`
-	Rule    string `json:"rule,omitempty"`
-	Action  string `json:"action,omitempty"`
-	Comment string `json:"comment,omitempty"`
-}
-
-type rename_spilloverpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_spilloverpolicy_payload struct {
 	Resource Spilloverpolicy `json:"spilloverpolicy"`
-}
-
-type rename_spilloverpolicy_payload struct {
-	Rename rename_spilloverpolicy `json:"spilloverpolicy"`
-}
-
-type unset_spilloverpolicy_payload struct {
-	Unset SpilloverpolicyUnset `json:"spilloverpolicy"`
-}
-
-type update_spilloverpolicy_payload struct {
-	Update update_spilloverpolicy `json:"spilloverpolicy"`
-}
-
-type get_spilloverpolicy_result struct {
-	Results []Spilloverpolicy `json:"spilloverpolicy"`
-}
-
-type count_spilloverpolicy_result struct {
-	Results []Count `json:"spilloverpolicy"`
 }
 
 func (c *NitroClient) AddSpilloverpolicy(resource Spilloverpolicy) error {
@@ -73,19 +56,50 @@ func (c *NitroClient) AddSpilloverpolicy(resource Spilloverpolicy) error {
 	return c.post("spilloverpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameSpilloverpolicy(name string, newName string) error {
-	payload := rename_spilloverpolicy_payload{
-		rename_spilloverpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_spilloverpolicy_result struct {
+	Results []Spilloverpolicy `json:"spilloverpolicy"`
+}
 
-	return c.post("spilloverpolicy", "", qs, payload)
+func (c *NitroClient) ListSpilloverpolicy() ([]Spilloverpolicy, error) {
+	results := list_spilloverpolicy_result{}
+
+	if err := c.get("spilloverpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_spilloverpolicy_result struct {
+	Results []Spilloverpolicy `json:"spilloverpolicy"`
+}
+
+func (c *NitroClient) GetSpilloverpolicy(key SpilloverpolicyKey) (*Spilloverpolicy, error) {
+	var results get_spilloverpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("spilloverpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one spilloverpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("spilloverpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_spilloverpolicy_result struct {
+	Results []Count `json:"spilloverpolicy"`
 }
 
 func (c *NitroClient) CountSpilloverpolicy() (int, error) {
@@ -102,10 +116,12 @@ func (c *NitroClient) CountSpilloverpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsSpilloverpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsSpilloverpolicy(key SpilloverpolicyKey) (bool, error) {
 	var results count_spilloverpolicy_result
 
-	id, qs := spilloverpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -118,61 +134,19 @@ func (c *NitroClient) ExistsSpilloverpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListSpilloverpolicy() ([]Spilloverpolicy, error) {
-	results := get_spilloverpolicy_result{}
+//      DELETE
 
-	if err := c.get("spilloverpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetSpilloverpolicy(key string) (*Spilloverpolicy, error) {
-	var results get_spilloverpolicy_result
-
-	id, qs := spilloverpolicy_key_to_id_args(key)
-
-	if err := c.get("spilloverpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one spilloverpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("spilloverpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteSpilloverpolicy(key string) error {
-	id, qs := spilloverpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteSpilloverpolicy(key SpilloverpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("spilloverpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetSpilloverpolicy(unset SpilloverpolicyUnset) error {
-	payload := unset_spilloverpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("spilloverpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateSpilloverpolicy(resource Spilloverpolicy) error {
-	payload := update_spilloverpolicy_payload{
-		update_spilloverpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-			resource.Comment,
-		},
-	}
-
-	return c.put("spilloverpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

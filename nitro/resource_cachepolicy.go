@@ -7,71 +7,48 @@ import (
 )
 
 type Cachepolicy struct {
-	Policyname   string   `json:"policyname"`
 	Action       string   `json:"action,omitempty"`
 	Invalgroups  []string `json:"invalgroups,omitempty"`
 	Invalobjects []string `json:"invalobjects,omitempty"`
+	Policyname   string   `json:"policyname,omitempty"`
 	Rule         string   `json:"rule,omitempty"`
 	Storeingroup string   `json:"storeingroup,omitempty"`
 	Undefaction  string   `json:"undefaction,omitempty"`
 }
 
-func cachepolicy_key_to_id_args(key string) (string, map[string]string) {
+type CachepolicyKey struct {
+	Policyname string
+}
+
+func (resource Cachepolicy) ToKey() CachepolicyKey {
+	key := CachepolicyKey{
+		resource.Policyname,
+	}
+
+	return key
+}
+
+func (key CachepolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Policyname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type CachepolicyUnset struct {
-	Policyname   string `json:"policyname"`
-	Rule         bool   `json:"rule,omitempty"`
-	Action       bool   `json:"action,omitempty"`
-	Storeingroup bool   `json:"storeingroup,omitempty"`
-	Invalgroups  bool   `json:"invalgroups,omitempty"`
-	Invalobjects bool   `json:"invalobjects,omitempty"`
-	Undefaction  bool   `json:"undefaction,omitempty"`
-}
-
-type update_cachepolicy struct {
-	Policyname   string   `json:"policyname"`
-	Rule         string   `json:"rule,omitempty"`
-	Action       string   `json:"action,omitempty"`
-	Storeingroup string   `json:"storeingroup,omitempty"`
-	Invalgroups  []string `json:"invalgroups,omitempty"`
-	Invalobjects []string `json:"invalobjects,omitempty"`
-	Undefaction  string   `json:"undefaction,omitempty"`
-}
-
-type rename_cachepolicy struct {
-	Name    string `json:"policyname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_cachepolicy_payload struct {
 	Resource Cachepolicy `json:"cachepolicy"`
-}
-
-type rename_cachepolicy_payload struct {
-	Rename rename_cachepolicy `json:"cachepolicy"`
-}
-
-type unset_cachepolicy_payload struct {
-	Unset CachepolicyUnset `json:"cachepolicy"`
-}
-
-type update_cachepolicy_payload struct {
-	Update update_cachepolicy `json:"cachepolicy"`
-}
-
-type get_cachepolicy_result struct {
-	Results []Cachepolicy `json:"cachepolicy"`
-}
-
-type count_cachepolicy_result struct {
-	Results []Count `json:"cachepolicy"`
 }
 
 func (c *NitroClient) AddCachepolicy(resource Cachepolicy) error {
@@ -82,19 +59,50 @@ func (c *NitroClient) AddCachepolicy(resource Cachepolicy) error {
 	return c.post("cachepolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCachepolicy(name string, newName string) error {
-	payload := rename_cachepolicy_payload{
-		rename_cachepolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_cachepolicy_result struct {
+	Results []Cachepolicy `json:"cachepolicy"`
+}
 
-	return c.post("cachepolicy", "", qs, payload)
+func (c *NitroClient) ListCachepolicy() ([]Cachepolicy, error) {
+	results := list_cachepolicy_result{}
+
+	if err := c.get("cachepolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_cachepolicy_result struct {
+	Results []Cachepolicy `json:"cachepolicy"`
+}
+
+func (c *NitroClient) GetCachepolicy(key CachepolicyKey) (*Cachepolicy, error) {
+	var results get_cachepolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("cachepolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cachepolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("cachepolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_cachepolicy_result struct {
+	Results []Count `json:"cachepolicy"`
 }
 
 func (c *NitroClient) CountCachepolicy() (int, error) {
@@ -111,10 +119,12 @@ func (c *NitroClient) CountCachepolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCachepolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsCachepolicy(key CachepolicyKey) (bool, error) {
 	var results count_cachepolicy_result
 
-	id, qs := cachepolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -127,64 +137,19 @@ func (c *NitroClient) ExistsCachepolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListCachepolicy() ([]Cachepolicy, error) {
-	results := get_cachepolicy_result{}
+//      DELETE
 
-	if err := c.get("cachepolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetCachepolicy(key string) (*Cachepolicy, error) {
-	var results get_cachepolicy_result
-
-	id, qs := cachepolicy_key_to_id_args(key)
-
-	if err := c.get("cachepolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one cachepolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("cachepolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteCachepolicy(key string) error {
-	id, qs := cachepolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteCachepolicy(key CachepolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("cachepolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetCachepolicy(unset CachepolicyUnset) error {
-	payload := unset_cachepolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("cachepolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateCachepolicy(resource Cachepolicy) error {
-	payload := update_cachepolicy_payload{
-		update_cachepolicy{
-			resource.Policyname,
-			resource.Rule,
-			resource.Action,
-			resource.Storeingroup,
-			resource.Invalgroups,
-			resource.Invalobjects,
-			resource.Undefaction,
-		},
-	}
-
-	return c.put("cachepolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

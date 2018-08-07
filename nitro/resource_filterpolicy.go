@@ -7,62 +7,45 @@ import (
 )
 
 type Filterpolicy struct {
-	Name      string `json:"name"`
+	Name      string `json:"name,omitempty"`
 	Reqaction string `json:"reqaction,omitempty"`
 	Resaction string `json:"resaction,omitempty"`
 	Rule      string `json:"rule,omitempty"`
 }
 
-func filterpolicy_key_to_id_args(key string) (string, map[string]string) {
+type FilterpolicyKey struct {
+	Name string
+}
+
+func (resource Filterpolicy) ToKey() FilterpolicyKey {
+	key := FilterpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key FilterpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type FilterpolicyUnset struct {
-	Name      string `json:"name"`
-	Rule      bool   `json:"rule,omitempty"`
-	Reqaction bool   `json:"reqaction,omitempty"`
-	Resaction bool   `json:"resaction,omitempty"`
-}
-
-type update_filterpolicy struct {
-	Name      string `json:"name"`
-	Rule      string `json:"rule,omitempty"`
-	Reqaction string `json:"reqaction,omitempty"`
-	Resaction string `json:"resaction,omitempty"`
-}
-
-type rename_filterpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_filterpolicy_payload struct {
 	Resource Filterpolicy `json:"filterpolicy"`
-}
-
-type rename_filterpolicy_payload struct {
-	Rename rename_filterpolicy `json:"filterpolicy"`
-}
-
-type unset_filterpolicy_payload struct {
-	Unset FilterpolicyUnset `json:"filterpolicy"`
-}
-
-type update_filterpolicy_payload struct {
-	Update update_filterpolicy `json:"filterpolicy"`
-}
-
-type get_filterpolicy_result struct {
-	Results []Filterpolicy `json:"filterpolicy"`
-}
-
-type count_filterpolicy_result struct {
-	Results []Count `json:"filterpolicy"`
 }
 
 func (c *NitroClient) AddFilterpolicy(resource Filterpolicy) error {
@@ -73,19 +56,50 @@ func (c *NitroClient) AddFilterpolicy(resource Filterpolicy) error {
 	return c.post("filterpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameFilterpolicy(name string, newName string) error {
-	payload := rename_filterpolicy_payload{
-		rename_filterpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_filterpolicy_result struct {
+	Results []Filterpolicy `json:"filterpolicy"`
+}
 
-	return c.post("filterpolicy", "", qs, payload)
+func (c *NitroClient) ListFilterpolicy() ([]Filterpolicy, error) {
+	results := list_filterpolicy_result{}
+
+	if err := c.get("filterpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_filterpolicy_result struct {
+	Results []Filterpolicy `json:"filterpolicy"`
+}
+
+func (c *NitroClient) GetFilterpolicy(key FilterpolicyKey) (*Filterpolicy, error) {
+	var results get_filterpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("filterpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one filterpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("filterpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_filterpolicy_result struct {
+	Results []Count `json:"filterpolicy"`
 }
 
 func (c *NitroClient) CountFilterpolicy() (int, error) {
@@ -102,10 +116,12 @@ func (c *NitroClient) CountFilterpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsFilterpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsFilterpolicy(key FilterpolicyKey) (bool, error) {
 	var results count_filterpolicy_result
 
-	id, qs := filterpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -118,61 +134,19 @@ func (c *NitroClient) ExistsFilterpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListFilterpolicy() ([]Filterpolicy, error) {
-	results := get_filterpolicy_result{}
+//      DELETE
 
-	if err := c.get("filterpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetFilterpolicy(key string) (*Filterpolicy, error) {
-	var results get_filterpolicy_result
-
-	id, qs := filterpolicy_key_to_id_args(key)
-
-	if err := c.get("filterpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one filterpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("filterpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteFilterpolicy(key string) error {
-	id, qs := filterpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteFilterpolicy(key FilterpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("filterpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetFilterpolicy(unset FilterpolicyUnset) error {
-	payload := unset_filterpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("filterpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateFilterpolicy(resource Filterpolicy) error {
-	payload := update_filterpolicy_payload{
-		update_filterpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Reqaction,
-			resource.Resaction,
-		},
-	}
-
-	return c.put("filterpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

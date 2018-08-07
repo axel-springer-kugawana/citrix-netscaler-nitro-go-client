@@ -7,7 +7,6 @@ import (
 
 func setup_{{$.Name}}(t *testing.T, client *nitro.NitroClient) (*nitro.{{$.Name|name}}, func()) {
 	//resource := nitro.{{$.Name|name}} {
-		//{{$.Schema.Key.Name|title}}: "{{$.Name}}",
 		{{range $field, $type := $.Schema.Fields -}}
 		//{{$field|title}}: {{$type}},
 		{{end -}}

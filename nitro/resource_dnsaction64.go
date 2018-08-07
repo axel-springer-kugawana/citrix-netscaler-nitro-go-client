@@ -7,62 +7,45 @@ import (
 )
 
 type Dnsaction64 struct {
-	Actionname  string `json:"actionname"`
+	Actionname  string `json:"actionname,omitempty"`
 	Excluderule string `json:"excluderule,omitempty"`
 	Mappedrule  string `json:"mappedrule,omitempty"`
 	Prefix      string `json:"prefix,omitempty"`
 }
 
-func dnsaction64_key_to_id_args(key string) (string, map[string]string) {
+type Dnsaction64Key struct {
+	Actionname string
+}
+
+func (resource Dnsaction64) ToKey() Dnsaction64Key {
+	key := Dnsaction64Key{
+		resource.Actionname,
+	}
+
+	return key
+}
+
+func (key Dnsaction64Key) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Actionname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type Dnsaction64Unset struct {
-	Actionname  string `json:"actionname"`
-	Prefix      bool   `json:"prefix,omitempty"`
-	Mappedrule  bool   `json:"mappedrule,omitempty"`
-	Excluderule bool   `json:"excluderule,omitempty"`
-}
-
-type update_dnsaction64 struct {
-	Actionname  string `json:"actionname"`
-	Prefix      string `json:"prefix,omitempty"`
-	Mappedrule  string `json:"mappedrule,omitempty"`
-	Excluderule string `json:"excluderule,omitempty"`
-}
-
-type rename_dnsaction64 struct {
-	Name    string `json:"actionname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_dnsaction64_payload struct {
 	Resource Dnsaction64 `json:"dnsaction64"`
-}
-
-type rename_dnsaction64_payload struct {
-	Rename rename_dnsaction64 `json:"dnsaction64"`
-}
-
-type unset_dnsaction64_payload struct {
-	Unset Dnsaction64Unset `json:"dnsaction64"`
-}
-
-type update_dnsaction64_payload struct {
-	Update update_dnsaction64 `json:"dnsaction64"`
-}
-
-type get_dnsaction64_result struct {
-	Results []Dnsaction64 `json:"dnsaction64"`
-}
-
-type count_dnsaction64_result struct {
-	Results []Count `json:"dnsaction64"`
 }
 
 func (c *NitroClient) AddDnsaction64(resource Dnsaction64) error {
@@ -73,19 +56,50 @@ func (c *NitroClient) AddDnsaction64(resource Dnsaction64) error {
 	return c.post("dnsaction64", "", nil, payload)
 }
 
-func (c *NitroClient) RenameDnsaction64(name string, newName string) error {
-	payload := rename_dnsaction64_payload{
-		rename_dnsaction64{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_dnsaction64_result struct {
+	Results []Dnsaction64 `json:"dnsaction64"`
+}
 
-	return c.post("dnsaction64", "", qs, payload)
+func (c *NitroClient) ListDnsaction64() ([]Dnsaction64, error) {
+	results := list_dnsaction64_result{}
+
+	if err := c.get("dnsaction64", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_dnsaction64_result struct {
+	Results []Dnsaction64 `json:"dnsaction64"`
+}
+
+func (c *NitroClient) GetDnsaction64(key Dnsaction64Key) (*Dnsaction64, error) {
+	var results get_dnsaction64_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("dnsaction64", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one dnsaction64 element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("dnsaction64 element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_dnsaction64_result struct {
+	Results []Count `json:"dnsaction64"`
 }
 
 func (c *NitroClient) CountDnsaction64() (int, error) {
@@ -102,10 +116,12 @@ func (c *NitroClient) CountDnsaction64() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDnsaction64(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsDnsaction64(key Dnsaction64Key) (bool, error) {
 	var results count_dnsaction64_result
 
-	id, qs := dnsaction64_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -118,61 +134,19 @@ func (c *NitroClient) ExistsDnsaction64(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListDnsaction64() ([]Dnsaction64, error) {
-	results := get_dnsaction64_result{}
+//      DELETE
 
-	if err := c.get("dnsaction64", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetDnsaction64(key string) (*Dnsaction64, error) {
-	var results get_dnsaction64_result
-
-	id, qs := dnsaction64_key_to_id_args(key)
-
-	if err := c.get("dnsaction64", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one dnsaction64 element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("dnsaction64 element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteDnsaction64(key string) error {
-	id, qs := dnsaction64_key_to_id_args(key)
+func (c *NitroClient) DeleteDnsaction64(key Dnsaction64Key) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("dnsaction64", id, qs)
 }
 
-func (c *NitroClient) UnsetDnsaction64(unset Dnsaction64Unset) error {
-	payload := unset_dnsaction64_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("dnsaction64", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateDnsaction64(resource Dnsaction64) error {
-	payload := update_dnsaction64_payload{
-		update_dnsaction64{
-			resource.Actionname,
-			resource.Prefix,
-			resource.Mappedrule,
-			resource.Excluderule,
-		},
-	}
-
-	return c.put("dnsaction64", "", nil, payload)
-}
+//      RENAME
+//      TODO

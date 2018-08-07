@@ -7,72 +7,49 @@ import (
 )
 
 type Responderaction struct {
-	Name               string `json:"name"`
 	Bypasssafetycheck  string `json:"bypasssafetycheck,omitempty"`
 	Comment            string `json:"comment,omitempty"`
 	Htmlpage           string `json:"htmlpage,omitempty"`
+	Name               string `json:"name,omitempty"`
 	Reasonphrase       string `json:"reasonphrase,omitempty"`
 	Responsestatuscode int    `json:"responsestatuscode,string,omitempty"`
 	Target             string `json:"target,omitempty"`
 	Type               string `json:"type,omitempty"`
 }
 
-func responderaction_key_to_id_args(key string) (string, map[string]string) {
+type ResponderactionKey struct {
+	Name string
+}
+
+func (resource Responderaction) ToKey() ResponderactionKey {
+	key := ResponderactionKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key ResponderactionKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type ResponderactionUnset struct {
-	Name               string `json:"name"`
-	Target             bool   `json:"target,omitempty"`
-	Bypasssafetycheck  bool   `json:"bypasssafetycheck,omitempty"`
-	Htmlpage           bool   `json:"htmlpage,omitempty"`
-	Responsestatuscode bool   `json:"responsestatuscode,omitempty"`
-	Reasonphrase       bool   `json:"reasonphrase,omitempty"`
-	Comment            bool   `json:"comment,omitempty"`
-}
-
-type update_responderaction struct {
-	Name               string `json:"name"`
-	Target             string `json:"target,omitempty"`
-	Bypasssafetycheck  string `json:"bypasssafetycheck,omitempty"`
-	Htmlpage           string `json:"htmlpage,omitempty"`
-	Responsestatuscode int    `json:"responsestatuscode,string,omitempty"`
-	Reasonphrase       string `json:"reasonphrase,omitempty"`
-	Comment            string `json:"comment,omitempty"`
-}
-
-type rename_responderaction struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_responderaction_payload struct {
 	Resource Responderaction `json:"responderaction"`
-}
-
-type rename_responderaction_payload struct {
-	Rename rename_responderaction `json:"responderaction"`
-}
-
-type unset_responderaction_payload struct {
-	Unset ResponderactionUnset `json:"responderaction"`
-}
-
-type update_responderaction_payload struct {
-	Update update_responderaction `json:"responderaction"`
-}
-
-type get_responderaction_result struct {
-	Results []Responderaction `json:"responderaction"`
-}
-
-type count_responderaction_result struct {
-	Results []Count `json:"responderaction"`
 }
 
 func (c *NitroClient) AddResponderaction(resource Responderaction) error {
@@ -83,19 +60,50 @@ func (c *NitroClient) AddResponderaction(resource Responderaction) error {
 	return c.post("responderaction", "", nil, payload)
 }
 
-func (c *NitroClient) RenameResponderaction(name string, newName string) error {
-	payload := rename_responderaction_payload{
-		rename_responderaction{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_responderaction_result struct {
+	Results []Responderaction `json:"responderaction"`
+}
 
-	return c.post("responderaction", "", qs, payload)
+func (c *NitroClient) ListResponderaction() ([]Responderaction, error) {
+	results := list_responderaction_result{}
+
+	if err := c.get("responderaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_responderaction_result struct {
+	Results []Responderaction `json:"responderaction"`
+}
+
+func (c *NitroClient) GetResponderaction(key ResponderactionKey) (*Responderaction, error) {
+	var results get_responderaction_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("responderaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one responderaction element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("responderaction element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_responderaction_result struct {
+	Results []Count `json:"responderaction"`
 }
 
 func (c *NitroClient) CountResponderaction() (int, error) {
@@ -112,10 +120,12 @@ func (c *NitroClient) CountResponderaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsResponderaction(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsResponderaction(key ResponderactionKey) (bool, error) {
 	var results count_responderaction_result
 
-	id, qs := responderaction_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -128,64 +138,19 @@ func (c *NitroClient) ExistsResponderaction(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListResponderaction() ([]Responderaction, error) {
-	results := get_responderaction_result{}
+//      DELETE
 
-	if err := c.get("responderaction", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetResponderaction(key string) (*Responderaction, error) {
-	var results get_responderaction_result
-
-	id, qs := responderaction_key_to_id_args(key)
-
-	if err := c.get("responderaction", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one responderaction element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("responderaction element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteResponderaction(key string) error {
-	id, qs := responderaction_key_to_id_args(key)
+func (c *NitroClient) DeleteResponderaction(key ResponderactionKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("responderaction", id, qs)
 }
 
-func (c *NitroClient) UnsetResponderaction(unset ResponderactionUnset) error {
-	payload := unset_responderaction_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("responderaction", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateResponderaction(resource Responderaction) error {
-	payload := update_responderaction_payload{
-		update_responderaction{
-			resource.Name,
-			resource.Target,
-			resource.Bypasssafetycheck,
-			resource.Htmlpage,
-			resource.Responsestatuscode,
-			resource.Reasonphrase,
-			resource.Comment,
-		},
-	}
-
-	return c.put("responderaction", "", nil, payload)
-}
+//      RENAME
+//      TODO

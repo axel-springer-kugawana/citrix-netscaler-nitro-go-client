@@ -12,6 +12,126 @@ import (
 
 var inputFolder = flag.String("i", "", "input folder to read specs from")
 
+func generateResource(templates *template.Template, name string, resource *nitro.Resource) error {
+	context := struct {
+		Name   string
+		Schema *nitro.Resource
+	}{
+		name,
+		resource,
+	}
+
+	writer, err := os.Create(filepath.Join("nitro", "resource_"+name+".go"))
+
+	if err != nil {
+		return err
+	}
+
+	err = templates.ExecuteTemplate(writer, "resource", context)
+
+	return err
+}
+
+func generateBinding(templates *template.Template, name string, binding *nitro.Binding) error {
+	context := struct {
+		Name   string
+		Schema *nitro.Binding
+	}{
+		name,
+		binding,
+	}
+
+	writer, err := os.Create(filepath.Join("nitro", "binding_"+name+".go"))
+
+	if err != nil {
+		return err
+	}
+
+	err = templates.ExecuteTemplate(writer, "binding", context)
+
+	return err
+}
+
+func generateResourceTestFactory(templates *template.Template, name string, resource *nitro.Resource) error {
+	context := struct {
+		Name   string
+		Schema *nitro.Resource
+	}{
+		name,
+		resource,
+	}
+
+	writer, err := os.Create(filepath.Join("tests", "resources", name+"_factory.go"))
+
+	if err != nil {
+		return err
+	}
+
+	err = templates.ExecuteTemplate(writer, "test_factory", context)
+
+	return err
+}
+
+func generateBindingTestFactory(templates *template.Template, name string, binding *nitro.Binding) error {
+	context := struct {
+		Name   string
+		Schema *nitro.Binding
+	}{
+		name,
+		binding,
+	}
+
+	writer, err := os.Create(filepath.Join("tests", "bindings", name+"_factory.go"))
+
+	if err != nil {
+		return err
+	}
+
+	err = templates.ExecuteTemplate(writer, "test_factory", context)
+
+	return err
+}
+
+func generateResourceTest(templates *template.Template, name string, resource *nitro.Resource) error {
+	context := struct {
+		Name   string
+		Schema *nitro.Resource
+	}{
+		name,
+		resource,
+	}
+
+	writer, err := os.Create(filepath.Join("tests", "resources", name+"_test.go"))
+
+	if err != nil {
+		return err
+	}
+
+	err = templates.ExecuteTemplate(writer, "resource_test", context)
+
+	return err
+}
+
+func generateBindingTest(templates *template.Template, name string, binding *nitro.Binding) error {
+	context := struct {
+		Name   string
+		Schema *nitro.Binding
+	}{
+		name,
+		binding,
+	}
+
+	writer, err := os.Create(filepath.Join("tests", "bindings", name+"_test.go"))
+
+	if err != nil {
+		return err
+	}
+
+	err = templates.ExecuteTemplate(writer, "binding_test", context)
+
+	return err
+}
+
 func main() {
 	flag.Parse()
 
@@ -33,77 +153,53 @@ func main() {
 			}
 
 			templates := template.Must(template.New("").Funcs(funcMap).ParseFiles(
-				"templates/resource.tmpl", "templates/resource_test.tmpl", "templates/resource_factory.tmpl",
-				"templates/binding.tmpl",
+				"templates/resource",
+				"templates/binding",
+				"templates/resource_test", "templates/binding_test", "templates/test_factory",
+				"templates/utils",
 			))
 
 			for key, value := range spec.Resources {
-				context := struct {
-					Name   string
-					Schema *nitro.Resource
-				}{
-					key,
-					value,
-				}
-
-				writer, err := os.Create(filepath.Join("nitro", "resource_"+key+".go"))
+				err := generateResource(templates, key, value)
 
 				if err != nil {
-					log.Println("Failed to create file : ", err)
+					log.Println("Failed to generate resource : ", err)
 				}
 
-				err = templates.ExecuteTemplate(writer, "resource.tmpl", context)
+				err = generateResourceTest(templates, key, value)
 
 				if err != nil {
-					log.Println("Failed to execute template : ", err)
+					log.Println("Failed to generate resource test : ", err)
 				}
 
 				if _, err := os.Stat(filepath.Join("tests", "resources", key+"_factory.go")); os.IsNotExist(err) {
-					writer, err := os.Create(filepath.Join("tests", "resources", key+"_factory.go"))
+					err := generateResourceTestFactory(templates, key, value)
 
 					if err != nil {
-						log.Println("Failed to create file : ", err)
+						log.Println("Failed to generate resource test factory : ", err)
 					}
-
-					err = templates.ExecuteTemplate(writer, "resource_factory.tmpl", context)
-
-					if err != nil {
-						log.Println("Failed to execute template : ", err)
-					}
-				}
-
-				writer, err = os.Create(filepath.Join("tests", "resources", key+"_test.go"))
-
-				if err != nil {
-					log.Println("Failed to create file : ", err)
-				}
-
-				err = templates.ExecuteTemplate(writer, "resource_test.tmpl", context)
-
-				if err != nil {
-					log.Println("Failed to execute template : ", err)
 				}
 			}
 
 			for key, value := range spec.Bindings {
-				context := struct {
-					Name   string
-					Schema *nitro.Binding
-				}{
-					key,
-					value,
-				}
-
-				writer, err := os.Create(filepath.Join("nitro", "binding_"+key+".go"))
+				err := generateBinding(templates, key, value)
 
 				if err != nil {
-					log.Println("Failed to create file : ", err)
+					log.Println("Failed to generate binding : ", err)
 				}
 
-				err = templates.ExecuteTemplate(writer, "binding.tmpl", context)
+				err = generateBindingTest(templates, key, value)
 
 				if err != nil {
-					log.Println("Failed to execute template : ", err)
+					log.Println("Failed to generate binding test : ", err)
+				}
+
+				if _, err := os.Stat(filepath.Join("tests", "bindings", key+"_factory.go")); os.IsNotExist(err) {
+					err := generateBindingTestFactory(templates, key, value)
+
+					if err != nil {
+						log.Println("Failed to generate binding test factory : ", err)
+					}
 				}
 			}
 		}

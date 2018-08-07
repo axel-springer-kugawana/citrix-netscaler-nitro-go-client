@@ -7,62 +7,45 @@ import (
 )
 
 type Transformprofile struct {
-	Name                      string `json:"name"`
 	Comment                   string `json:"comment,omitempty"`
+	Name                      string `json:"name,omitempty"`
 	Onlytransformabsurlinbody string `json:"onlytransformabsurlinbody,omitempty"`
 	Type                      string `json:"type,omitempty"`
 }
 
-func transformprofile_key_to_id_args(key string) (string, map[string]string) {
+type TransformprofileKey struct {
+	Name string
+}
+
+func (resource Transformprofile) ToKey() TransformprofileKey {
+	key := TransformprofileKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key TransformprofileKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type TransformprofileUnset struct {
-	Name                      string `json:"name"`
-	Type                      bool   `json:"type,omitempty"`
-	Onlytransformabsurlinbody bool   `json:"onlytransformabsurlinbody,omitempty"`
-	Comment                   bool   `json:"comment,omitempty"`
-}
-
-type update_transformprofile struct {
-	Name                      string `json:"name"`
-	Type                      string `json:"type,omitempty"`
-	Onlytransformabsurlinbody string `json:"onlytransformabsurlinbody,omitempty"`
-	Comment                   string `json:"comment,omitempty"`
-}
-
-type rename_transformprofile struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_transformprofile_payload struct {
 	Resource Transformprofile `json:"transformprofile"`
-}
-
-type rename_transformprofile_payload struct {
-	Rename rename_transformprofile `json:"transformprofile"`
-}
-
-type unset_transformprofile_payload struct {
-	Unset TransformprofileUnset `json:"transformprofile"`
-}
-
-type update_transformprofile_payload struct {
-	Update update_transformprofile `json:"transformprofile"`
-}
-
-type get_transformprofile_result struct {
-	Results []Transformprofile `json:"transformprofile"`
-}
-
-type count_transformprofile_result struct {
-	Results []Count `json:"transformprofile"`
 }
 
 func (c *NitroClient) AddTransformprofile(resource Transformprofile) error {
@@ -73,19 +56,50 @@ func (c *NitroClient) AddTransformprofile(resource Transformprofile) error {
 	return c.post("transformprofile", "", nil, payload)
 }
 
-func (c *NitroClient) RenameTransformprofile(name string, newName string) error {
-	payload := rename_transformprofile_payload{
-		rename_transformprofile{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_transformprofile_result struct {
+	Results []Transformprofile `json:"transformprofile"`
+}
 
-	return c.post("transformprofile", "", qs, payload)
+func (c *NitroClient) ListTransformprofile() ([]Transformprofile, error) {
+	results := list_transformprofile_result{}
+
+	if err := c.get("transformprofile", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_transformprofile_result struct {
+	Results []Transformprofile `json:"transformprofile"`
+}
+
+func (c *NitroClient) GetTransformprofile(key TransformprofileKey) (*Transformprofile, error) {
+	var results get_transformprofile_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("transformprofile", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one transformprofile element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("transformprofile element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_transformprofile_result struct {
+	Results []Count `json:"transformprofile"`
 }
 
 func (c *NitroClient) CountTransformprofile() (int, error) {
@@ -102,10 +116,12 @@ func (c *NitroClient) CountTransformprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTransformprofile(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsTransformprofile(key TransformprofileKey) (bool, error) {
 	var results count_transformprofile_result
 
-	id, qs := transformprofile_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -118,61 +134,19 @@ func (c *NitroClient) ExistsTransformprofile(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListTransformprofile() ([]Transformprofile, error) {
-	results := get_transformprofile_result{}
+//      DELETE
 
-	if err := c.get("transformprofile", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetTransformprofile(key string) (*Transformprofile, error) {
-	var results get_transformprofile_result
-
-	id, qs := transformprofile_key_to_id_args(key)
-
-	if err := c.get("transformprofile", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one transformprofile element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("transformprofile element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteTransformprofile(key string) error {
-	id, qs := transformprofile_key_to_id_args(key)
+func (c *NitroClient) DeleteTransformprofile(key TransformprofileKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("transformprofile", id, qs)
 }
 
-func (c *NitroClient) UnsetTransformprofile(unset TransformprofileUnset) error {
-	payload := unset_transformprofile_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("transformprofile", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateTransformprofile(resource Transformprofile) error {
-	payload := update_transformprofile_payload{
-		update_transformprofile{
-			resource.Name,
-			resource.Type,
-			resource.Onlytransformabsurlinbody,
-			resource.Comment,
-		},
-	}
-
-	return c.put("transformprofile", "", nil, payload)
-}
+//      RENAME
+//      TODO

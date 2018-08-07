@@ -7,68 +7,47 @@ import (
 )
 
 type Cspolicy struct {
-	Policyname string `json:"policyname"`
 	Action     string `json:"action,omitempty"`
 	Domain     string `json:"domain,omitempty"`
 	Logaction  string `json:"logaction,omitempty"`
+	Policyname string `json:"policyname,omitempty"`
 	Rule       string `json:"rule,omitempty"`
 	Url        string `json:"url,omitempty"`
 }
 
-func cspolicy_key_to_id_args(key string) (string, map[string]string) {
+type CspolicyKey struct {
+	Policyname string
+}
+
+func (resource Cspolicy) ToKey() CspolicyKey {
+	key := CspolicyKey{
+		resource.Policyname,
+	}
+
+	return key
+}
+
+func (key CspolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Policyname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type CspolicyUnset struct {
-	Policyname string `json:"policyname"`
-	Url        bool   `json:"url,omitempty"`
-	Rule       bool   `json:"rule,omitempty"`
-	Domain     bool   `json:"domain,omitempty"`
-	Action     bool   `json:"action,omitempty"`
-	Logaction  bool   `json:"logaction,omitempty"`
-}
-
-type update_cspolicy struct {
-	Policyname string `json:"policyname"`
-	Url        string `json:"url,omitempty"`
-	Rule       string `json:"rule,omitempty"`
-	Domain     string `json:"domain,omitempty"`
-	Action     string `json:"action,omitempty"`
-	Logaction  string `json:"logaction,omitempty"`
-}
-
-type rename_cspolicy struct {
-	Name    string `json:"policyname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_cspolicy_payload struct {
 	Resource Cspolicy `json:"cspolicy"`
-}
-
-type rename_cspolicy_payload struct {
-	Rename rename_cspolicy `json:"cspolicy"`
-}
-
-type unset_cspolicy_payload struct {
-	Unset CspolicyUnset `json:"cspolicy"`
-}
-
-type update_cspolicy_payload struct {
-	Update update_cspolicy `json:"cspolicy"`
-}
-
-type get_cspolicy_result struct {
-	Results []Cspolicy `json:"cspolicy"`
-}
-
-type count_cspolicy_result struct {
-	Results []Count `json:"cspolicy"`
 }
 
 func (c *NitroClient) AddCspolicy(resource Cspolicy) error {
@@ -79,19 +58,50 @@ func (c *NitroClient) AddCspolicy(resource Cspolicy) error {
 	return c.post("cspolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCspolicy(name string, newName string) error {
-	payload := rename_cspolicy_payload{
-		rename_cspolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_cspolicy_result struct {
+	Results []Cspolicy `json:"cspolicy"`
+}
 
-	return c.post("cspolicy", "", qs, payload)
+func (c *NitroClient) ListCspolicy() ([]Cspolicy, error) {
+	results := list_cspolicy_result{}
+
+	if err := c.get("cspolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_cspolicy_result struct {
+	Results []Cspolicy `json:"cspolicy"`
+}
+
+func (c *NitroClient) GetCspolicy(key CspolicyKey) (*Cspolicy, error) {
+	var results get_cspolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("cspolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cspolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("cspolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_cspolicy_result struct {
+	Results []Count `json:"cspolicy"`
 }
 
 func (c *NitroClient) CountCspolicy() (int, error) {
@@ -108,10 +118,12 @@ func (c *NitroClient) CountCspolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCspolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsCspolicy(key CspolicyKey) (bool, error) {
 	var results count_cspolicy_result
 
-	id, qs := cspolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -124,63 +136,19 @@ func (c *NitroClient) ExistsCspolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListCspolicy() ([]Cspolicy, error) {
-	results := get_cspolicy_result{}
+//      DELETE
 
-	if err := c.get("cspolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetCspolicy(key string) (*Cspolicy, error) {
-	var results get_cspolicy_result
-
-	id, qs := cspolicy_key_to_id_args(key)
-
-	if err := c.get("cspolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one cspolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("cspolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteCspolicy(key string) error {
-	id, qs := cspolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteCspolicy(key CspolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("cspolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetCspolicy(unset CspolicyUnset) error {
-	payload := unset_cspolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("cspolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateCspolicy(resource Cspolicy) error {
-	payload := update_cspolicy_payload{
-		update_cspolicy{
-			resource.Policyname,
-			resource.Url,
-			resource.Rule,
-			resource.Domain,
-			resource.Action,
-			resource.Logaction,
-		},
-	}
-
-	return c.put("cspolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

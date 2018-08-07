@@ -7,63 +7,46 @@ import (
 )
 
 type Cmpaction struct {
-	Name            string `json:"name"`
 	Addvaryheader   string `json:"addvaryheader,omitempty"`
 	Cmptype         string `json:"cmptype,omitempty"`
 	Deltatype       string `json:"deltatype,omitempty"`
+	Name            string `json:"name,omitempty"`
 	Varyheadervalue string `json:"varyheadervalue,omitempty"`
 }
 
-func cmpaction_key_to_id_args(key string) (string, map[string]string) {
+type CmpactionKey struct {
+	Name string
+}
+
+func (resource Cmpaction) ToKey() CmpactionKey {
+	key := CmpactionKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key CmpactionKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type CmpactionUnset struct {
-	Name            string `json:"name"`
-	Cmptype         bool   `json:"cmptype,omitempty"`
-	Addvaryheader   bool   `json:"addvaryheader,omitempty"`
-	Varyheadervalue bool   `json:"varyheadervalue,omitempty"`
-}
-
-type update_cmpaction struct {
-	Name            string `json:"name"`
-	Cmptype         string `json:"cmptype,omitempty"`
-	Addvaryheader   string `json:"addvaryheader,omitempty"`
-	Varyheadervalue string `json:"varyheadervalue,omitempty"`
-}
-
-type rename_cmpaction struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_cmpaction_payload struct {
 	Resource Cmpaction `json:"cmpaction"`
-}
-
-type rename_cmpaction_payload struct {
-	Rename rename_cmpaction `json:"cmpaction"`
-}
-
-type unset_cmpaction_payload struct {
-	Unset CmpactionUnset `json:"cmpaction"`
-}
-
-type update_cmpaction_payload struct {
-	Update update_cmpaction `json:"cmpaction"`
-}
-
-type get_cmpaction_result struct {
-	Results []Cmpaction `json:"cmpaction"`
-}
-
-type count_cmpaction_result struct {
-	Results []Count `json:"cmpaction"`
 }
 
 func (c *NitroClient) AddCmpaction(resource Cmpaction) error {
@@ -74,19 +57,50 @@ func (c *NitroClient) AddCmpaction(resource Cmpaction) error {
 	return c.post("cmpaction", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCmpaction(name string, newName string) error {
-	payload := rename_cmpaction_payload{
-		rename_cmpaction{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_cmpaction_result struct {
+	Results []Cmpaction `json:"cmpaction"`
+}
 
-	return c.post("cmpaction", "", qs, payload)
+func (c *NitroClient) ListCmpaction() ([]Cmpaction, error) {
+	results := list_cmpaction_result{}
+
+	if err := c.get("cmpaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_cmpaction_result struct {
+	Results []Cmpaction `json:"cmpaction"`
+}
+
+func (c *NitroClient) GetCmpaction(key CmpactionKey) (*Cmpaction, error) {
+	var results get_cmpaction_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("cmpaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cmpaction element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("cmpaction element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_cmpaction_result struct {
+	Results []Count `json:"cmpaction"`
 }
 
 func (c *NitroClient) CountCmpaction() (int, error) {
@@ -103,10 +117,12 @@ func (c *NitroClient) CountCmpaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCmpaction(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsCmpaction(key CmpactionKey) (bool, error) {
 	var results count_cmpaction_result
 
-	id, qs := cmpaction_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -119,61 +135,19 @@ func (c *NitroClient) ExistsCmpaction(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListCmpaction() ([]Cmpaction, error) {
-	results := get_cmpaction_result{}
+//      DELETE
 
-	if err := c.get("cmpaction", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetCmpaction(key string) (*Cmpaction, error) {
-	var results get_cmpaction_result
-
-	id, qs := cmpaction_key_to_id_args(key)
-
-	if err := c.get("cmpaction", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one cmpaction element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("cmpaction element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteCmpaction(key string) error {
-	id, qs := cmpaction_key_to_id_args(key)
+func (c *NitroClient) DeleteCmpaction(key CmpactionKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("cmpaction", id, qs)
 }
 
-func (c *NitroClient) UnsetCmpaction(unset CmpactionUnset) error {
-	payload := unset_cmpaction_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("cmpaction", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateCmpaction(resource Cmpaction) error {
-	payload := update_cmpaction_payload{
-		update_cmpaction{
-			resource.Name,
-			resource.Cmptype,
-			resource.Addvaryheader,
-			resource.Varyheadervalue,
-		},
-	}
-
-	return c.put("cmpaction", "", nil, payload)
-}
+//      RENAME
+//      TODO

@@ -19,7 +19,7 @@ func setup_appflowpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appflo
 	}
 
 	return &resource, func() {
-		client.DeleteAppflowaction(action.Name)
+		client.DeleteAppflowaction(action.ToKey())
 
 		if actionTearDown != nil {
 			actionTearDown()

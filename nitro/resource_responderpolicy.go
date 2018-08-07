@@ -7,71 +7,48 @@ import (
 )
 
 type Responderpolicy struct {
-	Name          string `json:"name"`
 	Action        string `json:"action,omitempty"`
 	Appflowaction string `json:"appflowaction,omitempty"`
 	Comment       string `json:"comment,omitempty"`
 	Logaction     string `json:"logaction,omitempty"`
+	Name          string `json:"name,omitempty"`
 	Rule          string `json:"rule,omitempty"`
 	Undefaction   string `json:"undefaction,omitempty"`
 }
 
-func responderpolicy_key_to_id_args(key string) (string, map[string]string) {
+type ResponderpolicyKey struct {
+	Name string
+}
+
+func (resource Responderpolicy) ToKey() ResponderpolicyKey {
+	key := ResponderpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key ResponderpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type ResponderpolicyUnset struct {
-	Name          string `json:"name"`
-	Rule          bool   `json:"rule,omitempty"`
-	Action        bool   `json:"action,omitempty"`
-	Undefaction   bool   `json:"undefaction,omitempty"`
-	Comment       bool   `json:"comment,omitempty"`
-	Logaction     bool   `json:"logaction,omitempty"`
-	Appflowaction bool   `json:"appflowaction,omitempty"`
-}
-
-type update_responderpolicy struct {
-	Name          string `json:"name"`
-	Rule          string `json:"rule,omitempty"`
-	Action        string `json:"action,omitempty"`
-	Undefaction   string `json:"undefaction,omitempty"`
-	Comment       string `json:"comment,omitempty"`
-	Logaction     string `json:"logaction,omitempty"`
-	Appflowaction string `json:"appflowaction,omitempty"`
-}
-
-type rename_responderpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_responderpolicy_payload struct {
 	Resource Responderpolicy `json:"responderpolicy"`
-}
-
-type rename_responderpolicy_payload struct {
-	Rename rename_responderpolicy `json:"responderpolicy"`
-}
-
-type unset_responderpolicy_payload struct {
-	Unset ResponderpolicyUnset `json:"responderpolicy"`
-}
-
-type update_responderpolicy_payload struct {
-	Update update_responderpolicy `json:"responderpolicy"`
-}
-
-type get_responderpolicy_result struct {
-	Results []Responderpolicy `json:"responderpolicy"`
-}
-
-type count_responderpolicy_result struct {
-	Results []Count `json:"responderpolicy"`
 }
 
 func (c *NitroClient) AddResponderpolicy(resource Responderpolicy) error {
@@ -82,19 +59,50 @@ func (c *NitroClient) AddResponderpolicy(resource Responderpolicy) error {
 	return c.post("responderpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameResponderpolicy(name string, newName string) error {
-	payload := rename_responderpolicy_payload{
-		rename_responderpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_responderpolicy_result struct {
+	Results []Responderpolicy `json:"responderpolicy"`
+}
 
-	return c.post("responderpolicy", "", qs, payload)
+func (c *NitroClient) ListResponderpolicy() ([]Responderpolicy, error) {
+	results := list_responderpolicy_result{}
+
+	if err := c.get("responderpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_responderpolicy_result struct {
+	Results []Responderpolicy `json:"responderpolicy"`
+}
+
+func (c *NitroClient) GetResponderpolicy(key ResponderpolicyKey) (*Responderpolicy, error) {
+	var results get_responderpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("responderpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one responderpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("responderpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_responderpolicy_result struct {
+	Results []Count `json:"responderpolicy"`
 }
 
 func (c *NitroClient) CountResponderpolicy() (int, error) {
@@ -111,10 +119,12 @@ func (c *NitroClient) CountResponderpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsResponderpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsResponderpolicy(key ResponderpolicyKey) (bool, error) {
 	var results count_responderpolicy_result
 
-	id, qs := responderpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -127,64 +137,19 @@ func (c *NitroClient) ExistsResponderpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListResponderpolicy() ([]Responderpolicy, error) {
-	results := get_responderpolicy_result{}
+//      DELETE
 
-	if err := c.get("responderpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetResponderpolicy(key string) (*Responderpolicy, error) {
-	var results get_responderpolicy_result
-
-	id, qs := responderpolicy_key_to_id_args(key)
-
-	if err := c.get("responderpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one responderpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("responderpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteResponderpolicy(key string) error {
-	id, qs := responderpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteResponderpolicy(key ResponderpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("responderpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetResponderpolicy(unset ResponderpolicyUnset) error {
-	payload := unset_responderpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("responderpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateResponderpolicy(resource Responderpolicy) error {
-	payload := update_responderpolicy_payload{
-		update_responderpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-			resource.Undefaction,
-			resource.Comment,
-			resource.Logaction,
-			resource.Appflowaction,
-		},
-	}
-
-	return c.put("responderpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

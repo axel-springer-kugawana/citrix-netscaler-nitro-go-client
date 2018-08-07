@@ -11,7 +11,7 @@ func setup_server(t *testing.T, client *nitro.NitroClient) (*nitro.Server, func(
 		Ipaddress: "1.3.5.7",
 		// Domain: "abc.com",
 		Comment: "comment",
-		State:   "ENABLED",
+		// State:   "ENABLED",
 		// Ipv6address: "NO",
 		// Td: 0,
 		// Domainresolveretry: 5,

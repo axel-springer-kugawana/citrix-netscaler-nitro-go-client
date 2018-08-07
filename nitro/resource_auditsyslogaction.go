@@ -7,7 +7,6 @@ import (
 )
 
 type Auditsyslogaction struct {
-	Name                 string   `json:"name"`
 	Acl                  string   `json:"acl,omitempty"`
 	Alg                  string   `json:"alg,omitempty"`
 	Appflowexport        string   `json:"appflowexport,omitempty"`
@@ -19,6 +18,7 @@ type Auditsyslogaction struct {
 	Loglevel             []string `json:"loglevel,omitempty"`
 	Lsn                  string   `json:"lsn,omitempty"`
 	Maxlogdatasizetohold int      `json:"maxlogdatasizetohold,string,omitempty"`
+	Name                 string   `json:"name,omitempty"`
 	Netprofile           string   `json:"netprofile,omitempty"`
 	Serverdomainname     string   `json:"serverdomainname,omitempty"`
 	Serverip             string   `json:"serverip,omitempty"`
@@ -32,92 +32,39 @@ type Auditsyslogaction struct {
 	Userdefinedauditlog  string   `json:"userdefinedauditlog,omitempty"`
 }
 
-func auditsyslogaction_key_to_id_args(key string) (string, map[string]string) {
+type AuditsyslogactionKey struct {
+	Name string
+}
+
+func (resource Auditsyslogaction) ToKey() AuditsyslogactionKey {
+	key := AuditsyslogactionKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key AuditsyslogactionKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type AuditsyslogactionUnset struct {
-	Name                 string `json:"name"`
-	Serverip             bool   `json:"serverip,omitempty"`
-	Serverdomainname     bool   `json:"serverdomainname,omitempty"`
-	Domainresolveretry   bool   `json:"domainresolveretry,omitempty"`
-	Serverport           bool   `json:"serverport,omitempty"`
-	Loglevel             bool   `json:"loglevel,omitempty"`
-	Dateformat           bool   `json:"dateformat,omitempty"`
-	Logfacility          bool   `json:"logfacility,omitempty"`
-	Tcp                  bool   `json:"tcp,omitempty"`
-	Acl                  bool   `json:"acl,omitempty"`
-	Timezone             bool   `json:"timezone,omitempty"`
-	Userdefinedauditlog  bool   `json:"userdefinedauditlog,omitempty"`
-	Appflowexport        bool   `json:"appflowexport,omitempty"`
-	Lsn                  bool   `json:"lsn,omitempty"`
-	Alg                  bool   `json:"alg,omitempty"`
-	Subscriberlog        bool   `json:"subscriberlog,omitempty"`
-	Sslinterception      bool   `json:"sslinterception,omitempty"`
-	Lbvservername        bool   `json:"lbvservername,omitempty"`
-	Tcpprofilename       bool   `json:"tcpprofilename,omitempty"`
-	Maxlogdatasizetohold bool   `json:"maxlogdatasizetohold,omitempty"`
-	Dns                  bool   `json:"dns,omitempty"`
-	Netprofile           bool   `json:"netprofile,omitempty"`
-}
-
-type update_auditsyslogaction struct {
-	Name                 string   `json:"name"`
-	Serverip             string   `json:"serverip,omitempty"`
-	Serverdomainname     string   `json:"serverdomainname,omitempty"`
-	Domainresolveretry   int      `json:"domainresolveretry,omitempty"`
-	Serverport           int      `json:"serverport,omitempty"`
-	Loglevel             []string `json:"loglevel,omitempty"`
-	Dateformat           string   `json:"dateformat,omitempty"`
-	Logfacility          string   `json:"logfacility,omitempty"`
-	Tcp                  string   `json:"tcp,omitempty"`
-	Acl                  string   `json:"acl,omitempty"`
-	Timezone             string   `json:"timezone,omitempty"`
-	Userdefinedauditlog  string   `json:"userdefinedauditlog,omitempty"`
-	Appflowexport        string   `json:"appflowexport,omitempty"`
-	Lsn                  string   `json:"lsn,omitempty"`
-	Alg                  string   `json:"alg,omitempty"`
-	Subscriberlog        string   `json:"subscriberlog,omitempty"`
-	Sslinterception      string   `json:"sslinterception,omitempty"`
-	Lbvservername        string   `json:"lbvservername,omitempty"`
-	Tcpprofilename       string   `json:"tcpprofilename,omitempty"`
-	Maxlogdatasizetohold int      `json:"maxlogdatasizetohold,string,omitempty"`
-	Dns                  string   `json:"dns,omitempty"`
-	Netprofile           string   `json:"netprofile,omitempty"`
-}
-
-type rename_auditsyslogaction struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_auditsyslogaction_payload struct {
 	Resource Auditsyslogaction `json:"auditsyslogaction"`
-}
-
-type rename_auditsyslogaction_payload struct {
-	Rename rename_auditsyslogaction `json:"auditsyslogaction"`
-}
-
-type unset_auditsyslogaction_payload struct {
-	Unset AuditsyslogactionUnset `json:"auditsyslogaction"`
-}
-
-type update_auditsyslogaction_payload struct {
-	Update update_auditsyslogaction `json:"auditsyslogaction"`
-}
-
-type get_auditsyslogaction_result struct {
-	Results []Auditsyslogaction `json:"auditsyslogaction"`
-}
-
-type count_auditsyslogaction_result struct {
-	Results []Count `json:"auditsyslogaction"`
 }
 
 func (c *NitroClient) AddAuditsyslogaction(resource Auditsyslogaction) error {
@@ -128,19 +75,50 @@ func (c *NitroClient) AddAuditsyslogaction(resource Auditsyslogaction) error {
 	return c.post("auditsyslogaction", "", nil, payload)
 }
 
-func (c *NitroClient) RenameAuditsyslogaction(name string, newName string) error {
-	payload := rename_auditsyslogaction_payload{
-		rename_auditsyslogaction{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_auditsyslogaction_result struct {
+	Results []Auditsyslogaction `json:"auditsyslogaction"`
+}
 
-	return c.post("auditsyslogaction", "", qs, payload)
+func (c *NitroClient) ListAuditsyslogaction() ([]Auditsyslogaction, error) {
+	results := list_auditsyslogaction_result{}
+
+	if err := c.get("auditsyslogaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_auditsyslogaction_result struct {
+	Results []Auditsyslogaction `json:"auditsyslogaction"`
+}
+
+func (c *NitroClient) GetAuditsyslogaction(key AuditsyslogactionKey) (*Auditsyslogaction, error) {
+	var results get_auditsyslogaction_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("auditsyslogaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one auditsyslogaction element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("auditsyslogaction element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_auditsyslogaction_result struct {
+	Results []Count `json:"auditsyslogaction"`
 }
 
 func (c *NitroClient) CountAuditsyslogaction() (int, error) {
@@ -157,10 +135,12 @@ func (c *NitroClient) CountAuditsyslogaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAuditsyslogaction(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsAuditsyslogaction(key AuditsyslogactionKey) (bool, error) {
 	var results count_auditsyslogaction_result
 
-	id, qs := auditsyslogaction_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -173,79 +153,19 @@ func (c *NitroClient) ExistsAuditsyslogaction(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListAuditsyslogaction() ([]Auditsyslogaction, error) {
-	results := get_auditsyslogaction_result{}
+//      DELETE
 
-	if err := c.get("auditsyslogaction", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetAuditsyslogaction(key string) (*Auditsyslogaction, error) {
-	var results get_auditsyslogaction_result
-
-	id, qs := auditsyslogaction_key_to_id_args(key)
-
-	if err := c.get("auditsyslogaction", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one auditsyslogaction element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("auditsyslogaction element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteAuditsyslogaction(key string) error {
-	id, qs := auditsyslogaction_key_to_id_args(key)
+func (c *NitroClient) DeleteAuditsyslogaction(key AuditsyslogactionKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("auditsyslogaction", id, qs)
 }
 
-func (c *NitroClient) UnsetAuditsyslogaction(unset AuditsyslogactionUnset) error {
-	payload := unset_auditsyslogaction_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("auditsyslogaction", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateAuditsyslogaction(resource Auditsyslogaction) error {
-	payload := update_auditsyslogaction_payload{
-		update_auditsyslogaction{
-			resource.Name,
-			resource.Serverip,
-			resource.Serverdomainname,
-			resource.Domainresolveretry,
-			resource.Serverport,
-			resource.Loglevel,
-			resource.Dateformat,
-			resource.Logfacility,
-			resource.Tcp,
-			resource.Acl,
-			resource.Timezone,
-			resource.Userdefinedauditlog,
-			resource.Appflowexport,
-			resource.Lsn,
-			resource.Alg,
-			resource.Subscriberlog,
-			resource.Sslinterception,
-			resource.Lbvservername,
-			resource.Tcpprofilename,
-			resource.Maxlogdatasizetohold,
-			resource.Dns,
-			resource.Netprofile,
-		},
-	}
-
-	return c.put("auditsyslogaction", "", nil, payload)
-}
+//      RENAME
+//      TODO

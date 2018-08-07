@@ -7,62 +7,45 @@ import (
 )
 
 type Videooptimizationaction struct {
-	Name    string `json:"name"`
 	Comment string `json:"comment,omitempty"`
+	Name    string `json:"name,omitempty"`
 	Rate    int    `json:"rate,omitempty"`
 	Type    string `json:"type,omitempty"`
 }
 
-func videooptimizationaction_key_to_id_args(key string) (string, map[string]string) {
+type VideooptimizationactionKey struct {
+	Name string
+}
+
+func (resource Videooptimizationaction) ToKey() VideooptimizationactionKey {
+	key := VideooptimizationactionKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key VideooptimizationactionKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type VideooptimizationactionUnset struct {
-	Name    string `json:"name"`
-	Type    bool   `json:"type,omitempty"`
-	Rate    bool   `json:"rate,omitempty"`
-	Comment bool   `json:"comment,omitempty"`
-}
-
-type update_videooptimizationaction struct {
-	Name    string `json:"name"`
-	Type    string `json:"type,omitempty"`
-	Rate    int    `json:"rate,omitempty"`
-	Comment string `json:"comment,omitempty"`
-}
-
-type rename_videooptimizationaction struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_videooptimizationaction_payload struct {
 	Resource Videooptimizationaction `json:"videooptimizationaction"`
-}
-
-type rename_videooptimizationaction_payload struct {
-	Rename rename_videooptimizationaction `json:"videooptimizationaction"`
-}
-
-type unset_videooptimizationaction_payload struct {
-	Unset VideooptimizationactionUnset `json:"videooptimizationaction"`
-}
-
-type update_videooptimizationaction_payload struct {
-	Update update_videooptimizationaction `json:"videooptimizationaction"`
-}
-
-type get_videooptimizationaction_result struct {
-	Results []Videooptimizationaction `json:"videooptimizationaction"`
-}
-
-type count_videooptimizationaction_result struct {
-	Results []Count `json:"videooptimizationaction"`
 }
 
 func (c *NitroClient) AddVideooptimizationaction(resource Videooptimizationaction) error {
@@ -73,19 +56,50 @@ func (c *NitroClient) AddVideooptimizationaction(resource Videooptimizationactio
 	return c.post("videooptimizationaction", "", nil, payload)
 }
 
-func (c *NitroClient) RenameVideooptimizationaction(name string, newName string) error {
-	payload := rename_videooptimizationaction_payload{
-		rename_videooptimizationaction{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_videooptimizationaction_result struct {
+	Results []Videooptimizationaction `json:"videooptimizationaction"`
+}
 
-	return c.post("videooptimizationaction", "", qs, payload)
+func (c *NitroClient) ListVideooptimizationaction() ([]Videooptimizationaction, error) {
+	results := list_videooptimizationaction_result{}
+
+	if err := c.get("videooptimizationaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_videooptimizationaction_result struct {
+	Results []Videooptimizationaction `json:"videooptimizationaction"`
+}
+
+func (c *NitroClient) GetVideooptimizationaction(key VideooptimizationactionKey) (*Videooptimizationaction, error) {
+	var results get_videooptimizationaction_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("videooptimizationaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one videooptimizationaction element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("videooptimizationaction element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_videooptimizationaction_result struct {
+	Results []Count `json:"videooptimizationaction"`
 }
 
 func (c *NitroClient) CountVideooptimizationaction() (int, error) {
@@ -102,10 +116,12 @@ func (c *NitroClient) CountVideooptimizationaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsVideooptimizationaction(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsVideooptimizationaction(key VideooptimizationactionKey) (bool, error) {
 	var results count_videooptimizationaction_result
 
-	id, qs := videooptimizationaction_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -118,61 +134,19 @@ func (c *NitroClient) ExistsVideooptimizationaction(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListVideooptimizationaction() ([]Videooptimizationaction, error) {
-	results := get_videooptimizationaction_result{}
+//      DELETE
 
-	if err := c.get("videooptimizationaction", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetVideooptimizationaction(key string) (*Videooptimizationaction, error) {
-	var results get_videooptimizationaction_result
-
-	id, qs := videooptimizationaction_key_to_id_args(key)
-
-	if err := c.get("videooptimizationaction", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one videooptimizationaction element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("videooptimizationaction element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteVideooptimizationaction(key string) error {
-	id, qs := videooptimizationaction_key_to_id_args(key)
+func (c *NitroClient) DeleteVideooptimizationaction(key VideooptimizationactionKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("videooptimizationaction", id, qs)
 }
 
-func (c *NitroClient) UnsetVideooptimizationaction(unset VideooptimizationactionUnset) error {
-	payload := unset_videooptimizationaction_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("videooptimizationaction", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateVideooptimizationaction(resource Videooptimizationaction) error {
-	payload := update_videooptimizationaction_payload{
-		update_videooptimizationaction{
-			resource.Name,
-			resource.Type,
-			resource.Rate,
-			resource.Comment,
-		},
-	}
-
-	return c.put("videooptimizationaction", "", nil, payload)
-}
+//      RENAME
+//      TODO

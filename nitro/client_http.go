@@ -27,7 +27,6 @@ func responseHandler(resp *http.Response) ([]byte, error) {
 		"404 Not Found", "405 Method Not Allowed", "406 Not Acceptable",
 		"503 Service Unavailable", "599 Netscaler specific error":
 		body, _ := ioutil.ReadAll(resp.Body)
-		log.Println("[INFO] go-nitro: error = " + string(body))
 		return body, errors.New("failed: " + resp.Status + " (" + string(body) + ")")
 	default:
 		body, err := ioutil.ReadAll(resp.Body)
@@ -64,8 +63,6 @@ func (c *NitroClient) doHTTPRequest(method string, url string, bytes *bytes.Buff
 		return []byte{}, err
 	}
 
-	log.Println("[DEBUG] go-nitro: response Status:", resp.Status)
-
 	ret, err := responseHandler(resp)
 
 	return ret, err
@@ -91,7 +88,7 @@ func make_url(resourceType string, resourceId string, qs map[string]string) stri
 			url = url + "?" + strings.Join(args, "&")
 		}
 	}
-
+	log.Println(url)
 	return url
 }
 

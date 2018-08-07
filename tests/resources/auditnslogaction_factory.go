@@ -7,10 +7,9 @@ import (
 
 func setup_auditnslogaction(t *testing.T, client *nitro.NitroClient) (*nitro.Auditnslogaction, func()) {
 	resource := nitro.Auditnslogaction{
-		Name:       "auditnslogaction",
-		Serverip:   "1.3.5.7",
-		Serverport: 1234,
-		// Loglevel: [ "ALL" ],
+		Name:                "auditnslogaction",
+		Serverip:            "1.3.5.7",
+		Serverport:          1234,
 		Dateformat:          "MMDDYYYY",
 		Logfacility:         "LOCAL0",
 		Tcp:                 "ALL",

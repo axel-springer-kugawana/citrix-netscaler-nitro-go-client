@@ -7,59 +7,44 @@ import (
 )
 
 type Authorizationpolicy struct {
-	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
+	Name   string `json:"name,omitempty"`
 	Rule   string `json:"rule,omitempty"`
 }
 
-func authorizationpolicy_key_to_id_args(key string) (string, map[string]string) {
+type AuthorizationpolicyKey struct {
+	Name string
+}
+
+func (resource Authorizationpolicy) ToKey() AuthorizationpolicyKey {
+	key := AuthorizationpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key AuthorizationpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type AuthorizationpolicyUnset struct {
-	Name   string `json:"name"`
-	Rule   bool   `json:"rule,omitempty"`
-	Action bool   `json:"action,omitempty"`
-}
-
-type update_authorizationpolicy struct {
-	Name   string `json:"name"`
-	Rule   string `json:"rule,omitempty"`
-	Action string `json:"action,omitempty"`
-}
-
-type rename_authorizationpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_authorizationpolicy_payload struct {
 	Resource Authorizationpolicy `json:"authorizationpolicy"`
-}
-
-type rename_authorizationpolicy_payload struct {
-	Rename rename_authorizationpolicy `json:"authorizationpolicy"`
-}
-
-type unset_authorizationpolicy_payload struct {
-	Unset AuthorizationpolicyUnset `json:"authorizationpolicy"`
-}
-
-type update_authorizationpolicy_payload struct {
-	Update update_authorizationpolicy `json:"authorizationpolicy"`
-}
-
-type get_authorizationpolicy_result struct {
-	Results []Authorizationpolicy `json:"authorizationpolicy"`
-}
-
-type count_authorizationpolicy_result struct {
-	Results []Count `json:"authorizationpolicy"`
 }
 
 func (c *NitroClient) AddAuthorizationpolicy(resource Authorizationpolicy) error {
@@ -70,19 +55,50 @@ func (c *NitroClient) AddAuthorizationpolicy(resource Authorizationpolicy) error
 	return c.post("authorizationpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameAuthorizationpolicy(name string, newName string) error {
-	payload := rename_authorizationpolicy_payload{
-		rename_authorizationpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_authorizationpolicy_result struct {
+	Results []Authorizationpolicy `json:"authorizationpolicy"`
+}
 
-	return c.post("authorizationpolicy", "", qs, payload)
+func (c *NitroClient) ListAuthorizationpolicy() ([]Authorizationpolicy, error) {
+	results := list_authorizationpolicy_result{}
+
+	if err := c.get("authorizationpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_authorizationpolicy_result struct {
+	Results []Authorizationpolicy `json:"authorizationpolicy"`
+}
+
+func (c *NitroClient) GetAuthorizationpolicy(key AuthorizationpolicyKey) (*Authorizationpolicy, error) {
+	var results get_authorizationpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("authorizationpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one authorizationpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("authorizationpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_authorizationpolicy_result struct {
+	Results []Count `json:"authorizationpolicy"`
 }
 
 func (c *NitroClient) CountAuthorizationpolicy() (int, error) {
@@ -99,10 +115,12 @@ func (c *NitroClient) CountAuthorizationpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAuthorizationpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsAuthorizationpolicy(key AuthorizationpolicyKey) (bool, error) {
 	var results count_authorizationpolicy_result
 
-	id, qs := authorizationpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -115,60 +133,19 @@ func (c *NitroClient) ExistsAuthorizationpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListAuthorizationpolicy() ([]Authorizationpolicy, error) {
-	results := get_authorizationpolicy_result{}
+//      DELETE
 
-	if err := c.get("authorizationpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetAuthorizationpolicy(key string) (*Authorizationpolicy, error) {
-	var results get_authorizationpolicy_result
-
-	id, qs := authorizationpolicy_key_to_id_args(key)
-
-	if err := c.get("authorizationpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one authorizationpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("authorizationpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteAuthorizationpolicy(key string) error {
-	id, qs := authorizationpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteAuthorizationpolicy(key AuthorizationpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("authorizationpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetAuthorizationpolicy(unset AuthorizationpolicyUnset) error {
-	payload := unset_authorizationpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("authorizationpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateAuthorizationpolicy(resource Authorizationpolicy) error {
-	payload := update_authorizationpolicy_payload{
-		update_authorizationpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-		},
-	}
-
-	return c.put("authorizationpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

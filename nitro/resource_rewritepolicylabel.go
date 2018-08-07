@@ -7,39 +7,44 @@ import (
 )
 
 type Rewritepolicylabel struct {
-	Labelname string `json:"labelname"`
 	Comment   string `json:"comment,omitempty"`
+	Labelname string `json:"labelname,omitempty"`
 	Transform string `json:"transform,omitempty"`
 }
 
-func rewritepolicylabel_key_to_id_args(key string) (string, map[string]string) {
+type RewritepolicylabelKey struct {
+	Labelname string
+}
+
+func (resource Rewritepolicylabel) ToKey() RewritepolicylabelKey {
+	key := RewritepolicylabelKey{
+		resource.Labelname,
+	}
+
+	return key
+}
+
+func (key RewritepolicylabelKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Labelname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type rename_rewritepolicylabel struct {
-	Name    string `json:"labelname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_rewritepolicylabel_payload struct {
 	Resource Rewritepolicylabel `json:"rewritepolicylabel"`
-}
-
-type rename_rewritepolicylabel_payload struct {
-	Rename rename_rewritepolicylabel `json:"rewritepolicylabel"`
-}
-
-type get_rewritepolicylabel_result struct {
-	Results []Rewritepolicylabel `json:"rewritepolicylabel"`
-}
-
-type count_rewritepolicylabel_result struct {
-	Results []Count `json:"rewritepolicylabel"`
 }
 
 func (c *NitroClient) AddRewritepolicylabel(resource Rewritepolicylabel) error {
@@ -50,19 +55,50 @@ func (c *NitroClient) AddRewritepolicylabel(resource Rewritepolicylabel) error {
 	return c.post("rewritepolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameRewritepolicylabel(name string, newName string) error {
-	payload := rename_rewritepolicylabel_payload{
-		rename_rewritepolicylabel{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_rewritepolicylabel_result struct {
+	Results []Rewritepolicylabel `json:"rewritepolicylabel"`
+}
 
-	return c.post("rewritepolicylabel", "", qs, payload)
+func (c *NitroClient) ListRewritepolicylabel() ([]Rewritepolicylabel, error) {
+	results := list_rewritepolicylabel_result{}
+
+	if err := c.get("rewritepolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_rewritepolicylabel_result struct {
+	Results []Rewritepolicylabel `json:"rewritepolicylabel"`
+}
+
+func (c *NitroClient) GetRewritepolicylabel(key RewritepolicylabelKey) (*Rewritepolicylabel, error) {
+	var results get_rewritepolicylabel_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("rewritepolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one rewritepolicylabel element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("rewritepolicylabel element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_rewritepolicylabel_result struct {
+	Results []Count `json:"rewritepolicylabel"`
 }
 
 func (c *NitroClient) CountRewritepolicylabel() (int, error) {
@@ -79,10 +115,12 @@ func (c *NitroClient) CountRewritepolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsRewritepolicylabel(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsRewritepolicylabel(key RewritepolicylabelKey) (bool, error) {
 	var results count_rewritepolicylabel_result
 
-	id, qs := rewritepolicylabel_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -95,36 +133,13 @@ func (c *NitroClient) ExistsRewritepolicylabel(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListRewritepolicylabel() ([]Rewritepolicylabel, error) {
-	results := get_rewritepolicylabel_result{}
+//      DELETE
 
-	if err := c.get("rewritepolicylabel", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetRewritepolicylabel(key string) (*Rewritepolicylabel, error) {
-	var results get_rewritepolicylabel_result
-
-	id, qs := rewritepolicylabel_key_to_id_args(key)
-
-	if err := c.get("rewritepolicylabel", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one rewritepolicylabel element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("rewritepolicylabel element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteRewritepolicylabel(key string) error {
-	id, qs := rewritepolicylabel_key_to_id_args(key)
+func (c *NitroClient) DeleteRewritepolicylabel(key RewritepolicylabelKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("rewritepolicylabel", id, qs)
 }
+
+//      RENAME
+//      TODO

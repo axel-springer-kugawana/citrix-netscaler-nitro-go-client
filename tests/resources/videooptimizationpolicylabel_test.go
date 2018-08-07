@@ -16,28 +16,12 @@ func TestVideooptimizationpolicylabel(t *testing.T) {
 		return
 	}
 
+	key := resource.ToKey()
+
 	log.Print("--ADD--")
 	err := client.AddVideooptimizationpolicylabel(*resource)
 
 	assert.NoError(t, err)
-
-	log.Print("--EXISTS--")
-	exists, err := client.ExistsVideooptimizationpolicylabel(resource.Labelname + "-unknown")
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, false)
-
-	log.Print("--EXISTS--")
-	exists, err = client.ExistsVideooptimizationpolicylabel(resource.Labelname)
-
-	assert.NoError(t, err)
-	assert.Equal(t, exists, true)
-
-	log.Print("--GET--")
-	res, err := client.GetVideooptimizationpolicylabel(resource.Labelname)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, res)
 
 	log.Print("--LIST--")
 	list, err := client.ListVideooptimizationpolicylabel()
@@ -45,19 +29,29 @@ func TestVideooptimizationpolicylabel(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 
-	// err = client.UpdateVideooptimizationpolicylabel(*resource)
-
-	// assert.NoError(t, err)
-
-	log.Print("--RENAME--")
-	err = client.RenameVideooptimizationpolicylabel(resource.Labelname, resource.Labelname+"-rename")
+	log.Print("--GET--")
+	res, err := client.GetVideooptimizationpolicylabel(key)
 
 	assert.NoError(t, err)
+	assert.NotNil(t, res)
+
+	log.Print("--COUNT--")
+	count, err := client.CountVideooptimizationpolicylabel()
+
+	assert.NoError(t, err)
+	assert.NotZero(t, count)
+
+	log.Print("--EXISTS--")
+	exists, err := client.ExistsVideooptimizationpolicylabel(key)
+
+	assert.NoError(t, err)
+	assert.Equal(t, exists, true)
 
 	log.Print("--DELETE--")
-	err = client.DeleteVideooptimizationpolicylabel(resource.Labelname + "-rename")
+	err = client.DeleteVideooptimizationpolicylabel(key)
 
 	assert.NoError(t, err)
+
 	if tearDown != nil {
 		tearDown()
 	}

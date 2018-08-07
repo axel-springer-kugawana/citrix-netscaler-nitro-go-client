@@ -7,38 +7,43 @@ import (
 )
 
 type Cmppolicylabel struct {
-	Labelname string `json:"labelname"`
+	Labelname string `json:"labelname,omitempty"`
 	Type      string `json:"type,omitempty"`
 }
 
-func cmppolicylabel_key_to_id_args(key string) (string, map[string]string) {
+type CmppolicylabelKey struct {
+	Labelname string
+}
+
+func (resource Cmppolicylabel) ToKey() CmppolicylabelKey {
+	key := CmppolicylabelKey{
+		resource.Labelname,
+	}
+
+	return key
+}
+
+func (key CmppolicylabelKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Labelname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type rename_cmppolicylabel struct {
-	Name    string `json:"labelname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_cmppolicylabel_payload struct {
 	Resource Cmppolicylabel `json:"cmppolicylabel"`
-}
-
-type rename_cmppolicylabel_payload struct {
-	Rename rename_cmppolicylabel `json:"cmppolicylabel"`
-}
-
-type get_cmppolicylabel_result struct {
-	Results []Cmppolicylabel `json:"cmppolicylabel"`
-}
-
-type count_cmppolicylabel_result struct {
-	Results []Count `json:"cmppolicylabel"`
 }
 
 func (c *NitroClient) AddCmppolicylabel(resource Cmppolicylabel) error {
@@ -49,19 +54,50 @@ func (c *NitroClient) AddCmppolicylabel(resource Cmppolicylabel) error {
 	return c.post("cmppolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCmppolicylabel(name string, newName string) error {
-	payload := rename_cmppolicylabel_payload{
-		rename_cmppolicylabel{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_cmppolicylabel_result struct {
+	Results []Cmppolicylabel `json:"cmppolicylabel"`
+}
 
-	return c.post("cmppolicylabel", "", qs, payload)
+func (c *NitroClient) ListCmppolicylabel() ([]Cmppolicylabel, error) {
+	results := list_cmppolicylabel_result{}
+
+	if err := c.get("cmppolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_cmppolicylabel_result struct {
+	Results []Cmppolicylabel `json:"cmppolicylabel"`
+}
+
+func (c *NitroClient) GetCmppolicylabel(key CmppolicylabelKey) (*Cmppolicylabel, error) {
+	var results get_cmppolicylabel_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("cmppolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cmppolicylabel element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("cmppolicylabel element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_cmppolicylabel_result struct {
+	Results []Count `json:"cmppolicylabel"`
 }
 
 func (c *NitroClient) CountCmppolicylabel() (int, error) {
@@ -78,10 +114,12 @@ func (c *NitroClient) CountCmppolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCmppolicylabel(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsCmppolicylabel(key CmppolicylabelKey) (bool, error) {
 	var results count_cmppolicylabel_result
 
-	id, qs := cmppolicylabel_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -94,36 +132,13 @@ func (c *NitroClient) ExistsCmppolicylabel(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListCmppolicylabel() ([]Cmppolicylabel, error) {
-	results := get_cmppolicylabel_result{}
+//      DELETE
 
-	if err := c.get("cmppolicylabel", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetCmppolicylabel(key string) (*Cmppolicylabel, error) {
-	var results get_cmppolicylabel_result
-
-	id, qs := cmppolicylabel_key_to_id_args(key)
-
-	if err := c.get("cmppolicylabel", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one cmppolicylabel element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("cmppolicylabel element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteCmppolicylabel(key string) error {
-	id, qs := cmppolicylabel_key_to_id_args(key)
+func (c *NitroClient) DeleteCmppolicylabel(key CmppolicylabelKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("cmppolicylabel", id, qs)
 }
+
+//      RENAME
+//      TODO

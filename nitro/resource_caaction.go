@@ -7,65 +7,46 @@ import (
 )
 
 type Caaction struct {
-	Name         string `json:"name"`
 	Accumressize int    `json:"accumressize,string,omitempty"`
 	Comment      string `json:"comment,omitempty"`
 	Lbvserver    string `json:"lbvserver,omitempty"`
+	Name         string `json:"name,omitempty"`
 	Type         string `json:"type,omitempty"`
 }
 
-func caaction_key_to_id_args(key string) (string, map[string]string) {
+type CaactionKey struct {
+	Name string
+}
+
+func (resource Caaction) ToKey() CaactionKey {
+	key := CaactionKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key CaactionKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type CaactionUnset struct {
-	Name         string `json:"name"`
-	Accumressize bool   `json:"accumressize,omitempty"`
-	Lbvserver    bool   `json:"lbvserver,omitempty"`
-	Comment      bool   `json:"comment,omitempty"`
-	Type         bool   `json:"type,omitempty"`
-}
-
-type update_caaction struct {
-	Name         string `json:"name"`
-	Accumressize int    `json:"accumressize,string,omitempty"`
-	Lbvserver    string `json:"lbvserver,omitempty"`
-	Comment      string `json:"comment,omitempty"`
-	Type         string `json:"type,omitempty"`
-}
-
-type rename_caaction struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_caaction_payload struct {
 	Resource Caaction `json:"caaction"`
-}
-
-type rename_caaction_payload struct {
-	Rename rename_caaction `json:"caaction"`
-}
-
-type unset_caaction_payload struct {
-	Unset CaactionUnset `json:"caaction"`
-}
-
-type update_caaction_payload struct {
-	Update update_caaction `json:"caaction"`
-}
-
-type get_caaction_result struct {
-	Results []Caaction `json:"caaction"`
-}
-
-type count_caaction_result struct {
-	Results []Count `json:"caaction"`
 }
 
 func (c *NitroClient) AddCaaction(resource Caaction) error {
@@ -76,19 +57,50 @@ func (c *NitroClient) AddCaaction(resource Caaction) error {
 	return c.post("caaction", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCaaction(name string, newName string) error {
-	payload := rename_caaction_payload{
-		rename_caaction{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_caaction_result struct {
+	Results []Caaction `json:"caaction"`
+}
 
-	return c.post("caaction", "", qs, payload)
+func (c *NitroClient) ListCaaction() ([]Caaction, error) {
+	results := list_caaction_result{}
+
+	if err := c.get("caaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_caaction_result struct {
+	Results []Caaction `json:"caaction"`
+}
+
+func (c *NitroClient) GetCaaction(key CaactionKey) (*Caaction, error) {
+	var results get_caaction_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("caaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one caaction element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("caaction element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_caaction_result struct {
+	Results []Count `json:"caaction"`
 }
 
 func (c *NitroClient) CountCaaction() (int, error) {
@@ -105,10 +117,12 @@ func (c *NitroClient) CountCaaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCaaction(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsCaaction(key CaactionKey) (bool, error) {
 	var results count_caaction_result
 
-	id, qs := caaction_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -121,62 +135,19 @@ func (c *NitroClient) ExistsCaaction(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListCaaction() ([]Caaction, error) {
-	results := get_caaction_result{}
+//      DELETE
 
-	if err := c.get("caaction", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetCaaction(key string) (*Caaction, error) {
-	var results get_caaction_result
-
-	id, qs := caaction_key_to_id_args(key)
-
-	if err := c.get("caaction", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one caaction element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("caaction element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteCaaction(key string) error {
-	id, qs := caaction_key_to_id_args(key)
+func (c *NitroClient) DeleteCaaction(key CaactionKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("caaction", id, qs)
 }
 
-func (c *NitroClient) UnsetCaaction(unset CaactionUnset) error {
-	payload := unset_caaction_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("caaction", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateCaaction(resource Caaction) error {
-	payload := update_caaction_payload{
-		update_caaction{
-			resource.Name,
-			resource.Accumressize,
-			resource.Lbvserver,
-			resource.Comment,
-			resource.Type,
-		},
-	}
-
-	return c.put("caaction", "", nil, payload)
-}
+//      RENAME
+//      TODO

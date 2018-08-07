@@ -7,59 +7,44 @@ import (
 )
 
 type Dnspolicy64 struct {
-	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
+	Name   string `json:"name,omitempty"`
 	Rule   string `json:"rule,omitempty"`
 }
 
-func dnspolicy64_key_to_id_args(key string) (string, map[string]string) {
+type Dnspolicy64Key struct {
+	Name string
+}
+
+func (resource Dnspolicy64) ToKey() Dnspolicy64Key {
+	key := Dnspolicy64Key{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key Dnspolicy64Key) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type Dnspolicy64Unset struct {
-	Name   string `json:"name"`
-	Rule   bool   `json:"rule,omitempty"`
-	Action bool   `json:"action,omitempty"`
-}
-
-type update_dnspolicy64 struct {
-	Name   string `json:"name"`
-	Rule   string `json:"rule,omitempty"`
-	Action string `json:"action,omitempty"`
-}
-
-type rename_dnspolicy64 struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_dnspolicy64_payload struct {
 	Resource Dnspolicy64 `json:"dnspolicy64"`
-}
-
-type rename_dnspolicy64_payload struct {
-	Rename rename_dnspolicy64 `json:"dnspolicy64"`
-}
-
-type unset_dnspolicy64_payload struct {
-	Unset Dnspolicy64Unset `json:"dnspolicy64"`
-}
-
-type update_dnspolicy64_payload struct {
-	Update update_dnspolicy64 `json:"dnspolicy64"`
-}
-
-type get_dnspolicy64_result struct {
-	Results []Dnspolicy64 `json:"dnspolicy64"`
-}
-
-type count_dnspolicy64_result struct {
-	Results []Count `json:"dnspolicy64"`
 }
 
 func (c *NitroClient) AddDnspolicy64(resource Dnspolicy64) error {
@@ -70,19 +55,50 @@ func (c *NitroClient) AddDnspolicy64(resource Dnspolicy64) error {
 	return c.post("dnspolicy64", "", nil, payload)
 }
 
-func (c *NitroClient) RenameDnspolicy64(name string, newName string) error {
-	payload := rename_dnspolicy64_payload{
-		rename_dnspolicy64{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_dnspolicy64_result struct {
+	Results []Dnspolicy64 `json:"dnspolicy64"`
+}
 
-	return c.post("dnspolicy64", "", qs, payload)
+func (c *NitroClient) ListDnspolicy64() ([]Dnspolicy64, error) {
+	results := list_dnspolicy64_result{}
+
+	if err := c.get("dnspolicy64", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_dnspolicy64_result struct {
+	Results []Dnspolicy64 `json:"dnspolicy64"`
+}
+
+func (c *NitroClient) GetDnspolicy64(key Dnspolicy64Key) (*Dnspolicy64, error) {
+	var results get_dnspolicy64_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("dnspolicy64", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one dnspolicy64 element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("dnspolicy64 element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_dnspolicy64_result struct {
+	Results []Count `json:"dnspolicy64"`
 }
 
 func (c *NitroClient) CountDnspolicy64() (int, error) {
@@ -99,10 +115,12 @@ func (c *NitroClient) CountDnspolicy64() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDnspolicy64(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsDnspolicy64(key Dnspolicy64Key) (bool, error) {
 	var results count_dnspolicy64_result
 
-	id, qs := dnspolicy64_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -115,60 +133,19 @@ func (c *NitroClient) ExistsDnspolicy64(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListDnspolicy64() ([]Dnspolicy64, error) {
-	results := get_dnspolicy64_result{}
+//      DELETE
 
-	if err := c.get("dnspolicy64", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetDnspolicy64(key string) (*Dnspolicy64, error) {
-	var results get_dnspolicy64_result
-
-	id, qs := dnspolicy64_key_to_id_args(key)
-
-	if err := c.get("dnspolicy64", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one dnspolicy64 element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("dnspolicy64 element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteDnspolicy64(key string) error {
-	id, qs := dnspolicy64_key_to_id_args(key)
+func (c *NitroClient) DeleteDnspolicy64(key Dnspolicy64Key) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("dnspolicy64", id, qs)
 }
 
-func (c *NitroClient) UnsetDnspolicy64(unset Dnspolicy64Unset) error {
-	payload := unset_dnspolicy64_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("dnspolicy64", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateDnspolicy64(resource Dnspolicy64) error {
-	payload := update_dnspolicy64_payload{
-		update_dnspolicy64{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-		},
-	}
-
-	return c.put("dnspolicy64", "", nil, payload)
-}
+//      RENAME
+//      TODO

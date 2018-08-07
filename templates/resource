@@ -1,0 +1,152 @@
+package nitro
+
+import (
+        "fmt"
+        "strconv"
+        "strings"
+)
+
+{{template "common" .}}
+
+{{$name := ($.Name|name)}}
+{{$resource := ($.Name|name)}}
+{{$key := (print $resource "Key")}}
+
+//      CREATE
+
+{{template "add_payload" .}}
+
+func (c *NitroClient) Add{{$name}} (resource {{$resource}}) error {
+        payload := add_{{$.Name}}_payload {
+                resource,
+        }
+
+        return c.post("{{$.Name}}", "", nil, payload)
+}
+
+//      LIST
+
+{{template "list_result" .}}
+
+func (c *NitroClient) List{{$name}} () ([]{{$resource}}, error) {
+        results := list_{{$.Name}}_result{}
+        
+	if err := c.get("{{$.Name}}", "", nil, &results); err != nil {
+                return nil, err
+        } else {
+                return results.Results, err
+        }
+}
+
+//      READ
+
+{{template "get_result" .}}
+
+func (c *NitroClient) Get{{$name}} (key {{$key}}) (*{{$resource}}, error) {
+        var results get_{{$.Name}}_result
+        
+        id, qs := key.to_id_args()
+
+	if err := c.get("{{$.Name}}", id, qs, &results); err != nil {
+                return nil, err
+        } else {
+                if len(results.Results) > 1 {
+                        return nil, fmt.Errorf("More than one {{$.Name}} element found")
+                } else if len(results.Results) < 1 {
+                        return nil, fmt.Errorf("{{$.Name}} element not found")
+                }
+
+                return &results.Results[0], nil
+        }
+}
+
+//      COUNT
+
+{{template "count_result" .}}
+
+func (c *NitroClient) Count{{$name}} () (int, error) {
+        var results count_{{$.Name}}_result
+        
+        qs := map[string]string {
+                "count": "yes",
+        }
+
+	if err := c.get("{{$.Name}}", "", qs, &results); err != nil {
+                return -1, err
+        } else {
+                return results.Results[0].Count, err
+        }
+}
+
+//      EXISTS
+
+func (c *NitroClient) Exists{{$name}} (key {{$key}}) (bool, error) {
+        var results count_{{$.Name}}_result
+        
+        id, qs := key.to_id_args()
+
+        qs["count"] = "yes"
+
+	if err := c.get("{{$.Name}}", id, qs, &results); err != nil {
+                // TODO : detect 404
+                // return false, err
+                return false, nil
+        } else {
+                return results.Results[0].Count == 1, nil
+        }
+}
+
+//      DELETE
+
+func (c *NitroClient) Delete{{$name}} (key {{$key}}) error {
+        id, qs := key.to_id_args()
+
+        return c.delete("{{$.Name}}", id, qs)
+}
+
+{{if (is_in "update" $.Schema.Operations)}}
+//      UPDATE
+//      TODO
+{{end}}
+
+{{if (is_in "unset" $.Schema.Operations)}}
+//      UNSET
+//      TODO
+{{end}}
+
+{{if (is_in "rename" $.Schema.Operations)}}
+//      RENAME
+//      TODO
+{{end}}
+
+{{if (is_in "enable" $.Schema.Operations)}}
+//      ENABLE
+
+{{template "state_payload" .}}
+
+func (c *NitroClient) Enable{{$name}} (key {{$key}}) error {
+        payload := state_{{$.Name}}_payload {
+                key,
+        }
+
+        qs := map[string]string {
+                "action": "enable",
+        }
+
+        return c.post("{{$.Name}}", "", qs, payload)
+}
+
+//      DISABLE
+
+func (c *NitroClient) Disable{{$name}} (key {{$key}}) error {
+        payload := state_{{$.Name}}_payload {
+                key,
+        }
+
+        qs := map[string]string {
+                "action": "disable",
+        }
+
+        return c.post("{{$.Name}}", "", qs, payload)
+}
+{{end}}

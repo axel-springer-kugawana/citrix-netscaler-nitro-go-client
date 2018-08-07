@@ -7,38 +7,43 @@ import (
 )
 
 type Cachepolicylabel struct {
-	Labelname string `json:"labelname"`
 	Evaluates string `json:"evaluates,omitempty"`
+	Labelname string `json:"labelname,omitempty"`
 }
 
-func cachepolicylabel_key_to_id_args(key string) (string, map[string]string) {
+type CachepolicylabelKey struct {
+	Labelname string
+}
+
+func (resource Cachepolicylabel) ToKey() CachepolicylabelKey {
+	key := CachepolicylabelKey{
+		resource.Labelname,
+	}
+
+	return key
+}
+
+func (key CachepolicylabelKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Labelname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type rename_cachepolicylabel struct {
-	Name    string `json:"labelname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_cachepolicylabel_payload struct {
 	Resource Cachepolicylabel `json:"cachepolicylabel"`
-}
-
-type rename_cachepolicylabel_payload struct {
-	Rename rename_cachepolicylabel `json:"cachepolicylabel"`
-}
-
-type get_cachepolicylabel_result struct {
-	Results []Cachepolicylabel `json:"cachepolicylabel"`
-}
-
-type count_cachepolicylabel_result struct {
-	Results []Count `json:"cachepolicylabel"`
 }
 
 func (c *NitroClient) AddCachepolicylabel(resource Cachepolicylabel) error {
@@ -49,19 +54,50 @@ func (c *NitroClient) AddCachepolicylabel(resource Cachepolicylabel) error {
 	return c.post("cachepolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCachepolicylabel(name string, newName string) error {
-	payload := rename_cachepolicylabel_payload{
-		rename_cachepolicylabel{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_cachepolicylabel_result struct {
+	Results []Cachepolicylabel `json:"cachepolicylabel"`
+}
 
-	return c.post("cachepolicylabel", "", qs, payload)
+func (c *NitroClient) ListCachepolicylabel() ([]Cachepolicylabel, error) {
+	results := list_cachepolicylabel_result{}
+
+	if err := c.get("cachepolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_cachepolicylabel_result struct {
+	Results []Cachepolicylabel `json:"cachepolicylabel"`
+}
+
+func (c *NitroClient) GetCachepolicylabel(key CachepolicylabelKey) (*Cachepolicylabel, error) {
+	var results get_cachepolicylabel_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("cachepolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cachepolicylabel element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("cachepolicylabel element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_cachepolicylabel_result struct {
+	Results []Count `json:"cachepolicylabel"`
 }
 
 func (c *NitroClient) CountCachepolicylabel() (int, error) {
@@ -78,10 +114,12 @@ func (c *NitroClient) CountCachepolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCachepolicylabel(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsCachepolicylabel(key CachepolicylabelKey) (bool, error) {
 	var results count_cachepolicylabel_result
 
-	id, qs := cachepolicylabel_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -94,36 +132,13 @@ func (c *NitroClient) ExistsCachepolicylabel(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListCachepolicylabel() ([]Cachepolicylabel, error) {
-	results := get_cachepolicylabel_result{}
+//      DELETE
 
-	if err := c.get("cachepolicylabel", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetCachepolicylabel(key string) (*Cachepolicylabel, error) {
-	var results get_cachepolicylabel_result
-
-	id, qs := cachepolicylabel_key_to_id_args(key)
-
-	if err := c.get("cachepolicylabel", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one cachepolicylabel element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("cachepolicylabel element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteCachepolicylabel(key string) error {
-	id, qs := cachepolicylabel_key_to_id_args(key)
+func (c *NitroClient) DeleteCachepolicylabel(key CachepolicylabelKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("cachepolicylabel", id, qs)
 }
+
+//      RENAME
+//      TODO

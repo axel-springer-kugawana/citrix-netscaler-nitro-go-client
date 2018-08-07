@@ -7,10 +7,10 @@ import (
 )
 
 type Lbgroup struct {
-	Name                     string `json:"name"`
 	Backuppersistencetimeout int    `json:"backuppersistencetimeout,string,omitempty"`
 	Cookiedomain             string `json:"cookiedomain,omitempty"`
 	Cookiename               string `json:"cookiename,omitempty"`
+	Name                     string `json:"name,omitempty"`
 	Persistencebackup        string `json:"persistencebackup,omitempty"`
 	Persistencetype          string `json:"persistencetype,omitempty"`
 	Persistmask              string `json:"persistmask,omitempty"`
@@ -20,70 +20,39 @@ type Lbgroup struct {
 	V6persistmasklen         int    `json:"v6persistmasklen,string,omitempty"`
 }
 
-func lbgroup_key_to_id_args(key string) (string, map[string]string) {
+type LbgroupKey struct {
+	Name string
+}
+
+func (resource Lbgroup) ToKey() LbgroupKey {
+	key := LbgroupKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key LbgroupKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type LbgroupUnset struct {
-	Name                     string `json:"name"`
-	Persistencetype          bool   `json:"persistencetype,omitempty"`
-	Persistencebackup        bool   `json:"persistencebackup,omitempty"`
-	Backuppersistencetimeout bool   `json:"backuppersistencetimeout,omitempty"`
-	Persistmask              bool   `json:"persistmask,omitempty"`
-	Cookiename               bool   `json:"cookiename,omitempty"`
-	V6persistmasklen         bool   `json:"v6persistmasklen,omitempty"`
-	Cookiedomain             bool   `json:"cookiedomain,omitempty"`
-	Timeout                  bool   `json:"timeout,omitempty"`
-	Rule                     bool   `json:"rule,omitempty"`
-	Usevserverpersistency    bool   `json:"usevserverpersistency,omitempty"`
-}
-
-type update_lbgroup struct {
-	Name                     string `json:"name"`
-	Persistencetype          string `json:"persistencetype,omitempty"`
-	Persistencebackup        string `json:"persistencebackup,omitempty"`
-	Backuppersistencetimeout int    `json:"backuppersistencetimeout,string,omitempty"`
-	Persistmask              string `json:"persistmask,omitempty"`
-	Cookiename               string `json:"cookiename,omitempty"`
-	V6persistmasklen         int    `json:"v6persistmasklen,string,omitempty"`
-	Cookiedomain             string `json:"cookiedomain,omitempty"`
-	Timeout                  int    `json:"timeout,string,omitempty"`
-	Rule                     string `json:"rule,omitempty"`
-	Usevserverpersistency    string `json:"usevserverpersistency,omitempty"`
-}
-
-type rename_lbgroup struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_lbgroup_payload struct {
 	Resource Lbgroup `json:"lbgroup"`
-}
-
-type rename_lbgroup_payload struct {
-	Rename rename_lbgroup `json:"lbgroup"`
-}
-
-type unset_lbgroup_payload struct {
-	Unset LbgroupUnset `json:"lbgroup"`
-}
-
-type update_lbgroup_payload struct {
-	Update update_lbgroup `json:"lbgroup"`
-}
-
-type get_lbgroup_result struct {
-	Results []Lbgroup `json:"lbgroup"`
-}
-
-type count_lbgroup_result struct {
-	Results []Count `json:"lbgroup"`
 }
 
 func (c *NitroClient) AddLbgroup(resource Lbgroup) error {
@@ -94,19 +63,50 @@ func (c *NitroClient) AddLbgroup(resource Lbgroup) error {
 	return c.post("lbgroup", "", nil, payload)
 }
 
-func (c *NitroClient) RenameLbgroup(name string, newName string) error {
-	payload := rename_lbgroup_payload{
-		rename_lbgroup{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_lbgroup_result struct {
+	Results []Lbgroup `json:"lbgroup"`
+}
 
-	return c.post("lbgroup", "", qs, payload)
+func (c *NitroClient) ListLbgroup() ([]Lbgroup, error) {
+	results := list_lbgroup_result{}
+
+	if err := c.get("lbgroup", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_lbgroup_result struct {
+	Results []Lbgroup `json:"lbgroup"`
+}
+
+func (c *NitroClient) GetLbgroup(key LbgroupKey) (*Lbgroup, error) {
+	var results get_lbgroup_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("lbgroup", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one lbgroup element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("lbgroup element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_lbgroup_result struct {
+	Results []Count `json:"lbgroup"`
 }
 
 func (c *NitroClient) CountLbgroup() (int, error) {
@@ -123,10 +123,12 @@ func (c *NitroClient) CountLbgroup() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbgroup(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsLbgroup(key LbgroupKey) (bool, error) {
 	var results count_lbgroup_result
 
-	id, qs := lbgroup_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -139,68 +141,19 @@ func (c *NitroClient) ExistsLbgroup(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListLbgroup() ([]Lbgroup, error) {
-	results := get_lbgroup_result{}
+//      DELETE
 
-	if err := c.get("lbgroup", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetLbgroup(key string) (*Lbgroup, error) {
-	var results get_lbgroup_result
-
-	id, qs := lbgroup_key_to_id_args(key)
-
-	if err := c.get("lbgroup", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one lbgroup element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("lbgroup element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteLbgroup(key string) error {
-	id, qs := lbgroup_key_to_id_args(key)
+func (c *NitroClient) DeleteLbgroup(key LbgroupKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("lbgroup", id, qs)
 }
 
-func (c *NitroClient) UnsetLbgroup(unset LbgroupUnset) error {
-	payload := unset_lbgroup_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("lbgroup", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateLbgroup(resource Lbgroup) error {
-	payload := update_lbgroup_payload{
-		update_lbgroup{
-			resource.Name,
-			resource.Persistencetype,
-			resource.Persistencebackup,
-			resource.Backuppersistencetimeout,
-			resource.Persistmask,
-			resource.Cookiename,
-			resource.V6persistmasklen,
-			resource.Cookiedomain,
-			resource.Timeout,
-			resource.Rule,
-			resource.Usevserverpersistency,
-		},
-	}
-
-	return c.put("lbgroup", "", nil, payload)
-}
+//      RENAME
+//      TODO

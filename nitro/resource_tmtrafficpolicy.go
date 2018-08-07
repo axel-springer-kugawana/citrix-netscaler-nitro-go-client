@@ -7,59 +7,44 @@ import (
 )
 
 type Tmtrafficpolicy struct {
-	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
+	Name   string `json:"name,omitempty"`
 	Rule   string `json:"rule,omitempty"`
 }
 
-func tmtrafficpolicy_key_to_id_args(key string) (string, map[string]string) {
+type TmtrafficpolicyKey struct {
+	Name string
+}
+
+func (resource Tmtrafficpolicy) ToKey() TmtrafficpolicyKey {
+	key := TmtrafficpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key TmtrafficpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type TmtrafficpolicyUnset struct {
-	Name   string `json:"name"`
-	Rule   bool   `json:"rule,omitempty"`
-	Action bool   `json:"action,omitempty"`
-}
-
-type update_tmtrafficpolicy struct {
-	Name   string `json:"name"`
-	Rule   string `json:"rule,omitempty"`
-	Action string `json:"action,omitempty"`
-}
-
-type rename_tmtrafficpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_tmtrafficpolicy_payload struct {
 	Resource Tmtrafficpolicy `json:"tmtrafficpolicy"`
-}
-
-type rename_tmtrafficpolicy_payload struct {
-	Rename rename_tmtrafficpolicy `json:"tmtrafficpolicy"`
-}
-
-type unset_tmtrafficpolicy_payload struct {
-	Unset TmtrafficpolicyUnset `json:"tmtrafficpolicy"`
-}
-
-type update_tmtrafficpolicy_payload struct {
-	Update update_tmtrafficpolicy `json:"tmtrafficpolicy"`
-}
-
-type get_tmtrafficpolicy_result struct {
-	Results []Tmtrafficpolicy `json:"tmtrafficpolicy"`
-}
-
-type count_tmtrafficpolicy_result struct {
-	Results []Count `json:"tmtrafficpolicy"`
 }
 
 func (c *NitroClient) AddTmtrafficpolicy(resource Tmtrafficpolicy) error {
@@ -70,19 +55,50 @@ func (c *NitroClient) AddTmtrafficpolicy(resource Tmtrafficpolicy) error {
 	return c.post("tmtrafficpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameTmtrafficpolicy(name string, newName string) error {
-	payload := rename_tmtrafficpolicy_payload{
-		rename_tmtrafficpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_tmtrafficpolicy_result struct {
+	Results []Tmtrafficpolicy `json:"tmtrafficpolicy"`
+}
 
-	return c.post("tmtrafficpolicy", "", qs, payload)
+func (c *NitroClient) ListTmtrafficpolicy() ([]Tmtrafficpolicy, error) {
+	results := list_tmtrafficpolicy_result{}
+
+	if err := c.get("tmtrafficpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_tmtrafficpolicy_result struct {
+	Results []Tmtrafficpolicy `json:"tmtrafficpolicy"`
+}
+
+func (c *NitroClient) GetTmtrafficpolicy(key TmtrafficpolicyKey) (*Tmtrafficpolicy, error) {
+	var results get_tmtrafficpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("tmtrafficpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one tmtrafficpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("tmtrafficpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_tmtrafficpolicy_result struct {
+	Results []Count `json:"tmtrafficpolicy"`
 }
 
 func (c *NitroClient) CountTmtrafficpolicy() (int, error) {
@@ -99,10 +115,12 @@ func (c *NitroClient) CountTmtrafficpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTmtrafficpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsTmtrafficpolicy(key TmtrafficpolicyKey) (bool, error) {
 	var results count_tmtrafficpolicy_result
 
-	id, qs := tmtrafficpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -115,60 +133,19 @@ func (c *NitroClient) ExistsTmtrafficpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListTmtrafficpolicy() ([]Tmtrafficpolicy, error) {
-	results := get_tmtrafficpolicy_result{}
+//      DELETE
 
-	if err := c.get("tmtrafficpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetTmtrafficpolicy(key string) (*Tmtrafficpolicy, error) {
-	var results get_tmtrafficpolicy_result
-
-	id, qs := tmtrafficpolicy_key_to_id_args(key)
-
-	if err := c.get("tmtrafficpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one tmtrafficpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("tmtrafficpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteTmtrafficpolicy(key string) error {
-	id, qs := tmtrafficpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteTmtrafficpolicy(key TmtrafficpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("tmtrafficpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetTmtrafficpolicy(unset TmtrafficpolicyUnset) error {
-	payload := unset_tmtrafficpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("tmtrafficpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateTmtrafficpolicy(resource Tmtrafficpolicy) error {
-	payload := update_tmtrafficpolicy_payload{
-		update_tmtrafficpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-		},
-	}
-
-	return c.put("tmtrafficpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

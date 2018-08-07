@@ -7,38 +7,43 @@ import (
 )
 
 type Appflowpolicylabel struct {
-	Labelname       string `json:"labelname"`
+	Labelname       string `json:"labelname,omitempty"`
 	Policylabeltype string `json:"policylabeltype,omitempty"`
 }
 
-func appflowpolicylabel_key_to_id_args(key string) (string, map[string]string) {
+type AppflowpolicylabelKey struct {
+	Labelname string
+}
+
+func (resource Appflowpolicylabel) ToKey() AppflowpolicylabelKey {
+	key := AppflowpolicylabelKey{
+		resource.Labelname,
+	}
+
+	return key
+}
+
+func (key AppflowpolicylabelKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Labelname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type rename_appflowpolicylabel struct {
-	Name    string `json:"labelname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_appflowpolicylabel_payload struct {
 	Resource Appflowpolicylabel `json:"appflowpolicylabel"`
-}
-
-type rename_appflowpolicylabel_payload struct {
-	Rename rename_appflowpolicylabel `json:"appflowpolicylabel"`
-}
-
-type get_appflowpolicylabel_result struct {
-	Results []Appflowpolicylabel `json:"appflowpolicylabel"`
-}
-
-type count_appflowpolicylabel_result struct {
-	Results []Count `json:"appflowpolicylabel"`
 }
 
 func (c *NitroClient) AddAppflowpolicylabel(resource Appflowpolicylabel) error {
@@ -49,19 +54,50 @@ func (c *NitroClient) AddAppflowpolicylabel(resource Appflowpolicylabel) error {
 	return c.post("appflowpolicylabel", "", nil, payload)
 }
 
-func (c *NitroClient) RenameAppflowpolicylabel(name string, newName string) error {
-	payload := rename_appflowpolicylabel_payload{
-		rename_appflowpolicylabel{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_appflowpolicylabel_result struct {
+	Results []Appflowpolicylabel `json:"appflowpolicylabel"`
+}
 
-	return c.post("appflowpolicylabel", "", qs, payload)
+func (c *NitroClient) ListAppflowpolicylabel() ([]Appflowpolicylabel, error) {
+	results := list_appflowpolicylabel_result{}
+
+	if err := c.get("appflowpolicylabel", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_appflowpolicylabel_result struct {
+	Results []Appflowpolicylabel `json:"appflowpolicylabel"`
+}
+
+func (c *NitroClient) GetAppflowpolicylabel(key AppflowpolicylabelKey) (*Appflowpolicylabel, error) {
+	var results get_appflowpolicylabel_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("appflowpolicylabel", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one appflowpolicylabel element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("appflowpolicylabel element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_appflowpolicylabel_result struct {
+	Results []Count `json:"appflowpolicylabel"`
 }
 
 func (c *NitroClient) CountAppflowpolicylabel() (int, error) {
@@ -78,10 +114,12 @@ func (c *NitroClient) CountAppflowpolicylabel() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppflowpolicylabel(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsAppflowpolicylabel(key AppflowpolicylabelKey) (bool, error) {
 	var results count_appflowpolicylabel_result
 
-	id, qs := appflowpolicylabel_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -94,36 +132,13 @@ func (c *NitroClient) ExistsAppflowpolicylabel(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListAppflowpolicylabel() ([]Appflowpolicylabel, error) {
-	results := get_appflowpolicylabel_result{}
+//      DELETE
 
-	if err := c.get("appflowpolicylabel", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetAppflowpolicylabel(key string) (*Appflowpolicylabel, error) {
-	var results get_appflowpolicylabel_result
-
-	id, qs := appflowpolicylabel_key_to_id_args(key)
-
-	if err := c.get("appflowpolicylabel", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one appflowpolicylabel element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("appflowpolicylabel element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteAppflowpolicylabel(key string) error {
-	id, qs := appflowpolicylabel_key_to_id_args(key)
+func (c *NitroClient) DeleteAppflowpolicylabel(key AppflowpolicylabelKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("appflowpolicylabel", id, qs)
 }
+
+//      RENAME
+//      TODO

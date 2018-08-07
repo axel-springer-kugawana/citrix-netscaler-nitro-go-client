@@ -7,59 +7,44 @@ import (
 )
 
 type Tmsessionpolicy struct {
-	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
+	Name   string `json:"name,omitempty"`
 	Rule   string `json:"rule,omitempty"`
 }
 
-func tmsessionpolicy_key_to_id_args(key string) (string, map[string]string) {
+type TmsessionpolicyKey struct {
+	Name string
+}
+
+func (resource Tmsessionpolicy) ToKey() TmsessionpolicyKey {
+	key := TmsessionpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key TmsessionpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type TmsessionpolicyUnset struct {
-	Name   string `json:"name"`
-	Rule   bool   `json:"rule,omitempty"`
-	Action bool   `json:"action,omitempty"`
-}
-
-type update_tmsessionpolicy struct {
-	Name   string `json:"name"`
-	Rule   string `json:"rule,omitempty"`
-	Action string `json:"action,omitempty"`
-}
-
-type rename_tmsessionpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_tmsessionpolicy_payload struct {
 	Resource Tmsessionpolicy `json:"tmsessionpolicy"`
-}
-
-type rename_tmsessionpolicy_payload struct {
-	Rename rename_tmsessionpolicy `json:"tmsessionpolicy"`
-}
-
-type unset_tmsessionpolicy_payload struct {
-	Unset TmsessionpolicyUnset `json:"tmsessionpolicy"`
-}
-
-type update_tmsessionpolicy_payload struct {
-	Update update_tmsessionpolicy `json:"tmsessionpolicy"`
-}
-
-type get_tmsessionpolicy_result struct {
-	Results []Tmsessionpolicy `json:"tmsessionpolicy"`
-}
-
-type count_tmsessionpolicy_result struct {
-	Results []Count `json:"tmsessionpolicy"`
 }
 
 func (c *NitroClient) AddTmsessionpolicy(resource Tmsessionpolicy) error {
@@ -70,19 +55,50 @@ func (c *NitroClient) AddTmsessionpolicy(resource Tmsessionpolicy) error {
 	return c.post("tmsessionpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameTmsessionpolicy(name string, newName string) error {
-	payload := rename_tmsessionpolicy_payload{
-		rename_tmsessionpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_tmsessionpolicy_result struct {
+	Results []Tmsessionpolicy `json:"tmsessionpolicy"`
+}
 
-	return c.post("tmsessionpolicy", "", qs, payload)
+func (c *NitroClient) ListTmsessionpolicy() ([]Tmsessionpolicy, error) {
+	results := list_tmsessionpolicy_result{}
+
+	if err := c.get("tmsessionpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_tmsessionpolicy_result struct {
+	Results []Tmsessionpolicy `json:"tmsessionpolicy"`
+}
+
+func (c *NitroClient) GetTmsessionpolicy(key TmsessionpolicyKey) (*Tmsessionpolicy, error) {
+	var results get_tmsessionpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("tmsessionpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one tmsessionpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("tmsessionpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_tmsessionpolicy_result struct {
+	Results []Count `json:"tmsessionpolicy"`
 }
 
 func (c *NitroClient) CountTmsessionpolicy() (int, error) {
@@ -99,10 +115,12 @@ func (c *NitroClient) CountTmsessionpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTmsessionpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsTmsessionpolicy(key TmsessionpolicyKey) (bool, error) {
 	var results count_tmsessionpolicy_result
 
-	id, qs := tmsessionpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -115,60 +133,19 @@ func (c *NitroClient) ExistsTmsessionpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListTmsessionpolicy() ([]Tmsessionpolicy, error) {
-	results := get_tmsessionpolicy_result{}
+//      DELETE
 
-	if err := c.get("tmsessionpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetTmsessionpolicy(key string) (*Tmsessionpolicy, error) {
-	var results get_tmsessionpolicy_result
-
-	id, qs := tmsessionpolicy_key_to_id_args(key)
-
-	if err := c.get("tmsessionpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one tmsessionpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("tmsessionpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteTmsessionpolicy(key string) error {
-	id, qs := tmsessionpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteTmsessionpolicy(key TmsessionpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("tmsessionpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetTmsessionpolicy(unset TmsessionpolicyUnset) error {
-	payload := unset_tmsessionpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("tmsessionpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateTmsessionpolicy(resource Tmsessionpolicy) error {
-	payload := update_tmsessionpolicy_payload{
-		update_tmsessionpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-		},
-	}
-
-	return c.put("tmsessionpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

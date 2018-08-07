@@ -7,68 +7,47 @@ import (
 )
 
 type Videooptimizationpolicy struct {
-	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
 	Comment     string `json:"comment,omitempty"`
 	Logaction   string `json:"logaction,omitempty"`
+	Name        string `json:"name,omitempty"`
 	Rule        string `json:"rule,omitempty"`
 	Undefaction string `json:"undefaction,omitempty"`
 }
 
-func videooptimizationpolicy_key_to_id_args(key string) (string, map[string]string) {
+type VideooptimizationpolicyKey struct {
+	Name string
+}
+
+func (resource Videooptimizationpolicy) ToKey() VideooptimizationpolicyKey {
+	key := VideooptimizationpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key VideooptimizationpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type VideooptimizationpolicyUnset struct {
-	Name        string `json:"name"`
-	Rule        bool   `json:"rule,omitempty"`
-	Action      bool   `json:"action,omitempty"`
-	Undefaction bool   `json:"undefaction,omitempty"`
-	Comment     bool   `json:"comment,omitempty"`
-	Logaction   bool   `json:"logaction,omitempty"`
-}
-
-type update_videooptimizationpolicy struct {
-	Name        string `json:"name"`
-	Rule        string `json:"rule,omitempty"`
-	Action      string `json:"action,omitempty"`
-	Undefaction string `json:"undefaction,omitempty"`
-	Comment     string `json:"comment,omitempty"`
-	Logaction   string `json:"logaction,omitempty"`
-}
-
-type rename_videooptimizationpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_videooptimizationpolicy_payload struct {
 	Resource Videooptimizationpolicy `json:"videooptimizationpolicy"`
-}
-
-type rename_videooptimizationpolicy_payload struct {
-	Rename rename_videooptimizationpolicy `json:"videooptimizationpolicy"`
-}
-
-type unset_videooptimizationpolicy_payload struct {
-	Unset VideooptimizationpolicyUnset `json:"videooptimizationpolicy"`
-}
-
-type update_videooptimizationpolicy_payload struct {
-	Update update_videooptimizationpolicy `json:"videooptimizationpolicy"`
-}
-
-type get_videooptimizationpolicy_result struct {
-	Results []Videooptimizationpolicy `json:"videooptimizationpolicy"`
-}
-
-type count_videooptimizationpolicy_result struct {
-	Results []Count `json:"videooptimizationpolicy"`
 }
 
 func (c *NitroClient) AddVideooptimizationpolicy(resource Videooptimizationpolicy) error {
@@ -79,19 +58,50 @@ func (c *NitroClient) AddVideooptimizationpolicy(resource Videooptimizationpolic
 	return c.post("videooptimizationpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameVideooptimizationpolicy(name string, newName string) error {
-	payload := rename_videooptimizationpolicy_payload{
-		rename_videooptimizationpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_videooptimizationpolicy_result struct {
+	Results []Videooptimizationpolicy `json:"videooptimizationpolicy"`
+}
 
-	return c.post("videooptimizationpolicy", "", qs, payload)
+func (c *NitroClient) ListVideooptimizationpolicy() ([]Videooptimizationpolicy, error) {
+	results := list_videooptimizationpolicy_result{}
+
+	if err := c.get("videooptimizationpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_videooptimizationpolicy_result struct {
+	Results []Videooptimizationpolicy `json:"videooptimizationpolicy"`
+}
+
+func (c *NitroClient) GetVideooptimizationpolicy(key VideooptimizationpolicyKey) (*Videooptimizationpolicy, error) {
+	var results get_videooptimizationpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("videooptimizationpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one videooptimizationpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("videooptimizationpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_videooptimizationpolicy_result struct {
+	Results []Count `json:"videooptimizationpolicy"`
 }
 
 func (c *NitroClient) CountVideooptimizationpolicy() (int, error) {
@@ -108,10 +118,12 @@ func (c *NitroClient) CountVideooptimizationpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsVideooptimizationpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsVideooptimizationpolicy(key VideooptimizationpolicyKey) (bool, error) {
 	var results count_videooptimizationpolicy_result
 
-	id, qs := videooptimizationpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -124,63 +136,19 @@ func (c *NitroClient) ExistsVideooptimizationpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListVideooptimizationpolicy() ([]Videooptimizationpolicy, error) {
-	results := get_videooptimizationpolicy_result{}
+//      DELETE
 
-	if err := c.get("videooptimizationpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetVideooptimizationpolicy(key string) (*Videooptimizationpolicy, error) {
-	var results get_videooptimizationpolicy_result
-
-	id, qs := videooptimizationpolicy_key_to_id_args(key)
-
-	if err := c.get("videooptimizationpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one videooptimizationpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("videooptimizationpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteVideooptimizationpolicy(key string) error {
-	id, qs := videooptimizationpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteVideooptimizationpolicy(key VideooptimizationpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("videooptimizationpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetVideooptimizationpolicy(unset VideooptimizationpolicyUnset) error {
-	payload := unset_videooptimizationpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("videooptimizationpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateVideooptimizationpolicy(resource Videooptimizationpolicy) error {
-	payload := update_videooptimizationpolicy_payload{
-		update_videooptimizationpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-			resource.Undefaction,
-			resource.Comment,
-			resource.Logaction,
-		},
-	}
-
-	return c.put("videooptimizationpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

@@ -7,65 +7,46 @@ import (
 )
 
 type Appfwpolicy struct {
-	Name        string `json:"name"`
 	Comment     string `json:"comment,omitempty"`
 	Logaction   string `json:"logaction,omitempty"`
+	Name        string `json:"name,omitempty"`
 	Profilename string `json:"profilename,omitempty"`
 	Rule        string `json:"rule,omitempty"`
 }
 
-func appfwpolicy_key_to_id_args(key string) (string, map[string]string) {
+type AppfwpolicyKey struct {
+	Name string
+}
+
+func (resource Appfwpolicy) ToKey() AppfwpolicyKey {
+	key := AppfwpolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key AppfwpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type AppfwpolicyUnset struct {
-	Name        string `json:"name"`
-	Rule        bool   `json:"rule,omitempty"`
-	Profilename bool   `json:"profilename,omitempty"`
-	Comment     bool   `json:"comment,omitempty"`
-	Logaction   bool   `json:"logaction,omitempty"`
-}
-
-type update_appfwpolicy struct {
-	Name        string `json:"name"`
-	Rule        string `json:"rule,omitempty"`
-	Profilename string `json:"profilename,omitempty"`
-	Comment     string `json:"comment,omitempty"`
-	Logaction   string `json:"logaction,omitempty"`
-}
-
-type rename_appfwpolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_appfwpolicy_payload struct {
 	Resource Appfwpolicy `json:"appfwpolicy"`
-}
-
-type rename_appfwpolicy_payload struct {
-	Rename rename_appfwpolicy `json:"appfwpolicy"`
-}
-
-type unset_appfwpolicy_payload struct {
-	Unset AppfwpolicyUnset `json:"appfwpolicy"`
-}
-
-type update_appfwpolicy_payload struct {
-	Update update_appfwpolicy `json:"appfwpolicy"`
-}
-
-type get_appfwpolicy_result struct {
-	Results []Appfwpolicy `json:"appfwpolicy"`
-}
-
-type count_appfwpolicy_result struct {
-	Results []Count `json:"appfwpolicy"`
 }
 
 func (c *NitroClient) AddAppfwpolicy(resource Appfwpolicy) error {
@@ -76,19 +57,50 @@ func (c *NitroClient) AddAppfwpolicy(resource Appfwpolicy) error {
 	return c.post("appfwpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameAppfwpolicy(name string, newName string) error {
-	payload := rename_appfwpolicy_payload{
-		rename_appfwpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_appfwpolicy_result struct {
+	Results []Appfwpolicy `json:"appfwpolicy"`
+}
 
-	return c.post("appfwpolicy", "", qs, payload)
+func (c *NitroClient) ListAppfwpolicy() ([]Appfwpolicy, error) {
+	results := list_appfwpolicy_result{}
+
+	if err := c.get("appfwpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_appfwpolicy_result struct {
+	Results []Appfwpolicy `json:"appfwpolicy"`
+}
+
+func (c *NitroClient) GetAppfwpolicy(key AppfwpolicyKey) (*Appfwpolicy, error) {
+	var results get_appfwpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("appfwpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one appfwpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("appfwpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_appfwpolicy_result struct {
+	Results []Count `json:"appfwpolicy"`
 }
 
 func (c *NitroClient) CountAppfwpolicy() (int, error) {
@@ -105,10 +117,12 @@ func (c *NitroClient) CountAppfwpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsAppfwpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsAppfwpolicy(key AppfwpolicyKey) (bool, error) {
 	var results count_appfwpolicy_result
 
-	id, qs := appfwpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -121,62 +135,19 @@ func (c *NitroClient) ExistsAppfwpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListAppfwpolicy() ([]Appfwpolicy, error) {
-	results := get_appfwpolicy_result{}
+//      DELETE
 
-	if err := c.get("appfwpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetAppfwpolicy(key string) (*Appfwpolicy, error) {
-	var results get_appfwpolicy_result
-
-	id, qs := appfwpolicy_key_to_id_args(key)
-
-	if err := c.get("appfwpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one appfwpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("appfwpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteAppfwpolicy(key string) error {
-	id, qs := appfwpolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteAppfwpolicy(key AppfwpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("appfwpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetAppfwpolicy(unset AppfwpolicyUnset) error {
-	payload := unset_appfwpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("appfwpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateAppfwpolicy(resource Appfwpolicy) error {
-	payload := update_appfwpolicy_payload{
-		update_appfwpolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Profilename,
-			resource.Comment,
-			resource.Logaction,
-		},
-	}
-
-	return c.put("appfwpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

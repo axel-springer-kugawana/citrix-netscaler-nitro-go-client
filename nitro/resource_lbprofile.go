@@ -7,71 +7,48 @@ import (
 )
 
 type Lbprofile struct {
-	Lbprofilename                 string `json:"lbprofilename"`
 	Cookiepassphrase              string `json:"cookiepassphrase,omitempty"`
 	Dbslb                         string `json:"dbslb,omitempty"`
 	Httponlycookieflag            string `json:"httponlycookieflag,omitempty"`
+	Lbprofilename                 string `json:"lbprofilename,omitempty"`
 	Processlocal                  string `json:"processlocal,omitempty"`
 	Useencryptedpersistencecookie string `json:"useencryptedpersistencecookie,omitempty"`
 	Usesecuredpersistencecookie   string `json:"usesecuredpersistencecookie,omitempty"`
 }
 
-func lbprofile_key_to_id_args(key string) (string, map[string]string) {
+type LbprofileKey struct {
+	Lbprofilename string
+}
+
+func (resource Lbprofile) ToKey() LbprofileKey {
+	key := LbprofileKey{
+		resource.Lbprofilename,
+	}
+
+	return key
+}
+
+func (key LbprofileKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Lbprofilename
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type LbprofileUnset struct {
-	Lbprofilename                 string `json:"lbprofilename"`
-	Cookiepassphrase              bool   `json:"cookiepassphrase,omitempty"`
-	Dbslb                         bool   `json:"dbslb,omitempty"`
-	Processlocal                  bool   `json:"processlocal,omitempty"`
-	Httponlycookieflag            bool   `json:"httponlycookieflag,omitempty"`
-	Usesecuredpersistencecookie   bool   `json:"usesecuredpersistencecookie,omitempty"`
-	Useencryptedpersistencecookie bool   `json:"useencryptedpersistencecookie,omitempty"`
-}
-
-type update_lbprofile struct {
-	Lbprofilename                 string `json:"lbprofilename"`
-	Cookiepassphrase              string `json:"cookiepassphrase,omitempty"`
-	Dbslb                         string `json:"dbslb,omitempty"`
-	Processlocal                  string `json:"processlocal,omitempty"`
-	Httponlycookieflag            string `json:"httponlycookieflag,omitempty"`
-	Usesecuredpersistencecookie   string `json:"usesecuredpersistencecookie,omitempty"`
-	Useencryptedpersistencecookie string `json:"useencryptedpersistencecookie,omitempty"`
-}
-
-type rename_lbprofile struct {
-	Name    string `json:"lbprofilename"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_lbprofile_payload struct {
 	Resource Lbprofile `json:"lbprofile"`
-}
-
-type rename_lbprofile_payload struct {
-	Rename rename_lbprofile `json:"lbprofile"`
-}
-
-type unset_lbprofile_payload struct {
-	Unset LbprofileUnset `json:"lbprofile"`
-}
-
-type update_lbprofile_payload struct {
-	Update update_lbprofile `json:"lbprofile"`
-}
-
-type get_lbprofile_result struct {
-	Results []Lbprofile `json:"lbprofile"`
-}
-
-type count_lbprofile_result struct {
-	Results []Count `json:"lbprofile"`
 }
 
 func (c *NitroClient) AddLbprofile(resource Lbprofile) error {
@@ -82,19 +59,50 @@ func (c *NitroClient) AddLbprofile(resource Lbprofile) error {
 	return c.post("lbprofile", "", nil, payload)
 }
 
-func (c *NitroClient) RenameLbprofile(name string, newName string) error {
-	payload := rename_lbprofile_payload{
-		rename_lbprofile{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_lbprofile_result struct {
+	Results []Lbprofile `json:"lbprofile"`
+}
 
-	return c.post("lbprofile", "", qs, payload)
+func (c *NitroClient) ListLbprofile() ([]Lbprofile, error) {
+	results := list_lbprofile_result{}
+
+	if err := c.get("lbprofile", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_lbprofile_result struct {
+	Results []Lbprofile `json:"lbprofile"`
+}
+
+func (c *NitroClient) GetLbprofile(key LbprofileKey) (*Lbprofile, error) {
+	var results get_lbprofile_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("lbprofile", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one lbprofile element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("lbprofile element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_lbprofile_result struct {
+	Results []Count `json:"lbprofile"`
 }
 
 func (c *NitroClient) CountLbprofile() (int, error) {
@@ -111,10 +119,12 @@ func (c *NitroClient) CountLbprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsLbprofile(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsLbprofile(key LbprofileKey) (bool, error) {
 	var results count_lbprofile_result
 
-	id, qs := lbprofile_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -127,64 +137,19 @@ func (c *NitroClient) ExistsLbprofile(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListLbprofile() ([]Lbprofile, error) {
-	results := get_lbprofile_result{}
+//      DELETE
 
-	if err := c.get("lbprofile", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetLbprofile(key string) (*Lbprofile, error) {
-	var results get_lbprofile_result
-
-	id, qs := lbprofile_key_to_id_args(key)
-
-	if err := c.get("lbprofile", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one lbprofile element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("lbprofile element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteLbprofile(key string) error {
-	id, qs := lbprofile_key_to_id_args(key)
+func (c *NitroClient) DeleteLbprofile(key LbprofileKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("lbprofile", id, qs)
 }
 
-func (c *NitroClient) UnsetLbprofile(unset LbprofileUnset) error {
-	payload := unset_lbprofile_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("lbprofile", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateLbprofile(resource Lbprofile) error {
-	payload := update_lbprofile_payload{
-		update_lbprofile{
-			resource.Lbprofilename,
-			resource.Cookiepassphrase,
-			resource.Dbslb,
-			resource.Processlocal,
-			resource.Httponlycookieflag,
-			resource.Usesecuredpersistencecookie,
-			resource.Useencryptedpersistencecookie,
-		},
-	}
-
-	return c.put("lbprofile", "", nil, payload)
-}
+//      RENAME
+//      TODO

@@ -7,7 +7,7 @@ import (
 )
 
 type Pqpolicy struct {
-	Policyname string `json:"policyname"`
+	Policyname string `json:"policyname,omitempty"`
 	Polqdepth  int    `json:"polqdepth,string,omitempty"`
 	Priority   int    `json:"priority,string,omitempty"`
 	Qdepth     int    `json:"qdepth,string,omitempty"`
@@ -15,56 +15,39 @@ type Pqpolicy struct {
 	Weight     int    `json:"weight,string,omitempty"`
 }
 
-func pqpolicy_key_to_id_args(key string) (string, map[string]string) {
+type PqpolicyKey struct {
+	Policyname string
+}
+
+func (resource Pqpolicy) ToKey() PqpolicyKey {
+	key := PqpolicyKey{
+		resource.Policyname,
+	}
+
+	return key
+}
+
+func (key PqpolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Policyname
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type PqpolicyUnset struct {
-	Policyname string `json:"policyname"`
-	Weight     bool   `json:"weight,omitempty"`
-	Qdepth     bool   `json:"qdepth,omitempty"`
-	Polqdepth  bool   `json:"polqdepth,omitempty"`
-}
-
-type update_pqpolicy struct {
-	Policyname string `json:"policyname"`
-	Weight     int    `json:"weight,string,omitempty"`
-	Qdepth     int    `json:"qdepth,string,omitempty"`
-	Polqdepth  int    `json:"polqdepth,string,omitempty"`
-}
-
-type rename_pqpolicy struct {
-	Name    string `json:"policyname"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_pqpolicy_payload struct {
 	Resource Pqpolicy `json:"pqpolicy"`
-}
-
-type rename_pqpolicy_payload struct {
-	Rename rename_pqpolicy `json:"pqpolicy"`
-}
-
-type unset_pqpolicy_payload struct {
-	Unset PqpolicyUnset `json:"pqpolicy"`
-}
-
-type update_pqpolicy_payload struct {
-	Update update_pqpolicy `json:"pqpolicy"`
-}
-
-type get_pqpolicy_result struct {
-	Results []Pqpolicy `json:"pqpolicy"`
-}
-
-type count_pqpolicy_result struct {
-	Results []Count `json:"pqpolicy"`
 }
 
 func (c *NitroClient) AddPqpolicy(resource Pqpolicy) error {
@@ -75,19 +58,50 @@ func (c *NitroClient) AddPqpolicy(resource Pqpolicy) error {
 	return c.post("pqpolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenamePqpolicy(name string, newName string) error {
-	payload := rename_pqpolicy_payload{
-		rename_pqpolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_pqpolicy_result struct {
+	Results []Pqpolicy `json:"pqpolicy"`
+}
 
-	return c.post("pqpolicy", "", qs, payload)
+func (c *NitroClient) ListPqpolicy() ([]Pqpolicy, error) {
+	results := list_pqpolicy_result{}
+
+	if err := c.get("pqpolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_pqpolicy_result struct {
+	Results []Pqpolicy `json:"pqpolicy"`
+}
+
+func (c *NitroClient) GetPqpolicy(key PqpolicyKey) (*Pqpolicy, error) {
+	var results get_pqpolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("pqpolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one pqpolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("pqpolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_pqpolicy_result struct {
+	Results []Count `json:"pqpolicy"`
 }
 
 func (c *NitroClient) CountPqpolicy() (int, error) {
@@ -104,10 +118,12 @@ func (c *NitroClient) CountPqpolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsPqpolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsPqpolicy(key PqpolicyKey) (bool, error) {
 	var results count_pqpolicy_result
 
-	id, qs := pqpolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -120,61 +136,19 @@ func (c *NitroClient) ExistsPqpolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListPqpolicy() ([]Pqpolicy, error) {
-	results := get_pqpolicy_result{}
+//      DELETE
 
-	if err := c.get("pqpolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetPqpolicy(key string) (*Pqpolicy, error) {
-	var results get_pqpolicy_result
-
-	id, qs := pqpolicy_key_to_id_args(key)
-
-	if err := c.get("pqpolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one pqpolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("pqpolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeletePqpolicy(key string) error {
-	id, qs := pqpolicy_key_to_id_args(key)
+func (c *NitroClient) DeletePqpolicy(key PqpolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("pqpolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetPqpolicy(unset PqpolicyUnset) error {
-	payload := unset_pqpolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("pqpolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdatePqpolicy(resource Pqpolicy) error {
-	payload := update_pqpolicy_payload{
-		update_pqpolicy{
-			resource.Policyname,
-			resource.Weight,
-			resource.Qdepth,
-			resource.Polqdepth,
-		},
-	}
-
-	return c.put("pqpolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

@@ -7,68 +7,47 @@ import (
 )
 
 type Dbdbprofile struct {
-	Name                   string `json:"name"`
 	Conmultiplex           string `json:"conmultiplex,omitempty"`
 	Enablecachingconmuxoff string `json:"enablecachingconmuxoff,omitempty"`
 	Interpretquery         string `json:"interpretquery,omitempty"`
 	Kcdaccount             string `json:"kcdaccount,omitempty"`
+	Name                   string `json:"name,omitempty"`
 	Stickiness             string `json:"stickiness,omitempty"`
 }
 
-func dbdbprofile_key_to_id_args(key string) (string, map[string]string) {
+type DbdbprofileKey struct {
+	Name string
+}
+
+func (resource Dbdbprofile) ToKey() DbdbprofileKey {
+	key := DbdbprofileKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key DbdbprofileKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type DbdbprofileUnset struct {
-	Name                   string `json:"name"`
-	Interpretquery         bool   `json:"interpretquery,omitempty"`
-	Stickiness             bool   `json:"stickiness,omitempty"`
-	Kcdaccount             bool   `json:"kcdaccount,omitempty"`
-	Conmultiplex           bool   `json:"conmultiplex,omitempty"`
-	Enablecachingconmuxoff bool   `json:"enablecachingconmuxoff,omitempty"`
-}
-
-type update_dbdbprofile struct {
-	Name                   string `json:"name"`
-	Interpretquery         string `json:"interpretquery,omitempty"`
-	Stickiness             string `json:"stickiness,omitempty"`
-	Kcdaccount             string `json:"kcdaccount,omitempty"`
-	Conmultiplex           string `json:"conmultiplex,omitempty"`
-	Enablecachingconmuxoff string `json:"enablecachingconmuxoff,omitempty"`
-}
-
-type rename_dbdbprofile struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_dbdbprofile_payload struct {
 	Resource Dbdbprofile `json:"dbdbprofile"`
-}
-
-type rename_dbdbprofile_payload struct {
-	Rename rename_dbdbprofile `json:"dbdbprofile"`
-}
-
-type unset_dbdbprofile_payload struct {
-	Unset DbdbprofileUnset `json:"dbdbprofile"`
-}
-
-type update_dbdbprofile_payload struct {
-	Update update_dbdbprofile `json:"dbdbprofile"`
-}
-
-type get_dbdbprofile_result struct {
-	Results []Dbdbprofile `json:"dbdbprofile"`
-}
-
-type count_dbdbprofile_result struct {
-	Results []Count `json:"dbdbprofile"`
 }
 
 func (c *NitroClient) AddDbdbprofile(resource Dbdbprofile) error {
@@ -79,19 +58,50 @@ func (c *NitroClient) AddDbdbprofile(resource Dbdbprofile) error {
 	return c.post("dbdbprofile", "", nil, payload)
 }
 
-func (c *NitroClient) RenameDbdbprofile(name string, newName string) error {
-	payload := rename_dbdbprofile_payload{
-		rename_dbdbprofile{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_dbdbprofile_result struct {
+	Results []Dbdbprofile `json:"dbdbprofile"`
+}
 
-	return c.post("dbdbprofile", "", qs, payload)
+func (c *NitroClient) ListDbdbprofile() ([]Dbdbprofile, error) {
+	results := list_dbdbprofile_result{}
+
+	if err := c.get("dbdbprofile", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_dbdbprofile_result struct {
+	Results []Dbdbprofile `json:"dbdbprofile"`
+}
+
+func (c *NitroClient) GetDbdbprofile(key DbdbprofileKey) (*Dbdbprofile, error) {
+	var results get_dbdbprofile_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("dbdbprofile", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one dbdbprofile element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("dbdbprofile element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_dbdbprofile_result struct {
+	Results []Count `json:"dbdbprofile"`
 }
 
 func (c *NitroClient) CountDbdbprofile() (int, error) {
@@ -108,10 +118,12 @@ func (c *NitroClient) CountDbdbprofile() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDbdbprofile(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsDbdbprofile(key DbdbprofileKey) (bool, error) {
 	var results count_dbdbprofile_result
 
-	id, qs := dbdbprofile_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -124,63 +136,19 @@ func (c *NitroClient) ExistsDbdbprofile(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListDbdbprofile() ([]Dbdbprofile, error) {
-	results := get_dbdbprofile_result{}
+//      DELETE
 
-	if err := c.get("dbdbprofile", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetDbdbprofile(key string) (*Dbdbprofile, error) {
-	var results get_dbdbprofile_result
-
-	id, qs := dbdbprofile_key_to_id_args(key)
-
-	if err := c.get("dbdbprofile", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one dbdbprofile element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("dbdbprofile element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteDbdbprofile(key string) error {
-	id, qs := dbdbprofile_key_to_id_args(key)
+func (c *NitroClient) DeleteDbdbprofile(key DbdbprofileKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("dbdbprofile", id, qs)
 }
 
-func (c *NitroClient) UnsetDbdbprofile(unset DbdbprofileUnset) error {
-	payload := unset_dbdbprofile_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("dbdbprofile", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateDbdbprofile(resource Dbdbprofile) error {
-	payload := update_dbdbprofile_payload{
-		update_dbdbprofile{
-			resource.Name,
-			resource.Interpretquery,
-			resource.Stickiness,
-			resource.Kcdaccount,
-			resource.Conmultiplex,
-			resource.Enablecachingconmuxoff,
-		},
-	}
-
-	return c.put("dbdbprofile", "", nil, payload)
-}
+//      RENAME
+//      TODO

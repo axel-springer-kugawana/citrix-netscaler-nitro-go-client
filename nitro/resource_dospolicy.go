@@ -7,59 +7,44 @@ import (
 )
 
 type Dospolicy struct {
-	Name          string `json:"name"`
 	Cltdetectrate int    `json:"cltdetectrate,string,omitempty"`
+	Name          string `json:"name,omitempty"`
 	Qdepth        int    `json:"qdepth,string,omitempty"`
 }
 
-func dospolicy_key_to_id_args(key string) (string, map[string]string) {
+type DospolicyKey struct {
+	Name string
+}
+
+func (resource Dospolicy) ToKey() DospolicyKey {
+	key := DospolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key DospolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type DospolicyUnset struct {
-	Name          string `json:"name"`
-	Qdepth        bool   `json:"qdepth,omitempty"`
-	Cltdetectrate bool   `json:"cltdetectrate,omitempty"`
-}
-
-type update_dospolicy struct {
-	Name          string `json:"name"`
-	Qdepth        int    `json:"qdepth,string,omitempty"`
-	Cltdetectrate int    `json:"cltdetectrate,string,omitempty"`
-}
-
-type rename_dospolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_dospolicy_payload struct {
 	Resource Dospolicy `json:"dospolicy"`
-}
-
-type rename_dospolicy_payload struct {
-	Rename rename_dospolicy `json:"dospolicy"`
-}
-
-type unset_dospolicy_payload struct {
-	Unset DospolicyUnset `json:"dospolicy"`
-}
-
-type update_dospolicy_payload struct {
-	Update update_dospolicy `json:"dospolicy"`
-}
-
-type get_dospolicy_result struct {
-	Results []Dospolicy `json:"dospolicy"`
-}
-
-type count_dospolicy_result struct {
-	Results []Count `json:"dospolicy"`
 }
 
 func (c *NitroClient) AddDospolicy(resource Dospolicy) error {
@@ -70,19 +55,50 @@ func (c *NitroClient) AddDospolicy(resource Dospolicy) error {
 	return c.post("dospolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameDospolicy(name string, newName string) error {
-	payload := rename_dospolicy_payload{
-		rename_dospolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_dospolicy_result struct {
+	Results []Dospolicy `json:"dospolicy"`
+}
 
-	return c.post("dospolicy", "", qs, payload)
+func (c *NitroClient) ListDospolicy() ([]Dospolicy, error) {
+	results := list_dospolicy_result{}
+
+	if err := c.get("dospolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_dospolicy_result struct {
+	Results []Dospolicy `json:"dospolicy"`
+}
+
+func (c *NitroClient) GetDospolicy(key DospolicyKey) (*Dospolicy, error) {
+	var results get_dospolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("dospolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one dospolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("dospolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_dospolicy_result struct {
+	Results []Count `json:"dospolicy"`
 }
 
 func (c *NitroClient) CountDospolicy() (int, error) {
@@ -99,10 +115,12 @@ func (c *NitroClient) CountDospolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsDospolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsDospolicy(key DospolicyKey) (bool, error) {
 	var results count_dospolicy_result
 
-	id, qs := dospolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -115,60 +133,19 @@ func (c *NitroClient) ExistsDospolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListDospolicy() ([]Dospolicy, error) {
-	results := get_dospolicy_result{}
+//      DELETE
 
-	if err := c.get("dospolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetDospolicy(key string) (*Dospolicy, error) {
-	var results get_dospolicy_result
-
-	id, qs := dospolicy_key_to_id_args(key)
-
-	if err := c.get("dospolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one dospolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("dospolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteDospolicy(key string) error {
-	id, qs := dospolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteDospolicy(key DospolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("dospolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetDospolicy(unset DospolicyUnset) error {
-	payload := unset_dospolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("dospolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateDospolicy(resource Dospolicy) error {
-	payload := update_dospolicy_payload{
-		update_dospolicy{
-			resource.Name,
-			resource.Qdepth,
-			resource.Cltdetectrate,
-		},
-	}
-
-	return c.put("dospolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

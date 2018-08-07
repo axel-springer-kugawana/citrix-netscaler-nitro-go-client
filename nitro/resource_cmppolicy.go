@@ -7,59 +7,44 @@ import (
 )
 
 type Cmppolicy struct {
-	Name      string `json:"name"`
+	Name      string `json:"name,omitempty"`
 	Resaction string `json:"resaction,omitempty"`
 	Rule      string `json:"rule,omitempty"`
 }
 
-func cmppolicy_key_to_id_args(key string) (string, map[string]string) {
+type CmppolicyKey struct {
+	Name string
+}
+
+func (resource Cmppolicy) ToKey() CmppolicyKey {
+	key := CmppolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key CmppolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type CmppolicyUnset struct {
-	Name      string `json:"name"`
-	Rule      bool   `json:"rule,omitempty"`
-	Resaction bool   `json:"resaction,omitempty"`
-}
-
-type update_cmppolicy struct {
-	Name      string `json:"name"`
-	Rule      string `json:"rule,omitempty"`
-	Resaction string `json:"resaction,omitempty"`
-}
-
-type rename_cmppolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_cmppolicy_payload struct {
 	Resource Cmppolicy `json:"cmppolicy"`
-}
-
-type rename_cmppolicy_payload struct {
-	Rename rename_cmppolicy `json:"cmppolicy"`
-}
-
-type unset_cmppolicy_payload struct {
-	Unset CmppolicyUnset `json:"cmppolicy"`
-}
-
-type update_cmppolicy_payload struct {
-	Update update_cmppolicy `json:"cmppolicy"`
-}
-
-type get_cmppolicy_result struct {
-	Results []Cmppolicy `json:"cmppolicy"`
-}
-
-type count_cmppolicy_result struct {
-	Results []Count `json:"cmppolicy"`
 }
 
 func (c *NitroClient) AddCmppolicy(resource Cmppolicy) error {
@@ -70,19 +55,50 @@ func (c *NitroClient) AddCmppolicy(resource Cmppolicy) error {
 	return c.post("cmppolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameCmppolicy(name string, newName string) error {
-	payload := rename_cmppolicy_payload{
-		rename_cmppolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_cmppolicy_result struct {
+	Results []Cmppolicy `json:"cmppolicy"`
+}
 
-	return c.post("cmppolicy", "", qs, payload)
+func (c *NitroClient) ListCmppolicy() ([]Cmppolicy, error) {
+	results := list_cmppolicy_result{}
+
+	if err := c.get("cmppolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_cmppolicy_result struct {
+	Results []Cmppolicy `json:"cmppolicy"`
+}
+
+func (c *NitroClient) GetCmppolicy(key CmppolicyKey) (*Cmppolicy, error) {
+	var results get_cmppolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("cmppolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one cmppolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("cmppolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_cmppolicy_result struct {
+	Results []Count `json:"cmppolicy"`
 }
 
 func (c *NitroClient) CountCmppolicy() (int, error) {
@@ -99,10 +115,12 @@ func (c *NitroClient) CountCmppolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsCmppolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsCmppolicy(key CmppolicyKey) (bool, error) {
 	var results count_cmppolicy_result
 
-	id, qs := cmppolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -115,60 +133,19 @@ func (c *NitroClient) ExistsCmppolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListCmppolicy() ([]Cmppolicy, error) {
-	results := get_cmppolicy_result{}
+//      DELETE
 
-	if err := c.get("cmppolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetCmppolicy(key string) (*Cmppolicy, error) {
-	var results get_cmppolicy_result
-
-	id, qs := cmppolicy_key_to_id_args(key)
-
-	if err := c.get("cmppolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one cmppolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("cmppolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteCmppolicy(key string) error {
-	id, qs := cmppolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteCmppolicy(key CmppolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("cmppolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetCmppolicy(unset CmppolicyUnset) error {
-	payload := unset_cmppolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("cmppolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateCmppolicy(resource Cmppolicy) error {
-	payload := update_cmppolicy_payload{
-		update_cmppolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Resaction,
-		},
-	}
-
-	return c.put("cmppolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

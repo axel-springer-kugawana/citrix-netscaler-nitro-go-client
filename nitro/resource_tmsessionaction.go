@@ -7,11 +7,11 @@ import (
 )
 
 type Tmsessionaction struct {
-	Name                       string `json:"name"`
 	Defaultauthorizationaction string `json:"defaultauthorizationaction,omitempty"`
 	Homepage                   string `json:"homepage,omitempty"`
 	Httponlycookie             string `json:"httponlycookie,omitempty"`
 	Kcdaccount                 string `json:"kcdaccount,omitempty"`
+	Name                       string `json:"name,omitempty"`
 	Persistentcookie           string `json:"persistentcookie,omitempty"`
 	Persistentcookievalidity   int    `json:"persistentcookievalidity,string,omitempty"`
 	Sesstimeout                int    `json:"sesstimeout,string,omitempty"`
@@ -20,70 +20,39 @@ type Tmsessionaction struct {
 	Ssodomain                  string `json:"ssodomain,omitempty"`
 }
 
-func tmsessionaction_key_to_id_args(key string) (string, map[string]string) {
+type TmsessionactionKey struct {
+	Name string
+}
+
+func (resource Tmsessionaction) ToKey() TmsessionactionKey {
+	key := TmsessionactionKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key TmsessionactionKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type TmsessionactionUnset struct {
-	Name                       string `json:"name"`
-	Sesstimeout                bool   `json:"sesstimeout,omitempty"`
-	Defaultauthorizationaction bool   `json:"defaultauthorizationaction,omitempty"`
-	Sso                        bool   `json:"sso,omitempty"`
-	Ssocredential              bool   `json:"ssocredential,omitempty"`
-	Ssodomain                  bool   `json:"ssodomain,omitempty"`
-	Kcdaccount                 bool   `json:"kcdaccount,omitempty"`
-	Httponlycookie             bool   `json:"httponlycookie,omitempty"`
-	Persistentcookie           bool   `json:"persistentcookie,omitempty"`
-	Persistentcookievalidity   bool   `json:"persistentcookievalidity,omitempty"`
-	Homepage                   bool   `json:"homepage,omitempty"`
-}
-
-type update_tmsessionaction struct {
-	Name                       string `json:"name"`
-	Sesstimeout                int    `json:"sesstimeout,string,omitempty"`
-	Defaultauthorizationaction string `json:"defaultauthorizationaction,omitempty"`
-	Sso                        string `json:"sso,omitempty"`
-	Ssocredential              string `json:"ssocredential,omitempty"`
-	Ssodomain                  string `json:"ssodomain,omitempty"`
-	Kcdaccount                 string `json:"kcdaccount,omitempty"`
-	Httponlycookie             string `json:"httponlycookie,omitempty"`
-	Persistentcookie           string `json:"persistentcookie,omitempty"`
-	Persistentcookievalidity   int    `json:"persistentcookievalidity,string,omitempty"`
-	Homepage                   string `json:"homepage,omitempty"`
-}
-
-type rename_tmsessionaction struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_tmsessionaction_payload struct {
 	Resource Tmsessionaction `json:"tmsessionaction"`
-}
-
-type rename_tmsessionaction_payload struct {
-	Rename rename_tmsessionaction `json:"tmsessionaction"`
-}
-
-type unset_tmsessionaction_payload struct {
-	Unset TmsessionactionUnset `json:"tmsessionaction"`
-}
-
-type update_tmsessionaction_payload struct {
-	Update update_tmsessionaction `json:"tmsessionaction"`
-}
-
-type get_tmsessionaction_result struct {
-	Results []Tmsessionaction `json:"tmsessionaction"`
-}
-
-type count_tmsessionaction_result struct {
-	Results []Count `json:"tmsessionaction"`
 }
 
 func (c *NitroClient) AddTmsessionaction(resource Tmsessionaction) error {
@@ -94,19 +63,50 @@ func (c *NitroClient) AddTmsessionaction(resource Tmsessionaction) error {
 	return c.post("tmsessionaction", "", nil, payload)
 }
 
-func (c *NitroClient) RenameTmsessionaction(name string, newName string) error {
-	payload := rename_tmsessionaction_payload{
-		rename_tmsessionaction{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_tmsessionaction_result struct {
+	Results []Tmsessionaction `json:"tmsessionaction"`
+}
 
-	return c.post("tmsessionaction", "", qs, payload)
+func (c *NitroClient) ListTmsessionaction() ([]Tmsessionaction, error) {
+	results := list_tmsessionaction_result{}
+
+	if err := c.get("tmsessionaction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_tmsessionaction_result struct {
+	Results []Tmsessionaction `json:"tmsessionaction"`
+}
+
+func (c *NitroClient) GetTmsessionaction(key TmsessionactionKey) (*Tmsessionaction, error) {
+	var results get_tmsessionaction_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("tmsessionaction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one tmsessionaction element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("tmsessionaction element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_tmsessionaction_result struct {
+	Results []Count `json:"tmsessionaction"`
 }
 
 func (c *NitroClient) CountTmsessionaction() (int, error) {
@@ -123,10 +123,12 @@ func (c *NitroClient) CountTmsessionaction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsTmsessionaction(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsTmsessionaction(key TmsessionactionKey) (bool, error) {
 	var results count_tmsessionaction_result
 
-	id, qs := tmsessionaction_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -139,68 +141,19 @@ func (c *NitroClient) ExistsTmsessionaction(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListTmsessionaction() ([]Tmsessionaction, error) {
-	results := get_tmsessionaction_result{}
+//      DELETE
 
-	if err := c.get("tmsessionaction", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetTmsessionaction(key string) (*Tmsessionaction, error) {
-	var results get_tmsessionaction_result
-
-	id, qs := tmsessionaction_key_to_id_args(key)
-
-	if err := c.get("tmsessionaction", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one tmsessionaction element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("tmsessionaction element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteTmsessionaction(key string) error {
-	id, qs := tmsessionaction_key_to_id_args(key)
+func (c *NitroClient) DeleteTmsessionaction(key TmsessionactionKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("tmsessionaction", id, qs)
 }
 
-func (c *NitroClient) UnsetTmsessionaction(unset TmsessionactionUnset) error {
-	payload := unset_tmsessionaction_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("tmsessionaction", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateTmsessionaction(resource Tmsessionaction) error {
-	payload := update_tmsessionaction_payload{
-		update_tmsessionaction{
-			resource.Name,
-			resource.Sesstimeout,
-			resource.Defaultauthorizationaction,
-			resource.Sso,
-			resource.Ssocredential,
-			resource.Ssodomain,
-			resource.Kcdaccount,
-			resource.Httponlycookie,
-			resource.Persistentcookie,
-			resource.Persistentcookievalidity,
-			resource.Homepage,
-		},
-	}
-
-	return c.put("tmsessionaction", "", nil, payload)
-}
+//      RENAME
+//      TODO

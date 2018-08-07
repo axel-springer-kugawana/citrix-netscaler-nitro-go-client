@@ -1,0 +1,84 @@
+{{define "common"}}
+type {{$.Name|name}} struct {
+        {{range $field, $type := $.Schema.Fields -}}
+        {{if eq $type "double" -}}
+        {{$field|title}} {{$type|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{$type|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+}
+
+type {{$.Name|name}}Key struct {
+        {{range $field := $.Schema.Key -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}}
+        {{end -}}
+}
+
+func (resource {{$.Name|name}}) ToKey() {{$.Name|name}}Key {
+        key := {{$.Name|name}}Key{
+                {{range $field := $.Schema.Key -}}
+                resource.{{$field|title}},
+                {{end -}}
+        }
+
+        return key
+}
+
+func (key {{$.Name|name}}Key) to_id_args() (string, map[string]string) {
+        var _ = strconv.Itoa
+
+        var id string
+        var args []string
+
+        {{range $index, $field := $.Schema.Key -}}
+        {{if eq $index 0 -}}
+        id = key.{{$field|title}}
+        {{else -}}
+        {{if eq (index $.Schema.Fields $field) "int" -}}
+        args = append(args, "{{$field}}:" + strconv.Itoa(key.{{$field|title}}))
+        {{else -}}
+        args = append(args, "{{$field}}:" + key.{{$field|title}})
+        {{end -}}
+        {{end -}}
+        {{end}}
+
+        qs := map[string]string{}
+
+        if len(args) > 0 {
+                qs["args"] = strings.Join(args, ",")
+        }
+
+        return id, qs
+}
+{{end}}
+
+{{define "add_payload"}}
+type add_{{$.Name}}_payload struct {
+        Resource {{$.Name|name}} `json:"{{$.Name}}"`
+}
+{{end}}
+
+{{define "get_result"}}
+type get_{{$.Name}}_result struct {
+        Results []{{$.Name|name}} `json:"{{$.Name}}"`
+}
+{{end}}
+
+{{define "list_result"}}
+type list_{{$.Name}}_result struct {
+        Results []{{$.Name|name}} `json:"{{$.Name}}"`
+}
+{{end}}
+
+{{define "count_result"}}
+type count_{{$.Name}}_result struct {
+        Results []Count `json:"{{$.Name}}"`
+}
+{{end}}
+
+{{define "state_payload"}}
+type state_{{$.Name}}_payload struct {
+        State {{$.Name|name}}Key `json:"{{$.Name}}"`
+}
+{{end}}

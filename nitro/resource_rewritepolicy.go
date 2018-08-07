@@ -7,68 +7,47 @@ import (
 )
 
 type Rewritepolicy struct {
-	Name        string `json:"name"`
 	Action      string `json:"action,omitempty"`
 	Comment     string `json:"comment,omitempty"`
 	Logaction   string `json:"logaction,omitempty"`
+	Name        string `json:"name,omitempty"`
 	Rule        string `json:"rule,omitempty"`
 	Undefaction string `json:"undefaction,omitempty"`
 }
 
-func rewritepolicy_key_to_id_args(key string) (string, map[string]string) {
+type RewritepolicyKey struct {
+	Name string
+}
+
+func (resource Rewritepolicy) ToKey() RewritepolicyKey {
+	key := RewritepolicyKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key RewritepolicyKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type RewritepolicyUnset struct {
-	Name        string `json:"name"`
-	Rule        bool   `json:"rule,omitempty"`
-	Action      bool   `json:"action,omitempty"`
-	Undefaction bool   `json:"undefaction,omitempty"`
-	Comment     bool   `json:"comment,omitempty"`
-	Logaction   bool   `json:"logaction,omitempty"`
-}
-
-type update_rewritepolicy struct {
-	Name        string `json:"name"`
-	Rule        string `json:"rule,omitempty"`
-	Action      string `json:"action,omitempty"`
-	Undefaction string `json:"undefaction,omitempty"`
-	Comment     string `json:"comment,omitempty"`
-	Logaction   string `json:"logaction,omitempty"`
-}
-
-type rename_rewritepolicy struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_rewritepolicy_payload struct {
 	Resource Rewritepolicy `json:"rewritepolicy"`
-}
-
-type rename_rewritepolicy_payload struct {
-	Rename rename_rewritepolicy `json:"rewritepolicy"`
-}
-
-type unset_rewritepolicy_payload struct {
-	Unset RewritepolicyUnset `json:"rewritepolicy"`
-}
-
-type update_rewritepolicy_payload struct {
-	Update update_rewritepolicy `json:"rewritepolicy"`
-}
-
-type get_rewritepolicy_result struct {
-	Results []Rewritepolicy `json:"rewritepolicy"`
-}
-
-type count_rewritepolicy_result struct {
-	Results []Count `json:"rewritepolicy"`
 }
 
 func (c *NitroClient) AddRewritepolicy(resource Rewritepolicy) error {
@@ -79,19 +58,50 @@ func (c *NitroClient) AddRewritepolicy(resource Rewritepolicy) error {
 	return c.post("rewritepolicy", "", nil, payload)
 }
 
-func (c *NitroClient) RenameRewritepolicy(name string, newName string) error {
-	payload := rename_rewritepolicy_payload{
-		rename_rewritepolicy{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_rewritepolicy_result struct {
+	Results []Rewritepolicy `json:"rewritepolicy"`
+}
 
-	return c.post("rewritepolicy", "", qs, payload)
+func (c *NitroClient) ListRewritepolicy() ([]Rewritepolicy, error) {
+	results := list_rewritepolicy_result{}
+
+	if err := c.get("rewritepolicy", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_rewritepolicy_result struct {
+	Results []Rewritepolicy `json:"rewritepolicy"`
+}
+
+func (c *NitroClient) GetRewritepolicy(key RewritepolicyKey) (*Rewritepolicy, error) {
+	var results get_rewritepolicy_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("rewritepolicy", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one rewritepolicy element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("rewritepolicy element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_rewritepolicy_result struct {
+	Results []Count `json:"rewritepolicy"`
 }
 
 func (c *NitroClient) CountRewritepolicy() (int, error) {
@@ -108,10 +118,12 @@ func (c *NitroClient) CountRewritepolicy() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsRewritepolicy(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsRewritepolicy(key RewritepolicyKey) (bool, error) {
 	var results count_rewritepolicy_result
 
-	id, qs := rewritepolicy_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -124,63 +136,19 @@ func (c *NitroClient) ExistsRewritepolicy(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListRewritepolicy() ([]Rewritepolicy, error) {
-	results := get_rewritepolicy_result{}
+//      DELETE
 
-	if err := c.get("rewritepolicy", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetRewritepolicy(key string) (*Rewritepolicy, error) {
-	var results get_rewritepolicy_result
-
-	id, qs := rewritepolicy_key_to_id_args(key)
-
-	if err := c.get("rewritepolicy", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one rewritepolicy element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("rewritepolicy element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteRewritepolicy(key string) error {
-	id, qs := rewritepolicy_key_to_id_args(key)
+func (c *NitroClient) DeleteRewritepolicy(key RewritepolicyKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("rewritepolicy", id, qs)
 }
 
-func (c *NitroClient) UnsetRewritepolicy(unset RewritepolicyUnset) error {
-	payload := unset_rewritepolicy_payload{
-		unset,
-	}
+//      UPDATE
+//      TODO
 
-	qs := map[string]string{
-		"action": "unset",
-	}
+//      UNSET
+//      TODO
 
-	return c.put("rewritepolicy", "", qs, payload)
-}
-
-func (c *NitroClient) UpdateRewritepolicy(resource Rewritepolicy) error {
-	payload := update_rewritepolicy_payload{
-		update_rewritepolicy{
-			resource.Name,
-			resource.Rule,
-			resource.Action,
-			resource.Undefaction,
-			resource.Comment,
-			resource.Logaction,
-		},
-	}
-
-	return c.put("rewritepolicy", "", nil, payload)
-}
+//      RENAME
+//      TODO

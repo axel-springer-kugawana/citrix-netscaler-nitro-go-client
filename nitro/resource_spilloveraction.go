@@ -7,38 +7,43 @@ import (
 )
 
 type Spilloveraction struct {
-	Name   string `json:"name"`
 	Action string `json:"action,omitempty"`
+	Name   string `json:"name,omitempty"`
 }
 
-func spilloveraction_key_to_id_args(key string) (string, map[string]string) {
+type SpilloveractionKey struct {
+	Name string
+}
+
+func (resource Spilloveraction) ToKey() SpilloveractionKey {
+	key := SpilloveractionKey{
+		resource.Name,
+	}
+
+	return key
+}
+
+func (key SpilloveractionKey) to_id_args() (string, map[string]string) {
 	var _ = strconv.Itoa
-	var _ = strings.Join
+
+	var id string
+	var args []string
+
+	id = key.Name
 
 	qs := map[string]string{}
 
-	return key, qs
+	if len(args) > 0 {
+		qs["args"] = strings.Join(args, ",")
+	}
+
+	return id, qs
 }
 
-type rename_spilloveraction struct {
-	Name    string `json:"name"`
-	Newname string `json:"newname"`
-}
+//      CREATE
 
 type add_spilloveraction_payload struct {
 	Resource Spilloveraction `json:"spilloveraction"`
-}
-
-type rename_spilloveraction_payload struct {
-	Rename rename_spilloveraction `json:"spilloveraction"`
-}
-
-type get_spilloveraction_result struct {
-	Results []Spilloveraction `json:"spilloveraction"`
-}
-
-type count_spilloveraction_result struct {
-	Results []Count `json:"spilloveraction"`
 }
 
 func (c *NitroClient) AddSpilloveraction(resource Spilloveraction) error {
@@ -49,19 +54,50 @@ func (c *NitroClient) AddSpilloveraction(resource Spilloveraction) error {
 	return c.post("spilloveraction", "", nil, payload)
 }
 
-func (c *NitroClient) RenameSpilloveraction(name string, newName string) error {
-	payload := rename_spilloveraction_payload{
-		rename_spilloveraction{
-			name,
-			newName,
-		},
-	}
+//      LIST
 
-	qs := map[string]string{
-		"action": "rename",
-	}
+type list_spilloveraction_result struct {
+	Results []Spilloveraction `json:"spilloveraction"`
+}
 
-	return c.post("spilloveraction", "", qs, payload)
+func (c *NitroClient) ListSpilloveraction() ([]Spilloveraction, error) {
+	results := list_spilloveraction_result{}
+
+	if err := c.get("spilloveraction", "", nil, &results); err != nil {
+		return nil, err
+	} else {
+		return results.Results, err
+	}
+}
+
+//      READ
+
+type get_spilloveraction_result struct {
+	Results []Spilloveraction `json:"spilloveraction"`
+}
+
+func (c *NitroClient) GetSpilloveraction(key SpilloveractionKey) (*Spilloveraction, error) {
+	var results get_spilloveraction_result
+
+	id, qs := key.to_id_args()
+
+	if err := c.get("spilloveraction", id, qs, &results); err != nil {
+		return nil, err
+	} else {
+		if len(results.Results) > 1 {
+			return nil, fmt.Errorf("More than one spilloveraction element found")
+		} else if len(results.Results) < 1 {
+			return nil, fmt.Errorf("spilloveraction element not found")
+		}
+
+		return &results.Results[0], nil
+	}
+}
+
+//      COUNT
+
+type count_spilloveraction_result struct {
+	Results []Count `json:"spilloveraction"`
 }
 
 func (c *NitroClient) CountSpilloveraction() (int, error) {
@@ -78,10 +114,12 @@ func (c *NitroClient) CountSpilloveraction() (int, error) {
 	}
 }
 
-func (c *NitroClient) ExistsSpilloveraction(key string) (bool, error) {
+//      EXISTS
+
+func (c *NitroClient) ExistsSpilloveraction(key SpilloveractionKey) (bool, error) {
 	var results count_spilloveraction_result
 
-	id, qs := spilloveraction_key_to_id_args(key)
+	id, qs := key.to_id_args()
 
 	qs["count"] = "yes"
 
@@ -94,36 +132,13 @@ func (c *NitroClient) ExistsSpilloveraction(key string) (bool, error) {
 	}
 }
 
-func (c *NitroClient) ListSpilloveraction() ([]Spilloveraction, error) {
-	results := get_spilloveraction_result{}
+//      DELETE
 
-	if err := c.get("spilloveraction", "", nil, &results); err != nil {
-		return nil, err
-	} else {
-		return results.Results, err
-	}
-}
-
-func (c *NitroClient) GetSpilloveraction(key string) (*Spilloveraction, error) {
-	var results get_spilloveraction_result
-
-	id, qs := spilloveraction_key_to_id_args(key)
-
-	if err := c.get("spilloveraction", id, qs, &results); err != nil {
-		return nil, err
-	} else {
-		if len(results.Results) > 1 {
-			return nil, fmt.Errorf("More than one spilloveraction element found")
-		} else if len(results.Results) < 1 {
-			return nil, fmt.Errorf("spilloveraction element not found")
-		}
-
-		return &results.Results[0], nil
-	}
-}
-
-func (c *NitroClient) DeleteSpilloveraction(key string) error {
-	id, qs := spilloveraction_key_to_id_args(key)
+func (c *NitroClient) DeleteSpilloveraction(key SpilloveractionKey) error {
+	id, qs := key.to_id_args()
 
 	return c.delete("spilloveraction", id, qs)
 }
+
+//      RENAME
+//      TODO

@@ -27,7 +27,7 @@ func generateResource(templates *template.Template, name string, resource *nitro
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "resource", context)
+	err = templates.ExecuteTemplate(writer, "resource.tmpl", context)
 
 	return err
 }
@@ -47,7 +47,7 @@ func generateBinding(templates *template.Template, name string, binding *nitro.B
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "binding", context)
+	err = templates.ExecuteTemplate(writer, "binding.tmpl", context)
 
 	return err
 }
@@ -67,7 +67,7 @@ func generateResourceTestFactory(templates *template.Template, name string, reso
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "test_factory", context)
+	err = templates.ExecuteTemplate(writer, "test_factory.tmpl", context)
 
 	return err
 }
@@ -87,7 +87,7 @@ func generateBindingTestFactory(templates *template.Template, name string, bindi
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "test_factory", context)
+	err = templates.ExecuteTemplate(writer, "test_factory.tmpl", context)
 
 	return err
 }
@@ -107,7 +107,7 @@ func generateResourceTest(templates *template.Template, name string, resource *n
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "resource_test", context)
+	err = templates.ExecuteTemplate(writer, "resource_test.tmpl", context)
 
 	return err
 }
@@ -127,7 +127,7 @@ func generateBindingTest(templates *template.Template, name string, binding *nit
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "binding_test", context)
+	err = templates.ExecuteTemplate(writer, "binding_test.tmpl", context)
 
 	return err
 }
@@ -153,10 +153,10 @@ func main() {
 			}
 
 			templates := template.Must(template.New("").Funcs(funcMap).ParseFiles(
-				"templates/resource",
-				"templates/binding",
-				"templates/resource_test", "templates/binding_test", "templates/test_factory",
-				"templates/utils",
+				"templates/resource.tmpl",
+				"templates/binding.tmpl",
+				"templates/resource_test.tmpl", "templates/binding_test.tmpl", "templates/test_factory.tmpl",
+				"templates/utils.tmpl",
 			))
 
 			for key, value := range spec.Resources {

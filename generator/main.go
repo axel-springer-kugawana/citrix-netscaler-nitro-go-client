@@ -12,10 +12,10 @@ import (
 
 var inputFolder = flag.String("i", "", "input folder to read specs from")
 
-func generateResource(templates *template.Template, name string, resource *nitro.Resource) error {
+func generateResource(templates *template.Template, name string, resource *nitro.SpecFile) error {
 	context := struct {
 		Name   string
-		Schema *nitro.Resource
+		Schema *nitro.SpecFile
 	}{
 		name,
 		resource,
@@ -32,10 +32,10 @@ func generateResource(templates *template.Template, name string, resource *nitro
 	return err
 }
 
-func generateBinding(templates *template.Template, name string, binding *nitro.Binding) error {
+func generateBinding(templates *template.Template, name string, binding *nitro.SpecFile) error {
 	context := struct {
 		Name   string
-		Schema *nitro.Binding
+		Schema *nitro.SpecFile
 	}{
 		name,
 		binding,
@@ -52,10 +52,10 @@ func generateBinding(templates *template.Template, name string, binding *nitro.B
 	return err
 }
 
-func generateResourceTestFactory(templates *template.Template, name string, resource *nitro.Resource) error {
+func generateResourceTestFactory(templates *template.Template, name string, resource *nitro.SpecFile) error {
 	context := struct {
 		Name   string
-		Schema *nitro.Resource
+		Schema *nitro.SpecFile
 	}{
 		name,
 		resource,
@@ -72,10 +72,10 @@ func generateResourceTestFactory(templates *template.Template, name string, reso
 	return err
 }
 
-func generateBindingTestFactory(templates *template.Template, name string, binding *nitro.Binding) error {
+func generateBindingTestFactory(templates *template.Template, name string, binding *nitro.SpecFile) error {
 	context := struct {
 		Name   string
-		Schema *nitro.Binding
+		Schema *nitro.SpecFile
 	}{
 		name,
 		binding,
@@ -92,10 +92,10 @@ func generateBindingTestFactory(templates *template.Template, name string, bindi
 	return err
 }
 
-func generateResourceTest(templates *template.Template, name string, resource *nitro.Resource) error {
+func generateResourceTest(templates *template.Template, name string, resource *nitro.SpecFile) error {
 	context := struct {
 		Name   string
-		Schema *nitro.Resource
+		Schema *nitro.SpecFile
 	}{
 		name,
 		resource,
@@ -112,10 +112,10 @@ func generateResourceTest(templates *template.Template, name string, resource *n
 	return err
 }
 
-func generateBindingTest(templates *template.Template, name string, binding *nitro.Binding) error {
+func generateBindingTest(templates *template.Template, name string, binding *nitro.SpecFile) error {
 	context := struct {
 		Name   string
-		Schema *nitro.Binding
+		Schema *nitro.SpecFile
 	}{
 		name,
 		binding,

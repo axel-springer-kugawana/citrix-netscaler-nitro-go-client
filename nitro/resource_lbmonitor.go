@@ -79,6 +79,7 @@ type Lbmonitor struct {
 	Snmpversion                    string `json:"snmpversion,omitempty"`
 	Sqlquery                       string `json:"sqlquery,omitempty"`
 	Sslprofile                     string `json:"sslprofile,omitempty"`
+	State                          string `json:"state,omitempty"`
 	Storedb                        string `json:"storedb,omitempty"`
 	Storefrontacctservice          string `json:"storefrontacctservice,omitempty"`
 	Storefrontcheckbackendservices string `json:"storefrontcheckbackendservices,omitempty"`

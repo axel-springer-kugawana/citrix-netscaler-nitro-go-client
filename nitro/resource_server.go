@@ -13,6 +13,7 @@ type Server struct {
 	Ipaddress          string `json:"ipaddress,omitempty"`
 	Ipv6address        string `json:"ipv6address,omitempty"`
 	Name               string `json:"name,omitempty"`
+	State              string `json:"state,omitempty"`
 	Td                 int    `json:"td,string,omitempty"`
 	Translationip      string `json:"translationip,omitempty"`
 	Translationmask    string `json:"translationmask,omitempty"`

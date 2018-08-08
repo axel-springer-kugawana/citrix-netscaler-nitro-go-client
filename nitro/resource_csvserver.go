@@ -56,6 +56,7 @@ type Csvserver struct {
 	Sopersistence           string `json:"sopersistence,omitempty"`
 	Sopersistencetimeout    int    `json:"sopersistencetimeout,string,omitempty"`
 	Sothreshold             int    `json:"sothreshold,string,omitempty"`
+	State                   string `json:"state,omitempty"`
 	Stateupdate             string `json:"stateupdate,omitempty"`
 	Tcpprofilename          string `json:"tcpprofilename,omitempty"`
 	Td                      int    `json:"td,string,omitempty"`

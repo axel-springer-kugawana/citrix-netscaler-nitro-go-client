@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteAppqoepolicy(key AppqoepolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type AppqoepolicyUpdate struct {
+	Name   string `json:"name,omitempty"`
+	Rule   string `json:"rule,omitempty"`
+	Action string `json:"action,omitempty"`
+}
+
+func (resource Appqoepolicy) ToUpdate() AppqoepolicyUpdate {
+	update := AppqoepolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+	}
+
+	return update
+}
+
+type update_appqoepolicy_payload struct {
+	Update AppqoepolicyUpdate `json:"appqoepolicy"`
+}
+
+func (c *NitroClient) UpdateAppqoepolicy(update AppqoepolicyUpdate) error {
+	payload := update_appqoepolicy_payload{
+		update,
+	}
+
+	return c.put("appqoepolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AppqoepolicyUnset struct {
+	Name   string `json:"name,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
+}
+
+func (resource Appqoepolicy) ToUnset() AppqoepolicyUnset {
+	unset := AppqoepolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_appqoepolicy_payload struct {
+	Unset AppqoepolicyUnset `json:"appqoepolicy"`
+}
+
+func (c *NitroClient) UnsetAppqoepolicy(unset AppqoepolicyUnset) error {
+	payload := unset_appqoepolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("appqoepolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

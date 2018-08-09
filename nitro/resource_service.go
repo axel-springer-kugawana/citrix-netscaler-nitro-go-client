@@ -188,10 +188,192 @@ func (c *NitroClient) DeleteService(key ServiceKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type ServiceUpdate struct {
+	Name               string `json:"name,omitempty"`
+	Maxclient          int    `json:"maxclient,string,omitempty"`
+	Maxreq             int    `json:"maxreq,string,omitempty"`
+	Cacheable          string `json:"cacheable,omitempty"`
+	Cip                string `json:"cip,omitempty"`
+	Cipheader          string `json:"cipheader,omitempty"`
+	Usip               string `json:"usip,omitempty"`
+	Pathmonitor        string `json:"pathmonitor,omitempty"`
+	Pathmonitorindv    string `json:"pathmonitorindv,omitempty"`
+	Useproxyport       string `json:"useproxyport,omitempty"`
+	Sc                 string `json:"sc,omitempty"`
+	Sp                 string `json:"sp,omitempty"`
+	Rtspsessionidremap string `json:"rtspsessionidremap,omitempty"`
+	Healthmonitor      string `json:"healthmonitor,omitempty"`
+	Clttimeout         int    `json:"clttimeout,omitempty"`
+	Svrtimeout         int    `json:"svrtimeout,omitempty"`
+	Customserverid     string `json:"customserverid,omitempty"`
+	Serverid           int    `json:"serverid,string,omitempty"`
+	Cka                string `json:"cka,omitempty"`
+	Tcpb               string `json:"tcpb,omitempty"`
+	Cmp                string `json:"cmp,omitempty"`
+	Maxbandwidth       int    `json:"maxbandwidth,string,omitempty"`
+	Accessdown         string `json:"accessdown,omitempty"`
+	Monthreshold       int    `json:"monthreshold,string,omitempty"`
+	Downstateflush     string `json:"downstateflush,omitempty"`
+	Tcpprofilename     string `json:"tcpprofilename,omitempty"`
+	Httpprofilename    string `json:"httpprofilename,omitempty"`
+	Hashid             int    `json:"hashid,string,omitempty"`
+	Comment            string `json:"comment,omitempty"`
+	Appflowlog         string `json:"appflowlog,omitempty"`
+	Netprofile         string `json:"netprofile,omitempty"`
+	Processlocal       string `json:"processlocal,omitempty"`
+	Dnsprofilename     string `json:"dnsprofilename,omitempty"`
+	Monconnectionclose string `json:"monconnectionclose,omitempty"`
+}
+
+func (resource Service) ToUpdate() ServiceUpdate {
+	update := ServiceUpdate{
+		resource.Name,
+		resource.Maxclient,
+		resource.Maxreq,
+		resource.Cacheable,
+		resource.Cip,
+		resource.Cipheader,
+		resource.Usip,
+		resource.Pathmonitor,
+		resource.Pathmonitorindv,
+		resource.Useproxyport,
+		resource.Sc,
+		resource.Sp,
+		resource.Rtspsessionidremap,
+		resource.Healthmonitor,
+		resource.Clttimeout,
+		resource.Svrtimeout,
+		resource.Customserverid,
+		resource.Serverid,
+		resource.Cka,
+		resource.Tcpb,
+		resource.Cmp,
+		resource.Maxbandwidth,
+		resource.Accessdown,
+		resource.Monthreshold,
+		resource.Downstateflush,
+		resource.Tcpprofilename,
+		resource.Httpprofilename,
+		resource.Hashid,
+		resource.Comment,
+		resource.Appflowlog,
+		resource.Netprofile,
+		resource.Processlocal,
+		resource.Dnsprofilename,
+		resource.Monconnectionclose,
+	}
+
+	return update
+}
+
+type update_service_payload struct {
+	Update ServiceUpdate `json:"service"`
+}
+
+func (c *NitroClient) UpdateService(update ServiceUpdate) error {
+	payload := update_service_payload{
+		update,
+	}
+
+	return c.put("service", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type ServiceUnset struct {
+	Name               string `json:"name,omitempty"`
+	Maxclient          bool   `json:"maxclient,omitempty"`
+	Maxreq             bool   `json:"maxreq,omitempty"`
+	Cacheable          bool   `json:"cacheable,omitempty"`
+	Cip                bool   `json:"cip,omitempty"`
+	Cipheader          bool   `json:"cipheader,omitempty"`
+	Usip               bool   `json:"usip,omitempty"`
+	Pathmonitor        bool   `json:"pathmonitor,omitempty"`
+	Pathmonitorindv    bool   `json:"pathmonitorindv,omitempty"`
+	Useproxyport       bool   `json:"useproxyport,omitempty"`
+	Sc                 bool   `json:"sc,omitempty"`
+	Sp                 bool   `json:"sp,omitempty"`
+	Rtspsessionidremap bool   `json:"rtspsessionidremap,omitempty"`
+	Healthmonitor      bool   `json:"healthmonitor,omitempty"`
+	Clttimeout         bool   `json:"clttimeout,omitempty"`
+	Svrtimeout         bool   `json:"svrtimeout,omitempty"`
+	Customserverid     bool   `json:"customserverid,omitempty"`
+	Serverid           bool   `json:"serverid,omitempty"`
+	Cka                bool   `json:"cka,omitempty"`
+	Tcpb               bool   `json:"tcpb,omitempty"`
+	Cmp                bool   `json:"cmp,omitempty"`
+	Maxbandwidth       bool   `json:"maxbandwidth,omitempty"`
+	Accessdown         bool   `json:"accessdown,omitempty"`
+	Monthreshold       bool   `json:"monthreshold,omitempty"`
+	Downstateflush     bool   `json:"downstateflush,omitempty"`
+	Tcpprofilename     bool   `json:"tcpprofilename,omitempty"`
+	Httpprofilename    bool   `json:"httpprofilename,omitempty"`
+	Hashid             bool   `json:"hashid,omitempty"`
+	Comment            bool   `json:"comment,omitempty"`
+	Appflowlog         bool   `json:"appflowlog,omitempty"`
+	Netprofile         bool   `json:"netprofile,omitempty"`
+	Processlocal       bool   `json:"processlocal,omitempty"`
+	Dnsprofilename     bool   `json:"dnsprofilename,omitempty"`
+	Monconnectionclose bool   `json:"monconnectionclose,omitempty"`
+}
+
+func (resource Service) ToUnset() ServiceUnset {
+	unset := ServiceUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_service_payload struct {
+	Unset ServiceUnset `json:"service"`
+}
+
+func (c *NitroClient) UnsetService(unset ServiceUnset) error {
+	payload := unset_service_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("service", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -158,10 +158,100 @@ func (c *NitroClient) DeleteLbgroup(key LbgroupKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type LbgroupUpdate struct {
+	Name                     string `json:"name,omitempty"`
+	Persistencetype          string `json:"persistencetype,omitempty"`
+	Persistencebackup        string `json:"persistencebackup,omitempty"`
+	Backuppersistencetimeout int    `json:"backuppersistencetimeout,string,omitempty"`
+	Persistmask              string `json:"persistmask,omitempty"`
+	Cookiename               string `json:"cookiename,omitempty"`
+	V6persistmasklen         int    `json:"v6persistmasklen,string,omitempty"`
+	Cookiedomain             string `json:"cookiedomain,omitempty"`
+	Timeout                  int    `json:"timeout,string,omitempty"`
+	Rule                     string `json:"rule,omitempty"`
+	Usevserverpersistency    string `json:"usevserverpersistency,omitempty"`
+}
+
+func (resource Lbgroup) ToUpdate() LbgroupUpdate {
+	update := LbgroupUpdate{
+		resource.Name,
+		resource.Persistencetype,
+		resource.Persistencebackup,
+		resource.Backuppersistencetimeout,
+		resource.Persistmask,
+		resource.Cookiename,
+		resource.V6persistmasklen,
+		resource.Cookiedomain,
+		resource.Timeout,
+		resource.Rule,
+		resource.Usevserverpersistency,
+	}
+
+	return update
+}
+
+type update_lbgroup_payload struct {
+	Update LbgroupUpdate `json:"lbgroup"`
+}
+
+func (c *NitroClient) UpdateLbgroup(update LbgroupUpdate) error {
+	payload := update_lbgroup_payload{
+		update,
+	}
+
+	return c.put("lbgroup", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type LbgroupUnset struct {
+	Name                     string `json:"name,omitempty"`
+	Persistencetype          bool   `json:"persistencetype,omitempty"`
+	Persistencebackup        bool   `json:"persistencebackup,omitempty"`
+	Backuppersistencetimeout bool   `json:"backuppersistencetimeout,omitempty"`
+	Persistmask              bool   `json:"persistmask,omitempty"`
+	Cookiename               bool   `json:"cookiename,omitempty"`
+	V6persistmasklen         bool   `json:"v6persistmasklen,omitempty"`
+	Cookiedomain             bool   `json:"cookiedomain,omitempty"`
+	Timeout                  bool   `json:"timeout,omitempty"`
+	Rule                     bool   `json:"rule,omitempty"`
+	Usevserverpersistency    bool   `json:"usevserverpersistency,omitempty"`
+}
+
+func (resource Lbgroup) ToUnset() LbgroupUnset {
+	unset := LbgroupUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_lbgroup_payload struct {
+	Unset LbgroupUnset `json:"lbgroup"`
+}
+
+func (c *NitroClient) UnsetLbgroup(unset LbgroupUnset) error {
+	payload := unset_lbgroup_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("lbgroup", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

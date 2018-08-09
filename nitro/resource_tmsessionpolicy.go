@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteTmsessionpolicy(key TmsessionpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type TmsessionpolicyUpdate struct {
+	Name   string `json:"name,omitempty"`
+	Rule   string `json:"rule,omitempty"`
+	Action string `json:"action,omitempty"`
+}
+
+func (resource Tmsessionpolicy) ToUpdate() TmsessionpolicyUpdate {
+	update := TmsessionpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+	}
+
+	return update
+}
+
+type update_tmsessionpolicy_payload struct {
+	Update TmsessionpolicyUpdate `json:"tmsessionpolicy"`
+}
+
+func (c *NitroClient) UpdateTmsessionpolicy(update TmsessionpolicyUpdate) error {
+	payload := update_tmsessionpolicy_payload{
+		update,
+	}
+
+	return c.put("tmsessionpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type TmsessionpolicyUnset struct {
+	Name   string `json:"name,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
+}
+
+func (resource Tmsessionpolicy) ToUnset() TmsessionpolicyUnset {
+	unset := TmsessionpolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_tmsessionpolicy_payload struct {
+	Unset TmsessionpolicyUnset `json:"tmsessionpolicy"`
+}
+
+func (c *NitroClient) UnsetTmsessionpolicy(unset TmsessionpolicyUnset) error {
+	payload := unset_tmsessionpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("tmsessionpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

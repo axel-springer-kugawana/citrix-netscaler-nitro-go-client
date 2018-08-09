@@ -90,3 +90,71 @@ type state_{{$.Name}}_payload struct {
         State {{$.Name|name}}Key `json:"{{$.Name}}"`
 }
 {{end}}
+
+{{define "update_payload"}}
+type {{$.Name|name}}Update struct {
+        {{range $field := $.Schema.Key -}}
+        {{if eq (index $.Schema.Fields $field) "double" -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+        {{range $field := $.Schema.Update -}}
+        {{if eq (index $.Schema.Fields $field) "double" -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+}
+
+func (resource {{$.Name|name}}) ToUpdate() {{$.Name|name}}Update {
+        update := {{$.Name|name}}Update{
+                {{range $field := $.Schema.Key -}}
+                resource.{{$field|title}},
+                {{end -}}
+                {{range $field := $.Schema.Update -}}
+                resource.{{$field|title}},
+                {{end -}}
+        }
+
+        return update
+}
+
+type update_{{$.Name}}_payload struct {
+        Update {{$.Name|name}}Update `json:"{{$.Name}}"`
+}
+{{end -}}
+
+{{define "unset_payload"}}
+type {{$.Name|name}}Unset struct {
+        {{range $field := $.Schema.Key -}}
+        {{if eq (index $.Schema.Fields $field) "double" -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},string,omitempty"`
+        {{else -}}
+        {{$field|title}} {{(index $.Schema.Fields $field)|go_type}} `json:"{{$field}},omitempty"`
+        {{end -}}
+        {{end -}}
+        {{range $field := $.Schema.Update -}}
+        {{$field|title}} bool `json:"{{$field}},omitempty"`
+        {{end -}}
+}
+
+func (resource {{$.Name|name}}) ToUnset() {{$.Name|name}}Unset {
+        unset := {{$.Name|name}}Unset{
+                {{range $field := $.Schema.Key -}}
+                resource.{{$field|title}},
+                {{end -}}
+                {{range $field := $.Schema.Update -}}
+                false,
+                {{end -}}
+        }
+
+        return unset
+}
+
+type unset_{{$.Name}}_payload struct {
+        Unset {{$.Name|name}}Unset `json:"{{$.Name}}"`
+}
+{{end}}

@@ -152,10 +152,76 @@ func (c *NitroClient) DeletePolicyexpression(key PolicyexpressionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type PolicyexpressionUpdate struct {
+	Name                  string `json:"name,omitempty"`
+	Value                 string `json:"value,omitempty"`
+	Description           string `json:"description,omitempty"`
+	Comment               string `json:"comment,omitempty"`
+	Clientsecuritymessage string `json:"clientsecuritymessage,omitempty"`
+}
+
+func (resource Policyexpression) ToUpdate() PolicyexpressionUpdate {
+	update := PolicyexpressionUpdate{
+		resource.Name,
+		resource.Value,
+		resource.Description,
+		resource.Comment,
+		resource.Clientsecuritymessage,
+	}
+
+	return update
+}
+
+type update_policyexpression_payload struct {
+	Update PolicyexpressionUpdate `json:"policyexpression"`
+}
+
+func (c *NitroClient) UpdatePolicyexpression(update PolicyexpressionUpdate) error {
+	payload := update_policyexpression_payload{
+		update,
+	}
+
+	return c.put("policyexpression", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type PolicyexpressionUnset struct {
+	Name                  string `json:"name,omitempty"`
+	Value                 bool   `json:"value,omitempty"`
+	Description           bool   `json:"description,omitempty"`
+	Comment               bool   `json:"comment,omitempty"`
+	Clientsecuritymessage bool   `json:"clientsecuritymessage,omitempty"`
+}
+
+func (resource Policyexpression) ToUnset() PolicyexpressionUnset {
+	unset := PolicyexpressionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_policyexpression_payload struct {
+	Unset PolicyexpressionUnset `json:"policyexpression"`
+}
+
+func (c *NitroClient) UnsetPolicyexpression(unset PolicyexpressionUnset) error {
+	payload := unset_policyexpression_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("policyexpression", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

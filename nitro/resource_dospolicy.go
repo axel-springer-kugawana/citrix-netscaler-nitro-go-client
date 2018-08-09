@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteDospolicy(key DospolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type DospolicyUpdate struct {
+	Name          string `json:"name,omitempty"`
+	Qdepth        int    `json:"qdepth,string,omitempty"`
+	Cltdetectrate int    `json:"cltdetectrate,string,omitempty"`
+}
+
+func (resource Dospolicy) ToUpdate() DospolicyUpdate {
+	update := DospolicyUpdate{
+		resource.Name,
+		resource.Qdepth,
+		resource.Cltdetectrate,
+	}
+
+	return update
+}
+
+type update_dospolicy_payload struct {
+	Update DospolicyUpdate `json:"dospolicy"`
+}
+
+func (c *NitroClient) UpdateDospolicy(update DospolicyUpdate) error {
+	payload := update_dospolicy_payload{
+		update,
+	}
+
+	return c.put("dospolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type DospolicyUnset struct {
+	Name          string `json:"name,omitempty"`
+	Qdepth        bool   `json:"qdepth,omitempty"`
+	Cltdetectrate bool   `json:"cltdetectrate,omitempty"`
+}
+
+func (resource Dospolicy) ToUnset() DospolicyUnset {
+	unset := DospolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_dospolicy_payload struct {
+	Unset DospolicyUnset `json:"dospolicy"`
+}
+
+func (c *NitroClient) UnsetDospolicy(unset DospolicyUnset) error {
+	payload := unset_dospolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("dospolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

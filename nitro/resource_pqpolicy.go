@@ -153,10 +153,72 @@ func (c *NitroClient) DeletePqpolicy(key PqpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type PqpolicyUpdate struct {
+	Policyname string `json:"policyname,omitempty"`
+	Weight     int    `json:"weight,string,omitempty"`
+	Qdepth     int    `json:"qdepth,string,omitempty"`
+	Polqdepth  int    `json:"polqdepth,string,omitempty"`
+}
+
+func (resource Pqpolicy) ToUpdate() PqpolicyUpdate {
+	update := PqpolicyUpdate{
+		resource.Policyname,
+		resource.Weight,
+		resource.Qdepth,
+		resource.Polqdepth,
+	}
+
+	return update
+}
+
+type update_pqpolicy_payload struct {
+	Update PqpolicyUpdate `json:"pqpolicy"`
+}
+
+func (c *NitroClient) UpdatePqpolicy(update PqpolicyUpdate) error {
+	payload := update_pqpolicy_payload{
+		update,
+	}
+
+	return c.put("pqpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type PqpolicyUnset struct {
+	Policyname string `json:"policyname,omitempty"`
+	Weight     bool   `json:"weight,omitempty"`
+	Qdepth     bool   `json:"qdepth,omitempty"`
+	Polqdepth  bool   `json:"polqdepth,omitempty"`
+}
+
+func (resource Pqpolicy) ToUnset() PqpolicyUnset {
+	unset := PqpolicyUnset{
+		resource.Policyname,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_pqpolicy_payload struct {
+	Unset PqpolicyUnset `json:"pqpolicy"`
+}
+
+func (c *NitroClient) UnsetPqpolicy(unset PqpolicyUnset) error {
+	payload := unset_pqpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("pqpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

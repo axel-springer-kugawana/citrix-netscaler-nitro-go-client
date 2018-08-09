@@ -149,10 +149,64 @@ func (c *NitroClient) DeletePolicystringmap(key PolicystringmapKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type PolicystringmapUpdate struct {
+	Name    string `json:"name,omitempty"`
+	Comment string `json:"comment,omitempty"`
+}
+
+func (resource Policystringmap) ToUpdate() PolicystringmapUpdate {
+	update := PolicystringmapUpdate{
+		resource.Name,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_policystringmap_payload struct {
+	Update PolicystringmapUpdate `json:"policystringmap"`
+}
+
+func (c *NitroClient) UpdatePolicystringmap(update PolicystringmapUpdate) error {
+	payload := update_policystringmap_payload{
+		update,
+	}
+
+	return c.put("policystringmap", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type PolicystringmapUnset struct {
+	Name    string `json:"name,omitempty"`
+	Comment bool   `json:"comment,omitempty"`
+}
+
+func (resource Policystringmap) ToUnset() PolicystringmapUnset {
+	unset := PolicystringmapUnset{
+		resource.Name,
+		false,
+	}
+
+	return unset
+}
+
+type unset_policystringmap_payload struct {
+	Unset PolicystringmapUnset `json:"policystringmap"`
+}
+
+func (c *NitroClient) UnsetPolicystringmap(unset PolicystringmapUnset) error {
+	payload := unset_policystringmap_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("policystringmap", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

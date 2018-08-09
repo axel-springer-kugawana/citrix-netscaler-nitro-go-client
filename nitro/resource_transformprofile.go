@@ -151,10 +151,72 @@ func (c *NitroClient) DeleteTransformprofile(key TransformprofileKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type TransformprofileUpdate struct {
+	Name                      string `json:"name,omitempty"`
+	Type                      string `json:"type,omitempty"`
+	Onlytransformabsurlinbody string `json:"onlytransformabsurlinbody,omitempty"`
+	Comment                   string `json:"comment,omitempty"`
+}
+
+func (resource Transformprofile) ToUpdate() TransformprofileUpdate {
+	update := TransformprofileUpdate{
+		resource.Name,
+		resource.Type,
+		resource.Onlytransformabsurlinbody,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_transformprofile_payload struct {
+	Update TransformprofileUpdate `json:"transformprofile"`
+}
+
+func (c *NitroClient) UpdateTransformprofile(update TransformprofileUpdate) error {
+	payload := update_transformprofile_payload{
+		update,
+	}
+
+	return c.put("transformprofile", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type TransformprofileUnset struct {
+	Name                      string `json:"name,omitempty"`
+	Type                      bool   `json:"type,omitempty"`
+	Onlytransformabsurlinbody bool   `json:"onlytransformabsurlinbody,omitempty"`
+	Comment                   bool   `json:"comment,omitempty"`
+}
+
+func (resource Transformprofile) ToUnset() TransformprofileUnset {
+	unset := TransformprofileUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_transformprofile_payload struct {
+	Unset TransformprofileUnset `json:"transformprofile"`
+}
+
+func (c *NitroClient) UnsetTransformprofile(unset TransformprofileUnset) error {
+	payload := unset_transformprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("transformprofile", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

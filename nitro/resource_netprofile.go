@@ -152,10 +152,72 @@ func (c *NitroClient) DeleteNetprofile(key NetprofileKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type NetprofileUpdate struct {
+	Name             string `json:"name,omitempty"`
+	Srcip            string `json:"srcip,omitempty"`
+	Srcippersistency string `json:"srcippersistency,omitempty"`
+	Overridelsn      string `json:"overridelsn,omitempty"`
+}
+
+func (resource Netprofile) ToUpdate() NetprofileUpdate {
+	update := NetprofileUpdate{
+		resource.Name,
+		resource.Srcip,
+		resource.Srcippersistency,
+		resource.Overridelsn,
+	}
+
+	return update
+}
+
+type update_netprofile_payload struct {
+	Update NetprofileUpdate `json:"netprofile"`
+}
+
+func (c *NitroClient) UpdateNetprofile(update NetprofileUpdate) error {
+	payload := update_netprofile_payload{
+		update,
+	}
+
+	return c.put("netprofile", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type NetprofileUnset struct {
+	Name             string `json:"name,omitempty"`
+	Srcip            bool   `json:"srcip,omitempty"`
+	Srcippersistency bool   `json:"srcippersistency,omitempty"`
+	Overridelsn      bool   `json:"overridelsn,omitempty"`
+}
+
+func (resource Netprofile) ToUnset() NetprofileUnset {
+	unset := NetprofileUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_netprofile_payload struct {
+	Unset NetprofileUnset `json:"netprofile"`
+}
+
+func (c *NitroClient) UnsetNetprofile(unset NetprofileUnset) error {
+	payload := unset_netprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("netprofile", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

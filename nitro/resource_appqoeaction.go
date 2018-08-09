@@ -160,10 +160,100 @@ func (c *NitroClient) DeleteAppqoeaction(key AppqoeactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type AppqoeactionUpdate struct {
+	Name              string `json:"name,omitempty"`
+	Priority          string `json:"priority,omitempty"`
+	Altcontentsvcname string `json:"altcontentsvcname,omitempty"`
+	Altcontentpath    string `json:"altcontentpath,omitempty"`
+	Polqdepth         int    `json:"polqdepth,string,omitempty"`
+	Priqdepth         int    `json:"priqdepth,string,omitempty"`
+	Maxconn           int    `json:"maxconn,string,omitempty"`
+	Delay             int    `json:"delay,string,omitempty"`
+	Dostrigexpression string `json:"dostrigexpression,omitempty"`
+	Dosaction         string `json:"dosaction,omitempty"`
+	Tcpprofile        string `json:"tcpprofile,omitempty"`
+}
+
+func (resource Appqoeaction) ToUpdate() AppqoeactionUpdate {
+	update := AppqoeactionUpdate{
+		resource.Name,
+		resource.Priority,
+		resource.Altcontentsvcname,
+		resource.Altcontentpath,
+		resource.Polqdepth,
+		resource.Priqdepth,
+		resource.Maxconn,
+		resource.Delay,
+		resource.Dostrigexpression,
+		resource.Dosaction,
+		resource.Tcpprofile,
+	}
+
+	return update
+}
+
+type update_appqoeaction_payload struct {
+	Update AppqoeactionUpdate `json:"appqoeaction"`
+}
+
+func (c *NitroClient) UpdateAppqoeaction(update AppqoeactionUpdate) error {
+	payload := update_appqoeaction_payload{
+		update,
+	}
+
+	return c.put("appqoeaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AppqoeactionUnset struct {
+	Name              string `json:"name,omitempty"`
+	Priority          bool   `json:"priority,omitempty"`
+	Altcontentsvcname bool   `json:"altcontentsvcname,omitempty"`
+	Altcontentpath    bool   `json:"altcontentpath,omitempty"`
+	Polqdepth         bool   `json:"polqdepth,omitempty"`
+	Priqdepth         bool   `json:"priqdepth,omitempty"`
+	Maxconn           bool   `json:"maxconn,omitempty"`
+	Delay             bool   `json:"delay,omitempty"`
+	Dostrigexpression bool   `json:"dostrigexpression,omitempty"`
+	Dosaction         bool   `json:"dosaction,omitempty"`
+	Tcpprofile        bool   `json:"tcpprofile,omitempty"`
+}
+
+func (resource Appqoeaction) ToUnset() AppqoeactionUnset {
+	unset := AppqoeactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_appqoeaction_payload struct {
+	Unset AppqoeactionUnset `json:"appqoeaction"`
+}
+
+func (c *NitroClient) UnsetAppqoeaction(unset AppqoeactionUnset) error {
+	payload := unset_appqoeaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("appqoeaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -158,10 +158,96 @@ func (c *NitroClient) DeleteTransformaction(key TransformactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type TransformactionUpdate struct {
+	Name             string `json:"name,omitempty"`
+	Priority         int    `json:"priority,string,omitempty"`
+	Requrlfrom       string `json:"requrlfrom,omitempty"`
+	Requrlinto       string `json:"requrlinto,omitempty"`
+	Resurlfrom       string `json:"resurlfrom,omitempty"`
+	Resurlinto       string `json:"resurlinto,omitempty"`
+	Cookiedomainfrom string `json:"cookiedomainfrom,omitempty"`
+	Cookiedomaininto string `json:"cookiedomaininto,omitempty"`
+	State            string `json:"state,omitempty"`
+	Comment          string `json:"comment,omitempty"`
+}
+
+func (resource Transformaction) ToUpdate() TransformactionUpdate {
+	update := TransformactionUpdate{
+		resource.Name,
+		resource.Priority,
+		resource.Requrlfrom,
+		resource.Requrlinto,
+		resource.Resurlfrom,
+		resource.Resurlinto,
+		resource.Cookiedomainfrom,
+		resource.Cookiedomaininto,
+		resource.State,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_transformaction_payload struct {
+	Update TransformactionUpdate `json:"transformaction"`
+}
+
+func (c *NitroClient) UpdateTransformaction(update TransformactionUpdate) error {
+	payload := update_transformaction_payload{
+		update,
+	}
+
+	return c.put("transformaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type TransformactionUnset struct {
+	Name             string `json:"name,omitempty"`
+	Priority         bool   `json:"priority,omitempty"`
+	Requrlfrom       bool   `json:"requrlfrom,omitempty"`
+	Requrlinto       bool   `json:"requrlinto,omitempty"`
+	Resurlfrom       bool   `json:"resurlfrom,omitempty"`
+	Resurlinto       bool   `json:"resurlinto,omitempty"`
+	Cookiedomainfrom bool   `json:"cookiedomainfrom,omitempty"`
+	Cookiedomaininto bool   `json:"cookiedomaininto,omitempty"`
+	State            bool   `json:"state,omitempty"`
+	Comment          bool   `json:"comment,omitempty"`
+}
+
+func (resource Transformaction) ToUnset() TransformactionUnset {
+	unset := TransformactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_transformaction_payload struct {
+	Unset TransformactionUnset `json:"transformaction"`
+}
+
+func (c *NitroClient) UnsetTransformaction(unset TransformactionUnset) error {
+	payload := unset_transformaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("transformaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

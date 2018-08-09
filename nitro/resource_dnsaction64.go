@@ -151,10 +151,72 @@ func (c *NitroClient) DeleteDnsaction64(key Dnsaction64Key) error {
 }
 
 //      UPDATE
-//      TODO
+
+type Dnsaction64Update struct {
+	Actionname  string `json:"actionname,omitempty"`
+	Prefix      string `json:"prefix,omitempty"`
+	Mappedrule  string `json:"mappedrule,omitempty"`
+	Excluderule string `json:"excluderule,omitempty"`
+}
+
+func (resource Dnsaction64) ToUpdate() Dnsaction64Update {
+	update := Dnsaction64Update{
+		resource.Actionname,
+		resource.Prefix,
+		resource.Mappedrule,
+		resource.Excluderule,
+	}
+
+	return update
+}
+
+type update_dnsaction64_payload struct {
+	Update Dnsaction64Update `json:"dnsaction64"`
+}
+
+func (c *NitroClient) UpdateDnsaction64(update Dnsaction64Update) error {
+	payload := update_dnsaction64_payload{
+		update,
+	}
+
+	return c.put("dnsaction64", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type Dnsaction64Unset struct {
+	Actionname  string `json:"actionname,omitempty"`
+	Prefix      bool   `json:"prefix,omitempty"`
+	Mappedrule  bool   `json:"mappedrule,omitempty"`
+	Excluderule bool   `json:"excluderule,omitempty"`
+}
+
+func (resource Dnsaction64) ToUnset() Dnsaction64Unset {
+	unset := Dnsaction64Unset{
+		resource.Actionname,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_dnsaction64_payload struct {
+	Unset Dnsaction64Unset `json:"dnsaction64"`
+}
+
+func (c *NitroClient) UnsetDnsaction64(unset Dnsaction64Unset) error {
+	payload := unset_dnsaction64_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("dnsaction64", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

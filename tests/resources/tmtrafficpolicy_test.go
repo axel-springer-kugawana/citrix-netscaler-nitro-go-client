@@ -35,6 +35,11 @@ func TestTmtrafficpolicy(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	log.Print("--UPDATE--")
+	err = client.UpdateTmtrafficpolicy(resource.ToUpdate())
+
+	assert.NoError(t, err)
+
 	log.Print("--COUNT--")
 	count, err := client.CountTmtrafficpolicy()
 

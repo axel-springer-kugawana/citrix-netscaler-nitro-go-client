@@ -154,10 +154,84 @@ func (c *NitroClient) DeleteCachepolicy(key CachepolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type CachepolicyUpdate struct {
+	Policyname   string   `json:"policyname,omitempty"`
+	Rule         string   `json:"rule,omitempty"`
+	Action       string   `json:"action,omitempty"`
+	Storeingroup string   `json:"storeingroup,omitempty"`
+	Invalgroups  []string `json:"invalgroups,omitempty"`
+	Invalobjects []string `json:"invalobjects,omitempty"`
+	Undefaction  string   `json:"undefaction,omitempty"`
+}
+
+func (resource Cachepolicy) ToUpdate() CachepolicyUpdate {
+	update := CachepolicyUpdate{
+		resource.Policyname,
+		resource.Rule,
+		resource.Action,
+		resource.Storeingroup,
+		resource.Invalgroups,
+		resource.Invalobjects,
+		resource.Undefaction,
+	}
+
+	return update
+}
+
+type update_cachepolicy_payload struct {
+	Update CachepolicyUpdate `json:"cachepolicy"`
+}
+
+func (c *NitroClient) UpdateCachepolicy(update CachepolicyUpdate) error {
+	payload := update_cachepolicy_payload{
+		update,
+	}
+
+	return c.put("cachepolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type CachepolicyUnset struct {
+	Policyname   string `json:"policyname,omitempty"`
+	Rule         bool   `json:"rule,omitempty"`
+	Action       bool   `json:"action,omitempty"`
+	Storeingroup bool   `json:"storeingroup,omitempty"`
+	Invalgroups  bool   `json:"invalgroups,omitempty"`
+	Invalobjects bool   `json:"invalobjects,omitempty"`
+	Undefaction  bool   `json:"undefaction,omitempty"`
+}
+
+func (resource Cachepolicy) ToUnset() CachepolicyUnset {
+	unset := CachepolicyUnset{
+		resource.Policyname,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_cachepolicy_payload struct {
+	Unset CachepolicyUnset `json:"cachepolicy"`
+}
+
+func (c *NitroClient) UnsetCachepolicy(unset CachepolicyUnset) error {
+	payload := unset_cachepolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("cachepolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

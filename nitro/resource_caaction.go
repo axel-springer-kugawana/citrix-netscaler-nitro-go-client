@@ -152,10 +152,76 @@ func (c *NitroClient) DeleteCaaction(key CaactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type CaactionUpdate struct {
+	Name         string `json:"name,omitempty"`
+	Accumressize int    `json:"accumressize,string,omitempty"`
+	Lbvserver    string `json:"lbvserver,omitempty"`
+	Comment      string `json:"comment,omitempty"`
+	Type         string `json:"type,omitempty"`
+}
+
+func (resource Caaction) ToUpdate() CaactionUpdate {
+	update := CaactionUpdate{
+		resource.Name,
+		resource.Accumressize,
+		resource.Lbvserver,
+		resource.Comment,
+		resource.Type,
+	}
+
+	return update
+}
+
+type update_caaction_payload struct {
+	Update CaactionUpdate `json:"caaction"`
+}
+
+func (c *NitroClient) UpdateCaaction(update CaactionUpdate) error {
+	payload := update_caaction_payload{
+		update,
+	}
+
+	return c.put("caaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type CaactionUnset struct {
+	Name         string `json:"name,omitempty"`
+	Accumressize bool   `json:"accumressize,omitempty"`
+	Lbvserver    bool   `json:"lbvserver,omitempty"`
+	Comment      bool   `json:"comment,omitempty"`
+	Type         bool   `json:"type,omitempty"`
+}
+
+func (resource Caaction) ToUnset() CaactionUnset {
+	unset := CaactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_caaction_payload struct {
+	Unset CaactionUnset `json:"caaction"`
+}
+
+func (c *NitroClient) UnsetCaaction(unset CaactionUnset) error {
+	payload := unset_caaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("caaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

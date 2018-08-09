@@ -152,10 +152,64 @@ func (c *NitroClient) DeleteLbwlm(key LbwlmKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type LbwlmUpdate struct {
+	Wlmname   string `json:"wlmname,omitempty"`
+	Katimeout int    `json:"katimeout,string,omitempty"`
+}
+
+func (resource Lbwlm) ToUpdate() LbwlmUpdate {
+	update := LbwlmUpdate{
+		resource.Wlmname,
+		resource.Katimeout,
+	}
+
+	return update
+}
+
+type update_lbwlm_payload struct {
+	Update LbwlmUpdate `json:"lbwlm"`
+}
+
+func (c *NitroClient) UpdateLbwlm(update LbwlmUpdate) error {
+	payload := update_lbwlm_payload{
+		update,
+	}
+
+	return c.put("lbwlm", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type LbwlmUnset struct {
+	Wlmname   string `json:"wlmname,omitempty"`
+	Katimeout bool   `json:"katimeout,omitempty"`
+}
+
+func (resource Lbwlm) ToUnset() LbwlmUnset {
+	unset := LbwlmUnset{
+		resource.Wlmname,
+		false,
+	}
+
+	return unset
+}
+
+type unset_lbwlm_payload struct {
+	Unset LbwlmUnset `json:"lbwlm"`
+}
+
+func (c *NitroClient) UnsetLbwlm(unset LbwlmUnset) error {
+	payload := unset_lbwlm_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("lbwlm", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

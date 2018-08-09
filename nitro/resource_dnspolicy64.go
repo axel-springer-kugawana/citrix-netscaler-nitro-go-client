@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteDnspolicy64(key Dnspolicy64Key) error {
 }
 
 //      UPDATE
-//      TODO
+
+type Dnspolicy64Update struct {
+	Name   string `json:"name,omitempty"`
+	Rule   string `json:"rule,omitempty"`
+	Action string `json:"action,omitempty"`
+}
+
+func (resource Dnspolicy64) ToUpdate() Dnspolicy64Update {
+	update := Dnspolicy64Update{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+	}
+
+	return update
+}
+
+type update_dnspolicy64_payload struct {
+	Update Dnspolicy64Update `json:"dnspolicy64"`
+}
+
+func (c *NitroClient) UpdateDnspolicy64(update Dnspolicy64Update) error {
+	payload := update_dnspolicy64_payload{
+		update,
+	}
+
+	return c.put("dnspolicy64", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type Dnspolicy64Unset struct {
+	Name   string `json:"name,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
+}
+
+func (resource Dnspolicy64) ToUnset() Dnspolicy64Unset {
+	unset := Dnspolicy64Unset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_dnspolicy64_payload struct {
+	Unset Dnspolicy64Unset `json:"dnspolicy64"`
+}
+
+func (c *NitroClient) UnsetDnspolicy64(unset Dnspolicy64Unset) error {
+	payload := unset_dnspolicy64_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("dnspolicy64", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

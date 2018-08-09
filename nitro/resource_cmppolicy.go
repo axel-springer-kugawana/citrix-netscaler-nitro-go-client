@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteCmppolicy(key CmppolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type CmppolicyUpdate struct {
+	Name      string `json:"name,omitempty"`
+	Rule      string `json:"rule,omitempty"`
+	Resaction string `json:"resaction,omitempty"`
+}
+
+func (resource Cmppolicy) ToUpdate() CmppolicyUpdate {
+	update := CmppolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Resaction,
+	}
+
+	return update
+}
+
+type update_cmppolicy_payload struct {
+	Update CmppolicyUpdate `json:"cmppolicy"`
+}
+
+func (c *NitroClient) UpdateCmppolicy(update CmppolicyUpdate) error {
+	payload := update_cmppolicy_payload{
+		update,
+	}
+
+	return c.put("cmppolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type CmppolicyUnset struct {
+	Name      string `json:"name,omitempty"`
+	Rule      bool   `json:"rule,omitempty"`
+	Resaction bool   `json:"resaction,omitempty"`
+}
+
+func (resource Cmppolicy) ToUnset() CmppolicyUnset {
+	unset := CmppolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_cmppolicy_payload struct {
+	Unset CmppolicyUnset `json:"cmppolicy"`
+}
+
+func (c *NitroClient) UnsetCmppolicy(unset CmppolicyUnset) error {
+	payload := unset_cmppolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("cmppolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -151,10 +151,72 @@ func (c *NitroClient) DeleteVideooptimizationaction(key VideooptimizationactionK
 }
 
 //      UPDATE
-//      TODO
+
+type VideooptimizationactionUpdate struct {
+	Name    string `json:"name,omitempty"`
+	Type    string `json:"type,omitempty"`
+	Rate    int    `json:"rate,omitempty"`
+	Comment string `json:"comment,omitempty"`
+}
+
+func (resource Videooptimizationaction) ToUpdate() VideooptimizationactionUpdate {
+	update := VideooptimizationactionUpdate{
+		resource.Name,
+		resource.Type,
+		resource.Rate,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_videooptimizationaction_payload struct {
+	Update VideooptimizationactionUpdate `json:"videooptimizationaction"`
+}
+
+func (c *NitroClient) UpdateVideooptimizationaction(update VideooptimizationactionUpdate) error {
+	payload := update_videooptimizationaction_payload{
+		update,
+	}
+
+	return c.put("videooptimizationaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type VideooptimizationactionUnset struct {
+	Name    string `json:"name,omitempty"`
+	Type    bool   `json:"type,omitempty"`
+	Rate    bool   `json:"rate,omitempty"`
+	Comment bool   `json:"comment,omitempty"`
+}
+
+func (resource Videooptimizationaction) ToUnset() VideooptimizationactionUnset {
+	unset := VideooptimizationactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_videooptimizationaction_payload struct {
+	Unset VideooptimizationactionUnset `json:"videooptimizationaction"`
+}
+
+func (c *NitroClient) UnsetVideooptimizationaction(unset VideooptimizationactionUnset) error {
+	payload := unset_videooptimizationaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("videooptimizationaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

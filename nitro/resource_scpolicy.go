@@ -155,10 +155,88 @@ func (c *NitroClient) DeleteScpolicy(key ScpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type ScpolicyUpdate struct {
+	Name              string `json:"name,omitempty"`
+	Url               string `json:"url,omitempty"`
+	Rule              string `json:"rule,omitempty"`
+	Delay             int    `json:"delay,string,omitempty"`
+	Maxconn           int    `json:"maxconn,string,omitempty"`
+	Action            string `json:"action,omitempty"`
+	Altcontentsvcname string `json:"altcontentsvcname,omitempty"`
+	Altcontentpath    string `json:"altcontentpath,omitempty"`
+}
+
+func (resource Scpolicy) ToUpdate() ScpolicyUpdate {
+	update := ScpolicyUpdate{
+		resource.Name,
+		resource.Url,
+		resource.Rule,
+		resource.Delay,
+		resource.Maxconn,
+		resource.Action,
+		resource.Altcontentsvcname,
+		resource.Altcontentpath,
+	}
+
+	return update
+}
+
+type update_scpolicy_payload struct {
+	Update ScpolicyUpdate `json:"scpolicy"`
+}
+
+func (c *NitroClient) UpdateScpolicy(update ScpolicyUpdate) error {
+	payload := update_scpolicy_payload{
+		update,
+	}
+
+	return c.put("scpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type ScpolicyUnset struct {
+	Name              string `json:"name,omitempty"`
+	Url               bool   `json:"url,omitempty"`
+	Rule              bool   `json:"rule,omitempty"`
+	Delay             bool   `json:"delay,omitempty"`
+	Maxconn           bool   `json:"maxconn,omitempty"`
+	Action            bool   `json:"action,omitempty"`
+	Altcontentsvcname bool   `json:"altcontentsvcname,omitempty"`
+	Altcontentpath    bool   `json:"altcontentpath,omitempty"`
+}
+
+func (resource Scpolicy) ToUnset() ScpolicyUnset {
+	unset := ScpolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_scpolicy_payload struct {
+	Unset ScpolicyUnset `json:"scpolicy"`
+}
+
+func (c *NitroClient) UnsetScpolicy(unset ScpolicyUnset) error {
+	payload := unset_scpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("scpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

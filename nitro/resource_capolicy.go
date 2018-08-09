@@ -153,10 +153,80 @@ func (c *NitroClient) DeleteCapolicy(key CapolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type CapolicyUpdate struct {
+	Name        string `json:"name,omitempty"`
+	Rule        string `json:"rule,omitempty"`
+	Action      string `json:"action,omitempty"`
+	Comment     string `json:"comment,omitempty"`
+	Logaction   string `json:"logaction,omitempty"`
+	Undefaction string `json:"undefaction,omitempty"`
+}
+
+func (resource Capolicy) ToUpdate() CapolicyUpdate {
+	update := CapolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+		resource.Comment,
+		resource.Logaction,
+		resource.Undefaction,
+	}
+
+	return update
+}
+
+type update_capolicy_payload struct {
+	Update CapolicyUpdate `json:"capolicy"`
+}
+
+func (c *NitroClient) UpdateCapolicy(update CapolicyUpdate) error {
+	payload := update_capolicy_payload{
+		update,
+	}
+
+	return c.put("capolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type CapolicyUnset struct {
+	Name        string `json:"name,omitempty"`
+	Rule        bool   `json:"rule,omitempty"`
+	Action      bool   `json:"action,omitempty"`
+	Comment     bool   `json:"comment,omitempty"`
+	Logaction   bool   `json:"logaction,omitempty"`
+	Undefaction bool   `json:"undefaction,omitempty"`
+}
+
+func (resource Capolicy) ToUnset() CapolicyUnset {
+	unset := CapolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_capolicy_payload struct {
+	Unset CapolicyUnset `json:"capolicy"`
+}
+
+func (c *NitroClient) UnsetCapolicy(unset CapolicyUnset) error {
+	payload := unset_capolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("capolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

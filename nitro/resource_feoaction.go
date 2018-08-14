@@ -170,10 +170,148 @@ func (c *NitroClient) DeleteFeoaction(key FeoactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type FeoactionUpdate struct {
+	Name                   string   `json:"name,omitempty"`
+	Pageextendcache        bool     `json:"pageextendcache,omitempty"`
+	Cachemaxage            int      `json:"cachemaxage,string,omitempty"`
+	Imgshrinktoattrib      bool     `json:"imgshrinktoattrib,omitempty"`
+	Imggiftopng            bool     `json:"imggiftopng,omitempty"`
+	Imgtowebp              bool     `json:"imgtowebp,omitempty"`
+	Imgtojpegxr            bool     `json:"imgtojpegxr,omitempty"`
+	Imginline              bool     `json:"imginline,omitempty"`
+	Cssimginline           bool     `json:"cssimginline,omitempty"`
+	Jpgoptimize            bool     `json:"jpgoptimize,omitempty"`
+	Imglazyload            bool     `json:"imglazyload,omitempty"`
+	Cssminify              bool     `json:"cssminify,omitempty"`
+	Cssinline              bool     `json:"cssinline,omitempty"`
+	Csscombine             bool     `json:"csscombine,omitempty"`
+	Convertimporttolink    bool     `json:"convertimporttolink,omitempty"`
+	Jsminify               bool     `json:"jsminify,omitempty"`
+	Jsinline               bool     `json:"jsinline,omitempty"`
+	Htmlminify             bool     `json:"htmlminify,omitempty"`
+	Cssmovetohead          bool     `json:"cssmovetohead,omitempty"`
+	Jsmovetoend            bool     `json:"jsmovetoend,omitempty"`
+	Domainsharding         string   `json:"domainsharding,omitempty"`
+	Dnsshards              []string `json:"dnsshards,omitempty"`
+	Clientsidemeasurements bool     `json:"clientsidemeasurements,omitempty"`
+}
+
+func (resource Feoaction) ToUpdate() FeoactionUpdate {
+	update := FeoactionUpdate{
+		resource.Name,
+		resource.Pageextendcache,
+		resource.Cachemaxage,
+		resource.Imgshrinktoattrib,
+		resource.Imggiftopng,
+		resource.Imgtowebp,
+		resource.Imgtojpegxr,
+		resource.Imginline,
+		resource.Cssimginline,
+		resource.Jpgoptimize,
+		resource.Imglazyload,
+		resource.Cssminify,
+		resource.Cssinline,
+		resource.Csscombine,
+		resource.Convertimporttolink,
+		resource.Jsminify,
+		resource.Jsinline,
+		resource.Htmlminify,
+		resource.Cssmovetohead,
+		resource.Jsmovetoend,
+		resource.Domainsharding,
+		resource.Dnsshards,
+		resource.Clientsidemeasurements,
+	}
+
+	return update
+}
+
+type update_feoaction_payload struct {
+	Update FeoactionUpdate `json:"feoaction"`
+}
+
+func (c *NitroClient) UpdateFeoaction(update FeoactionUpdate) error {
+	payload := update_feoaction_payload{
+		update,
+	}
+
+	return c.put("feoaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type FeoactionUnset struct {
+	Name                   string `json:"name,omitempty"`
+	Pageextendcache        bool   `json:"pageextendcache,omitempty"`
+	Cachemaxage            bool   `json:"cachemaxage,omitempty"`
+	Imgshrinktoattrib      bool   `json:"imgshrinktoattrib,omitempty"`
+	Imggiftopng            bool   `json:"imggiftopng,omitempty"`
+	Imgtowebp              bool   `json:"imgtowebp,omitempty"`
+	Imgtojpegxr            bool   `json:"imgtojpegxr,omitempty"`
+	Imginline              bool   `json:"imginline,omitempty"`
+	Cssimginline           bool   `json:"cssimginline,omitempty"`
+	Jpgoptimize            bool   `json:"jpgoptimize,omitempty"`
+	Imglazyload            bool   `json:"imglazyload,omitempty"`
+	Cssminify              bool   `json:"cssminify,omitempty"`
+	Cssinline              bool   `json:"cssinline,omitempty"`
+	Csscombine             bool   `json:"csscombine,omitempty"`
+	Convertimporttolink    bool   `json:"convertimporttolink,omitempty"`
+	Jsminify               bool   `json:"jsminify,omitempty"`
+	Jsinline               bool   `json:"jsinline,omitempty"`
+	Htmlminify             bool   `json:"htmlminify,omitempty"`
+	Cssmovetohead          bool   `json:"cssmovetohead,omitempty"`
+	Jsmovetoend            bool   `json:"jsmovetoend,omitempty"`
+	Domainsharding         bool   `json:"domainsharding,omitempty"`
+	Dnsshards              bool   `json:"dnsshards,omitempty"`
+	Clientsidemeasurements bool   `json:"clientsidemeasurements,omitempty"`
+}
+
+func (resource Feoaction) ToUnset() FeoactionUnset {
+	unset := FeoactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_feoaction_payload struct {
+	Unset FeoactionUnset `json:"feoaction"`
+}
+
+func (c *NitroClient) UnsetFeoaction(unset FeoactionUnset) error {
+	payload := unset_feoaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("feoaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

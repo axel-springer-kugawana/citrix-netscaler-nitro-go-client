@@ -152,10 +152,76 @@ func (c *NitroClient) DeleteAppflowpolicy(key AppflowpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type AppflowpolicyUpdate struct {
+	Name        string `json:"name,omitempty"`
+	Rule        string `json:"rule,omitempty"`
+	Action      string `json:"action,omitempty"`
+	Undefaction string `json:"undefaction,omitempty"`
+	Comment     string `json:"comment,omitempty"`
+}
+
+func (resource Appflowpolicy) ToUpdate() AppflowpolicyUpdate {
+	update := AppflowpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+		resource.Undefaction,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_appflowpolicy_payload struct {
+	Update AppflowpolicyUpdate `json:"appflowpolicy"`
+}
+
+func (c *NitroClient) UpdateAppflowpolicy(update AppflowpolicyUpdate) error {
+	payload := update_appflowpolicy_payload{
+		update,
+	}
+
+	return c.put("appflowpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AppflowpolicyUnset struct {
+	Name        string `json:"name,omitempty"`
+	Rule        bool   `json:"rule,omitempty"`
+	Action      bool   `json:"action,omitempty"`
+	Undefaction bool   `json:"undefaction,omitempty"`
+	Comment     bool   `json:"comment,omitempty"`
+}
+
+func (resource Appflowpolicy) ToUnset() AppflowpolicyUnset {
+	unset := AppflowpolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_appflowpolicy_payload struct {
+	Unset AppflowpolicyUnset `json:"appflowpolicy"`
+}
+
+func (c *NitroClient) UnsetAppflowpolicy(unset AppflowpolicyUnset) error {
+	payload := unset_appflowpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("appflowpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

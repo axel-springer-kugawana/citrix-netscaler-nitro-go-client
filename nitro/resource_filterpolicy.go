@@ -151,10 +151,72 @@ func (c *NitroClient) DeleteFilterpolicy(key FilterpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type FilterpolicyUpdate struct {
+	Name      string `json:"name,omitempty"`
+	Rule      string `json:"rule,omitempty"`
+	Reqaction string `json:"reqaction,omitempty"`
+	Resaction string `json:"resaction,omitempty"`
+}
+
+func (resource Filterpolicy) ToUpdate() FilterpolicyUpdate {
+	update := FilterpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Reqaction,
+		resource.Resaction,
+	}
+
+	return update
+}
+
+type update_filterpolicy_payload struct {
+	Update FilterpolicyUpdate `json:"filterpolicy"`
+}
+
+func (c *NitroClient) UpdateFilterpolicy(update FilterpolicyUpdate) error {
+	payload := update_filterpolicy_payload{
+		update,
+	}
+
+	return c.put("filterpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type FilterpolicyUnset struct {
+	Name      string `json:"name,omitempty"`
+	Rule      bool   `json:"rule,omitempty"`
+	Reqaction bool   `json:"reqaction,omitempty"`
+	Resaction bool   `json:"resaction,omitempty"`
+}
+
+func (resource Filterpolicy) ToUnset() FilterpolicyUnset {
+	unset := FilterpolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_filterpolicy_payload struct {
+	Unset FilterpolicyUnset `json:"filterpolicy"`
+}
+
+func (c *NitroClient) UnsetFilterpolicy(unset FilterpolicyUnset) error {
+	payload := unset_filterpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("filterpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

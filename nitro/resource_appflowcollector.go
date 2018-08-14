@@ -151,10 +151,72 @@ func (c *NitroClient) DeleteAppflowcollector(key AppflowcollectorKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type AppflowcollectorUpdate struct {
+	Name       string `json:"name,omitempty"`
+	Ipaddress  string `json:"ipaddress,omitempty"`
+	Port       int    `json:"port,omitempty"`
+	Netprofile string `json:"netprofile,omitempty"`
+}
+
+func (resource Appflowcollector) ToUpdate() AppflowcollectorUpdate {
+	update := AppflowcollectorUpdate{
+		resource.Name,
+		resource.Ipaddress,
+		resource.Port,
+		resource.Netprofile,
+	}
+
+	return update
+}
+
+type update_appflowcollector_payload struct {
+	Update AppflowcollectorUpdate `json:"appflowcollector"`
+}
+
+func (c *NitroClient) UpdateAppflowcollector(update AppflowcollectorUpdate) error {
+	payload := update_appflowcollector_payload{
+		update,
+	}
+
+	return c.put("appflowcollector", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AppflowcollectorUnset struct {
+	Name       string `json:"name,omitempty"`
+	Ipaddress  bool   `json:"ipaddress,omitempty"`
+	Port       bool   `json:"port,omitempty"`
+	Netprofile bool   `json:"netprofile,omitempty"`
+}
+
+func (resource Appflowcollector) ToUnset() AppflowcollectorUnset {
+	unset := AppflowcollectorUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_appflowcollector_payload struct {
+	Unset AppflowcollectorUnset `json:"appflowcollector"`
+}
+
+func (c *NitroClient) UnsetAppflowcollector(unset AppflowcollectorUnset) error {
+	payload := unset_appflowcollector_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("appflowcollector", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -152,10 +152,76 @@ func (c *NitroClient) DeleteCsaction(key CsactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type CsactionUpdate struct {
+	Name              string `json:"name,omitempty"`
+	Targetlbvserver   string `json:"targetlbvserver,omitempty"`
+	Targetvserver     string `json:"targetvserver,omitempty"`
+	Targetvserverexpr string `json:"targetvserverexpr,omitempty"`
+	Comment           string `json:"comment,omitempty"`
+}
+
+func (resource Csaction) ToUpdate() CsactionUpdate {
+	update := CsactionUpdate{
+		resource.Name,
+		resource.Targetlbvserver,
+		resource.Targetvserver,
+		resource.Targetvserverexpr,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_csaction_payload struct {
+	Update CsactionUpdate `json:"csaction"`
+}
+
+func (c *NitroClient) UpdateCsaction(update CsactionUpdate) error {
+	payload := update_csaction_payload{
+		update,
+	}
+
+	return c.put("csaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type CsactionUnset struct {
+	Name              string `json:"name,omitempty"`
+	Targetlbvserver   bool   `json:"targetlbvserver,omitempty"`
+	Targetvserver     bool   `json:"targetvserver,omitempty"`
+	Targetvserverexpr bool   `json:"targetvserverexpr,omitempty"`
+	Comment           bool   `json:"comment,omitempty"`
+}
+
+func (resource Csaction) ToUnset() CsactionUnset {
+	unset := CsactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_csaction_payload struct {
+	Unset CsactionUnset `json:"csaction"`
+}
+
+func (c *NitroClient) UnsetCsaction(unset CsactionUnset) error {
+	payload := unset_csaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("csaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

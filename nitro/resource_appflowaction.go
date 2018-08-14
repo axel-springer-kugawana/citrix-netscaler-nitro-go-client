@@ -154,10 +154,84 @@ func (c *NitroClient) DeleteAppflowaction(key AppflowactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type AppflowactionUpdate struct {
+	Name                   string   `json:"name,omitempty"`
+	Collectors             []string `json:"collectors,omitempty"`
+	Clientsidemeasurements string   `json:"clientsidemeasurements,omitempty"`
+	Pagetracking           string   `json:"pagetracking,omitempty"`
+	Webinsight             string   `json:"webinsight,omitempty"`
+	Securityinsight        string   `json:"securityinsight,omitempty"`
+	Comment                string   `json:"comment,omitempty"`
+}
+
+func (resource Appflowaction) ToUpdate() AppflowactionUpdate {
+	update := AppflowactionUpdate{
+		resource.Name,
+		resource.Collectors,
+		resource.Clientsidemeasurements,
+		resource.Pagetracking,
+		resource.Webinsight,
+		resource.Securityinsight,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_appflowaction_payload struct {
+	Update AppflowactionUpdate `json:"appflowaction"`
+}
+
+func (c *NitroClient) UpdateAppflowaction(update AppflowactionUpdate) error {
+	payload := update_appflowaction_payload{
+		update,
+	}
+
+	return c.put("appflowaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AppflowactionUnset struct {
+	Name                   string `json:"name,omitempty"`
+	Collectors             bool   `json:"collectors,omitempty"`
+	Clientsidemeasurements bool   `json:"clientsidemeasurements,omitempty"`
+	Pagetracking           bool   `json:"pagetracking,omitempty"`
+	Webinsight             bool   `json:"webinsight,omitempty"`
+	Securityinsight        bool   `json:"securityinsight,omitempty"`
+	Comment                bool   `json:"comment,omitempty"`
+}
+
+func (resource Appflowaction) ToUnset() AppflowactionUnset {
+	unset := AppflowactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_appflowaction_payload struct {
+	Unset AppflowactionUnset `json:"appflowaction"`
+}
+
+func (c *NitroClient) UnsetAppflowaction(unset AppflowactionUnset) error {
+	payload := unset_appflowaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("appflowaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

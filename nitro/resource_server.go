@@ -157,10 +157,80 @@ func (c *NitroClient) DeleteServer(key ServerKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type ServerUpdate struct {
+	Name               string `json:"name,omitempty"`
+	Comment            string `json:"comment,omitempty"`
+	Domainresolveretry int    `json:"domainresolveretry,omitempty"`
+	Ipaddress          string `json:"ipaddress,omitempty"`
+	Translationip      string `json:"translationip,omitempty"`
+	Translationmask    string `json:"translationmask,omitempty"`
+}
+
+func (resource Server) ToUpdate() ServerUpdate {
+	update := ServerUpdate{
+		resource.Name,
+		resource.Comment,
+		resource.Domainresolveretry,
+		resource.Ipaddress,
+		resource.Translationip,
+		resource.Translationmask,
+	}
+
+	return update
+}
+
+type update_server_payload struct {
+	Update ServerUpdate `json:"server"`
+}
+
+func (c *NitroClient) UpdateServer(update ServerUpdate) error {
+	payload := update_server_payload{
+		update,
+	}
+
+	return c.put("server", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type ServerUnset struct {
+	Name               string `json:"name,omitempty"`
+	Comment            bool   `json:"comment,omitempty"`
+	Domainresolveretry bool   `json:"domainresolveretry,omitempty"`
+	Ipaddress          bool   `json:"ipaddress,omitempty"`
+	Translationip      bool   `json:"translationip,omitempty"`
+	Translationmask    bool   `json:"translationmask,omitempty"`
+}
+
+func (resource Server) ToUnset() ServerUnset {
+	unset := ServerUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_server_payload struct {
+	Unset ServerUnset `json:"server"`
+}
+
+func (c *NitroClient) UnsetServer(unset ServerUnset) error {
+	payload := unset_server_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("server", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

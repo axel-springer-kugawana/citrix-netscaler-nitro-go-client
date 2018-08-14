@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteAuthorizationpolicy(key AuthorizationpolicyKey) erro
 }
 
 //      UPDATE
-//      TODO
+
+type AuthorizationpolicyUpdate struct {
+	Name   string `json:"name,omitempty"`
+	Rule   string `json:"rule,omitempty"`
+	Action string `json:"action,omitempty"`
+}
+
+func (resource Authorizationpolicy) ToUpdate() AuthorizationpolicyUpdate {
+	update := AuthorizationpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+	}
+
+	return update
+}
+
+type update_authorizationpolicy_payload struct {
+	Update AuthorizationpolicyUpdate `json:"authorizationpolicy"`
+}
+
+func (c *NitroClient) UpdateAuthorizationpolicy(update AuthorizationpolicyUpdate) error {
+	payload := update_authorizationpolicy_payload{
+		update,
+	}
+
+	return c.put("authorizationpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AuthorizationpolicyUnset struct {
+	Name   string `json:"name,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
+}
+
+func (resource Authorizationpolicy) ToUnset() AuthorizationpolicyUnset {
+	unset := AuthorizationpolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_authorizationpolicy_payload struct {
+	Unset AuthorizationpolicyUnset `json:"authorizationpolicy"`
+}
+
+func (c *NitroClient) UnsetAuthorizationpolicy(unset AuthorizationpolicyUnset) error {
+	payload := unset_authorizationpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("authorizationpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

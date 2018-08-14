@@ -106,12 +106,32 @@ func (c *NitroClient) Delete{{$name}} (key {{$key}}) error {
 
 {{if (is_in "update" $.Schema.Operations)}}
 //      UPDATE
-//      TODO
-{{end}}
 
-{{if (is_in "unset" $.Schema.Operations)}}
+{{template "update_payload" .}}
+
+func (c *NitroClient) Update{{$name}} (update {{$name}}Update) error {
+        payload := update_{{$.Name}}_payload {
+                update,
+        }
+
+        return c.put("{{$.Name}}", "", nil, payload)
+}
+
 //      UNSET
-//      TODO
+
+{{template "unset_payload" .}}
+
+func (c *NitroClient) Unset{{$name}} (unset {{$name}}Unset) error {
+        payload := unset_{{$.Name}}_payload {
+                unset,
+        }
+
+        qs := map[string]string {
+                "action": "unset",
+        }
+
+        return c.post("{{$.Name}}", "", qs, payload)
+}
 {{end}}
 
 {{if (is_in "rename" $.Schema.Operations)}}

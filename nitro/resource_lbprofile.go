@@ -154,10 +154,84 @@ func (c *NitroClient) DeleteLbprofile(key LbprofileKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type LbprofileUpdate struct {
+	Lbprofilename                 string `json:"lbprofilename,omitempty"`
+	Cookiepassphrase              string `json:"cookiepassphrase,omitempty"`
+	Dbslb                         string `json:"dbslb,omitempty"`
+	Processlocal                  string `json:"processlocal,omitempty"`
+	Httponlycookieflag            string `json:"httponlycookieflag,omitempty"`
+	Usesecuredpersistencecookie   string `json:"usesecuredpersistencecookie,omitempty"`
+	Useencryptedpersistencecookie string `json:"useencryptedpersistencecookie,omitempty"`
+}
+
+func (resource Lbprofile) ToUpdate() LbprofileUpdate {
+	update := LbprofileUpdate{
+		resource.Lbprofilename,
+		resource.Cookiepassphrase,
+		resource.Dbslb,
+		resource.Processlocal,
+		resource.Httponlycookieflag,
+		resource.Usesecuredpersistencecookie,
+		resource.Useencryptedpersistencecookie,
+	}
+
+	return update
+}
+
+type update_lbprofile_payload struct {
+	Update LbprofileUpdate `json:"lbprofile"`
+}
+
+func (c *NitroClient) UpdateLbprofile(update LbprofileUpdate) error {
+	payload := update_lbprofile_payload{
+		update,
+	}
+
+	return c.put("lbprofile", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type LbprofileUnset struct {
+	Lbprofilename                 string `json:"lbprofilename,omitempty"`
+	Cookiepassphrase              bool   `json:"cookiepassphrase,omitempty"`
+	Dbslb                         bool   `json:"dbslb,omitempty"`
+	Processlocal                  bool   `json:"processlocal,omitempty"`
+	Httponlycookieflag            bool   `json:"httponlycookieflag,omitempty"`
+	Usesecuredpersistencecookie   bool   `json:"usesecuredpersistencecookie,omitempty"`
+	Useencryptedpersistencecookie bool   `json:"useencryptedpersistencecookie,omitempty"`
+}
+
+func (resource Lbprofile) ToUnset() LbprofileUnset {
+	unset := LbprofileUnset{
+		resource.Lbprofilename,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_lbprofile_payload struct {
+	Unset LbprofileUnset `json:"lbprofile"`
+}
+
+func (c *NitroClient) UnsetLbprofile(unset LbprofileUnset) error {
+	payload := unset_lbprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("lbprofile", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -35,6 +35,13 @@ func Test{{$.Name|name}}(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	{{if $.Schema.Update}}
+	log.Print("--UPDATE--")
+	err = client.Update{{$.Name|name}}(resource.ToUpdate())
+
+	assert.NoError(t, err)
+	{{end}}
+
 	log.Print("--COUNT--")
 	count, err := client.Count{{$.Name|name}}()
 

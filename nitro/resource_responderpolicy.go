@@ -154,10 +154,84 @@ func (c *NitroClient) DeleteResponderpolicy(key ResponderpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type ResponderpolicyUpdate struct {
+	Name          string `json:"name,omitempty"`
+	Rule          string `json:"rule,omitempty"`
+	Action        string `json:"action,omitempty"`
+	Undefaction   string `json:"undefaction,omitempty"`
+	Comment       string `json:"comment,omitempty"`
+	Logaction     string `json:"logaction,omitempty"`
+	Appflowaction string `json:"appflowaction,omitempty"`
+}
+
+func (resource Responderpolicy) ToUpdate() ResponderpolicyUpdate {
+	update := ResponderpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+		resource.Undefaction,
+		resource.Comment,
+		resource.Logaction,
+		resource.Appflowaction,
+	}
+
+	return update
+}
+
+type update_responderpolicy_payload struct {
+	Update ResponderpolicyUpdate `json:"responderpolicy"`
+}
+
+func (c *NitroClient) UpdateResponderpolicy(update ResponderpolicyUpdate) error {
+	payload := update_responderpolicy_payload{
+		update,
+	}
+
+	return c.put("responderpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type ResponderpolicyUnset struct {
+	Name          string `json:"name,omitempty"`
+	Rule          bool   `json:"rule,omitempty"`
+	Action        bool   `json:"action,omitempty"`
+	Undefaction   bool   `json:"undefaction,omitempty"`
+	Comment       bool   `json:"comment,omitempty"`
+	Logaction     bool   `json:"logaction,omitempty"`
+	Appflowaction bool   `json:"appflowaction,omitempty"`
+}
+
+func (resource Responderpolicy) ToUnset() ResponderpolicyUnset {
+	unset := ResponderpolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_responderpolicy_payload struct {
+	Unset ResponderpolicyUnset `json:"responderpolicy"`
+}
+
+func (c *NitroClient) UnsetResponderpolicy(unset ResponderpolicyUnset) error {
+	payload := unset_responderpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("responderpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -35,6 +35,11 @@ func TestAppqoeaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	log.Print("--UPDATE--")
+	err = client.UpdateAppqoeaction(resource.ToUpdate())
+
+	assert.NoError(t, err)
+
 	log.Print("--COUNT--")
 	count, err := client.CountAppqoeaction()
 

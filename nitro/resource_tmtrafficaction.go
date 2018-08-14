@@ -159,10 +159,104 @@ func (c *NitroClient) DeleteTmtrafficaction(key TmtrafficactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type TmtrafficactionUpdate struct {
+	Name             string `json:"name,omitempty"`
+	Apptimeout       int    `json:"apptimeout,string,omitempty"`
+	Sso              string `json:"sso,omitempty"`
+	Formssoaction    string `json:"formssoaction,omitempty"`
+	Persistentcookie string `json:"persistentcookie,omitempty"`
+	Initiatelogout   string `json:"initiatelogout,omitempty"`
+	Kcdaccount       string `json:"kcdaccount,omitempty"`
+	Samlssoprofile   string `json:"samlssoprofile,omitempty"`
+	Forcedtimeout    string `json:"forcedtimeout,omitempty"`
+	Forcedtimeoutval int    `json:"forcedtimeoutval,string,omitempty"`
+	Userexpression   string `json:"userexpression,omitempty"`
+	Passwdexpression string `json:"passwdexpression,omitempty"`
+}
+
+func (resource Tmtrafficaction) ToUpdate() TmtrafficactionUpdate {
+	update := TmtrafficactionUpdate{
+		resource.Name,
+		resource.Apptimeout,
+		resource.Sso,
+		resource.Formssoaction,
+		resource.Persistentcookie,
+		resource.Initiatelogout,
+		resource.Kcdaccount,
+		resource.Samlssoprofile,
+		resource.Forcedtimeout,
+		resource.Forcedtimeoutval,
+		resource.Userexpression,
+		resource.Passwdexpression,
+	}
+
+	return update
+}
+
+type update_tmtrafficaction_payload struct {
+	Update TmtrafficactionUpdate `json:"tmtrafficaction"`
+}
+
+func (c *NitroClient) UpdateTmtrafficaction(update TmtrafficactionUpdate) error {
+	payload := update_tmtrafficaction_payload{
+		update,
+	}
+
+	return c.put("tmtrafficaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type TmtrafficactionUnset struct {
+	Name             string `json:"name,omitempty"`
+	Apptimeout       bool   `json:"apptimeout,omitempty"`
+	Sso              bool   `json:"sso,omitempty"`
+	Formssoaction    bool   `json:"formssoaction,omitempty"`
+	Persistentcookie bool   `json:"persistentcookie,omitempty"`
+	Initiatelogout   bool   `json:"initiatelogout,omitempty"`
+	Kcdaccount       bool   `json:"kcdaccount,omitempty"`
+	Samlssoprofile   bool   `json:"samlssoprofile,omitempty"`
+	Forcedtimeout    bool   `json:"forcedtimeout,omitempty"`
+	Forcedtimeoutval bool   `json:"forcedtimeoutval,omitempty"`
+	Userexpression   bool   `json:"userexpression,omitempty"`
+	Passwdexpression bool   `json:"passwdexpression,omitempty"`
+}
+
+func (resource Tmtrafficaction) ToUnset() TmtrafficactionUnset {
+	unset := TmtrafficactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_tmtrafficaction_payload struct {
+	Unset TmtrafficactionUnset `json:"tmtrafficaction"`
+}
+
+func (c *NitroClient) UnsetTmtrafficaction(unset TmtrafficactionUnset) error {
+	payload := unset_tmtrafficaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("tmtrafficaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

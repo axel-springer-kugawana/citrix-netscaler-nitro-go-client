@@ -153,10 +153,80 @@ func (c *NitroClient) DeleteVideooptimizationpolicy(key VideooptimizationpolicyK
 }
 
 //      UPDATE
-//      TODO
+
+type VideooptimizationpolicyUpdate struct {
+	Name        string `json:"name,omitempty"`
+	Rule        string `json:"rule,omitempty"`
+	Action      string `json:"action,omitempty"`
+	Undefaction string `json:"undefaction,omitempty"`
+	Comment     string `json:"comment,omitempty"`
+	Logaction   string `json:"logaction,omitempty"`
+}
+
+func (resource Videooptimizationpolicy) ToUpdate() VideooptimizationpolicyUpdate {
+	update := VideooptimizationpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+		resource.Undefaction,
+		resource.Comment,
+		resource.Logaction,
+	}
+
+	return update
+}
+
+type update_videooptimizationpolicy_payload struct {
+	Update VideooptimizationpolicyUpdate `json:"videooptimizationpolicy"`
+}
+
+func (c *NitroClient) UpdateVideooptimizationpolicy(update VideooptimizationpolicyUpdate) error {
+	payload := update_videooptimizationpolicy_payload{
+		update,
+	}
+
+	return c.put("videooptimizationpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type VideooptimizationpolicyUnset struct {
+	Name        string `json:"name,omitempty"`
+	Rule        bool   `json:"rule,omitempty"`
+	Action      bool   `json:"action,omitempty"`
+	Undefaction bool   `json:"undefaction,omitempty"`
+	Comment     bool   `json:"comment,omitempty"`
+	Logaction   bool   `json:"logaction,omitempty"`
+}
+
+func (resource Videooptimizationpolicy) ToUnset() VideooptimizationpolicyUnset {
+	unset := VideooptimizationpolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_videooptimizationpolicy_payload struct {
+	Unset VideooptimizationpolicyUnset `json:"videooptimizationpolicy"`
+}
+
+func (c *NitroClient) UnsetVideooptimizationpolicy(unset VideooptimizationpolicyUnset) error {
+	payload := unset_videooptimizationpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("videooptimizationpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -153,10 +153,80 @@ func (c *NitroClient) DeleteCspolicy(key CspolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type CspolicyUpdate struct {
+	Policyname string `json:"policyname,omitempty"`
+	Url        string `json:"url,omitempty"`
+	Rule       string `json:"rule,omitempty"`
+	Domain     string `json:"domain,omitempty"`
+	Action     string `json:"action,omitempty"`
+	Logaction  string `json:"logaction,omitempty"`
+}
+
+func (resource Cspolicy) ToUpdate() CspolicyUpdate {
+	update := CspolicyUpdate{
+		resource.Policyname,
+		resource.Url,
+		resource.Rule,
+		resource.Domain,
+		resource.Action,
+		resource.Logaction,
+	}
+
+	return update
+}
+
+type update_cspolicy_payload struct {
+	Update CspolicyUpdate `json:"cspolicy"`
+}
+
+func (c *NitroClient) UpdateCspolicy(update CspolicyUpdate) error {
+	payload := update_cspolicy_payload{
+		update,
+	}
+
+	return c.put("cspolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type CspolicyUnset struct {
+	Policyname string `json:"policyname,omitempty"`
+	Url        bool   `json:"url,omitempty"`
+	Rule       bool   `json:"rule,omitempty"`
+	Domain     bool   `json:"domain,omitempty"`
+	Action     bool   `json:"action,omitempty"`
+	Logaction  bool   `json:"logaction,omitempty"`
+}
+
+func (resource Cspolicy) ToUnset() CspolicyUnset {
+	unset := CspolicyUnset{
+		resource.Policyname,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_cspolicy_payload struct {
+	Unset CspolicyUnset `json:"cspolicy"`
+}
+
+func (c *NitroClient) UnsetCspolicy(unset CspolicyUnset) error {
+	payload := unset_cspolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("cspolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

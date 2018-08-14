@@ -153,10 +153,80 @@ func (c *NitroClient) DeleteRewritepolicy(key RewritepolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type RewritepolicyUpdate struct {
+	Name        string `json:"name,omitempty"`
+	Rule        string `json:"rule,omitempty"`
+	Action      string `json:"action,omitempty"`
+	Undefaction string `json:"undefaction,omitempty"`
+	Comment     string `json:"comment,omitempty"`
+	Logaction   string `json:"logaction,omitempty"`
+}
+
+func (resource Rewritepolicy) ToUpdate() RewritepolicyUpdate {
+	update := RewritepolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+		resource.Undefaction,
+		resource.Comment,
+		resource.Logaction,
+	}
+
+	return update
+}
+
+type update_rewritepolicy_payload struct {
+	Update RewritepolicyUpdate `json:"rewritepolicy"`
+}
+
+func (c *NitroClient) UpdateRewritepolicy(update RewritepolicyUpdate) error {
+	payload := update_rewritepolicy_payload{
+		update,
+	}
+
+	return c.put("rewritepolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type RewritepolicyUnset struct {
+	Name        string `json:"name,omitempty"`
+	Rule        bool   `json:"rule,omitempty"`
+	Action      bool   `json:"action,omitempty"`
+	Undefaction bool   `json:"undefaction,omitempty"`
+	Comment     bool   `json:"comment,omitempty"`
+	Logaction   bool   `json:"logaction,omitempty"`
+}
+
+func (resource Rewritepolicy) ToUnset() RewritepolicyUnset {
+	unset := RewritepolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_rewritepolicy_payload struct {
+	Unset RewritepolicyUnset `json:"rewritepolicy"`
+}
+
+func (c *NitroClient) UnsetRewritepolicy(unset RewritepolicyUnset) error {
+	payload := unset_rewritepolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("rewritepolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

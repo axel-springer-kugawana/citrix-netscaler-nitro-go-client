@@ -152,10 +152,72 @@ func (c *NitroClient) DeleteCmpaction(key CmpactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type CmpactionUpdate struct {
+	Name            string `json:"name,omitempty"`
+	Cmptype         string `json:"cmptype,omitempty"`
+	Addvaryheader   string `json:"addvaryheader,omitempty"`
+	Varyheadervalue string `json:"varyheadervalue,omitempty"`
+}
+
+func (resource Cmpaction) ToUpdate() CmpactionUpdate {
+	update := CmpactionUpdate{
+		resource.Name,
+		resource.Cmptype,
+		resource.Addvaryheader,
+		resource.Varyheadervalue,
+	}
+
+	return update
+}
+
+type update_cmpaction_payload struct {
+	Update CmpactionUpdate `json:"cmpaction"`
+}
+
+func (c *NitroClient) UpdateCmpaction(update CmpactionUpdate) error {
+	payload := update_cmpaction_payload{
+		update,
+	}
+
+	return c.put("cmpaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type CmpactionUnset struct {
+	Name            string `json:"name,omitempty"`
+	Cmptype         bool   `json:"cmptype,omitempty"`
+	Addvaryheader   bool   `json:"addvaryheader,omitempty"`
+	Varyheadervalue bool   `json:"varyheadervalue,omitempty"`
+}
+
+func (resource Cmpaction) ToUnset() CmpactionUnset {
+	unset := CmpactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_cmpaction_payload struct {
+	Unset CmpactionUnset `json:"cmpaction"`
+}
+
+func (c *NitroClient) UnsetCmpaction(unset CmpactionUnset) error {
+	payload := unset_cmpaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("cmpaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

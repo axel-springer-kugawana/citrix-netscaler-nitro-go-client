@@ -152,10 +152,76 @@ func (c *NitroClient) DeleteTransformpolicy(key TransformpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type TransformpolicyUpdate struct {
+	Name        string `json:"name,omitempty"`
+	Rule        string `json:"rule,omitempty"`
+	Profilename string `json:"profilename,omitempty"`
+	Comment     string `json:"comment,omitempty"`
+	Logaction   string `json:"logaction,omitempty"`
+}
+
+func (resource Transformpolicy) ToUpdate() TransformpolicyUpdate {
+	update := TransformpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Profilename,
+		resource.Comment,
+		resource.Logaction,
+	}
+
+	return update
+}
+
+type update_transformpolicy_payload struct {
+	Update TransformpolicyUpdate `json:"transformpolicy"`
+}
+
+func (c *NitroClient) UpdateTransformpolicy(update TransformpolicyUpdate) error {
+	payload := update_transformpolicy_payload{
+		update,
+	}
+
+	return c.put("transformpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type TransformpolicyUnset struct {
+	Name        string `json:"name,omitempty"`
+	Rule        bool   `json:"rule,omitempty"`
+	Profilename bool   `json:"profilename,omitempty"`
+	Comment     bool   `json:"comment,omitempty"`
+	Logaction   bool   `json:"logaction,omitempty"`
+}
+
+func (resource Transformpolicy) ToUnset() TransformpolicyUnset {
+	unset := TransformpolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_transformpolicy_payload struct {
+	Unset TransformpolicyUnset `json:"transformpolicy"`
+}
+
+func (c *NitroClient) UnsetTransformpolicy(unset TransformpolicyUnset) error {
+	payload := unset_transformpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("transformpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteAuditsyslogpolicy(key AuditsyslogpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type AuditsyslogpolicyUpdate struct {
+	Name   string `json:"name,omitempty"`
+	Rule   string `json:"rule,omitempty"`
+	Action string `json:"action,omitempty"`
+}
+
+func (resource Auditsyslogpolicy) ToUpdate() AuditsyslogpolicyUpdate {
+	update := AuditsyslogpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+	}
+
+	return update
+}
+
+type update_auditsyslogpolicy_payload struct {
+	Update AuditsyslogpolicyUpdate `json:"auditsyslogpolicy"`
+}
+
+func (c *NitroClient) UpdateAuditsyslogpolicy(update AuditsyslogpolicyUpdate) error {
+	payload := update_auditsyslogpolicy_payload{
+		update,
+	}
+
+	return c.put("auditsyslogpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AuditsyslogpolicyUnset struct {
+	Name   string `json:"name,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
+}
+
+func (resource Auditsyslogpolicy) ToUnset() AuditsyslogpolicyUnset {
+	unset := AuditsyslogpolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_auditsyslogpolicy_payload struct {
+	Unset AuditsyslogpolicyUnset `json:"auditsyslogpolicy"`
+}
+
+func (c *NitroClient) UnsetAuditsyslogpolicy(unset AuditsyslogpolicyUnset) error {
+	payload := unset_auditsyslogpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("auditsyslogpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

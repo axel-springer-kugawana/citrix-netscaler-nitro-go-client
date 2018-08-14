@@ -151,10 +151,72 @@ func (c *NitroClient) DeleteSpilloverpolicy(key SpilloverpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type SpilloverpolicyUpdate struct {
+	Name    string `json:"name,omitempty"`
+	Rule    string `json:"rule,omitempty"`
+	Action  string `json:"action,omitempty"`
+	Comment string `json:"comment,omitempty"`
+}
+
+func (resource Spilloverpolicy) ToUpdate() SpilloverpolicyUpdate {
+	update := SpilloverpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_spilloverpolicy_payload struct {
+	Update SpilloverpolicyUpdate `json:"spilloverpolicy"`
+}
+
+func (c *NitroClient) UpdateSpilloverpolicy(update SpilloverpolicyUpdate) error {
+	payload := update_spilloverpolicy_payload{
+		update,
+	}
+
+	return c.put("spilloverpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type SpilloverpolicyUnset struct {
+	Name    string `json:"name,omitempty"`
+	Rule    bool   `json:"rule,omitempty"`
+	Action  bool   `json:"action,omitempty"`
+	Comment bool   `json:"comment,omitempty"`
+}
+
+func (resource Spilloverpolicy) ToUnset() SpilloverpolicyUnset {
+	unset := SpilloverpolicyUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_spilloverpolicy_payload struct {
+	Unset SpilloverpolicyUnset `json:"spilloverpolicy"`
+}
+
+func (c *NitroClient) UnsetSpilloverpolicy(unset SpilloverpolicyUnset) error {
+	payload := unset_spilloverpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("spilloverpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

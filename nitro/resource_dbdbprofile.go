@@ -153,10 +153,80 @@ func (c *NitroClient) DeleteDbdbprofile(key DbdbprofileKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type DbdbprofileUpdate struct {
+	Name                   string `json:"name,omitempty"`
+	Interpretquery         string `json:"interpretquery,omitempty"`
+	Stickiness             string `json:"stickiness,omitempty"`
+	Kcdaccount             string `json:"kcdaccount,omitempty"`
+	Conmultiplex           string `json:"conmultiplex,omitempty"`
+	Enablecachingconmuxoff string `json:"enablecachingconmuxoff,omitempty"`
+}
+
+func (resource Dbdbprofile) ToUpdate() DbdbprofileUpdate {
+	update := DbdbprofileUpdate{
+		resource.Name,
+		resource.Interpretquery,
+		resource.Stickiness,
+		resource.Kcdaccount,
+		resource.Conmultiplex,
+		resource.Enablecachingconmuxoff,
+	}
+
+	return update
+}
+
+type update_dbdbprofile_payload struct {
+	Update DbdbprofileUpdate `json:"dbdbprofile"`
+}
+
+func (c *NitroClient) UpdateDbdbprofile(update DbdbprofileUpdate) error {
+	payload := update_dbdbprofile_payload{
+		update,
+	}
+
+	return c.put("dbdbprofile", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type DbdbprofileUnset struct {
+	Name                   string `json:"name,omitempty"`
+	Interpretquery         bool   `json:"interpretquery,omitempty"`
+	Stickiness             bool   `json:"stickiness,omitempty"`
+	Kcdaccount             bool   `json:"kcdaccount,omitempty"`
+	Conmultiplex           bool   `json:"conmultiplex,omitempty"`
+	Enablecachingconmuxoff bool   `json:"enablecachingconmuxoff,omitempty"`
+}
+
+func (resource Dbdbprofile) ToUnset() DbdbprofileUnset {
+	unset := DbdbprofileUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_dbdbprofile_payload struct {
+	Unset DbdbprofileUnset `json:"dbdbprofile"`
+}
+
+func (c *NitroClient) UnsetDbdbprofile(unset DbdbprofileUnset) error {
+	payload := unset_dbdbprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("dbdbprofile", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

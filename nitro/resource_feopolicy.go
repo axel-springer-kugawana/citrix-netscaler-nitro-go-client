@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteFeopolicy(key FeopolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type FeopolicyUpdate struct {
+	Name   string `json:"name,omitempty"`
+	Rule   string `json:"rule,omitempty"`
+	Action string `json:"action,omitempty"`
+}
+
+func (resource Feopolicy) ToUpdate() FeopolicyUpdate {
+	update := FeopolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+	}
+
+	return update
+}
+
+type update_feopolicy_payload struct {
+	Update FeopolicyUpdate `json:"feopolicy"`
+}
+
+func (c *NitroClient) UpdateFeopolicy(update FeopolicyUpdate) error {
+	payload := update_feopolicy_payload{
+		update,
+	}
+
+	return c.put("feopolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type FeopolicyUnset struct {
+	Name   string `json:"name,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
+}
+
+func (resource Feopolicy) ToUnset() FeopolicyUnset {
+	unset := FeopolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_feopolicy_payload struct {
+	Unset FeopolicyUnset `json:"feopolicy"`
+}
+
+func (c *NitroClient) UnsetFeopolicy(unset FeopolicyUnset) error {
+	payload := unset_feopolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("feopolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

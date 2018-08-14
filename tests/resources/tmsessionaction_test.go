@@ -35,6 +35,11 @@ func TestTmsessionaction(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
+	log.Print("--UPDATE--")
+	err = client.UpdateTmsessionaction(resource.ToUpdate())
+
+	assert.NoError(t, err)
+
 	log.Print("--COUNT--")
 	count, err := client.CountTmsessionaction()
 

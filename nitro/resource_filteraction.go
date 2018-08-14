@@ -153,10 +153,76 @@ func (c *NitroClient) DeleteFilteraction(key FilteractionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type FilteractionUpdate struct {
+	Name        string `json:"name,omitempty"`
+	Servicename string `json:"servicename,omitempty"`
+	Value       string `json:"value,omitempty"`
+	Respcode    int    `json:"respcode,string,omitempty"`
+	Page        string `json:"page,omitempty"`
+}
+
+func (resource Filteraction) ToUpdate() FilteractionUpdate {
+	update := FilteractionUpdate{
+		resource.Name,
+		resource.Servicename,
+		resource.Value,
+		resource.Respcode,
+		resource.Page,
+	}
+
+	return update
+}
+
+type update_filteraction_payload struct {
+	Update FilteractionUpdate `json:"filteraction"`
+}
+
+func (c *NitroClient) UpdateFilteraction(update FilteractionUpdate) error {
+	payload := update_filteraction_payload{
+		update,
+	}
+
+	return c.put("filteraction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type FilteractionUnset struct {
+	Name        string `json:"name,omitempty"`
+	Servicename bool   `json:"servicename,omitempty"`
+	Value       bool   `json:"value,omitempty"`
+	Respcode    bool   `json:"respcode,omitempty"`
+	Page        bool   `json:"page,omitempty"`
+}
+
+func (resource Filteraction) ToUnset() FilteractionUnset {
+	unset := FilteractionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_filteraction_payload struct {
+	Unset FilteractionUnset `json:"filteraction"`
+}
+
+func (c *NitroClient) UnsetFilteraction(unset FilteractionUnset) error {
+	payload := unset_filteraction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("filteraction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

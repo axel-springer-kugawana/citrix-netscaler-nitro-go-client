@@ -155,10 +155,84 @@ func (c *NitroClient) DeleteResponderaction(key ResponderactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type ResponderactionUpdate struct {
+	Name               string `json:"name,omitempty"`
+	Target             string `json:"target,omitempty"`
+	Bypasssafetycheck  string `json:"bypasssafetycheck,omitempty"`
+	Htmlpage           string `json:"htmlpage,omitempty"`
+	Responsestatuscode int    `json:"responsestatuscode,string,omitempty"`
+	Reasonphrase       string `json:"reasonphrase,omitempty"`
+	Comment            string `json:"comment,omitempty"`
+}
+
+func (resource Responderaction) ToUpdate() ResponderactionUpdate {
+	update := ResponderactionUpdate{
+		resource.Name,
+		resource.Target,
+		resource.Bypasssafetycheck,
+		resource.Htmlpage,
+		resource.Responsestatuscode,
+		resource.Reasonphrase,
+		resource.Comment,
+	}
+
+	return update
+}
+
+type update_responderaction_payload struct {
+	Update ResponderactionUpdate `json:"responderaction"`
+}
+
+func (c *NitroClient) UpdateResponderaction(update ResponderactionUpdate) error {
+	payload := update_responderaction_payload{
+		update,
+	}
+
+	return c.put("responderaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type ResponderactionUnset struct {
+	Name               string `json:"name,omitempty"`
+	Target             bool   `json:"target,omitempty"`
+	Bypasssafetycheck  bool   `json:"bypasssafetycheck,omitempty"`
+	Htmlpage           bool   `json:"htmlpage,omitempty"`
+	Responsestatuscode bool   `json:"responsestatuscode,omitempty"`
+	Reasonphrase       bool   `json:"reasonphrase,omitempty"`
+	Comment            bool   `json:"comment,omitempty"`
+}
+
+func (resource Responderaction) ToUnset() ResponderactionUnset {
+	unset := ResponderactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_responderaction_payload struct {
+	Unset ResponderactionUnset `json:"responderaction"`
+}
+
+func (c *NitroClient) UnsetResponderaction(unset ResponderactionUnset) error {
+	payload := unset_responderaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("responderaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

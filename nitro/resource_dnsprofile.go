@@ -156,10 +156,92 @@ func (c *NitroClient) DeleteDnsprofile(key DnsprofileKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type DnsprofileUpdate struct {
+	Dnsprofilename         string `json:"dnsprofilename,omitempty"`
+	Dnsquerylogging        string `json:"dnsquerylogging,omitempty"`
+	Dnsanswerseclogging    string `json:"dnsanswerseclogging,omitempty"`
+	Dnsextendedlogging     string `json:"dnsextendedlogging,omitempty"`
+	Dnserrorlogging        string `json:"dnserrorlogging,omitempty"`
+	Cacherecords           string `json:"cacherecords,omitempty"`
+	Cachenegativeresponses string `json:"cachenegativeresponses,omitempty"`
+	Dropmultiqueryrequest  string `json:"dropmultiqueryrequest,omitempty"`
+	Cacheecsresponses      string `json:"cacheecsresponses,omitempty"`
+}
+
+func (resource Dnsprofile) ToUpdate() DnsprofileUpdate {
+	update := DnsprofileUpdate{
+		resource.Dnsprofilename,
+		resource.Dnsquerylogging,
+		resource.Dnsanswerseclogging,
+		resource.Dnsextendedlogging,
+		resource.Dnserrorlogging,
+		resource.Cacherecords,
+		resource.Cachenegativeresponses,
+		resource.Dropmultiqueryrequest,
+		resource.Cacheecsresponses,
+	}
+
+	return update
+}
+
+type update_dnsprofile_payload struct {
+	Update DnsprofileUpdate `json:"dnsprofile"`
+}
+
+func (c *NitroClient) UpdateDnsprofile(update DnsprofileUpdate) error {
+	payload := update_dnsprofile_payload{
+		update,
+	}
+
+	return c.put("dnsprofile", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type DnsprofileUnset struct {
+	Dnsprofilename         string `json:"dnsprofilename,omitempty"`
+	Dnsquerylogging        bool   `json:"dnsquerylogging,omitempty"`
+	Dnsanswerseclogging    bool   `json:"dnsanswerseclogging,omitempty"`
+	Dnsextendedlogging     bool   `json:"dnsextendedlogging,omitempty"`
+	Dnserrorlogging        bool   `json:"dnserrorlogging,omitempty"`
+	Cacherecords           bool   `json:"cacherecords,omitempty"`
+	Cachenegativeresponses bool   `json:"cachenegativeresponses,omitempty"`
+	Dropmultiqueryrequest  bool   `json:"dropmultiqueryrequest,omitempty"`
+	Cacheecsresponses      bool   `json:"cacheecsresponses,omitempty"`
+}
+
+func (resource Dnsprofile) ToUnset() DnsprofileUnset {
+	unset := DnsprofileUnset{
+		resource.Dnsprofilename,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_dnsprofile_payload struct {
+	Unset DnsprofileUnset `json:"dnsprofile"`
+}
+
+func (c *NitroClient) UnsetDnsprofile(unset DnsprofileUnset) error {
+	payload := unset_dnsprofile_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("dnsprofile", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

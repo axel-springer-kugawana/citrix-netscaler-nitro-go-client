@@ -150,10 +150,68 @@ func (c *NitroClient) DeleteTmtrafficpolicy(key TmtrafficpolicyKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type TmtrafficpolicyUpdate struct {
+	Name   string `json:"name,omitempty"`
+	Rule   string `json:"rule,omitempty"`
+	Action string `json:"action,omitempty"`
+}
+
+func (resource Tmtrafficpolicy) ToUpdate() TmtrafficpolicyUpdate {
+	update := TmtrafficpolicyUpdate{
+		resource.Name,
+		resource.Rule,
+		resource.Action,
+	}
+
+	return update
+}
+
+type update_tmtrafficpolicy_payload struct {
+	Update TmtrafficpolicyUpdate `json:"tmtrafficpolicy"`
+}
+
+func (c *NitroClient) UpdateTmtrafficpolicy(update TmtrafficpolicyUpdate) error {
+	payload := update_tmtrafficpolicy_payload{
+		update,
+	}
+
+	return c.put("tmtrafficpolicy", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type TmtrafficpolicyUnset struct {
+	Name   string `json:"name,omitempty"`
+	Rule   bool   `json:"rule,omitempty"`
+	Action bool   `json:"action,omitempty"`
+}
+
+func (resource Tmtrafficpolicy) ToUnset() TmtrafficpolicyUnset {
+	unset := TmtrafficpolicyUnset{
+		resource.Name,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_tmtrafficpolicy_payload struct {
+	Unset TmtrafficpolicyUnset `json:"tmtrafficpolicy"`
+}
+
+func (c *NitroClient) UnsetTmtrafficpolicy(unset TmtrafficpolicyUnset) error {
+	payload := unset_tmtrafficpolicy_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("tmtrafficpolicy", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

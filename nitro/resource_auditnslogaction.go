@@ -164,10 +164,124 @@ func (c *NitroClient) DeleteAuditnslogaction(key AuditnslogactionKey) error {
 }
 
 //      UPDATE
-//      TODO
+
+type AuditnslogactionUpdate struct {
+	Name                string   `json:"name,omitempty"`
+	Serverip            string   `json:"serverip,omitempty"`
+	Serverdomainname    string   `json:"serverdomainname,omitempty"`
+	Domainresolveretry  int      `json:"domainresolveretry,omitempty"`
+	Serverport          int      `json:"serverport,omitempty"`
+	Loglevel            []string `json:"loglevel,omitempty"`
+	Dateformat          string   `json:"dateformat,omitempty"`
+	Logfacility         string   `json:"logfacility,omitempty"`
+	Tcp                 string   `json:"tcp,omitempty"`
+	Acl                 string   `json:"acl,omitempty"`
+	Timezone            string   `json:"timezone,omitempty"`
+	Userdefinedauditlog string   `json:"userdefinedauditlog,omitempty"`
+	Appflowexport       string   `json:"appflowexport,omitempty"`
+	Lsn                 string   `json:"lsn,omitempty"`
+	Alg                 string   `json:"alg,omitempty"`
+	Subscriberlog       string   `json:"subscriberlog,omitempty"`
+	Sslinterception     string   `json:"sslinterception,omitempty"`
+}
+
+func (resource Auditnslogaction) ToUpdate() AuditnslogactionUpdate {
+	update := AuditnslogactionUpdate{
+		resource.Name,
+		resource.Serverip,
+		resource.Serverdomainname,
+		resource.Domainresolveretry,
+		resource.Serverport,
+		resource.Loglevel,
+		resource.Dateformat,
+		resource.Logfacility,
+		resource.Tcp,
+		resource.Acl,
+		resource.Timezone,
+		resource.Userdefinedauditlog,
+		resource.Appflowexport,
+		resource.Lsn,
+		resource.Alg,
+		resource.Subscriberlog,
+		resource.Sslinterception,
+	}
+
+	return update
+}
+
+type update_auditnslogaction_payload struct {
+	Update AuditnslogactionUpdate `json:"auditnslogaction"`
+}
+
+func (c *NitroClient) UpdateAuditnslogaction(update AuditnslogactionUpdate) error {
+	payload := update_auditnslogaction_payload{
+		update,
+	}
+
+	return c.put("auditnslogaction", "", nil, payload)
+}
 
 //      UNSET
-//      TODO
+
+type AuditnslogactionUnset struct {
+	Name                string `json:"name,omitempty"`
+	Serverip            bool   `json:"serverip,omitempty"`
+	Serverdomainname    bool   `json:"serverdomainname,omitempty"`
+	Domainresolveretry  bool   `json:"domainresolveretry,omitempty"`
+	Serverport          bool   `json:"serverport,omitempty"`
+	Loglevel            bool   `json:"loglevel,omitempty"`
+	Dateformat          bool   `json:"dateformat,omitempty"`
+	Logfacility         bool   `json:"logfacility,omitempty"`
+	Tcp                 bool   `json:"tcp,omitempty"`
+	Acl                 bool   `json:"acl,omitempty"`
+	Timezone            bool   `json:"timezone,omitempty"`
+	Userdefinedauditlog bool   `json:"userdefinedauditlog,omitempty"`
+	Appflowexport       bool   `json:"appflowexport,omitempty"`
+	Lsn                 bool   `json:"lsn,omitempty"`
+	Alg                 bool   `json:"alg,omitempty"`
+	Subscriberlog       bool   `json:"subscriberlog,omitempty"`
+	Sslinterception     bool   `json:"sslinterception,omitempty"`
+}
+
+func (resource Auditnslogaction) ToUnset() AuditnslogactionUnset {
+	unset := AuditnslogactionUnset{
+		resource.Name,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	}
+
+	return unset
+}
+
+type unset_auditnslogaction_payload struct {
+	Unset AuditnslogactionUnset `json:"auditnslogaction"`
+}
+
+func (c *NitroClient) UnsetAuditnslogaction(unset AuditnslogactionUnset) error {
+	payload := unset_auditnslogaction_payload{
+		unset,
+	}
+
+	qs := map[string]string{
+		"action": "unset",
+	}
+
+	return c.post("auditnslogaction", "", qs, payload)
+}
 
 //      RENAME
 //      TODO

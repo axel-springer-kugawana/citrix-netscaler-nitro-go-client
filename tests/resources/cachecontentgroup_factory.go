@@ -1,53 +1,55 @@
 package resources
 
 import (
-	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
+
+	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 )
 
 func Setup_cachecontentgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Cachecontentgroup, func()) {
-	//resource := nitro.Cachecontentgroup {
-	//Name: "cachecontentgroup",
-	//Absexpiry: string[],
-	//Absexpirygmt: string[],
-	//Alwaysevalpolicies: (YES|NO),
-	//Cachecontrol: string,
-	//Expireatlastbyte: (YES|NO),
-	//Flashcache: (YES|NO),
-	//Heurexpiryparam: double,
-	//Hitparams: string[],
-	//Hitselector: string,
-	//Ignoreparamvaluecase: (YES|NO),
-	//Ignorereloadreq: (YES|NO),
-	//Ignorereqcachinghdrs: (YES|NO),
-	//Insertage: (YES|NO),
-	//Insertetag: (YES|NO),
-	//Insertvia: (YES|NO),
-	//Invalparams: string[],
-	//Invalrestrictedtohost: (YES|NO),
-	//Invalselector: string,
-	//Lazydnsresolve: (YES|NO),
-	//Matchcookies: (YES|NO),
-	//Maxressize: double,
-	//Memlimit: double,
-	//Minhits: int,
-	//Minressize: double,
-	//Persistha: (YES|NO),
-	//Pinned: (YES|NO),
-	//Polleverytime: (YES|NO),
-	//Prefetch: (YES|NO),
-	//Prefetchmaxpending: double,
-	//Prefetchperiod: double,
-	//Prefetchperiodmillisec: double,
-	//Quickabortsize: double,
-	//Relexpiry: double,
-	//Relexpirymillisec: double,
-	//Removecookies: (YES|NO),
-	//Type: (HTTP|MYSQL|MSSQL),
-	//Weaknegrelexpiry: double,
-	//Weakposrelexpiry: double,
-	//}
+	resource := nitro.Cachecontentgroup{
+		Name: "cachecontentgroup",
+		//Absexpiry:              []string{""},
+		//Absexpirygmt:           []string{""},
+		Alwaysevalpolicies: "NO",
+		Cachecontrol:       "no-store",
+		Expireatlastbyte:   "NO",
+		Flashcache:         "NO",
+		Heurexpiryparam:    0,
+		Hitparams:          []string{"Penn", "Teller"},
+		//Hitselector:           "string",
+		//Ignoreparamvaluecase:  "YES",
+		Ignorereloadreq:      "YES",
+		Ignorereqcachinghdrs: "YES",
+		Insertage:            "NO",
+		Insertetag:           "YES",
+		Insertvia:            "YES",
+		//Invalparams:           []string{"test"},
+		Invalrestrictedtohost: "NO",
+		//Invalselector:         "string",
+		Lazydnsresolve:     "YES",
+		Matchcookies:       "YES",
+		Maxressize:         80,
+		Memlimit:           65536,
+		Minhits:            0,
+		Minressize:         0,
+		Persistha:          "NO",
+		Pinned:             "NO",
+		Polleverytime:      "NO",
+		Prefetch:           "YES",
+		Prefetchmaxpending: 2,
+		//Prefetchperiod:         2,
+		//Prefetchperiodmillisec: 20,
+		Quickabortsize: 4194303,
+		//Relexpiry:              2,
+		//Relexpirymillisec: 2,
+		Removecookies:    "YES",
+		Type:             "HTTP",
+		Weaknegrelexpiry: 0,
+		//Weakposrelexpiry: 20,
+	}
 
-	return nil, func() {
+	return &resource, func() {
+		client.DeleteCachecontentgroup(resource.ToKey())
 	}
 }

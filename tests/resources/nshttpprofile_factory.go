@@ -1,47 +1,49 @@
 package resources
 
 import (
-	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
+
+	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 )
 
 func Setup_nshttpprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Nshttpprofile, func()) {
-	//resource := nitro.Nshttpprofile {
-	//Name: "nshttpprofile",
-	//Adpttimeout: (ENABLED|DISABLED),
-	//Altsvc: (ENABLED|DISABLED),
-	//Apdexcltresptimethreshold: double,
-	//Clientiphdrexpr: string,
-	//Cmponpush: (ENABLED|DISABLED),
-	//Conmultiplex: (ENABLED|DISABLED),
-	//Dropextracrlf: (ENABLED|DISABLED),
-	//Dropextradata: (ENABLED|DISABLED),
-	//Dropinvalreqs: (ENABLED|DISABLED),
-	//Http2: (ENABLED|DISABLED),
-	//Http2direct: (ENABLED|DISABLED),
-	//Http2headertablesize: double,
-	//Http2initialwindowsize: double,
-	//Http2maxconcurrentstreams: double,
-	//Http2maxframesize: double,
-	//Http2maxheaderlistsize: double,
-	//Http2minseverconn: double,
-	//Incomphdrdelay: double,
-	//Markconnreqinval: (ENABLED|DISABLED),
-	//Markhttp09inval: (ENABLED|DISABLED),
-	//Maxheaderlen: double,
-	//Maxreq: double,
-	//Maxreusepool: double,
-	//Minreusepool: double,
-	//Persistentetag: (ENABLED|DISABLED),
-	//Reqtimeout: double,
-	//Reqtimeoutaction: string,
-	//Reusepooltimeout: double,
-	//Rtsptunnel: (ENABLED|DISABLED),
-	//Spdy: (DISABLED|ENABLED|V2|V3),
-	//Weblog: (ENABLED|DISABLED),
-	//Websocket: (ENABLED|DISABLED),
-	//}
+	resource := nitro.Nshttpprofile{
+		Name:        "nshttpprofile2",
+		Adpttimeout: "DISABLED",
+		//Altsvc:      "DISABLED",
+		Apdexcltresptimethreshold: 0,
+		//Clientiphdrexpr:           "",
+		Cmponpush:     "DISABLED",
+		Conmultiplex:  "ENABLED",
+		Dropextracrlf: "ENABLED",
+		Dropextradata: "DISABLED",
+		Dropinvalreqs: "ENABLED",
+		Http2:         "DISABLED",
+		//Http2direct:               "DISABLED",
+		Http2headertablesize:      4096,
+		Http2initialwindowsize:    65535,
+		Http2maxconcurrentstreams: 100,
+		Http2maxframesize:         16384,
+		Http2maxheaderlistsize:    24576,
+		// Http2minseverconn:         0,
+		Incomphdrdelay:   7000,
+		Markconnreqinval: "DISABLED",
+		Markhttp09inval:  "DISABLED",
+		Maxheaderlen:     0,
+		Maxreq:           0,
+		Maxreusepool:     0,
+		Minreusepool:     0,
+		Persistentetag:   "DISABLED",
+		Reqtimeout:       0,
+		Reqtimeoutaction: "RESET",
+		Reusepooltimeout: 0,
+		Rtsptunnel:       "DISABLED",
+		Spdy:             "DISABLED",
+		Weblog:           "ENABLED",
+		Websocket:        "ENABLED",
+	}
 
-	return nil, func() {
+	return &resource, func() {
+		client.DeleteNshttpprofile(resource.ToKey())
 	}
 }

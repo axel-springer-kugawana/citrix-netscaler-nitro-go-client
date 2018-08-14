@@ -15,6 +15,5 @@ func Setup_videooptimizationpolicylabel(t *testing.T, client *nitro.NitroClient)
 	// }
 
 	return nil, func() {
-		//client.DeleteVideooptimizationpolicylabel(resource.ToKey())
 	}
 }

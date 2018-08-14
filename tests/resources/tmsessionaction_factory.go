@@ -22,6 +22,5 @@ func Setup_tmsessionaction(t *testing.T, client *nitro.NitroClient) (*nitro.Tmse
 	// }
 
 	return nil, func() {
-		//client.DeleteTmsessionaction(resource.ToKey())
 	}
 }

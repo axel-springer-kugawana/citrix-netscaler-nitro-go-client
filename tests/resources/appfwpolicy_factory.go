@@ -17,6 +17,5 @@ func Setup_appfwpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Appfwpol
 	}
 
 	return &resource, func() {
-		client.DeleteAppfwpolicy(resource.ToKey())
 	}
 }

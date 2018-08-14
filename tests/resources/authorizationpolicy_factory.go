@@ -14,6 +14,5 @@ func Setup_authorizationpolicy(t *testing.T, client *nitro.NitroClient) (*nitro.
 	}
 
 	return &resource, func() {
-		client.DeleteAuthorizationpolicy(resource.ToKey())
 	}
 }

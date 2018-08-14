@@ -20,6 +20,5 @@ func Setup_dnsprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dnsprofil
 	}
 
 	return &resource, func() {
-		client.DeleteDnsprofile(resource.ToKey())
 	}
 }

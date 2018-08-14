@@ -15,6 +15,5 @@ func Setup_transformprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Tra
 	}
 
 	return &resource, func() {
-		client.DeleteTransformprofile(resource.ToKey())
 	}
 }

@@ -23,6 +23,5 @@ func Setup_tmtrafficaction(t *testing.T, client *nitro.NitroClient) (*nitro.Tmtr
 	// }
 
 	return nil, func() {
-		//client.DeleteTmtrafficaction(resource.ToKey())
 	}
 }

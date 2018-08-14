@@ -15,6 +15,5 @@ func Setup_videooptimizationaction(t *testing.T, client *nitro.NitroClient) (*ni
 	// }
 
 	return nil, func() {
-		//client.DeleteVideooptimizationaction(resource.ToKey())
 	}
 }

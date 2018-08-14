@@ -14,6 +14,5 @@ func Setup_dospolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Dospolicy,
 	}
 
 	return &resource, func() {
-		client.DeleteDospolicy(resource.ToKey())
 	}
 }

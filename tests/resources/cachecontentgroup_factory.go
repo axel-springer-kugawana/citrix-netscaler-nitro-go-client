@@ -50,6 +50,5 @@ func Setup_cachecontentgroup(t *testing.T, client *nitro.NitroClient) (*nitro.Ca
 	// }
 
 	return nil, func() {
-		//client.DeleteCachecontentgroup(resource.ToKey())
 	}
 }

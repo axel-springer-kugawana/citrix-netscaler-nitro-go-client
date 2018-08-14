@@ -61,6 +61,5 @@ func Setup_nstcpprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Nstcppr
 	}
 
 	return &resource, func() {
-		client.DeleteNstcpprofile(resource.ToKey())
 	}
 }

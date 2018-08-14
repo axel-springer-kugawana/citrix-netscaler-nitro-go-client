@@ -44,6 +44,5 @@ func Setup_nshttpprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Nshttp
 	}
 
 	return &resource, func() {
-		client.DeleteNshttpprofile(resource.ToKey())
 	}
 }

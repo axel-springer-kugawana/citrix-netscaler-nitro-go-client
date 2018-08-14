@@ -16,6 +16,5 @@ func Setup_caaction(t *testing.T, client *nitro.NitroClient) (*nitro.Caaction, f
 	// }
 
 	return nil, func() {
-		// client.DeleteCaaction(resource.ToKey())
 	}
 }

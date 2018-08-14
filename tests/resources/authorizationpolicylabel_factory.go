@@ -12,6 +12,5 @@ func Setup_authorizationpolicylabel(t *testing.T, client *nitro.NitroClient) (*n
 	// }
 
 	return nil, func() {
-		//client.DeleteAuthorizationpolicylabel(resource.ToKey())
 	}
 }

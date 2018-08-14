@@ -16,6 +16,5 @@ func Setup_netprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Netprofil
 	}
 
 	return &resource, func() {
-		client.DeleteNetprofile(resource.ToKey())
 	}
 }

@@ -27,6 +27,7 @@ func (resource Filterpolicy) ToKey() FilterpolicyKey {
 
 func (key FilterpolicyKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
+	var _ = strconv.FormatBool
 
 	var id string
 	var args []string

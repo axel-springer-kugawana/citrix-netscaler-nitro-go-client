@@ -27,6 +27,7 @@ func (resource {{$.Name|name}}) ToKey() {{$.Name|name}}Key {
 
 func (key {{$.Name|name}}Key) to_id_params(qsKey string) (string, map[string]string) {
         var _ = strconv.Itoa
+        var _ = strconv.FormatBool
 
         var id string
         var args []string
@@ -37,6 +38,8 @@ func (key {{$.Name|name}}Key) to_id_params(qsKey string) (string, map[string]str
         {{else -}}
         {{if eq (index $.Schema.Fields $field) "int" -}}
         args = append(args, "{{$field}}:" + strconv.Itoa(key.{{$field|title}}))
+        {{else if eq (index $.Schema.Fields $field) "bool" -}}
+        args = append(args, "{{$field}}:" + strconv.FormatBool(key.{{$field|title}}))
         {{else -}}
         args = append(args, "{{$field}}:" + key.{{$field|title}})
         {{end -}}

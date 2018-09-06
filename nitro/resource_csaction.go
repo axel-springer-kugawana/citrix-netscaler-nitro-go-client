@@ -28,6 +28,7 @@ func (resource Csaction) ToKey() CsactionKey {
 
 func (key CsactionKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
+	var _ = strconv.FormatBool
 
 	var id string
 	var args []string

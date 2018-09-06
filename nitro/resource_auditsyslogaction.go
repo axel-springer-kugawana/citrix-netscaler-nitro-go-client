@@ -46,6 +46,7 @@ func (resource Auditsyslogaction) ToKey() AuditsyslogactionKey {
 
 func (key AuditsyslogactionKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
+	var _ = strconv.FormatBool
 
 	var id string
 	var args []string

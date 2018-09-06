@@ -67,7 +67,7 @@ func generateResourceTestFactory(templates *template.Template, name string, reso
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "test_factory.tmpl", context)
+	err = templates.ExecuteTemplate(writer, "resource_factory.tmpl", context)
 
 	return err
 }
@@ -87,7 +87,7 @@ func generateBindingTestFactory(templates *template.Template, name string, bindi
 		return err
 	}
 
-	err = templates.ExecuteTemplate(writer, "test_factory.tmpl", context)
+	err = templates.ExecuteTemplate(writer, "binding_factory.tmpl", context)
 
 	return err
 }
@@ -153,9 +153,8 @@ func main() {
 			}
 
 			templates := template.Must(template.New("").Funcs(funcMap).ParseFiles(
-				"templates/resource.tmpl",
-				"templates/binding.tmpl",
-				"templates/resource_test.tmpl", "templates/binding_test.tmpl", "templates/test_factory.tmpl",
+				"templates/resource.tmpl", "templates/resource_test.tmpl", "templates/resource_factory.tmpl",
+				"templates/binding.tmpl", "templates/binding_test.tmpl", "templates/binding_factory.tmpl",
 				"templates/utils.tmpl",
 			))
 

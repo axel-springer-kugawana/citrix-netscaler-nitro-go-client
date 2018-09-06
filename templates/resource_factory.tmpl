@@ -1,0 +1,17 @@
+package resources
+
+import (
+	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
+	"testing"
+)
+
+func Setup_{{$.Name}}(t *testing.T, client *nitro.NitroClient) (*nitro.{{$.Name|name}}, func()) {
+	//resource := nitro.{{$.Name|name}} {
+		{{range $field, $type := $.Schema.Fields -}}
+		//{{$field|title}}: {{$type}},
+		{{end -}}
+	//}
+
+	return nil, func() {
+	}
+}

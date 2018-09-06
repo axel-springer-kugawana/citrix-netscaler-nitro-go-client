@@ -26,6 +26,7 @@ func (resource Dnspolicy64) ToKey() Dnspolicy64Key {
 
 func (key Dnspolicy64Key) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
+	var _ = strconv.FormatBool
 
 	var id string
 	var args []string

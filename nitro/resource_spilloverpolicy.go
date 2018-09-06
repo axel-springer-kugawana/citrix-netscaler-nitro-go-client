@@ -27,6 +27,7 @@ func (resource Spilloverpolicy) ToKey() SpilloverpolicyKey {
 
 func (key SpilloverpolicyKey) to_id_params(qsKey string) (string, map[string]string) {
 	var _ = strconv.Itoa
+	var _ = strconv.FormatBool
 
 	var id string
 	var args []string

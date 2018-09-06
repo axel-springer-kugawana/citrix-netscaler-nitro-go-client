@@ -1,23 +1,24 @@
 package resources
 
 import (
-	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
+
+	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 )
 
 func Setup_dnsprofile(t *testing.T, client *nitro.NitroClient) (*nitro.Dnsprofile, func()) {
-	//resource := nitro.Dnsprofile {
-	//Dnsprofilename: "dnsprofile",
-	//Cacheecsresponses: (ENABLED|DISABLED),
-	//Cachenegativeresponses: (ENABLED|DISABLED),
-	//Cacherecords: (ENABLED|DISABLED),
-	//Dnsanswerseclogging: (ENABLED|DISABLED),
-	//Dnserrorlogging: (ENABLED|DISABLED),
-	//Dnsextendedlogging: (ENABLED|DISABLED),
-	//Dnsquerylogging: (ENABLED|DISABLED),
-	//Dropmultiqueryrequest: (ENABLED|DISABLED),
-	//}
+	resource := nitro.Dnsprofile{
+		Dnsprofilename: "dnsprofile",
+		//Cacheecsresponses:      "DISABLED",
+		Cachenegativeresponses: "DISABLED",
+		Cacherecords:           "DISABLED",
+		Dnsanswerseclogging:    "ENABLED",
+		Dnserrorlogging:        "ENABLED",
+		Dnsextendedlogging:     "ENABLED",
+		Dnsquerylogging:        "ENABLED",
+		Dropmultiqueryrequest:  "DISABLED",
+	}
 
-	return nil, func() {
+	return &resource, func() {
 	}
 }

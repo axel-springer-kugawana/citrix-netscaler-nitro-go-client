@@ -1,17 +1,18 @@
 package resources
 
 import (
-	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
+
+	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 )
 
 func Setup_dospolicy(t *testing.T, client *nitro.NitroClient) (*nitro.Dospolicy, func()) {
-	//resource := nitro.Dospolicy {
-	//Name: "dospolicy",
-	//Cltdetectrate: double,
-	//Qdepth: double,
-	//}
+	resource := nitro.Dospolicy{
+		Name:          "dospolicy",
+		Cltdetectrate: 60,
+		Qdepth:        21,
+	}
 
-	return nil, func() {
+	return &resource, func() {
 	}
 }

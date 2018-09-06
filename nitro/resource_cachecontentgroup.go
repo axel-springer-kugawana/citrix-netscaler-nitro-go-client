@@ -29,7 +29,7 @@ type Cachecontentgroup struct {
 	Matchcookies           string   `json:"matchcookies,omitempty"`
 	Maxressize             int      `json:"maxressize,string,omitempty"`
 	Memlimit               int      `json:"memlimit,string,omitempty"`
-	Minhits                int      `json:"minhits,omitempty"`
+	Minhits                int      `json:"minhits,string,omitempty"`
 	Minressize             int      `json:"minressize,string,omitempty"`
 	Name                   string   `json:"name,omitempty"`
 	Persistha              string   `json:"persistha,omitempty"`

@@ -2,12 +2,13 @@ package main
 
 import (
 	"flag"
-	"github.com/doubret/citrix-netscaler-nitro-go-specs/specs"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/doubret/citrix-netscaler-nitro-go-specs/specs"
 )
 
 var inputFolder = flag.String("i", "", "input folder to read specs from")

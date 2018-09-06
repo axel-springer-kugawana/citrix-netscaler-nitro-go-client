@@ -1,16 +1,18 @@
 package resources
 
 import (
-	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 	"testing"
+
+	"github.com/doubret/citrix-netscaler-nitro-go-client/nitro"
 )
 
 func Setup_videooptimizationpolicylabel(t *testing.T, client *nitro.NitroClient) (*nitro.Videooptimizationpolicylabel, func()) {
-	//resource := nitro.Videooptimizationpolicylabel {
-	//Labelname: "videooptimizationpolicylabel",
-	//Comment: string,
-	//Policylabeltype: (videoopt_req|videoopt_res),
-	//}
+	//Je pense pas qu'il est testable
+	// resource := nitro.Videooptimizationpolicylabel{
+	// Labelname:       "videooptimizationpolicylabel",
+	// Comment:         "test",
+	// Policylabeltype: "videoopt_res",
+	// }
 
 	return nil, func() {
 	}

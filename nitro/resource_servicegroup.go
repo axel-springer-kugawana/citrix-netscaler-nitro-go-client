@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -62,7 +63,7 @@ func (key ServicegroupKey) to_id_params(qsKey string) (string, map[string]string
 	var id string
 	var args []string
 
-	id = key.Servicegroupname
+	id = url.QueryEscape(key.Servicegroupname)
 
 	qs := map[string]string{}
 

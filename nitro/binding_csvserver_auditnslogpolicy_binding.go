@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -38,8 +39,8 @@ func (key CsvserverAuditnslogpolicyBindingKey) to_id_params(qsKey string) (strin
 	var id string
 	var args []string
 
-	id = key.Name
-	args = append(args, "policyname:"+key.Policyname)
+	id = url.QueryEscape(key.Name)
+	args = append(args, "policyname:"+url.QueryEscape(key.Policyname))
 
 	qs := map[string]string{}
 

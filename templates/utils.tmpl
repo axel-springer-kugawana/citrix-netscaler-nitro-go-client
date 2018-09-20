@@ -34,14 +34,14 @@ func (key {{$.Name|name}}Key) to_id_params(qsKey string) (string, map[string]str
 
         {{range $index, $field := $.Schema.Key -}}
         {{if eq $index 0 -}}
-        id = key.{{$field|title}}
+        id = url.QueryEscape(key.{{$field|title}})
         {{else -}}
         {{if eq (index $.Schema.Fields $field) "int" -}}
         args = append(args, "{{$field}}:" + strconv.Itoa(key.{{$field|title}}))
         {{else if eq (index $.Schema.Fields $field) "bool" -}}
         args = append(args, "{{$field}}:" + strconv.FormatBool(key.{{$field|title}}))
         {{else -}}
-        args = append(args, "{{$field}}:" + key.{{$field|title}})
+        args = append(args, "{{$field}}:" + url.QueryEscape(key.{{$field|title}}))
         {{end -}}
         {{end -}}
         {{end}}

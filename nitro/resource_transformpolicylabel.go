@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -30,7 +31,7 @@ func (key TransformpolicylabelKey) to_id_params(qsKey string) (string, map[strin
 	var id string
 	var args []string
 
-	id = key.Labelname
+	id = url.QueryEscape(key.Labelname)
 
 	qs := map[string]string{}
 

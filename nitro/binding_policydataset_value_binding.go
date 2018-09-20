@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -33,8 +34,8 @@ func (key PolicydatasetValueBindingKey) to_id_params(qsKey string) (string, map[
 	var id string
 	var args []string
 
-	id = key.Name
-	args = append(args, "value:"+key.Value)
+	id = url.QueryEscape(key.Name)
+	args = append(args, "value:"+url.QueryEscape(key.Value))
 
 	qs := map[string]string{}
 

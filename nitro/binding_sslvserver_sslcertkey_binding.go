@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -39,8 +40,8 @@ func (key SslvserverSslcertkeyBindingKey) to_id_params(qsKey string) (string, ma
 	var id string
 	var args []string
 
-	id = key.Vservername
-	args = append(args, "certkeyname:"+key.Certkeyname)
+	id = url.QueryEscape(key.Vservername)
+	args = append(args, "certkeyname:"+url.QueryEscape(key.Certkeyname))
 	args = append(args, "ca:"+strconv.FormatBool(key.Ca))
 
 	qs := map[string]string{}

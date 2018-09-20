@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -33,7 +34,7 @@ func (key LbwlmKey) to_id_params(qsKey string) (string, map[string]string) {
 	var id string
 	var args []string
 
-	id = key.Wlmname
+	id = url.QueryEscape(key.Wlmname)
 
 	qs := map[string]string{}
 

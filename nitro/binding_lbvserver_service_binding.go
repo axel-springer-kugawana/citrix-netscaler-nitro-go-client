@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -33,8 +34,8 @@ func (key LbvserverServiceBindingKey) to_id_params(qsKey string) (string, map[st
 	var id string
 	var args []string
 
-	id = key.Name
-	args = append(args, "servicename:"+key.Servicename)
+	id = url.QueryEscape(key.Name)
+	args = append(args, "servicename:"+url.QueryEscape(key.Servicename))
 
 	qs := map[string]string{}
 

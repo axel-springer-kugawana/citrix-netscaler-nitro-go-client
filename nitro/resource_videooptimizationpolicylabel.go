@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -31,7 +32,7 @@ func (key VideooptimizationpolicylabelKey) to_id_params(qsKey string) (string, m
 	var id string
 	var args []string
 
-	id = key.Labelname
+	id = url.QueryEscape(key.Labelname)
 
 	qs := map[string]string{}
 

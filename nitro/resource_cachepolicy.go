@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -35,7 +36,7 @@ func (key CachepolicyKey) to_id_params(qsKey string) (string, map[string]string)
 	var id string
 	var args []string
 
-	id = key.Policyname
+	id = url.QueryEscape(key.Policyname)
 
 	qs := map[string]string{}
 

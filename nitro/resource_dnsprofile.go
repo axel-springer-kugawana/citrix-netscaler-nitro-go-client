@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -37,7 +38,7 @@ func (key DnsprofileKey) to_id_params(qsKey string) (string, map[string]string) 
 	var id string
 	var args []string
 
-	id = key.Dnsprofilename
+	id = url.QueryEscape(key.Dnsprofilename)
 
 	qs := map[string]string{}
 

@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -122,8 +123,8 @@ func (key LbmonitorKey) to_id_params(qsKey string) (string, map[string]string) {
 	var id string
 	var args []string
 
-	id = key.Monitorname
-	args = append(args, "type:"+key.Type)
+	id = url.QueryEscape(key.Monitorname)
+	args = append(args, "type:"+url.QueryEscape(key.Type))
 
 	qs := map[string]string{}
 

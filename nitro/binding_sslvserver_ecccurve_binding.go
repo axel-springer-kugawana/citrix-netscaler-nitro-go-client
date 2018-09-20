@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -32,8 +33,8 @@ func (key SslvserverEcccurveBindingKey) to_id_params(qsKey string) (string, map[
 	var id string
 	var args []string
 
-	id = key.Vservername
-	args = append(args, "ecccurvename:"+key.Ecccurvename)
+	id = url.QueryEscape(key.Vservername)
+	args = append(args, "ecccurvename:"+url.QueryEscape(key.Ecccurvename))
 
 	qs := map[string]string{}
 

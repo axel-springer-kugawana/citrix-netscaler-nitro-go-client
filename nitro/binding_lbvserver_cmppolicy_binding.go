@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -40,9 +41,9 @@ func (key LbvserverCmppolicyBindingKey) to_id_params(qsKey string) (string, map[
 	var id string
 	var args []string
 
-	id = key.Name
-	args = append(args, "policyname:"+key.Policyname)
-	args = append(args, "bindpoint:"+key.Bindpoint)
+	id = url.QueryEscape(key.Name)
+	args = append(args, "policyname:"+url.QueryEscape(key.Policyname))
+	args = append(args, "bindpoint:"+url.QueryEscape(key.Bindpoint))
 
 	qs := map[string]string{}
 

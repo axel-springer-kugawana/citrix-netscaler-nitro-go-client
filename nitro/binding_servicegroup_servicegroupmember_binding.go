@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -36,8 +37,8 @@ func (key ServicegroupServicegroupmemberBindingKey) to_id_params(qsKey string) (
 	var id string
 	var args []string
 
-	id = key.Servicegroupname
-	args = append(args, "servername:"+key.Servername)
+	id = url.QueryEscape(key.Servicegroupname)
+	args = append(args, "servername:"+url.QueryEscape(key.Servername))
 	args = append(args, "port:"+strconv.Itoa(key.Port))
 
 	qs := map[string]string{}

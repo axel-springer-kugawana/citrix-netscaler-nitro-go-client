@@ -11,7 +11,7 @@ func Setup_appflowaction(t *testing.T, client *nitro.NitroClient) (*nitro.Appflo
 	client.AddAppflowcollector(*collector)
 
 	resource := nitro.Appflowaction{
-		Name: "appflowaction",
+		Name:                   "appflowaction",
 		Clientsidemeasurements: "ENABLED",
 		Comment:                "comment",
 		Pagetracking:           "ENABLED",

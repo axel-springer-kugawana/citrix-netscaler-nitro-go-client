@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -39,7 +40,7 @@ func (key TmsessionactionKey) to_id_params(qsKey string) (string, map[string]str
 	var id string
 	var args []string
 
-	id = key.Name
+	id = url.QueryEscape(key.Name)
 
 	qs := map[string]string{}
 

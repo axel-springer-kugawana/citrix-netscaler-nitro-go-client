@@ -2,6 +2,7 @@ package nitro
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -35,8 +36,8 @@ func (key LbmonitorSslcertkeyBindingKey) to_id_params(qsKey string) (string, map
 	var id string
 	var args []string
 
-	id = key.Monitorname
-	args = append(args, "certkeyname:"+key.Certkeyname)
+	id = url.QueryEscape(key.Monitorname)
+	args = append(args, "certkeyname:"+url.QueryEscape(key.Certkeyname))
 
 	qs := map[string]string{}
 
